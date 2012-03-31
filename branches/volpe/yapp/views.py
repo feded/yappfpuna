@@ -27,13 +27,15 @@
 #"""
 
 from pyramid.httpexceptions import HTTPFound
-from pyramid.view import view_config
+from pyramid.security import remember, forget
+from pyramid.view import view_config, forbidden_view_config
 from sqlalchemy.types import Unicode
 from yapp.daos.rol_dao import RolDAO
 from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.models.proyecto.proyecto import Proyecto
 from yapp.models.roles.rol import Rol
-from yapp.models.roles.rol_final import RolFinal, RolFinal
+from yapp.models.roles.rol_final import RolFinal
+from yapp.security import USERS
 
 
 #Ponemos nuestros View callables
@@ -47,16 +49,18 @@ def main_view(request):
 def notfound_view(request):
     return {}
 
-@view_config(route_name='login' , renderer="templates/login.pt")
-def login_view(request):
-    if request.method == 'POST':
-        mail = request.POST.get("")
-        password = request.POST.get("")
-        rh = RolDAO()
-        rol = rh.get_query().filter_by(_email=mail ,_contrasenha=password).first()
-        if rol != None:
-            return{'sucesss': True}
-        return{'sucesss': False}
+#@view_config(route_name='login' , renderer="templates/login/login.pt")
+#def login_view(request):
+#    if request.method == 'POST':
+#        mail = request.POST.get("usuario")
+#        password = request.POST.get("password")
+#        rh = RolFinalDAO()
+#        rol = rh.get_query().filter_by(_email=mail , _password=password).first()
+##        if rol != None:
+##            print "logueando"
+#        return HTTPFound(location=request.route_url('main'))
+##        return{'success':False}
+#    return {'success': 'ejeloguea'}
 
 
 
@@ -89,5 +93,40 @@ def crear_rol(request):
             rf = Rol(nombre, estado)
             dao = RolDAO()
             dao.crear(rf)
-        
+        return HTTPFound(location=request.route_url('main'))
     return {}
+
+
+@view_config(route_name='login', renderer='templates/login.pt')
+@forbidden_view_config(renderer='templates/login.pt')
+def login(request):
+    login_url = request.route_url('login')
+    referrer = request.url
+    if referrer == login_url:
+        referrer = '/' # never use the login form itself as came_from
+    came_from = request.params.get('came_from', referrer)
+    message = ''
+    login = ''
+    password = ''
+    if 'form.submitted' in request.params:
+        login = request.params['login']
+        password = request.params['password']
+        if USERS.get(login) == password:
+            headers = remember(request, login)
+            return HTTPFound(location = came_from,
+                             headers = headers)
+        message = 'Failed login'
+
+    return dict(
+        message = message,
+        url = request.application_url + '/login',
+        came_from = came_from,
+        login = login,
+        password = password,
+        )
+
+@view_config(route_name='logout')
+def logout(request):
+    headers = forget(request)
+    return HTTPFound(location = request.route_url('main'),
+                     headers = headers)

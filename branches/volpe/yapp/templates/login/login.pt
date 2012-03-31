@@ -3,7 +3,18 @@
 	<title>YAPP | Login </title>
 	<link rel="stylesheet" type="text/css" href="/static/extjs/resources/css/ext-all.css">
     <script type="text/javascript" src="/static/extjs/ext-debug.js"></script>
-    <script type="text/javascript" src="/static/login.js"></script>
+    <script type="text/javascript" src="/static/login/login.js"></script>
+    <script type="text/javascript">
+    	Ext.require([
+    		'Ext.form.*',
+    		'Ext.layout.container.Column',
+    		'Ext.tab.Panel',
+    		'Ext.QuickTip'
+		]);
+    	Ext.onReady(function(){
+		   	Ext.Msg.alert("${success}");
+		});
+    </script>
 </head>
 <body>
 </body>
