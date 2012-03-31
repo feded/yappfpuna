@@ -19,6 +19,7 @@ def main(global_config, **settings):
     config.add_route('login', '/')
     config.add_route('login', '/login')
     config.add_route('crearProyecto', '/crearProyecto')
+    config.add_route('crearRol', '/crearRol')
     config.scan()
 #    config.scan("views")
     return config.make_wsgi_app()
