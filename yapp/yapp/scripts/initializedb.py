@@ -5,6 +5,7 @@ import yapp.models.roles.rol
 import yapp.models.roles.tipo_rol
 import yapp.models.roles.privilegio
 import yapp.models.roles.rol_final
+import yapp.models.proyecto.proyecto
 #from yapp.models.roles import *
 
 import os

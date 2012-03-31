@@ -27,10 +27,12 @@
 #"""
 
 from pyramid.view import view_config
-
+from yapp.models import DBSession
+from yapp.models.proyecto.proyecto import Proyecto
+import transaction
 #Ponemos nuestros View callables
 
-@view_config(route_name='main',renderer="templates/main.pt")
+@view_config(route_name='main', renderer="templates/main.pt")
 def main_view(request):
     return {}
 
@@ -39,11 +41,15 @@ def main_view(request):
 def notfound_view(request):
     return {}
 
-@view_config(route_name='crearProyecto',renderer="templates/crearProyecto.pt")
+@view_config(route_name='crearProyecto', renderer="templates/crearProyecto.pt")
 def crearProyecto_view(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         autor = request.POST.get('autor') 
-        print autor + ' creo el proyecto ' + nombre
-        
+        with transaction.manager:
+            proyecto = Proyecto(nombre, autor)
+            DBSession.add(proyecto)
+            otro = DBSession.query(Proyecto).all()
+            for proyecto in otro:
+                print str(proyecto._id) + "\n"
     return {}
