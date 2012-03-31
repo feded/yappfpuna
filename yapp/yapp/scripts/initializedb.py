@@ -1,18 +1,14 @@
+from pyramid.paster import get_appsettings, setup_logging
+from sqlalchemy import engine_from_config
+from yapp.models import Base, DBSession
+import yapp.models.roles.rol
+import yapp.models.roles.tipo_rol
+import yapp.models.roles.privilegio
+#from yapp.models.roles import *
+
 import os
 import sys
-import transaction
 
-from sqlalchemy import engine_from_config
-
-from pyramid.paster import (
-    get_appsettings,
-    setup_logging,
-    )
-
-
-  
-
-from yapp.models import Base, DBSession
 
 def usage(argv):
     cmd = os.path.basename(argv[0])
