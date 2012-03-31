@@ -1,15 +1,14 @@
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config
 from yapp.models import Base, DBSession
-import yapp.models.roles.rol
-import yapp.models.roles.tipo_rol
-import yapp.models.roles.privilegio
-import yapp.models.roles.rol_final
-import yapp.models.proyecto.proyecto
-#from yapp.models.roles import *
-
 import os
 import sys
+import yapp.models.proyecto.proyecto
+import yapp.models.roles.privilegio
+import yapp.models.roles.rol
+import yapp.models.roles.rol_final
+#from yapp.models.roles import *
+
 
 
 def usage(argv):

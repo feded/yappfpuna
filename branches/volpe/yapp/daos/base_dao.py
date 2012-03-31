@@ -17,7 +17,7 @@ class BaseDAO:
     @abc.abstractmethod
     def get_clase(self):
         """retorna la clase a buscar"""
-        return BaseHelper;
+        return BaseDAO;
     
     def get_by_id(self, id):
         with transaction.manager:
@@ -26,3 +26,6 @@ class BaseDAO:
             
     def get_query(self):
         return DBSession.query(self.get_clase())
+    
+    def crear(self, entidad):
+         DBSession.add(entidad)
