@@ -15,11 +15,13 @@ class RolFinal (Rol):
     __tablename__ = "rol_final"
     __mapper_args__ = {'polymorphic_identity': 'rolfinal'}
     _email = Column(String, nullable=True)
-    _contrasenha = Column(String, nullable=False)
+    _password = Column(String, nullable=False)
     id = Column(Integer, ForeignKey('rol._id'), primary_key=True)
     
-    def __init__(self, email, contrasenha):
-        self._email = email;
-        self._contrasenha = contrasenha;
+    def __init__(self, nombre, estado,email, password):
+        self._nombre = nombre
+        self._estado = estado
+        self._email = email
+        self._password = password
         
     
