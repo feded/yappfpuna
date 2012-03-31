@@ -14,12 +14,12 @@ from yapp.models.roles.rol import Rol
 class RolFinal (Rol):
     __tablename__ = "rol_final"
     __mapper_args__ = {'polymorphic_identity': 'rolfinal'}
-    _usuario = Column(String, nullable=True)
     _email = Column(String, nullable=True)
+    _contrasenha = Column(String, nullable=False)
     id = Column(Integer, ForeignKey('rol._id'), primary_key=True)
     
-    def __init__(self, usuario, email):
+    def __init__(self, email, contrasenha):
         self._email = email;
-        self._usuario = usuario;
+        self._contrasenha = contrasenha;
         
     

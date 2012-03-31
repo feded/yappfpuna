@@ -29,6 +29,11 @@
 from pyramid.view import view_config
 from yapp.models.proyecto.proyecto import Proyecto
 from yapp.helpers.rol_helper import RolHelper
+from yapp.models.roles.rol_final import RolFinal
+from yapp.daos.rol_final_dao import RolDAO
+from pyramid.httpexceptions import HTTPFound
+
+
 #Ponemos nuestros View callables
 
 @view_config(route_name='main', renderer="templates/main.pt")
@@ -39,6 +44,19 @@ def main_view(request):
              renderer='templates/notFound.pt')
 def notfound_view(request):
     return {}
+
+@view_config(route_name='login' , renderer="templates/login.pt")
+def login_view(request):
+    if request.method == 'POST':
+        mail = request.POST.get("")
+        password = request.POST.get("")
+        rh = RolDAO()
+        rol = rh.get_query().filter(_email == mail , _contrasenha == password).first()
+        if rol != None:
+            return{'sucesss': True}
+        return{'sucesss': False}
+
+
 
 @view_config(route_name='crearProyecto', renderer="templates/crearProyecto.pt")
 def crearProyecto_view(request):
