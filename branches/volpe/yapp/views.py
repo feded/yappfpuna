@@ -27,9 +27,8 @@
 #"""
 
 from pyramid.view import view_config
-from yapp.models import DBSession
 from yapp.models.proyecto.proyecto import Proyecto
-import transaction
+from yapp.helpers.rol_helper import RolHelper
 #Ponemos nuestros View callables
 
 @view_config(route_name='main', renderer="templates/main.pt")
@@ -45,11 +44,9 @@ def notfound_view(request):
 def crearProyecto_view(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
-        autor = request.POST.get('autor') 
-        with transaction.manager:
-            proyecto = Proyecto(nombre, autor)
-            DBSession.add(proyecto)
-            otro = DBSession.query(Proyecto).all()
-            for proyecto in otro:
-                print str(proyecto._id) + "\n"
+        autor = request.POST.get('autor')
+        rh = RolHelper()
+        rol = rh.get_by_id(1)
+        rh.get_query().all()
+        print rol._nombre;
     return {}
