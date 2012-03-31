@@ -27,8 +27,11 @@
 #"""
 
 from pyramid.view import view_config
+from sqlalchemy.types import Unicode
+from yapp.daos.rol_dao import RolDAO, RolFinalDAO
 from yapp.models.proyecto.proyecto import Proyecto
-from yapp.helpers.rol_helper import RolHelper
+from yapp.models.roles.rol import Rol
+from yapp.models.roles.rol_final import RolFinal
 from yapp.models.roles.rol_final import RolFinal
 from yapp.daos.rol_final_dao import RolDAO
 from pyramid.httpexceptions import HTTPFound
@@ -63,8 +66,29 @@ def crearProyecto_view(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         autor = request.POST.get('autor')
-        rh = RolHelper()
-        rol = rh.get_by_id(1)
-        rh.get_query().all()
-        print rol._nombre;
+#        rh = RolDAO()
+#        rol = rh.get_by_id(1)
+#        rh.get_query().all()
+#        print rol._nombre;
+    return {}
+
+@view_config(route_name='crearRol', renderer="templates/rol/new_rol.pt")
+def crear_rol(request):
+    print "Me llamaron"
+    if request.method == 'POST':
+        print "Creando nuevo rol"
+        nombre = request.POST.get('nombre')
+        estado = request.POST.get('estado')
+        no_es_final = request.POST.get('email') != ""
+        if no_es_final == True:
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            rf = RolFinal(nombre, estado, email, password)
+            dao = RolFinalDAO()
+            dao.crear(rf)
+        else:
+            rf = Rol(nombre, estado)
+            dao = RolDAO()
+            dao.crear(rf)
+        
     return {}
