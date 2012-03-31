@@ -78,7 +78,8 @@ def crearProyecto_view(request):
 @view_config(route_name='crearRol', renderer="templates/rol/new_rol.pt")
 def crear_rol(request):
     print "Me llamaron"
-    if request.method == 'POST':
+#    if request.method == 'POST':
+    if 'submit' in request.POST:
         print "Creando nuevo rol"
         nombre = request.POST.get('nombre')
         estado = request.POST.get('estado')
@@ -97,6 +98,23 @@ def crear_rol(request):
     return {}
 
 
+#@view_config(route_name='olvide', renderer='templates/login/olvide.pt')
+#def olvide(request):
+#    if request.method == 'GET':
+#        email = request.GET.get("email")
+## enviar un mail al cliente con nueva contrasena
+#        rh = RolFinalDAO()
+#        rol = rh.get_query().filter_by(_email=email).first()
+#        if rol != None:
+#            return dict(
+#                message = "Se enviara un mail con su contrasenha",
+#                url = request.application_url + '/login',
+#                came_from = "/",
+#                usuario = rol._email,
+#                password = rol._contrasenha,     
+#                )
+    
+
 @view_config(route_name='login', renderer='templates/login.pt')
 @forbidden_view_config(renderer='templates/login.pt')
 def login(request):
@@ -106,14 +124,16 @@ def login(request):
         referrer = '/' # never use the login form itself as came_from
     came_from = request.params.get('came_from', referrer)
     message = ''
-    login = ''
+    usuario = ''
     password = ''
     if 'form.submitted' in request.params:
-        login = request.params['login']
+        mail = request.params['usuario']
         password = request.params['password']
-        if USERS.get(login) == password:
-            headers = remember(request, login)
-            return HTTPFound(location = came_from,
+        rh = RolFinalDAO()
+        rol = rh.get_query().filter_by(_email=mail , _password=password).first()
+        if rol != None:
+            headers = remember(request, mail)
+            return HTTPFound(location = '/main',
                              headers = headers)
         message = 'Failed login'
 
@@ -121,12 +141,12 @@ def login(request):
         message = message,
         url = request.application_url + '/login',
         came_from = came_from,
-        login = login,
+        usuario = usuario,
         password = password,
         )
 
 @view_config(route_name='logout')
 def logout(request):
     headers = forget(request)
-    return HTTPFound(location = request.route_url('main'),
+    return HTTPFound(location = request.route_url('login'),
                      headers = headers)

@@ -7,6 +7,11 @@
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
   <meta name="keywords" content="python web application" />
   <meta name="description" content="pyramid web application" />
+  <script type="text/javascript">
+  function recuperarContrasenha(){
+	  Ext.Msg.alert("Su contraseña es: " + ${password})  
+  }
+  </script>
 </head>
 <body>
   <div id="wrap">
@@ -19,7 +24,7 @@
     <div id="middle">
       <div class="middle align-right">
         <div id="left" class="app-welcome align-left">
-          <b>Ingreso a Yapp</b><br/>
+          <b>Olvide</b><br/>
           <span tal:replace="message"/>
         </div>
         <div id="right" class="app-welcome align-right"></div>
@@ -28,30 +33,10 @@
     <div id="bottom">
       <div class="bottom">
         <form action="${url}" method="post">
-          <table>
-          <tr>
-          <td>
-          <input type="hidden" name="came_from" value="${came_from}"/>
-          Usuario
-         
-          </td>
-          <td>
-           <input type="text" name="usuario" value="${usuario}"/><br/>
-          </td>
-          </tr>
-          <tr>
-          <td>
-          Contraseña
+          Estimado usuario, se enviara un correo electronico con su password para accder al sistema.
           
-          </td>
-          <td>
-          <input type="password" name="password"
-                 value="${password}"/><br/>
-          </td>
-          </tr>
-          </table>
-          <a href="${url}/olvide">Olvide mi contraseña</a>
-          <input type="submit" name="form.submitted" value="Ingresar"/>
+          <a href="${url}/login">volver</a>
+          <input type="button" name="mostrar" onclick="recuperarContrasenha()" value="Recuperar (PRUEBA)"/>
         </form>
       </div>
     </div>
