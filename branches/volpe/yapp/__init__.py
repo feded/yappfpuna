@@ -16,7 +16,6 @@ def main(global_config, **settings):
 #    config.add_route('home', '/')
     config.add_static_view('static', os.path.join(here, 'static'))
     config.add_route('main', '/main')
-    config.add_route('login', '/')
     config.add_route('login', '/login')
     config.add_route('crearProyecto', '/crearProyecto')
     config.add_route('crearRol', '/crearRol')
