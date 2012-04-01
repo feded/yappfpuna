@@ -26,16 +26,21 @@
 #try it again.
 #"""
 
+from json.tests.test_pass1 import JSON
 from pyramid.httpexceptions import HTTPFound
+from pyramid.response import Response
 from pyramid.security import remember, forget
 from pyramid.view import view_config, forbidden_view_config
 from sqlalchemy.types import Unicode
+from yapp.daos import proyecto_dao
+from yapp.daos.proyecto_dao import ProyectoDAO
 from yapp.daos.rol_dao import RolDAO
 from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.models.proyecto.proyecto import Proyecto
 from yapp.models.roles.rol import Rol
 from yapp.models.roles.rol_final import RolFinal
 from yapp.security import USERS
+import json
 
 
 #Ponemos nuestros View callables
@@ -49,26 +54,32 @@ def main_view(request):
 def notfound_view(request):
     return {}
 
-#@view_config(route_name='login' , renderer="templates/login/login.pt")
-#def login_view(request):
-#    if request.method == 'POST':
-#        mail = request.POST.get("usuario")
-#        password = request.POST.get("password")
-#        rh = RolFinalDAO()
-#        rol = rh.get_query().filter_by(_email=mail , _password=password).first()
-##        if rol != None:
-##            print "logueando"
-#        return HTTPFound(location=request.route_url('main'))
-##        return{'success':False}
-#    return {'success': 'ejeloguea'}
+@view_config(route_name='login' , renderer="templates/login/login.pt")
+def login_view(request):
+    if request.method == 'POST':
+        mail = request.POST.get("usuario")
+        password = request.POST.get("password")
+        rh = RolFinalDAO()
+        rol = rh.get_query().filter_by(_email=mail , _password=password).first()
+        if rol != None:
+            print "logueando"
+            return Response( json.dumps({'success': True}))
+        return Response( json.dumps({'failure': True}))
+    return {'success': 'ejeloguea'}
 
 
 
 @view_config(route_name='crearProyecto', renderer="templates/crearProyecto.pt")
 def crearProyecto_view(request):
+    print 'Renderizando proyecto'
     if request.method == 'POST':
+        print 'Creando proyecto'
         nombre = request.POST.get('nombre')
         autor = request.POST.get('autor')
+        proyecto = Proyecto(nombre, autor)
+        p_dao = ProyectoDAO();
+        p_dao.crear(proyecto)
+        return Response( json.dumps({'success': True}))
 #        rh = RolDAO()
 #        rol = rh.get_by_id(1)
 #        rh.get_query().all()
@@ -77,9 +88,9 @@ def crearProyecto_view(request):
 
 @view_config(route_name='crearRol', renderer="templates/rol/new_rol.pt")
 def crear_rol(request):
-    print "Me llamaron"
+    print "Renderizando rol"
 #    if request.method == 'POST':
-    if 'submit' in request.POST:
+    if request.method == 'POST':
         print "Creando nuevo rol"
         nombre = request.POST.get('nombre')
         estado = request.POST.get('estado')
@@ -115,35 +126,35 @@ def crear_rol(request):
 #                )
     
 
-@view_config(route_name='login', renderer='templates/login.pt')
-@forbidden_view_config(renderer='templates/login.pt')
-def login(request):
-    login_url = request.route_url('login')
-    referrer = request.url
-    if referrer == login_url:
-        referrer = '/' # never use the login form itself as came_from
-    came_from = request.params.get('came_from', referrer)
-    message = ''
-    usuario = ''
-    password = ''
-    if 'form.submitted' in request.params:
-        mail = request.params['usuario']
-        password = request.params['password']
-        rh = RolFinalDAO()
-        rol = rh.get_query().filter_by(_email=mail , _password=password).first()
-        if rol != None:
-            headers = remember(request, mail)
-            return HTTPFound(location = '/main',
-                             headers = headers)
-        message = 'Failed login'
-
-    return dict(
-        message = message,
-        url = request.application_url + '/login',
-        came_from = came_from,
-        usuario = usuario,
-        password = password,
-        )
+#@view_config(route_name='login', renderer='templates/login.pt')
+#@forbidden_view_config(renderer='templates/login.pt')
+#def login(request):
+#    login_url = request.route_url('login')
+#    referrer = request.url
+#    if referrer == login_url:
+#        referrer = '/' # never use the login form itself as came_from
+#    came_from = request.params.get('came_from', referrer)
+#    message = ''
+#    usuario = ''
+#    password = ''
+#    if 'form.submitted' in request.params:
+#        mail = request.params['usuario']
+#        password = request.params['password']
+#        rh = RolFinalDAO()
+#        rol = rh.get_query().filter_by(_email=mail , _password=password).first()
+#        if rol != None:
+#            headers = remember(request, mail)
+#            return HTTPFound(location = '/main',
+#                             headers = headers)
+#        message = 'Usuario o contrasenha incorrecta'
+#
+#    return dict(
+#        message = message,
+#        url = request.application_url + '/login',
+#        came_from = came_from,
+#        usuario = usuario,
+#        password = password,
+#        )
 
 @view_config(route_name='logout')
 def logout(request):

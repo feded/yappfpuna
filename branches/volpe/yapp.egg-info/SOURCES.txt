@@ -21,6 +21,7 @@ yapp.egg-info/requires.txt
 yapp.egg-info/top_level.txt
 yapp/daos/__init__.py
 yapp/daos/base_dao.py
+yapp/daos/proyecto_dao.py
 yapp/daos/rol_dao.py
 yapp/daos/rol_final_dao.py
 yapp/models/__init__.py
