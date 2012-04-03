@@ -156,7 +156,12 @@ Ext.application({
         			]
 			},{
 				region: 'center',
-				html: 'Area aun no disponible'
+				xtype: 'tabpanel',
+				activeTab: 0,
+				items: {
+					title: 'Principal',
+					html: 'Area de trabajo'
+				}
 			}]
 		});
 	}
