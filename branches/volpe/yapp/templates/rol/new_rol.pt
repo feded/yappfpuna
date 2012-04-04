@@ -1,10 +1,22 @@
 <html>
 <head>
-	<title>YAPP</title>
-	<link rel="stylesheet" type="text/css" href="/static/extjs/resources/css/ext-all.css">
-    <script type="text/javascript" src="/static/extjs/ext-debug.js"></script>
-    <script type="text/javascript" src="/static/rol/crear_rol.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>${page_name}</title>
+<link rel="stylesheet" type="text/css"
+	href="static/extjs/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css"
+	href="static/extjs/examples/shared/example.css" />
+
+<!-- <script type="text/javascript" src="../../bootstrap.js"></script> -->
+<script type="text/javascript" src="static/extjs/bootstrap.js"></script>
+<script type="text/javascript" src="static/extjs/examples/examples.js"></script>
+<script type="text/javascript" src="static/extras/e_field_set.js"></script>
+<script type="text/javascript" src="static/rol/crear_rol.js"></script>
 </head>
 <body>
+	<div id="form"></div>
+	<h1>Esto es para demostrar que se puede poner en diferentes lugares</h1>
+	<div id="grid"></div>
+
 </body>
 </html>

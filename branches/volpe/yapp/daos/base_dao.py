@@ -29,3 +29,6 @@ class BaseDAO:
     
     def crear(self, entidad):
          DBSession.add(entidad)
+         
+    def get_all(self):
+        return DBSession.query(self.get_clase()).all()

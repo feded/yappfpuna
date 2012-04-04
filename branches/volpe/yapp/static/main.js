@@ -24,12 +24,13 @@ Ext.onReady(function() {
                 xtype:'splitbutton',
                 text: 'Administrar roles',
                 textAlign: 'left',
-                menu: [{text: 'Crear',
-                		href: 'crearRol'},
-                		{text: 'Editar',
-                		 href: 'editarRol'},
-                		{text: 'Eliminar',
-                		 href: 'eliminarRol'}]
+                href: 'roles',
+                menu: [{text: 'Administrar',
+                		href: 'roles'},
+                		{text: 'Crear Rol',
+                		 href: 'crearRol'}]
+//                		{text: 'Eliminar',
+//                		 href: 'eliminarRol'}]
             },
             {
                 xtype:'splitbutton',
