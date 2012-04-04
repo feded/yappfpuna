@@ -151,6 +151,11 @@ Ext.onReady(function() {
                 text: 'Calculo de impacto',
                 textAlign: 'left',
                 href: 'calculoImpacto'
+            },
+            {
+                text: 'SALIR',
+                textAlign: 'left',
+                href: 'logout'
             }
         ]
     });
