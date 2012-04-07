@@ -1,4 +1,5 @@
 from compiler.ast import List
+from jsonpickle.unpickler import Unpickler
 from jsonpickle.pickler import Pickler
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
@@ -84,25 +85,26 @@ def crear_rol(request):
     page_name = "page_name"
     return {"page_name" : 'Crear Rol'}
 
-@view_config(route_name='roles', renderer="templates/rol/roles.pt")
-def view_roles(request):
-    return {}
-
-
-@view_config(route_name='getRoles')
+@view_config(route_name='roles')
 def get_roles(request):
-    rd = RolDAO()
-    entidades = rd.get_query().all()
-    lista = [];
-    for entidad in entidades:
-        lista.append({"_id": entidad._id})
-        
-    p = Pickler()
-    j_string = p.flatten(lista)
-    a_ret = json.dumps({"total":str(len(lista)), "roles":j_string})
-#    a_ret = json.dumps({"total":"123", "roles":""})
-    print a_ret
-    return Response(json.dumps(a_ret))
+    if (request.method == 'GET'):
+        rd = RolFinalDAO()
+        entidades = rd.get_query().all()
+        lista = [];
+        for entidad in entidades:
+            lista.append(RolesLindos(entidad._id, entidad._nombre, entidad._email))
+            
+        p = Pickler(False, None)
+        j_string = p.flatten(lista)
+        a_ret = json.dumps({'sucess': 'true', 'users':j_string})
+        print a_ret
+        return Response(a_ret)
+    if (request.method == 'POST'):
+        print request.POST
+        u = Unpickler()
+        rol = u.restore(request.POST)
+#        print rol
+        return Response(json.dumps({"sucess": True}))
 
 
 @view_config(route_name='logout')
@@ -112,9 +114,7 @@ def logout(request):
                      headers=headers)
     
 class RolesLindos:
-    def __init__(self, _id):
-        self._id = _id;
-class ARetornar:
-    def __init__(self, roles):
-        self.total = len(roles)
-        self.roles = roles 
+    def __init__(self, id, name, email):
+        self.id = id;
+        self.name = name;
+        self.email = email;

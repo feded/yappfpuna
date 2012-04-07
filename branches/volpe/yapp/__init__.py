@@ -36,7 +36,6 @@ def main(global_config, **settings):
     config.add_route('crearProyecto', '/crearProyecto')
     config.add_route('crearRol', '/crearRol')
     config.add_route('roles', '/roles')
-    config.add_route('getRoles', '/getRoles')
     config.scan()
 #    config.scan("views")
 
