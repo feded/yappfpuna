@@ -26,6 +26,18 @@
 #try it again.
 #"""
 
+
+
+from pyramid.httpexceptions import HTTPFound
+from pyramid.response import Response
+from pyramid.security import remember, forget
+from pyramid.view import view_config, forbidden_view_config
+from sqlalchemy.types import Unicode
+from yapp.daos import proyecto_dao
+from yapp.daos.proyecto_dao import ProyectoDAO
+from yapp.daos.rol_dao import RolDAO
+from yapp.daos.rol_final_dao import RolFinalDAO
+
 from pyramid.view import view_config
 from yapp.models import DBSession
 from yapp.models.proyecto.proyecto import Proyecto
