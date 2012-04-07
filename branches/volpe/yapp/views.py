@@ -100,10 +100,11 @@ def get_roles(request):
         print a_ret
         return Response(a_ret)
     if (request.method == 'POST'):
-        print request.POST
-        u = Unpickler()
-        rol = u.restore(request.POST)
-#        print rol
+        info(request)
+        info(request.POST)
+        info(request.GET)
+        print "------"
+        print request.json_body
         return Response(json.dumps({"sucess": True}))
 
 
@@ -118,3 +119,12 @@ class RolesLindos:
         self.id = id;
         self.name = name;
         self.email = email;
+        
+def info(var):
+    print "----CLASE----"
+    print var.__class__
+    print "---METODOS---"
+    print dir (var)
+    print "--ATRIBUTOS--"
+    print var
+    print "-------------"
