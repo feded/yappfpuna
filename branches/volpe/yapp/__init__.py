@@ -4,8 +4,8 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from yapp.security import groupfinder
-import vistas
 import os
+import vistas.roles
 
 
 
@@ -28,7 +28,6 @@ def main(global_config, **settings):
     config.set_authorization_policy(authz_policy)
     
     config.scan()
-    config.scan("vistas")
     
     config.add_static_view('static', os.path.join(here, 'static'))
     config.add_route('main', '/main')

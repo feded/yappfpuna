@@ -3,7 +3,7 @@ Created on Apr 7, 2012
 
 @author: arturo
 '''
-from pickle import Pickler
+from jsonpickle.pickler import Pickler
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.security import forget
