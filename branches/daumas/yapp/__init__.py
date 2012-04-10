@@ -1,4 +1,6 @@
 from .models import DBSession
+from pyramid_mailer.mailer import Mailer
+from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -21,16 +23,21 @@ def main(global_config, **settings):
     """
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
+    mailer = Mailer()
+    my_session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
     config = Configurator(settings=settings,
-                          root_factory='yapp.models.root_factory.RootFactory')
+                          root_factory='yapp.models.root_factory.RootFactory', 
+                          session_factory = my_session_factory)
     config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)
+    
+    config.registry['mailer'] = Mailer.from_settings(settings)
+    
     
 #    config.add_static_view('static', 'static', cache_max_age=3600)
 #    config.add_route('home', '/')
     config.add_static_view('static', os.path.join(here, 'static'))
     config.add_route('main', '/main')
-#   config.add_route('olvide', '/olvide')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('crearProyecto', '/crearProyecto')

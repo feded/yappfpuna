@@ -1,6 +1,4 @@
 .coverage
-.project
-.pydevproject
 CHANGES.txt
 MANIFEST.in
 README.txt
@@ -9,6 +7,7 @@ production.ini
 setup.cfg
 setup.py
 yapp/__init__.py
+yapp/filter.py
 yapp/security.py
 yapp/tests.py
 yapp/views.py
@@ -42,6 +41,8 @@ yapp/static/favicon.ico
 yapp/static/footerbg.png
 yapp/static/headerbg.png
 yapp/static/ie6.css
+yapp/static/logo_yapp.png
+yapp/static/logo_yapp_mini.png
 yapp/static/main.js
 yapp/static/middlebg.png
 yapp/static/notFound.js
@@ -4436,8 +4437,8 @@ yapp/static/extjs/welcome/img/icon/more-dark.png
 yapp/static/extjs/welcome/img/icon/more-ie.png
 yapp/static/extjs/welcome/img/icon/more.png
 yapp/static/login/login.js
-yapp/static/login/olvide.js
 yapp/static/rol/crear_rol.js
+yapp/static/tipoItem/crear_tipo_item.js
 yapp/templates/crearProyecto.pt
 yapp/templates/login.pt
 yapp/templates/main.pt
