@@ -45,14 +45,18 @@ import json
 
 #Ponemos nuestros View callables
 
-@view_config(route_name='main', renderer="templates/main.pt")
-def main_view(request):
+@view_config(route_name='index', renderer="templates/index.pt")
+def index_view(request):
     return {}
 
-@view_config(context='pyramid.exceptions.NotFound',
-             renderer='templates/notFound.pt')
-def notfound_view(request):
-    return {}
+#@view_config(route_name='main', renderer="templates/main.pt")
+#def main_view(request):
+#    return {}
+
+#@view_config(context='pyramid.exceptions.NotFound',
+#             renderer='templates/notFound.pt')
+#def notfound_view(request):
+#    return {}
 
 @view_config(route_name='login' , renderer="templates/login/login.pt")
 def login_view(request):
