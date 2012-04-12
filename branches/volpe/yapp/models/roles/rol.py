@@ -14,6 +14,7 @@ class Rol (Base, EntidadBase):
     _estado = Column(String, nullable=True)
     discriminator = Column('type', String(50))
     __mapper_args__ = {'polymorphic_on': discriminator}
+    _esFinal= False
     
     def __init__(self, nombre, estado):
         self._nombre = nombre;

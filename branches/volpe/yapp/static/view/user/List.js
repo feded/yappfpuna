@@ -9,12 +9,20 @@ Ext.define('AM.view.user.List', {
 		
 		this.columns = [ {
 			header : 'Name',
-			dataIndex : 'name',
+			dataIndex : '_nombre',
 			flex : 1
 		}, {
 			header : 'Email',
-			dataIndex : 'email',
+			dataIndex : '_email',
 			flex : 1
+		}, {
+			header : 'Estado',
+			dataIndex : '_estado',
+			felx : 1
+		}, {
+			header : 'Es Final',
+			dataIndex : 'esFinal',
+			flex : 0
 		} ];
 		
 		this.callParent(arguments);

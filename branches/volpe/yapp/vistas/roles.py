@@ -17,10 +17,10 @@ def get_roles(request):
         rd = RolFinalDAO()
         entidades = rd.get_query().all()
         lista = [];
-        for entidad in entidades:
-            lista.append(RolesLindos(entidad._id, entidad._nombre, entidad._email))
-            
         p = Pickler(False, None)
+        for entidad in entidades:
+            lista.append(p.flatten(entidad))
+            
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'users':j_string})
         print a_ret
@@ -35,11 +35,12 @@ def get_roles(request):
 
 
     
-class RolesLindos:
-    def __init__(self, ide, name, email):
-        self.id = ide;
-        self.name = name;
-        self.email = email;
+#class RolesLindos:
+#    def __init__(self, ide, name, email, esFinal):
+#        self.id = ide;
+#        self.name = name;
+#        self.email = email;
+#        self.esFinal = esFinal;
         
 def info(var):
     print "----CLASE----"

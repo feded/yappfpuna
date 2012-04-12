@@ -32,6 +32,7 @@ Ext.define('AM.controller.Users', {
 	updateUser : function(button) {
 		console.log('clicked the Save button');
 		var win = button.up('window');
+		console.log(win);
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();

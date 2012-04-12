@@ -37,7 +37,8 @@ def main(global_config, **settings):
     config.add_route('crearProyecto', '/crearProyecto')
     config.add_route('crearRol', '/crearRol')
     config.add_route('roles', '/roles')
-
+    config.add_route('test', '/test')
+    config.add_route('test2', '/test2')
 #    config.scan("views")
 
     return config.make_wsgi_app()

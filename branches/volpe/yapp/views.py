@@ -79,8 +79,16 @@ def crear_rol(request):
     return {"page_name" : 'Crear Rol'}
 
 
+@view_config(route_name='test', renderer="templates/test.pt")
+def test(request):
+    return {}
+    
 @view_config(route_name='logout')
 def logout(request):
     headers = forget(request)
     return HTTPFound(location=request.route_url('login'),
                      headers=headers)
+    
+@view_config(route_name='test2')
+def test2(request):
+    return Response("{\"success\":true,\"message\":\"Loaded data\",\"data\":[{\"id\":1,\"first\":\"Fred\",\"last\":\"Flintstone\",\"email\":\"fred@flintstone.com\"},{\"id\":2,\"first\":\"Wilma\",\"last\":\"Flintstone\",\"email\":\"wilma@flintstone.com\"},{\"id\":3,\"first\":\"Pebbles\",\"last\":\"Flintstone\",\"email\":\"pebbles@flintstone.com\"},{\"id\":4,\"first\":\"Barney\",\"last\":\"Rubble\",\"email\":\"barney@rubble.com\"},{\"id\":5,\"first\":\"Betty\",\"last\":\"Rubble\",\"email\":\"betty@rubble.com\"},{\"id\":6,\"first\":\"BamBam\",\"last\":\"Rubble\",\"email\":\"bambam@rubble.com\"}]}")
