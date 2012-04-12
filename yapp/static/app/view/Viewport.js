@@ -2,6 +2,7 @@ Ext.define('YAPP.view.Viewport', {
     extend: 'Ext.container.Viewport',
 	
 	layout: 'border',
+	
 
     initComponent: function() {
         this.items = [{
@@ -11,16 +12,20 @@ Ext.define('YAPP.view.Viewport', {
 				{
 				region: 'west',
 		        lbar: [{
+		        		xtype: 'button',
 		                text: 'Administrar roles',
-		                textAlign: 'left'
+		                textAlign: 'left',
+		                action: 'adminRoles'
 		            },
 		            {
 		                text: 'Administrar privilegios',
 		                textAlign: 'left'
 		            },
 		            {
+		            	xtype: 'button',
 		                text: 'Administrar proyectos',
-		                textAlign: 'left'
+		                textAlign: 'left',
+		                action: 'adminProyectos'
 		                
 		            },
 		            {
@@ -77,6 +82,7 @@ Ext.define('YAPP.view.Viewport', {
 			},{
 				region: 'center',
 				xtype: 'tabpanel',
+				id: 'tabPrincipal',
 				activeTab: 0,
 				items: {
 					title: 'Principal',
