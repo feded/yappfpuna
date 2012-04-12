@@ -5,6 +5,10 @@ Ext.application({
     
     autoCreateViewport: true,
     
+    controllers: [
+        'Menus'
+    ],
+    
     launch: function() {
         // This is fired as soon as the page is ready
     }
