@@ -15,7 +15,7 @@ Ext.define('AM.store.Roles', {
 		reader : {
 			type : 'json',
 			root : 'users',
-			successProperty : 'suceso'
+			successProperty : 'sucess'
 		}
 	}
 });

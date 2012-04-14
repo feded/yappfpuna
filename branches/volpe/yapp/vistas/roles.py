@@ -21,9 +21,9 @@ def get_roles(request):
 #    print request.json_body;
     if (request.method == 'GET'):
         rd = RolDAO()
-        entidades = rd.get_query().all()
+        entidades = rd.get_all()
         lista = [];
-        p = Pickler(False, None)
+        p = Pickler()
         for entidad in entidades:
             rol = RolesLindos(entidad._id, entidad._nombre, entidad._estado)
             if (isinstance(entidad, RolFinal)):
