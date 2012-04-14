@@ -40,6 +40,8 @@ def main(global_config, **settings):
     config.add_route('estados_roles', '/roles/estados')
     config.add_route('test', '/test')
     config.add_route('test2', '/test2')
+    config.add_route('privilegios', '/privilegios')
+    config.add_route('entidades', '/entidades')
 #    config.scan("views")
 
     return config.make_wsgi_app()

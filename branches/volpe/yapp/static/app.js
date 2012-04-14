@@ -3,15 +3,15 @@ Ext.application({
 	
 	appFolder : '',
 	
-	controllers : [ 'Roles' ],
-//	 controllers : [ 'Users' ],
+	// controllers : [ 'Roles' ],
+	controllers : [ 'Privilegios' ],
 	
 	launch : function() {
 		Ext.create('Ext.container.Viewport', {
 			layout : 'fit',
 			items : {
-				xtype : 'rolabm'
-//			 xtype : 'userlist'
+				// xtype : 'rolabm'
+				xtype : 'privilegiolist'
 			}
 		});
 	}

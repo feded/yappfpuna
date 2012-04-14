@@ -1,9 +1,9 @@
-Ext.define('AM.view.rol.List', {
+Ext.define('AM.view.privilegio.List', {
 	extend : 'Ext.grid.Panel',
-	alias : 'widget.rollist',
+	alias : 'widget.privilegiolist',
 	
-	title : 'Todos los usuarios',
-	store : 'Roles',
+	title : 'Privilegios',
+	store : 'Privilegios',
 	
 	requires : [ 'Ext.grid.plugin.CellEditing', 'Ext.form.field.Text', 'Ext.toolbar.TextItem' ],
 	
@@ -19,12 +19,12 @@ Ext.define('AM.view.rol.List', {
 				xtype : 'toolbar',
 				items : [ {
 					iconCls : 'icon-add',
-					text : 'Nuevo Rol',
+					text : 'Nuevo Privilegio',
 					scope : this,
 					action : 'crear'
 				}, '|', {
 					iconCls : 'icon-delete',
-					text : 'Eliminar Rol',
+					text : 'Eliminar Privilegio',
 					itemId : 'delete',
 					action : 'borrar',
 					disabled : true,
@@ -53,20 +53,14 @@ Ext.define('AM.view.rol.List', {
 				sortable : true,
 				dataIndex : '_nombre'
 			}, {
-				header : 'Estado',
+				header : 'Entidad',
 				flex : 1,
 				sortable : true,
-				dataIndex : '_estado',
+				dataIndex : '_entidad',
 				renderer : renderizador,
 				field : {
 					type : 'textfield'
 				}
-			}, {
-				header : 'Final',
-				width : 40,
-				flex : 0,
-				sortable : true,
-				dataIndex : '_esFinal'
 			} ]
 		});
 		this.callParent();
@@ -79,5 +73,5 @@ Ext.define('AM.view.rol.List', {
 });
 
 function renderizador(val) {
-	return val._estado
+	return val._nombre
 }
