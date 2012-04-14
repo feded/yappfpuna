@@ -3,7 +3,7 @@ Ext.define('AM.view.rol.List', {
 	alias : 'widget.rollist',
 	
 	title : 'All Users',
-	store : 'RolStore',
+	store : 'Roles',
 	
 	requires : [ 'Ext.grid.plugin.CellEditing', 'Ext.form.field.Text', 'Ext.toolbar.TextItem' ],
 	
@@ -19,25 +19,22 @@ Ext.define('AM.view.rol.List', {
 				xtype : 'toolbar',
 				items : [ {
 					iconCls : 'icon-add',
-					text : 'Add',
+					text : 'Nuevo Rol',
 					scope : this,
-					handler : this.onAddClick
-				}, {
+					action : 'crear'
+				}, '|', {
 					iconCls : 'icon-delete',
-					text : 'Delete',
+					text : 'Eliminar Rol',
 					disabled : true,
 					itemId : 'delete',
+					action : 'borrar',
 					scope : this,
-					handler : this.onDeleteClick
 				} ]
 			}, {
 				weight : 2,
 				xtype : 'toolbar',
 				dock : 'bottom',
 				items : [ {
-					xtype : 'tbtext',
-					text : '<b>@cfg</b>'
-				}, '|', {
 					text : 'autoSync',
 					enableToggle : true,
 					pressed : true,
@@ -45,6 +42,7 @@ Ext.define('AM.view.rol.List', {
 					scope : this,
 					toggleHandler : function(btn, pressed) {
 						this.store.autoSync = pressed;
+						console.log("Se sincronizada: " + pressed)
 					}
 				}, {
 					text : 'batch',
@@ -78,18 +76,24 @@ Ext.define('AM.view.rol.List', {
 				} ]
 			} ],
 			columns : [ {
-				text : 'ID',
-				width : 40,
-				sortable : true,
-				dataIndex : '_id'
-			}, {
-				header : 'Email',
+				text : 'Nombre',
 				flex : 1,
 				sortable : true,
-				dataIndex : '_email',
+				dataIndex : '_nombre'
+			}, {
+				header : 'Estado',
+				flex : 1,
+				sortable : true,
+				dataIndex : '_estado',
 				field : {
 					type : 'textfield'
 				}
+			}, {
+				header : 'Final?',
+				width : 40,
+				flex : 0,
+				sortable : true,
+				dataIndex : 'esFinal'
 			} ]
 		});
 		this.callParent();

@@ -24,7 +24,7 @@ Ext.define('AM.controller.Users', {
 	},
 	
 	editUser : function(grid, record) {
-		console.log('Double clicked on ' + record.get('name'));
+		console.log('Double clicked on ' + record.get('_name'));
 		var view = Ext.widget('useredit');
 		view.down('form').loadRecord(record);
 	},

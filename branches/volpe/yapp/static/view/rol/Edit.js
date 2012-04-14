@@ -1,128 +1,74 @@
-Ext.require([ 'Ext.data.*', 'Ext.tip.QuickTipManager', 'Ext.window.MessageBox' ]);
 Ext.define('AM.view.rol.Edit', {
-	extend : 'Ext.form.Panel',
+	extend : 'Ext.window.Window',
 	alias : 'widget.roledit',
 	
 	title : 'Editar Rol',
-	// layout : 'fit',
+	layout : 'fit',
 	autoShow : true,
-	
-	// requires: ['Ext.form.field.Text'],
+	stores : [ 'RolEstados' ],
 	
 	initComponent : function() {
-		this.addEvents('create');
-		Ext.apply(this, {
-			activeRecord : null,
-			iconCls : 'icon-user',
-			frame : true,
-			title : 'Roles',
-			defaultType : 'textfield',
-			bodyPadding : 5,
-			// fieldDefaults : {
-			// anchor : '100%',
-			// labelAlign : 'right'
-			// },
-			items : [ {
-				fieldLabel : 'Nombre',
-				name : '_nombre',
-				allowBlank : false
-			}, {
-				fieldLabel : 'Email',
-				name : '_email',
-				allowBlank : false
-			// vtype : 'email'
-			}, {
-				fieldLabel : 'Estado',
-				name : '_estado',
-				allowBlank : true
-			} ],
-			dockedItems : [ {
-				xtype : 'toolbar',
-				dock : 'bottom',
-				ui : 'footer',
-				items : [ '->', {
-					itemId : 'save',
-					text : 'Save',
-					disabled : true,
-					scope : this,
-					action : 'save'
-				}, {
-					text : 'Create',
-					scope : this,
-					action : 'crear'
-				}, {
-					text : 'Reset',
-					scope : this,
-					action : 'resetear'
-				} ]
-			} ]
-		});
-		this.callParent();
-	},
-//	
-// setActiveRecord : function(record) {
-// this.activeRecord = record;
-// if (record) {
-// this.down('#save').enable();
-// this.getForm().loadRecord(record);
-// } else {
-// this.down('#save').disable();
-// this.getForm().reset();
-// }
-// },
+		this.items = [ {
+			xtype : 'form',
+			items : [ form_comun, form_final ]
+		} ];
+		
+		this.buttons = [ {
+			text : 'Guardar',
+//			disabled : true,
+			formBind : true,
+			action : 'guardar'
+		}, {
+			text : 'Cancel',
+			scope : this,
+			handler : this.close
+		} ];
+		
+		this.callParent(arguments);
+	}
 
-// onSave : function() {
-// var active = this.activeRecord, form = this.getForm();
-//		
-// if (!active) {
-// return;
-// }
-// if (form.isValid()) {
-// form.updateRecord(active);
-// this.onReset();
-// }
-// },
-//	
-// onCreate : function() {
-// var form = this.getForm();
-//		
-// if (form.isValid()) {
-// this.fireEvent('create', this, form.getValues());
-// form.reset();
-// }
-//		
-// },
-//	
-// onReset : function() {
-// this.setActiveRecord(null);
-// this.getForm().reset();
-// }
 });
+var form_comun = {
+	xtype : 'fieldset',
+	title : 'Rol General',
+	items : [ {
+		xtype : 'textfield',
+		name : '_nombre',
+		fieldLabel : 'Nombre',
+		allowBlank : false
+	}, {
+		xtype : 'textfield',
+		name : '_email',
+		fieldLabel : 'Email',
+		allowBlank : false
+	}, {
+		xtype : 'combobox',
+		fieldLabel : 'Estado',
+		name : '_state',
+		store : Ext.create('AM.store.RolEstados'),
+		valueField : '_id',
+		displayField : '_estado',
+		typeAhead : true,
+		queryMode : 'local',
+		emptyText : 'Seleccione un estado...'
+	} ]
+};
 
-//	
-// initComponent : function() {
-// this.items = [ {
-// xtype : 'form',
-// items : [ {
-// xtype : 'textfield',
-// name : 'name',
-// fieldLabel : 'Name'
-// }, {
-// xtype : 'textfield',
-// name : 'email',
-// fieldLabel : 'Email'
-// } ]
-// } ];
-//		
-// this.buttons = [ {
-// text : 'Save',
-// action : 'save'
-// }, {
-// text : 'Cancel',
-// scope : this,
-// handler : this.close
-// } ];
-//		
-// this.callParent(arguments);
-// }
-// });
+var form_final = {
+	xtype : 'fieldset',
+	checkboxToggle : true,
+	collapsed : true,
+	title : 'Rol Final',
+	items : [ {
+		xtype : 'textfield',
+		name : '_email',
+		fieldLabel : 'Correo',
+		allowBlank : true
+	}, {
+		xtype : 'textfield',
+		name : '_password',
+		fieldLabel : 'Contraseña',
+		inputType : 'password',
+		allowBlank : true
+	} ]
+};

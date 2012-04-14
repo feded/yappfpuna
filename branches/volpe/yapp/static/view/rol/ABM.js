@@ -10,9 +10,6 @@ Ext.define('AM.view.rol.ABM', {
 		align : 'stretch'
 	},
 	items : [ {
-		itemId : 'form',
-		xtype : 'roledit'
-	}, {
 		itemId : 'grid',
 		xtype : 'rollist',
 		title : 'Lista de roles'
