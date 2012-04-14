@@ -7,6 +7,7 @@ Ext.define('YAPP.controller.Menus', {
     
 
    init: function() {
+   		console.log('Cargado controller Menus');
         this.control({
             'viewport button[action=adminProyectos]': {
                 click: this.adminProyectos

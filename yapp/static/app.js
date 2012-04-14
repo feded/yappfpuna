@@ -6,7 +6,8 @@ Ext.application({
     autoCreateViewport: true,
     
     controllers: [
-        'Menus'
+        'Menus',
+        'AdministrarProyectos'
     ],
     
     launch: function() {
