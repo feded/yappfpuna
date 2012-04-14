@@ -149,7 +149,8 @@ Ext.application({
 		                href: 'calculoImpacto'
 		            },
 		            {
-		                text: 'SALIR',
+		                text: 'Salir',
+		                color: 'red',
 		                textAlign: 'left',
 		                href: 'logout'
 		            }

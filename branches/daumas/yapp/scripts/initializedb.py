@@ -8,6 +8,8 @@ import yapp.models.roles.privilegio
 import yapp.models.roles.rol
 import yapp.models.roles.rol_final
 import yapp.models.root_factory
+import yapp.models.tipo_item.tipo_item
+import yapp.models.tipo_item.atributo_tipo_item
 #from yapp.models.roles import *
 
 

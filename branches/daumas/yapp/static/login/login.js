@@ -6,12 +6,15 @@ Ext.require([
 ]);
 
 
+
+
 Ext.onReady(function(){
     Ext.QuickTips.init();
     var logo = new Ext.Component({
     	autoEl: {tag: 'img', src: '/static/logo_yapp_mini.png'},
     	style:'text-align:center; padding-bottom: 5px;'
     		});
+    
     var login = new Ext.FormPanel({ 
     	id: 'login',
     	name: 'login',
@@ -37,40 +40,10 @@ Ext.onReady(function(){
         buttons:[{ 
         	
                 text:'Ingresar',
-                
-
                 formBind: true,	 
+                handler:handle
+                	
                 
-                handler:function(){ 
-                	Ext.getCmp("login").add({
-                        name: 'type',
-                        xtype: 'hidden',
-                        value: 'login'
-                        });
-                    Ext.getCmp("login").doLayout();
-                    login.getForm().submit({ 
-                        method:'POST',
-                        waitMsg:'Ingresando...',
- 
- 
-                        success:function(response, options){ 
-                        	Ext.Msg.alert('Estado', 'Acceso correcto!', function(btn, text){
-                            	if (btn == 'ok'){
-                            		var redirect = 'main'; 
-                            		window.location = redirect;
-    		                        }
-    					        });
-                    	},
-                    	failure:function(form, action){ 
-                            if(action.failureType == 'server'){                       
-                                Ext.Msg.alert('Error al ingresar!', 'Usuario y/o contraseña inválidos'); 
-                            }else{ 
-                                Ext.Msg.alert('Error!', 'No se puede conectar al servidor. ' + action.response.responseText); 
-                            } 
-                            login.getForm().reset(); 
-                        } 
-                    }); 
-                } 
             },
             {
             	text: 'Olvide',
@@ -102,10 +75,44 @@ Ext.onReady(function(){
             		});
             	}
             		
-            }] 
+            }],
+        keys: [
+               { key: [Ext.EventObject.ENTER], 
+            	 handler:handle 
+               }
+           ]
     });
  
- 
+    function handle(){
+    	Ext.getCmp("login").add({
+            name: 'type',
+            xtype: 'hidden',
+            value: 'login'
+            });
+        Ext.getCmp("login").doLayout();
+        login.getForm().submit({ 
+            method:'POST',
+            waitMsg:'Ingresando...',
+
+
+            success:function(response, options){ 
+            	Ext.Msg.alert('Estado', 'Acceso correcto!', function(btn, text){
+                	if (btn == 'ok'){
+                		var redirect = 'main'; 
+                		window.location = redirect;
+                        }
+			        });
+        	},
+        	failure:function(form, action){ 
+                if(action.failureType == 'server'){                       
+                    Ext.Msg.alert('Error al ingresar!', 'Usuario y/o contraseña inválidos'); 
+                }else{ 
+                    Ext.Msg.alert('Error!', 'No se puede conectar al servidor. ' + action.response.responseText); 
+                } 
+                login.getForm().reset(); 
+            } 
+        }); 
+    }
       
     var win = new Ext.Window({
         layout:'fit',

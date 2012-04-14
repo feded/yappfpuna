@@ -200,5 +200,5 @@ def crear_rol(request):
 def logout(request):
     headers = forget(request)
     request.session.invalidate()
-    return HTTPFound(location = request.route_url('login'),
+    return HTTPFound( location = request.route_url('login'),
                      headers = headers)
