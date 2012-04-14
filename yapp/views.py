@@ -39,6 +39,7 @@ from yapp.models.proyecto.proyecto import Proyecto
 from yapp.models.roles.rol import Rol
 from yapp.models.roles.rol_final import RolFinal
 from yapp.security import USERS
+from pyramid_mailer.message import Message
 import json
 
 
@@ -59,16 +60,38 @@ def index_view(request):
 
 @view_config(route_name='login' , renderer="templates/login/login.pt")
 def login_view(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.POST.get("type") == 'login':
         mail = request.POST.get("usuario")
         password = request.POST.get("password")
         rh = RolFinalDAO()
         rol = rh.get_query().filter_by(_email=mail , _password=password).first()
         if rol != None:
             print "logueando"
-            return Response( json.dumps({'success': True}))
+            session = request.session
+            session['user'] = rol
+            session.changed()
+            print 'user' in session
+            return Response(json.dumps({'success': True}))
         return Response( json.dumps({'failure': True}))
-    return {'success': 'ejeloguea'}
+    elif request.method == 'POST' and request.POST.get("type") == 'olvide':
+        print "COMO ESTAS GATO PUTO"
+        email = request.POST.get("usuario")
+        rh = RolFinalDAO()
+        rol = rh.get_query().filter_by(_email=email).first()
+        # enviar un mail al cliente con nueva contrasena
+        if rol != None:
+            mailer = request.registry['mailer']
+            message = Message(subject="Olvide - YAPP",
+                      sender="yapp.server@gmail.com",
+                      recipients=[rol._email],
+                      body="Sr/a " + rol._nombre + " Usted ha solicitado su clave de acceso para YAPP." +
+                      "\nSu clave de acceso es: " + rol._password +
+                      "\nGracias por utilizar YAPP.")
+            mailer.send(message)
+            return Response(json.dumps({'success': True}))
+        return Response( json.dumps({'failure': True}))
+    return {}
+
 
 
 

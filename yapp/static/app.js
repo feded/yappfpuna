@@ -9,7 +9,8 @@ Ext.application({
         'Menus',
         'AdministrarProyectos',
         'Privilegios',
-        'Roles'
+        'Roles',
+        'TipoItem'
         
     ],
     
