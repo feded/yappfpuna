@@ -6,11 +6,11 @@ Ext.define('YAPP.store.TipoItems', {
 	proxy : {
 		type : 'ajax',
 		api : {
-			read : 'static/data/res.json',
-//			read : 'http://localhost:6543/tipoItem',
-//        update : 'http://localhost:6543/proyectos',
-//        create : 'http://localhost:6543/proyectos',
-//        destroy : 'http://localhost:6543/proyectos'
+//			read : 'static/data/res.json',
+			read : 'http://localhost:6543/tipoItem',
+        update : 'http://localhost:6543/tipoItem',
+        create : 'http://localhost:6543/tipoItem',
+        destroy : 'http://localhost:6543/tipoItem'
 		},
 		reader : {
 			type : 'json',

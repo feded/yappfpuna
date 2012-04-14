@@ -42,7 +42,9 @@ Ext.define('YAPP.view.Viewport', {
 		            },
 		            {
 		                text: 'Administrar tipo de items',
-		                textAlign: 'left'
+		                textAlign: 'left',
+		                xtype : 'button',
+		                action: 'adminTipoItems'
 		                
 		            },
 		            {
