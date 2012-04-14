@@ -19,6 +19,7 @@ import yapp.models.tipo_item.tipo_item
 from yapp.daos.rol_dao import RolFinalDAO, RolEstadoDAO, RolDAO
 from yapp.models.roles.rol_estado import RolEstado
 from yapp.models.roles.rol_final import RolFinal
+from yapp.models.historial import Historial
 
 #from yapp.models.roles import *
 

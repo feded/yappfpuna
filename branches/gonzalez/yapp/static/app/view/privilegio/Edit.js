@@ -10,7 +10,26 @@ var formulario = Ext.define('YAPP.view.privilegio.Edit', {
 	initComponent : function() {
 		this.items = [ {
 			xtype : 'form',
-			items : [ form_comun ]
+			items : [ {
+				xtype : 'fieldset',
+				title : 'Privilegio',
+				items : [ {
+					xtype : 'textfield',
+					name : '_nombre',
+					fieldLabel : 'Nombre',
+					allowBlank : false
+				}, {
+					xtype : 'combobox',
+					fieldLabel : 'Entidad',
+					name : '_entidad',
+					store : Ext.create('YAPP.store.Entidades'),
+					valueField : '_nombre',
+					displayField : '_nombre',
+					typeAhead : true,
+					queryMode : 'local',
+					emptyText : 'Seleccione una entidad...'
+				} ]
+			} ]
 		} ];
 		
 		this.buttons = [ {
@@ -28,24 +47,4 @@ var formulario = Ext.define('YAPP.view.privilegio.Edit', {
 	}
 
 });
-var form_comun = {
-	xtype : 'fieldset',
-	title : 'Rol General',
-	items : [ {
-		xtype : 'textfield',
-		name : '_nombre',
-		fieldLabel : 'Nombre',
-		allowBlank : false
-	}, {
-		xtype : 'combobox',
-		fieldLabel : 'Entidad',
-		name : '_entidad',
-		store : Ext.create('YAPP.store.Entidades'),
-		valueField : '_nombre',
-		displayField : '_nombre',
-		typeAhead : true,
-		queryMode : 'local',
-		emptyText : 'Seleccione una entidad...'
-	} ]
-};
 
