@@ -64,7 +64,7 @@ def get_roles(request):
             return Response(json.dumps({'sucess': 'true'}))
         if (entidad["accion"] == "PUT"):
             estado_dao = RolEstadoDAO();
-            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first();
+            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]["_estado"]).first();
             
             rolDAO = RolDAO();
             rolFinalDAO = RolFinalDAO();

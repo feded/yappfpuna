@@ -35,11 +35,11 @@ Ext.define('AM.controller.Roles', {
 		var values = form.getValues();
 		record.set(values);
 		console.log(record)
+		win.close();
 		if (record.data.accion = "POST")
 			this.getRolesStore().insert(0, record);
 			
 		// this.getRolesStore().sync();
-		win.close();
 	},
 	botonCrearApretado : function(button) {
 		// console.log('Boton crear apretaRdo');
@@ -56,6 +56,7 @@ Ext.define('AM.controller.Roles', {
 		console.log(selection)
 		selection.data.accion = "DELETE"
 		this.getRolesStore().remove(selection)
+		console.log("----")
 		// this.getRolesStore().sync();
 		// console.log("------")
 	},
