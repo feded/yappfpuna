@@ -2,7 +2,7 @@ Ext.define('YAPP.controller.Menus', {
    extend: 'Ext.app.Controller',
    
    views: [
-        'proyecto.CrearProyecto',
+        'proyecto.CrearProyecto', 'privilegio.List', 'rol.List'
    ],
     
 
@@ -14,7 +14,10 @@ Ext.define('YAPP.controller.Menus', {
             },
             'viewport button[action=adminRoles]': {
                 click: this.adminRoles
-            }
+            },
+            'viewport button[action=adminPrivilegios]': {
+                click: this.adminPrivilegios
+            },
         });
     },
 
@@ -36,13 +39,24 @@ Ext.define('YAPP.controller.Menus', {
         var tabs = Ext.getCmp('tabPrincipal');
         
         var tab = tabs.add({
-            title: 'Administrar Roles'
-                      
+        	title: 'Administrar roles',
+            xtype: 'rollist'    
         });
 
         tabs.setActiveTab(tab);
         
-    }
+    },
     
-   
+    adminPrivilegios: function(button) {
+        
+        var tabs = Ext.getCmp('tabPrincipal');
+        
+        var tab = tabs.add({
+            title: 'Administrar privilegios',
+            xtype: 'privilegiolist'
+        });
+
+        tabs.setActiveTab(tab);
+        
+    },
 });

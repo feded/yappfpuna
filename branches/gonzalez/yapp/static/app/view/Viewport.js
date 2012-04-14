@@ -19,7 +19,9 @@ Ext.define('YAPP.view.Viewport', {
 		            },
 		            {
 		                text: 'Administrar privilegios',
-		                textAlign: 'left'
+		                textAlign: 'left',
+		                xtype: 'button',
+		                action: 'adminPrivilegios'
 		            },
 		            {
 		            	xtype: 'button',

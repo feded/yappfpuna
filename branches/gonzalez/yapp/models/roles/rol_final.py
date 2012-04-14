@@ -23,5 +23,6 @@ class RolFinal (Rol):
         self._estado = estado
         self._email = email
         self._password = password
+        self._esFinal = True
         
     

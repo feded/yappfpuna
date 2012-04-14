@@ -7,7 +7,10 @@ Ext.application({
     
     controllers: [
         'Menus',
-        'AdministrarProyectos'
+        'AdministrarProyectos',
+        'Privilegios',
+        'Roles'
+        
     ],
     
     launch: function() {
