@@ -5,6 +5,7 @@ from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from yapp.security import groupfinder
 import os
+import vistas.proyectos
 
 
 
@@ -30,6 +31,7 @@ def main(global_config, **settings):
 #    config.add_route('home', '/')
     config.add_static_view('static', os.path.join(here, 'static'))
     config.add_route('index', '/')
+    config.add_route('proyectos', '/proyectos')
 #    config.add_route('main', '/main')
 #   config.add_route('olvide', '/olvide')
     config.add_route('login', '/login')
