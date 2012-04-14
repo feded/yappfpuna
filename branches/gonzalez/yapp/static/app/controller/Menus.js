@@ -2,7 +2,7 @@ Ext.define('YAPP.controller.Menus', {
    extend: 'Ext.app.Controller',
    
    views: [
-        'menus.CrearProyecto',
+        'proyecto.CrearProyecto',
    ],
     
 
