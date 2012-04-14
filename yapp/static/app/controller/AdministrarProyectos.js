@@ -2,8 +2,8 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 	extend: 'Ext.app.Controller',
 	
 	views: [
-		'menus.CrearProyecto',
-		'menus.EditarProyecto'
+		'proyecto.CrearProyecto',
+		'proyecto.EditarProyecto'
 		],
 	stores:['Proyectos'],
 	models:['Proyecto'],
