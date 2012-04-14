@@ -1,20 +1,14 @@
 Ext.define('YAPP.view.menus.CrearProyecto' ,{
-    extend: 'Ext.form.Panel',
+    extend: 'Ext.grid.Panel',
     alias : 'widget.crearproyecto',
-    
-    defaultType:'textfield',
+    store: 'Proyectos',
 
     initComponent: function() {
       
-			this.items = [{ 
-                fieldLabel:'Proyecto', 
-                name:'nombre', 
-                allowBlank:false 
-            },{ 
-                fieldLabel:'Autor', 
-                name:'autor', 
-                allowBlank:false 
-            }];   
+			this.columns = [
+				{header:'Proyecto', dataIndex:'nombre'},
+				{header:'Autor', dataIndex:'autor'},
+            ];   
 
         this.callParent(arguments);
     }
