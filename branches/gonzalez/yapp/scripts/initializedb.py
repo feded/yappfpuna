@@ -13,6 +13,9 @@ import yapp.models.roles.rol
 import yapp.models.roles.rol_estado
 import yapp.models.roles.rol_final
 import yapp.models.root_factory
+import yapp.models.tipo_item.atributo_tipo_item
+import yapp.models.tipo_item.tipo_item
+
 from yapp.daos.rol_dao import RolFinalDAO, RolEstadoDAO, RolDAO
 from yapp.models.roles.rol_estado import RolEstado
 from yapp.models.roles.rol_final import RolFinal

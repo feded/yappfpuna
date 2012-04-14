@@ -49,6 +49,7 @@ def main(global_config, **settings):
     config.add_route('entidades', '/entidades')
     config.add_route('roles', '/roles')
     config.add_route('estados_roles', '/roles/estados')
+    config.add_route('tipoItem', '/tipoItem')
     config.scan()
 #    config.scan("views")
 
