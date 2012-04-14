@@ -1,13 +1,22 @@
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config
+from yapp.daos.privilegio_dao import PrivilegioDAO, EntidadDAO
 from yapp.models import Base, DBSession
+from yapp.models.roles.entidad import Entidad
 import os
 import sys
+import transaction
 import yapp.models.proyecto.proyecto
+import yapp.models.roles.entidad
 import yapp.models.roles.privilegio
 import yapp.models.roles.rol
+import yapp.models.roles.rol_estado
 import yapp.models.roles.rol_final
 import yapp.models.root_factory
+from yapp.daos.rol_dao import RolFinalDAO, RolEstadoDAO, RolDAO
+from yapp.models.roles.rol_estado import RolEstado
+from yapp.models.roles.rol_final import RolFinal
+
 #from yapp.models.roles import *
 
 
@@ -27,8 +36,23 @@ def main(argv=sys.argv):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
-#    with transaction.manager:
-#        model = Page('FrontPage3', 'This is the front page')
-#        DBSession.add(model)
-#        privilegio = Privilegios('FrontPage2', 'This is the front page')
-#        DBSession.add(privilegio)
+    entidad_dao = EntidadDAO();
+    items = entidad_dao.get_all()
+    
+    if (len(items) == 0):
+        with transaction.manager:
+            entidad = Entidad("Proyecto");
+            DBSession.add(entidad)
+            entidad = Entidad("Fase");
+            DBSession.add(entidad)
+            entidad = Entidad("Item");
+            DBSession.add(entidad)
+            entidad = Entidad("Esquema");
+            DBSession.add(entidad)
+    items = RolEstadoDAO().get_all()
+    if (len(items) == 0):
+        with transaction.manager:
+            estado = RolEstado("Activo")
+            DBSession.add(estado);
+            estado = RolEstado("Suspendido");
+            DBSession.add(estado);
