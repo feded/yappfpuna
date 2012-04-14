@@ -24,6 +24,8 @@ class BaseDAO:
             entidad = DBSession.query(self.get_clase()).filter_by(_id=id).first();
             return entidad;
             
+    def get_all(self):
+        return DBSession.query(self.get_clase()).all()
     def get_query(self):
         return DBSession.query(self.get_clase())
     
