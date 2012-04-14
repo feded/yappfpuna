@@ -100,7 +100,7 @@ var form_final = {
 			var win = fieldset.up('window');
 			var form = win.down('form');
 			var record = form.getRecord();
-			record.data.esFinal = true;
+			record.data._esFinal = true;
 		},
 		'beforecollapse' : function(fieldset) {
 			var win = fieldset.up('window');
@@ -108,7 +108,7 @@ var form_final = {
 				return true;
 			var form = win.down('form');
 			var record = form.getRecord();
-			record.data.esFinal = false;
+			record.data._esFinal = false;
 		}
 	}
 };
