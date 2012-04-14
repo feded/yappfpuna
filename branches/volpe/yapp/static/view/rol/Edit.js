@@ -1,4 +1,22 @@
-Ext.define('AM.view.rol.Edit', {
+Ext.define('MY.fieldset', {
+	extend : 'Ext.form.FieldSet',
+	alias : 'widget.myfieldset',
+	initComponent : function() {
+		this.addEvents('beforeexpand', 'beforecollapse');
+		this.callParent([ arguments ]);
+	},
+	setExpanded : function(expanded) {
+		var bContinue;
+		if (expanded)
+			bContinue = this.fireEvent('beforeexpand', this);
+		else
+			bContinue = this.fireEvent('beforecollapse', this);
+		if (bContinue !== false)
+			this.callParent([ expanded ]);
+	}
+});
+
+var formulario = Ext.define('AM.view.rol.Edit', {
 	extend : 'Ext.window.Window',
 	alias : 'widget.roledit',
 	
@@ -15,7 +33,7 @@ Ext.define('AM.view.rol.Edit', {
 		
 		this.buttons = [ {
 			text : 'Guardar',
-//			disabled : true,
+			// disabled : true,
 			formBind : true,
 			action : 'guardar'
 		}, {
@@ -37,16 +55,11 @@ var form_comun = {
 		fieldLabel : 'Nombre',
 		allowBlank : false
 	}, {
-		xtype : 'textfield',
-		name : '_email',
-		fieldLabel : 'Email',
-		allowBlank : false
-	}, {
 		xtype : 'combobox',
 		fieldLabel : 'Estado',
-		name : '_state',
+		name : '_estado',
 		store : Ext.create('AM.store.RolEstados'),
-		valueField : '_id',
+		valueField : '_estado',
 		displayField : '_estado',
 		typeAhead : true,
 		queryMode : 'local',
@@ -70,5 +83,50 @@ var form_final = {
 		fieldLabel : 'Contraseña',
 		inputType : 'password',
 		allowBlank : true
-	} ]
+	} ],
+	
+	setExpanded : function(expanded) {
+		var bContinue;
+		if (expanded)
+			bContinue = this.fireEvent('beforeexpand', this);
+		else
+			bContinue = this.fireEvent('beforecollapse', this);
+		
+		var me = this, checkboxCmp = me.checkboxCmp;
+		
+		expanded = !!expanded;
+		
+		if (checkboxCmp) {
+			checkboxCmp.setValue(expanded);
+		}
+		
+		if (expanded) {
+			me.removeCls(me.baseCls + '-collapsed');
+		} else {
+			me.addCls(me.baseCls + '-collapsed');
+		}
+		me.collapsed = !expanded;
+		if (expanded) {
+			// ensure subitems will get rendered and layed out when expanding
+			me.getComponentLayout().childrenChanged = true;
+		}
+		me.doComponentLayout();
+		return me;
+	},
+	listeners : {
+		'beforeexpand' : function(fieldset) {
+			var win = fieldset.up('window');
+			var form = win.down('form');
+			var record = form.getRecord();
+			record.data.esFinal = true;
+		},
+		'beforecollapse' : function(fieldset) {
+			var win = fieldset.up('window');
+			if (win == null)
+				return true;
+			var form = win.down('form');
+			var record = form.getRecord();
+			record.data.esFinal = false;
+		}
+	}
 };

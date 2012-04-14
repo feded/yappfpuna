@@ -384,7 +384,7 @@ Ext.define('Ext.form.FieldSet', {
         if (checkboxCmp) {
             checkboxCmp.setValue(expanded);
         }
-
+        
         if (expanded) {
             me.removeCls(me.baseCls + '-collapsed');
         } else {

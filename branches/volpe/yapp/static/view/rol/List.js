@@ -25,9 +25,9 @@ Ext.define('AM.view.rol.List', {
 				}, '|', {
 					iconCls : 'icon-delete',
 					text : 'Eliminar Rol',
-					disabled : true,
 					itemId : 'delete',
 					action : 'borrar',
+					disabled : true,
 					scope : this,
 				} ]
 			}, {
@@ -76,6 +76,11 @@ Ext.define('AM.view.rol.List', {
 				} ]
 			} ],
 			columns : [ {
+				text : 'ID',
+				width : 40,
+				sortable : true,
+				dataIndex : 'id'
+			}, {
 				text : 'Nombre',
 				flex : 1,
 				sortable : true,
@@ -85,19 +90,27 @@ Ext.define('AM.view.rol.List', {
 				flex : 1,
 				sortable : true,
 				dataIndex : '_estado',
+				renderer : renderizador,
 				field : {
 					type : 'textfield'
 				}
 			}, {
-				header : 'Final?',
+				header : 'Final',
 				width : 40,
 				flex : 0,
 				sortable : true,
-				dataIndex : 'esFinal'
+				dataIndex : '_esFinal'
 			} ]
 		});
 		this.callParent();
 		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
 	},
+	onSelectChange : function(selModel, selections) {
+		this.down('#delete').setDisabled(selections.length === 0);
+	},
 
 });
+
+function renderizador(val) {
+	return val._estado
+}

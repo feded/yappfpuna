@@ -20,9 +20,8 @@ class BaseDAO:
         return BaseDAO;
     
     def get_by_id(self, id):
-        with transaction.manager:
-            entidad = DBSession.query(self.get_clase()).filter_by(_id=id).first();
-            return entidad;
+        entidad = DBSession.query(self.get_clase()).filter_by(_id=id).first();
+        return entidad;
             
     def get_query(self):
         return DBSession.query(self.get_clase())
@@ -32,3 +31,9 @@ class BaseDAO:
          
     def get_all(self):
         return DBSession.query(self.get_clase()).all()
+    
+    def borrar(self, entidad):
+        DBSession.delete(entidad)
+        
+    def update(self, entidad):
+        DBSession.merge(entidad)
