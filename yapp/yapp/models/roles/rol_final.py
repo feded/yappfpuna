@@ -21,5 +21,6 @@ class RolFinal (Rol):
     def __init__(self, usuario, email):
         self._email = email;
         self._usuario = usuario;
+        self._esFinal = True
         
     
