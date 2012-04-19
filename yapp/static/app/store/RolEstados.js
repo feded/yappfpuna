@@ -11,7 +11,7 @@ Ext.define('YAPP.store.RolEstados', {
 		reader : {
 			type : 'json',
 			root : 'estados',
-			successProperty : 'suceso'
+			successProperty : 'sucess'
 		}
 	}
 });
