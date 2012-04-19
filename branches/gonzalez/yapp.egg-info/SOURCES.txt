@@ -1,4 +1,6 @@
 .coverage
+.project
+.pydevproject
 CHANGES.txt
 MANIFEST.in
 README.txt
@@ -20,12 +22,14 @@ yapp.egg-info/requires.txt
 yapp.egg-info/top_level.txt
 yapp/daos/__init__.py
 yapp/daos/base_dao.py
+yapp/daos/historial_dao.py
 yapp/daos/privilegio_dao.py
 yapp/daos/proyecto_dao.py
 yapp/daos/rol_dao.py
 yapp/daos/tipo_item_dao.py
 yapp/models/__init__.py
 yapp/models/entidad_base.py
+yapp/models/historial.py
 yapp/models/pages.py
 yapp/models/root_factory.py
 yapp/models/proyecto/__init__.py
