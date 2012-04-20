@@ -1,8 +1,8 @@
-Ext.define('YAPP.view.proyecto.EditarProyecto', {
+Ext.define('YAPP.view.proyecto.NuevoProyecto', {
     extend: 'Ext.window.Window',
-    alias : 'widget.editarproyecto',
+    alias : 'widget.nuevoproyecto',
 
-    title : 'Editar proyecto',
+    title : 'Nuevo proyecto',
     layout: 'fit',
     autoShow: true,
 

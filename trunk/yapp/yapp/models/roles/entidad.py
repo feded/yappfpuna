@@ -1,8 +1,3 @@
-'''
-Created on Mar 30, 2012
-
-@author: arturo
-'''
 from sqlalchemy.schema import Column
 from sqlalchemy.types import String
 from yapp.models import Base

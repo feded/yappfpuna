@@ -1,8 +1,3 @@
-'''
-Created on Mar 30, 2012
-
-@author: arturo
-'''
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relation, backref
 from sqlalchemy.schema import ForeignKey
@@ -10,8 +5,6 @@ from sqlalchemy.types import Integer
 from yapp.models import Base
 from yapp.models.entidad_base import EntidadBase
 from yapp.models.roles.rol_estado import RolEstado
-import yapp.models.roles.rol_estado
-
 
 class Rol (Base, EntidadBase):
     __tablename__ = "rol"
