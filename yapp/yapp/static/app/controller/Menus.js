@@ -1,7 +1,7 @@
 Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
-	views : [ 'proyecto.CrearProyecto', 'privilegio.List', 'rol.List', 'tipoItem.List' ],
+	views : [ 'proyecto.ListarProyecto', 'privilegio.List', 'rol.List', 'tipoItem.List' ],
 	
 	init : function() {
 		console.log('Cargado controller Menus');
@@ -27,7 +27,7 @@ Ext.define('YAPP.controller.Menus', {
 		
 		var tab = tabs.add({
 			title : 'Administrar proyectos',
-			xtype : 'crearproyecto'
+			xtype : 'listarproyecto'
 		});
 		
 		tabs.setActiveTab(tab);

@@ -1,9 +1,3 @@
-'''
-Created on Mar 30, 2012
-
-@author: arturo
-'''
-
 from yapp.models import Base
 
 from sqlalchemy import (

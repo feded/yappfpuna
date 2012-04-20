@@ -6,8 +6,6 @@ Created on Mar 30, 2012
 from sqlalchemy import Column, String
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Integer
-from yapp.models import Base
-from yapp.models.entidad_base import EntidadBase
 from yapp.models.roles.rol import Rol
 
 

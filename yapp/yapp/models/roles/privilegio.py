@@ -1,8 +1,3 @@
-'''
-Created on Mar 30, 2012
-
-@author: arturo
-'''
 from sqlalchemy.orm import relation, backref
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import String, Integer

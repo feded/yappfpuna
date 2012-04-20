@@ -1,7 +1,9 @@
-Ext.define('YAPP.view.proyecto.CrearProyecto' ,{
+Ext.define('YAPP.view.proyecto.ListarProyecto' ,{
     extend: 'Ext.grid.Panel',
-    alias : 'widget.crearproyecto',
+    alias : 'widget.listarproyecto',
     store: 'Proyectos',
+    
+    layout: 'fit',
 
     initComponent: function() {
 		  this.dockedItems = [ {
@@ -27,6 +29,12 @@ Ext.define('YAPP.view.proyecto.CrearProyecto' ,{
 		this.columns = [
 			{header:'Proyecto', dataIndex:'_nombre'},
 			{header:'Autor', dataIndex:'_autor'},
+			{header:'Prioridad', dataIndex:'_prioridad'},
+			{header:'Estado', dataIndex:'_estado'},
+			{header:'Líder de proyecto', dataIndex:'_lider'},
+			{header:'Nota', dataIndex:'_nota'},
+			{header:'Fecha de creación', dataIndex:'_fecha_creacion'},
+			{header:'Fecha de modificacion', dataIndex:'_fecha_modificacion'}
         ];   
 
         this.callParent(arguments);
