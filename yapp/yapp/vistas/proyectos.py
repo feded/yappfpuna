@@ -18,6 +18,13 @@ def read_proyectos(request):
         lista.append(p.flatten(entidad))    
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'proyectos':j_string})
+    
+    print "-------------------------"
+    print "-------------------------"
+    print (a_ret)
+    print "-------------------------"
+    print "-------------------------"
+    
     return Response(a_ret)
 
 @view_config(route_name='createproyectos')
@@ -31,7 +38,14 @@ def create_proyectos(request):
     nueva_fase = Fase(nombre_fase, nuevo_proyecto)
     dao_fase = FaseDAO()
     dao_fase.crear(nueva_fase)
-    return Response(json.dumps({'sucess': 'true'}))
+    
+    lista = []
+    p = Pickler()
+    lista.append(p.flatten(nuevo_proyecto))
+    j_string = p.flatten(lista)
+    a_ret = json.dumps({'sucess': 'true', 'proyectos':j_string})
+    
+    return Response(a_ret)
 
 @view_config(route_name='updateproyectos')
 def update_proyectos(request):
