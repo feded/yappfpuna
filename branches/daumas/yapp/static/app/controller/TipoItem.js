@@ -11,7 +11,7 @@ Ext.define('YAPP.controller.TipoItem', {
 	init:function(){
 		console.log('Cargado controller tipoItem');
 		this.control({
-            'tipoList button[action=crear]': {
+            'tipolist button[action=crear]': {
                 click: this.crearTipoItem
             },
             'tipoItemedit button[action=guardar]': {
@@ -28,31 +28,26 @@ Ext.define('YAPP.controller.TipoItem', {
     	});
     	tabs.setActiveTab(tab);
     },
-    botonEditGuardarApretado : function(button) {
-		
+    guardarTipoItem : function(button) {
 		var win = button.up('window');
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);
-		console.log(record)
+		console.log(record);
 		win.close();
-		if (record.data.accion = "POST")
-			this.getTipoItemsStore().insert(0, record);
+		this.getTipoItemsStore().insert(0, record);
 			
 	},
     crearTipoItem : function(button){
-    	// console.log('Boton crear apretaRdo');
+    	var view = Ext.widget('tipoItemedit');
+    	console.log('Boton crear apretaRdo');
 		var tipoItem = new YAPP.model.TipoItem();
 		tipoItem.data.accion = "POST";
-		this.ventanaTipoItem(tipoItem);
+		view.down('form').loadRecord(tipoItem);
     },
     
-    ventanaTipoItem : function(record) {
-		var view = Ext.widget('tipoItemEdit');
-		if (record != null)
-			view.down('form').loadRecord(record);
-	},
+  
 
 });
 

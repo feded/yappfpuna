@@ -49,7 +49,10 @@ def main(global_config, **settings):
     config.add_route('entidades', '/entidades')
     config.add_route('roles', '/roles')
     config.add_route('estados_roles', '/roles/estados')
-    config.add_route('tipoItem', '/tipoItem')
+    config.add_route('obtenerTipos', '/obtenerTipos')
+    config.add_route('crearTipo', '/crearTipo')
+    config.add_route('eliminarTipo', '/eliminarTipo')
+    config.add_route('guardarTipo', '/guardarTipo')
     config.scan()
 #    config.scan("views")
 
