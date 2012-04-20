@@ -19,12 +19,6 @@ def read_proyectos(request):
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'proyectos':j_string})
     
-    print "-------------------------"
-    print "-------------------------"
-    print (a_ret)
-    print "-------------------------"
-    print "-------------------------"
-    
     return Response(a_ret)
 
 @view_config(route_name='createproyectos')
