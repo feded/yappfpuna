@@ -99,18 +99,19 @@ def get_roles(request):
 
 @view_config(route_name='estados_roles')
 def get_estado_roles(request):
-    if (request.method == 'GET'):
-        re = RolEstadoDAO()
-        entidades = re.get_query().all()
-        lista = [];
-        p = Pickler(False, None)
-        for entidad in entidades:
-            lista.append(p.flatten(entidad))
+    print 'llegamos a esta puta parte'
+#    if (request.method == 'GET'):
+    re = RolEstadoDAO()
+    entidades = re.get_query().all()
+    lista = [];
+    p = Pickler()
+    for entidad in entidades:
+        lista.append(p.flatten(entidad))
             
-        j_string = p.flatten(lista)
-        a_ret = json.dumps({'sucess': 'true', 'estados':j_string})
-        print a_ret
-        return Response(a_ret)
+    j_string = p.flatten(lista)
+    a_ret = json.dumps({'sucess': 'true', 'estados':j_string})
+#    print a_ret
+    return Response(a_ret)
         
     
 class RolesLindos:
