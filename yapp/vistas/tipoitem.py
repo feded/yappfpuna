@@ -10,8 +10,8 @@ import json
 
 
 
-@view_config(route_name='tipoItem')
-def get_tipo_item(request):
+@view_config(route_name='obtenerTipos')
+def get_tipos_item(request):
     print request.method
     if (request.method == 'GET'):
         #or request.method == 'OPTIONS'  
@@ -21,11 +21,12 @@ def get_tipo_item(request):
         p = Pickler(True, None)
         for entidad in entidades:
             lista.append(p.flatten(entidad))
-            
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
         print a_ret
         return Response(a_ret)
+@view_config(route_name='crearTipo')
+def create_tipo(request):
     if (request.method == 'POST'):
         print "-------------------------"
         print "-----Recibiendo POST-----"
@@ -33,21 +34,22 @@ def get_tipo_item(request):
         print "-------------------------"
         u = Unpickler()
         entidad = u.restore(request.json_body);
-        if (entidad["accion"] == "POST"):
-            tipoItemDao = TipoItemDAO();
-            tipoItem = tipoItemDao.get_query().filter(RolEstado._estado == entidad["_estado"]).first();
-            nueva_entidad = TipoItem(entidad["_nombre"], entidad["_comentario"], entidad["_color"], entidad["_prefijo"], entidad["_condicionado"])
-            tipoItemDao.crear(nueva_entidad);
-            p = Pickler(True, None)
-            aRet = p.flatten(nueva_entidad)
-            p.flatten(entidad)
-            return Response(json.dumps({'sucess': 'true', 'users':aRet}))
+        tipoItemDao = TipoItemDAO();
+        nueva_entidad = TipoItem(entidad["_nombre"], entidad["_comentario"], entidad["_color"], entidad["_prefijo"], entidad["_condicionado"])
+        tipoItemDao.crear(nueva_entidad);
+        return Response(json.dumps({'sucess': 'true'}))
+        
+@view_config(route_name='eliminarTipo')
+def delete_tipo(request):
         if (entidad["accion"] == "DELETE"):
             print "Eliminando rol"
             tipoItemDao = TipoItemDAO();
             tipoItem = dao.get_by_id(entidad["id"])
             tipoItemDao.borrar(tipoItem)
             return Response(json.dumps({'sucess': 'true'}))
+        
+@view_config(route_name='guardarTipo')
+def save_tipo(request):
         if (entidad["accion"] == "PUT"):
            
             tipoItemDao = TipoItemDAO();
@@ -60,5 +62,3 @@ def get_tipo_item(request):
                     vieja._prefijo = entidad["_prefijo"]
                     TipoItemDAO.update(vieja);
                     return Response(json.dumps({'sucess': 'true'}))
-        
-    return Response(json.dumps({"sucess": True}))
