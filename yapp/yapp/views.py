@@ -8,6 +8,24 @@
 #    )
 #
 #@view_config(route_name='home', renderer='templates/mytemplate.pt')
+#def my_view(request):
+#    return 
+#conn_err_msg = """\
+#Pyramid is having a problem using your SQL database.  The problem
+#might be caused by one of the following things:
+#
+#1.  You may need to run the "initialize_yapp_db" script
+#    to initialize your database tables.  Check your virtual 
+#    environment's "bin" directory for this script and try to run it.
+#
+#2.  Your database server may not be running.  Check that the
+#    database server referred to by the "sqlalchemy.url" setting in
+#    your "development.ini" file is running.
+#
+#After you fix the problem, please restart the Pyramid application to
+#try it again.
+#"""
+
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.security import remember, forget
@@ -29,7 +47,6 @@ import json
 
 @view_config(route_name='index', renderer="templates/index.pt")
 def index_view(request):
-    """Renderiza index.pt """
     return {}
 
 #@view_config(route_name='main', renderer="templates/main.pt")
@@ -43,9 +60,9 @@ def index_view(request):
 
 @view_config(route_name='login' , renderer="templates/login/login.pt")
 def login_view(request):
-    if request.method == 'POST' and request.POST.get_entidades("type") == 'login':
-        mail = request.POST.get_entidades("usuario")
-        password = request.POST.get_entidades("password")
+    if request.method == 'POST' and request.POST.get("type") == 'login':
+        mail = request.POST.get("usuario")
+        password = request.POST.get("password")
         rh = RolFinalDAO()
         rol = rh.get_query().filter_by(_email=mail , _password=password).first()
         if rol != None:
@@ -56,9 +73,9 @@ def login_view(request):
             print 'user' in session
             return Response(json.dumps({'success': True}))
         return Response( json.dumps({'failure': True}))
-    elif request.method == 'POST' and request.POST.get_entidades("type") == 'olvide':
+    elif request.method == 'POST' and request.POST.get("type") == 'olvide':
         print "COMO ESTAS GATO PUTO"
-        email = request.POST.get_entidades("usuario")
+        email = request.POST.get("usuario")
         rh = RolFinalDAO()
         rol = rh.get_query().filter_by(_email=email).first()
         # enviar un mail al cliente con nueva contrasena
@@ -83,8 +100,8 @@ def crearProyecto_view(request):
     print 'Renderizando proyecto'
     if request.method == 'POST':
         print 'Creando proyecto'
-        nombre = request.POST.get_entidades('nombre')
-        autor = request.POST.get_entidades('autor')
+        nombre = request.POST.get('nombre')
+        autor = request.POST.get('autor')
         proyecto = Proyecto(nombre, autor)
         p_dao = ProyectoDAO();
         p_dao.crear(proyecto)
@@ -101,12 +118,12 @@ def crear_rol(request):
 #    if request.method == 'POST':
     if request.method == 'POST':
         print "Creando nuevo rol"
-        nombre = request.POST.get_entidades('nombre')
-        estado = request.POST.get_entidades('estado')
-        no_es_final = request.POST.get_entidades('email') != ""
+        nombre = request.POST.get('nombre')
+        estado = request.POST.get('estado')
+        no_es_final = request.POST.get('email') != ""
         if no_es_final == True:
-            email = request.POST.get_entidades('email')
-            password = request.POST.get_entidades('password')
+            email = request.POST.get('email')
+            password = request.POST.get('password')
             rf = RolFinal(nombre, estado, email, password)
             dao = RolFinalDAO()
             dao.crear(rf)
@@ -121,7 +138,7 @@ def crear_rol(request):
 #@view_config(route_name='olvide', renderer='templates/login/olvide.pt')
 #def olvide(request):
 #    if request.method == 'GET':
-#        email = request.GET.get_entidades("email")
+#        email = request.GET.get("email")
 ## enviar un mail al cliente con nueva contrasena
 #        rh = RolFinalDAO()
 #        rol = rh.get_query().filter_by(_email=email).first()
@@ -142,7 +159,7 @@ def crear_rol(request):
 #    referrer = request.url
 #    if referrer == login_url:
 #        referrer = '/' # never use the login form itself as came_from
-#    came_from = request.params.get_entidades('came_from', referrer)
+#    came_from = request.params.get('came_from', referrer)
 #    message = ''
 #    usuario = ''
 #    password = ''

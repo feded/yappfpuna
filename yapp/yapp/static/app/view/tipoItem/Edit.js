@@ -8,15 +8,13 @@ var formulario = Ext.define('YAPP.view.tipoItem.Edit', {
 	stores : [ 'TipoItems' , 'AtributoItem' ],
 	
 	initComponent : function() {
-		this.items = [ {
+		this.items = [{
 			xtype : 'form',
-			items : [ form_comun, form_final ]
-		} ];
+			items : [ form_tipo ]
+		}];
 		
-		this.buttons = [ {
+		this.buttons = [  {
 			text : 'Guardar',
-			// disabled : true,
-			formBind : true,
 			action : 'guardar'
 		}, {
 			text : 'Cancel',
@@ -28,12 +26,11 @@ var formulario = Ext.define('YAPP.view.tipoItem.Edit', {
 	}
 
 });
-var form_comun = {
+var form_tipo = {
 	xtype : 'fieldset',
 	title : 'Tipo de Item',
 	items : [ {
 		xtype : 'textfield',
-		
 		name : '_nombre',
 		fieldLabel : 'Nombre',
 		allowBlank : false
@@ -41,19 +38,18 @@ var form_comun = {
 		xtype : 'textfield',
 		name : '_comentario',
 		fieldLabel : 'Comentario',
-		allowBlank : true
 	},{
-		xtype : 'textfield',
+		xtype : 'numberfield',
 		name : '_color',
 		fieldLabel : 'Color',
 		allowBlank : false
 	},{
 		xtype : 'textfield',
-		name : 'prefijo',
+		name : '_prefijo',
 		fieldLabel : 'Prefijo',
 		allowBlank : false
 	}, {
-		xtype : 'textfield',
+		xtype : 'checkbox',
 		name : '_condicionado',
 		fieldLabel : 'Condicionado',
 		allowBlank : false
