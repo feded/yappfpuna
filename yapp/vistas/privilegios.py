@@ -5,16 +5,11 @@ Created on Apr 7, 2012
 '''
 from jsonpickle.pickler import Pickler
 from jsonpickle.unpickler import Unpickler
-from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
-from pyramid.security import forget
 from pyramid.view import view_config
 from yapp.daos.privilegio_dao import PrivilegioDAO, EntidadDAO
-from yapp.daos.rol_dao import RolFinalDAO, RolDAO
 from yapp.models.roles.entidad import Entidad
 from yapp.models.roles.privilegio import Privilegio
-from yapp.models.roles.rol import Rol
-from yapp.models.roles.rol_final import RolFinal
 import json
 
 @view_config(route_name='privilegios')
@@ -31,20 +26,51 @@ def get_privilegios(request):
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'privilegios':j_string})
         return Response(a_ret)
+    
     if (request.method == 'POST'):
-        print "ME LLAMARON"
-        print request.json_body
         u = Unpickler()
         objeto = u.restore(request.json_body);
         entidad_dao = EntidadDAO();
-        entidad = entidad_dao.get_query().filter(Entidad._nombre == objeto["_entidad"]).first();
+        if (isinstance(objeto["_entidad"], dict)):
+            entidad = entidad_dao.get_query().filter(Entidad._nombre == objeto["_entidad"]["_nombre"]).first()
+        else:
+            entidad = entidad_dao.get_query().filter(Entidad._nombre == objeto["_entidad"]).first()
         nueva_entidad = Privilegio(objeto["_nombre"], entidad);
         dao = PrivilegioDAO()
         dao.crear(nueva_entidad);
-        p = Pickler(False, None)
+        p = Pickler()
         aRet = p.flatten(nueva_entidad)
-        p.flatten(objeto)
+        print nueva_entidad.__dict__
         return Response(json.dumps({'sucess': 'true', 'privilegios':aRet}))
+    
+    if (request.method == 'DELETE'):
+        id_privilegio = request.matchdict['id_privilegio']
+        dao = PrivilegioDAO()
+        entidad = dao.get_by_id(id_privilegio);
+        dao.borrar(entidad)
+        return Response(json.dumps({'sucess': 'true'}))
+    
+    if (request.method == 'PUT') :
+        u = Unpickler()
+        objeto = u.restore(request.json_body)
+        entidad_dao = EntidadDAO()
+        print "---------------------------"
+        print objeto["_entidad"]
+        print "---------------------------"
+        if (isinstance(objeto["_entidad"], dict)):
+            entidad = entidad_dao.get_query().filter(Entidad._nombre == objeto["_entidad"]["_nombre"]).first()
+        else:
+            entidad = entidad_dao.get_query().filter(Entidad._nombre == objeto["_entidad"]).first()
+            
+        dao = PrivilegioDAO()
+        id_privilegio = request.matchdict['id_privilegio']
+        privilegio = dao.get_by_id(id_privilegio);
+        privilegio._nombre = objeto["_nombre"];
+        privilegio._entidad = entidad;
+        dao.update(privilegio);
+        p = Pickler()
+        aRet = p.flatten(privilegio)
+        return Response(json.dumps({'sucess': 'true'}))
 
     
 @view_config(route_name='entidades')
@@ -67,3 +93,12 @@ class PrivilegiosLindos:
         self._id = _id;
         self._nombre = nombre;
         self._entidad = entidad;
+
+def info(var):
+    print "----CLASE----"
+    print var.__class__
+    print "---METODOS---"
+    print dir (var)
+    print "--ATRIBUTOS--"
+    print var
+    print "-------------"

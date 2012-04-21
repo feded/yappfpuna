@@ -23,7 +23,7 @@ def get_roles(request):
         rd = RolDAO()
         entidades = rd.get_all()
         lista = [];
-        p = Pickler()
+        p = Pickler(False, None)
         for entidad in entidades:
             rol = RolesLindos(entidad._id, entidad._nombre, entidad._estado)
             if (isinstance(entidad, RolFinal)):
@@ -36,15 +36,17 @@ def get_roles(request):
         a_ret = json.dumps({'sucess': 'true', 'users':j_string})
         return Response(a_ret)
     if (request.method == 'POST'):
-        print "-------------------------"
-        print "-----Recibiendo POST-----"
-        print request.json_body
-        print "-------------------------"
+        
         u = Unpickler()
         entidad = u.restore(request.json_body);
+        print request.json_body;
+        print "--------------------------"
         if (entidad["accion"] == "POST"):
             estado_dao = RolEstadoDAO();
-            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first();
+            if (isinstance(entidad["_estado"], dict)):
+                estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]["_estado"]).first()
+            else:
+                estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first()
             if (entidad["_esFinal"] == True):
                 nueva_entidad = RolFinal(entidad["_nombre"], estado, entidad["_email"], entidad["_password"])
                 dao = RolFinalDAO()
@@ -52,54 +54,72 @@ def get_roles(request):
                 nueva_entidad = Rol(entidad["_nombre"], estado)
                 dao = RolDAO()
             dao.crear(nueva_entidad);
-            p = Pickler(False, None)
+            p = Pickler()
             aRet = p.flatten(nueva_entidad)
             p.flatten(entidad)
             return Response(json.dumps({'sucess': 'true', 'users':aRet}))
-        if (entidad["accion"] == "DELETE"):
-            print "Eliminando rol"
-            dao = RolDAO()
-            rol = dao.get_by_id(entidad["id"])
-            dao.borrar(rol)
-            return Response(json.dumps({'sucess': 'true'}))
-        if (entidad["accion"] == "PUT"):
-            estado_dao = RolEstadoDAO();
-            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]["_estado"]).first();
-            
-            rolDAO = RolDAO();
-            rolFinalDAO = RolFinalDAO();
-            vieja = rolDAO.get_by_id(entidad["id"]);
-            print vieja._id
-            if (isinstance(vieja, RolFinal)):
-                if (entidad["_esFinal"] == True):
+    if (request.method == 'DELETE'):
+        dao = RolDAO()
+        u = Unpickler()
+        entidad = u.restore(request.json_body);
+        rol = dao.get_by_id(entidad["id"])
+        dao.borrar(rol)
+        return Response(json.dumps({'sucess': 'true'}))
+    if (request.method == 'PUT'):
+        u = Unpickler()
+        dao = RolDAO()
+        id_rol = request.matchdict['id_rol']
+        entidad = u.restore(request.json_body);
+        rol = dao.get_by_id(id_rol)
+        estado_dao = RolEstadoDAO();
+        if (isinstance(entidad["_estado"], dict)):
+            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]["_estado"]).first()
+        else:
+            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first()
+        
+        rolDAO = RolDAO();
+        rolFinalDAO = RolFinalDAO();
+        vieja = rolDAO.get_by_id(entidad["id"]);
+        p = Pickler()
+        
+        if (isinstance(vieja, RolFinal)):
+            if (entidad["_esFinal"] == True):
 #                Si ambas son finales
-                    vieja._nombre = entidad["_nombre"]
-                    vieja._password = entidad["_password"]
-                    vieja._email = entidad["_email"]
-                    vieja._estado = estado;
-                    rolFinalDAO.update(vieja);
-                    return Response(json.dumps({'sucess': 'true'}))
-                else:
-                    nueva = Rol(vieja._nombre, estado);
-                    rolFinalDAO.borrar(vieja)
-                    rolDAO.crear(nueva);
-                    return Response(json.dumps({'sucess': 'true'}))
+                vieja._nombre = entidad["_nombre"]
+                vieja._password = entidad["_password"]
+                vieja._email = entidad["_email"]
+                vieja._estado = estado;
+                rolFinalDAO.update(vieja);
+                aRet = p.flatten(vieja)
+                p.flatten(entidad)
+                return Response(json.dumps({'sucess': 'true'}))
             else:
-                if (entidad["_esFinal"] == True):
-                    nueva = RolFinal(entidad["_nombre"], estado, entidad["_email"], entidad["_password"])
-                    rolDAO.borrar(vieja);
-                    rolFinalDAO.crear(nueva)
-                    return Response(json.dumps({'sucess': 'true'}))
-                else:
-                    vieja._nombre = entidad["_nombre"]
-                    vieja._estado = estado;
-                    rolDAO.update(vieja);
-                    return Response(json.dumps({'sucess': 'true'}))
+                nueva = Rol(vieja._nombre, estado);
+                rolFinalDAO.borrar(vieja)
+                rolDAO.crear(nueva);
+                aRet = p.flatten(nueva)
+                p.flatten(entidad)
+                return Response(json.dumps({'sucess': 'true'}))
+        else:
+            if (entidad["_esFinal"] == True):
+                nueva = RolFinal(entidad["_nombre"], estado, entidad["_email"], entidad["_password"])
+                rolDAO.borrar(vieja);
+                rolFinalDAO.crear(nueva)
+                aRet = p.flatten(nueva)
+                p.flatten(entidad)
+                return Response(json.dumps({'sucess': 'true'}))
+            else:
+                vieja._nombre = entidad["_nombre"]
+                vieja._estado = estado;
+                rolDAO.update(vieja);
+                aRet = p.flatten(vieja)
+                p.flatten(entidad)
+                return Response(json.dumps({'sucess': 'true'}))
         
 
 @view_config(route_name='estados_roles')
 def get_estado_roles(request):
-    print 'llegamos a esta puta parte'
+    print "ENTRE"
 #    if (request.method == 'GET'):
     re = RolEstadoDAO()
     entidades = re.get_query().all()
@@ -121,12 +141,3 @@ class RolesLindos:
         self._esFinal = False;
         self._estado = estado;
         
-def info(var):
-    print "----CLASE----"
-    print var.__class__
-    print "---METODOS---"
-    print dir (var)
-    print "--ATRIBUTOS--"
-    print var
-    print "-------------"
-
