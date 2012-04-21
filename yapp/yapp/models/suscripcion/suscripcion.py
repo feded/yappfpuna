@@ -14,6 +14,11 @@ from yapp.models.roles.rol_estado import RolEstado
 from yapp.models.roles.rol_final import RolFinal
 
 class Suscripcion (Base, EntidadBase):
+    """Crea una Tabla Suscripcion con 
+        - _nombre: nombre de la suscripcion.
+        - _entidad: estado a la que se suscribio
+        - _rol_final: usuario duenho de la suscripcion
+    """
     __tablename__ = "suscripcion"
     _nombre = Column(String, nullable=False)
     _entidad_id = Column(Integer, ForeignKey('entidad_padre._id'))
