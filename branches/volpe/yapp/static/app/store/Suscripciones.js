@@ -1,22 +1,20 @@
-Ext.define('YAPP.store.Proyectos', {
-	extend: 'Ext.data.Store',
-	model: 'YAPP.model.Proyecto',
+Ext.define('YAPP.store.Suscripciones', {
+	extend : 'Ext.data.Store',
+	model : 'YAPP.model.Suscripcion',
 	
 	autoLoad : true,
-    autoSync: true,
-        
+	autoSync : true,
+	
 	proxy : {
-    	type : 'ajax',
-        api : {
-        	read : 'http://localhost:6543/readProyectos',
-        	update : 'http://localhost:6543/updateProyectos',
-        	create : 'http://localhost:6543/createProyectos',
-        	destroy : 'http://localhost:6543/deleteProyectos'
-        },
-        reader : {
-        	type : 'json',
-            root : 'proyectos',
-            successProperty : 'sucess'
-            }
-        }
+		type : 'ajax',
+		api : {
+			read : 'http://localhost:6543/suscripciones/0',
+			destroy : 'http://localhost:6543/suscripciones'
+		},
+		reader : {
+			type : 'json',
+			root : 'suscripciones',
+			successProperty : 'sucess'
+		}
+	}
 });

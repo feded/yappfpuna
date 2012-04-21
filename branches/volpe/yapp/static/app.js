@@ -10,7 +10,8 @@ Ext.application({
         'AdministrarProyectos',
         'Privilegios',
         'Roles',
-        'TipoItem'
+        'TipoItem',
+        'Suscripciones'
         
     ],
     

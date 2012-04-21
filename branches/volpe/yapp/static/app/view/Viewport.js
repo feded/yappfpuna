@@ -54,8 +54,8 @@ Ext.define('YAPP.view.Viewport', {
 		            },
 		            {
 		                text: 'Administrar suscripciones',
-		                textAlign: 'left'
-		              
+		                textAlign: 'left',
+		                action : 'adminSuscripciones'
 		            },
 		            {
 		                text: 'Linea base',

@@ -8,7 +8,6 @@ class Proyecto(EntidadPadre):
     _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
     __tablename__ = "proyecto"
     
-    _nombre = Column(String, nullable=False)
     _autor = Column(String, nullable=False)
     _prioridad = Column(Integer, nullable=False)
     _estado = Column(String, nullable=False)

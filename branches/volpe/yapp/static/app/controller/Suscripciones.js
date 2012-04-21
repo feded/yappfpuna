@@ -1,14 +1,20 @@
-Ext.define('YAPP.controller.Roles', {
+Ext.define('YAPP.controller.Suscripciones', {
 	extend : 'Ext.app.Controller',
-	views : [ 'rol.List', 'rol.Edit' ],
-	models : [ 'Rol' ],
-	stores : [ 'Roles' ],
-	requires : [ 'YAPP.model.Rol', 'YAPP.store.Roles' ],
+	views : [ 'suscripciones.List' ],
+	models : [ 'Suscripcion' ],
+	stores : [ 'Suscripciones' ],
 	init : function() {
 		this.control({
-			'rollist' : {
-				itemdblclick : this.editUser
+			'suscripcioneslist button[action=borrar]' : {
+				click : this.botonBorrarApretado
 			}
 		});
+	},
+	botonBorrarApretado : function(button) {
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		console.log(selection)
+		this.getSuscripcionesStore().remove(selection)
 	},
 });
