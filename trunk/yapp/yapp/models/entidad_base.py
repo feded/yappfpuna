@@ -1,10 +1,6 @@
+from sqlalchemy import Column, Integer
 from yapp.models import Base
 
-from sqlalchemy import (
-    Column,
-    Integer,
-    Text,
-    )
 
 class EntidadBase:
     

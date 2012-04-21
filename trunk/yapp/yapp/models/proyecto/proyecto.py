@@ -1,12 +1,13 @@
-from sqlalchemy.schema import Column
-from sqlalchemy.types import String
-from sqlalchemy.types import Integer
+from sqlalchemy.schema import Column, ForeignKey
+from sqlalchemy.types import Integer, String
 from yapp.models import Base
-from yapp.models.entidad_base import EntidadBase
+from yapp.models.entidad_padre import EntidadPadre
 
-class Proyecto(EntidadBase, Base):
+class Proyecto(EntidadPadre):
+    __mapper_args__ = {'polymorphic_identity': 'proyecto'}
+    _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
     __tablename__ = "proyecto"
-    _nombre = Column(String, nullable=False)
+    
     _autor = Column(String, nullable=False)
     _prioridad = Column(Integer, nullable=False)
     _estado = Column(String, nullable=False)
