@@ -1,8 +1,9 @@
 Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
-	views : [ 'proyecto.ListarProyecto', 'privilegio.List', 'rol.List', 'tipoItem.List'],
-	
+	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List',
+			'rol.List', 'tipoItem.List', 'suscripciones.List' ],
+
 	init : function() {
 		console.log('Cargado controller Menus');
 		this.control({
@@ -18,6 +19,12 @@ Ext.define('YAPP.controller.Menus', {
 			'viewport button[action=adminTipoItems]' : {
 				click : this.adminTipoItems
 			},
+			'viewport button[action=adminFases]' : {
+				click : this.adminFases
+			},
+			'viewport button[action=adminSuscripciones]' : {
+				click : this.adminSuscripciones
+			}
 		});
 	},
 	
@@ -27,7 +34,21 @@ Ext.define('YAPP.controller.Menus', {
 		
 		var tab = tabs.add({
 			title : 'Administrar proyectos',
-			xtype : 'listarproyecto'
+			xtype : 'listarproyecto',
+			closable : true
+		});
+
+		tabs.setActiveTab(tab);
+
+	},
+	adminFases : function(button) {
+
+		var tabs = Ext.getCmp('tabPrincipal');
+
+		var tab = tabs.add({
+			title : 'Administrar fases',
+			xtype : 'listarfase',
+			closable : true
 		});
 		
 		tabs.setActiveTab(tab);
@@ -40,7 +61,8 @@ Ext.define('YAPP.controller.Menus', {
 		
 		var tab = tabs.add({
 			title : 'Administrar roles',
-			xtype : 'rollist'
+			xtype : 'rollist',
+			closable : true
 		});
 		
 		tabs.setActiveTab(tab);
@@ -53,7 +75,8 @@ Ext.define('YAPP.controller.Menus', {
 		
 		var tab = tabs.add({
 			title : 'Administrar privilegios',
-			xtype : 'privilegiolist'
+			xtype : 'privilegiolist',
+			closable : true
 		});
 		
 		tabs.setActiveTab(tab);
@@ -66,10 +89,23 @@ Ext.define('YAPP.controller.Menus', {
 		
 		var tab = tabs.add({
 			title : 'Administrar tipo de items',
-			xtype : 'tipolist'
+			xtype : 'tipolist',
+			closable : true
 		});
 		
 		tabs.setActiveTab(tab);
 		
-	}
+	},
+	adminSuscripciones : function(button) {
+		var tabs = Ext.getCmp('tabPrincipal');
+		
+		var tab = tabs.add({
+			title : 'Administrar suscripcion',
+			xtype : 'suscripcioneslist',
+			closable : true
+		});
+		
+		tabs.setActiveTab(tab);
+		
+	},
 });

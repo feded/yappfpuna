@@ -8,9 +8,11 @@ Ext.application({
     controllers: [
         'Menus',
         'AdministrarProyectos',
+        'AdministrarFases',
         'Privilegios',
         'Roles',
-        'TipoItem'
+        'TipoItem',
+        'Suscripciones'
         
     ],
     

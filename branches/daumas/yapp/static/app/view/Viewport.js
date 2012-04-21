@@ -31,8 +31,10 @@ Ext.define('YAPP.view.Viewport', {
 		                
 		            },
 		            {
+		            	xtype: 'button',
 		                text: 'Administrar fases',
-		                textAlign: 'left'
+		                textAlign: 'left',
+		                action: 'adminFases'
 		                
 		            },
 		            {
@@ -51,6 +53,11 @@ Ext.define('YAPP.view.Viewport', {
 		                text: 'Administrar items',
 		                textAlign: 'left'
 		              
+		            },
+		            {
+		                text: 'Administrar suscripciones',
+		                textAlign: 'left',
+		                action : 'adminSuscripciones'
 		            },
 		            {
 		                text: 'Linea base',
