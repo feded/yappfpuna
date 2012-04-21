@@ -9,9 +9,8 @@ class BaseDAO:
         return BaseDAO;
     
     def get_by_id(self, id):
-        with transaction.manager:
-            entidad = DBSession.query(self.get_clase()).filter_by(_id=id).first();
-            return entidad;
+        entidad = DBSession.query(self.get_clase()).filter_by(_id=id).first();
+        return entidad;
         
     def get_all(self):
         return DBSession.query(self.get_clase()).all()
