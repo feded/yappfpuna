@@ -8,4 +8,3 @@ class PrivilegioDAO(BaseDAO):
 class EntidadDAO(BaseDAO):
     def get_clase(self):
         return Entidad
-        

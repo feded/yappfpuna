@@ -1,5 +1,8 @@
+from sqlalchemy.schema import Column
+from sqlalchemy.types import String
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String
+from sqlalchemy.types import Integer
 from yapp.models import Base
 from yapp.models.entidad_padre import EntidadPadre
 

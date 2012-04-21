@@ -1,3 +1,8 @@
+'''
+Created on Mar 31, 2012
+
+@author: arturo
+'''
 from yapp.models import DBSession
 import transaction
 import abc
@@ -11,10 +16,9 @@ class BaseDAO:
     def get_by_id(self, id):
         entidad = DBSession.query(self.get_clase()).filter_by(_id=id).first();
         return entidad;
-        
+
     def get_all(self):
         return DBSession.query(self.get_clase()).all()
-    
     def get_query(self):
         return DBSession.query(self.get_clase())
     
@@ -31,7 +35,7 @@ class BaseDAO:
         DBSession.delete(entidad);
         
     def update(self, entidad):
-#        dao = HistorialDAO();
+        dao = HistorialDAO();
         historia = Historial(entidad.__tablename__, entidad._id, "MODIFICACION", "");
         DBSession.add(historia)
         DBSession.merge(entidad)

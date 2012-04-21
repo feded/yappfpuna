@@ -1,11 +1,15 @@
-from sqlalchemy import Column, Integer
 from yapp.models import Base
 
+from sqlalchemy import (
+    Column,
+    Integer,
+    Text,
+    )
 
 class EntidadBase:
     
     _id = Column(Integer, primary_key=True)
-
+#    _sa_instance_state
     @property
     def id(self):
         return self._id

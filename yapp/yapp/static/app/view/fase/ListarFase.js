@@ -1,23 +1,32 @@
-Ext.define('YAPP.view.proyecto.ListarProyecto' ,{
+Ext.define('YAPP.view.fase.ListarFase' ,{
     extend: 'Ext.grid.Panel',
-    alias : 'widget.listarproyecto',
-    store: 'Proyectos',
+    alias : 'widget.listarfase',
+    store: 'Fases',
     
     layout: 'fit',
+    
+    features: [{ ftype: 'grouping' }],
 
     initComponent: function() {
 		  this.dockedItems = [ {
                                 xtype : 'toolbar',
                                 items : [ {
+                        	        		iconCls : 'icon-add',
+                        	        		xtype: 'button',
+                        	        		text : 'Actualizar',
+                        	        		scope : this,
+                        	        		action : 'actualizar'
+                        					}, '|',
+                        					{
                                 	        iconCls : 'icon-add',
                                 	        xtype: 'button',
-                                    	    text : 'Nuevo Proyecto',
+                                    	    text : 'Nuevo Fase',
                                         	scope : this,
                                         	action : 'crear'
                                 			}, '|', {
                                         	iconCls : 'icon-delete',
                                         	xtype: 'button',
-                                        	text : 'Eliminar Proyecto',
+                                        	text : 'Eliminar Fase',
                                         	itemId : 'delete',
                                         	action : 'borrar',
                                         	disabled : true,
@@ -27,14 +36,8 @@ Ext.define('YAPP.view.proyecto.ListarProyecto' ,{
       
       
 		this.columns = [
-			{header:'Proyecto', dataIndex:'_nombre'},
-			{header:'Autor', dataIndex:'_autor'},
-			{header:'Prioridad', dataIndex:'_prioridad'},
-			{header:'Estado', dataIndex:'_estado'},
-			{header:'Líder de proyecto', dataIndex:'_lider'},
-			{header:'Nota', dataIndex:'_nota'},
-			{header:'Fecha de creación', dataIndex:'_fecha_creacion'},
-			{header:'Fecha de modificacion', dataIndex:'_fecha_modificacion'}
+			{header:'Fase', dataIndex:'_nombre'},
+			{header:'ID proyecto', dataIndex:'_proyecto', renderer : renderProyectoFase}
         ];   
 
         this.callParent(arguments);
@@ -45,3 +48,8 @@ Ext.define('YAPP.view.proyecto.ListarProyecto' ,{
                 this.down('#delete').setDisabled(selections.length === 0);
     }
 });
+
+function renderProyectoFase(val) {
+	return val._nombre
+//	return ""
+}
