@@ -41,9 +41,11 @@ def main(argv=sys.argv):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
+
+    
+    
     entidad_dao = EntidadDAO();
     items = entidad_dao.get_all()
-    
     if (len(items) == 0):
         with transaction.manager:
             entidad = Entidad("Proyecto");
@@ -61,3 +63,9 @@ def main(argv=sys.argv):
             DBSession.add(estado);
             estado = RolEstado("Suspendido");
             DBSession.add(estado);
+            
+    items = RolFinalDAO().get_query().filter(RolFinal._email == "admin").first();
+    if (items == None) :
+        estadoActivo = RolEstadoDAO().get_query().filter(RolEstado._estado == "Activo").first();
+        admin = RolFinal("admin", estado, estadoActivo, "admin");
+        DBSession.add(admin);

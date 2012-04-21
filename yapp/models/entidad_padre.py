@@ -1,11 +1,16 @@
+'''
+Created on Apr 20, 2012
+
+@author: arturo
+'''
 from sqlalchemy import Column, Integer
 from yapp.models import Base
 
 
-class EntidadBase:
+class Entidad:
     
     _id = Column(Integer, primary_key=True)
-
+    _
     @property
     def id(self):
         return self._id
