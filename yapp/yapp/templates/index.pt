@@ -5,7 +5,7 @@
     <script type="text/javascript" src="/static/extjs/ext-debug.js"></script>
 
     <script type="text/javascript" src="/static/app.js"></script>
-
+	<title>YAPP</title>
 </head>
 <body></body>
 </html>
