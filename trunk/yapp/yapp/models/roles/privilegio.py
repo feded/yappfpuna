@@ -7,6 +7,10 @@ from yapp.models.roles.entidad import Entidad
 
 
 class Privilegio(EntidadBase, Base):
+    """Crea una Tabla Entidad con 
+        - _nombre: nombre de la entidad
+        - _entidad: entidad sobre la cual actua el permiso
+    """
     __tablename__ = "privilegio"
     _nombre = Column(String, nullable=False)
 #    _entidad_id = Column(Integer, ForeignKey('entidad._id'))

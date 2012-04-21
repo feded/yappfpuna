@@ -7,6 +7,13 @@ from yapp.models import Base
 from yapp.models.entidad_base import EntidadBase
 
 class AtributoTipoItem(EntidadBase, Base):
+    """Crea una Tabla AtributoTipoItem con 
+        - _tipo: tipo del atributo
+        - _valor: valor del atributo
+        - _descripcion: descripcion del item
+        - _opcional: determina si un atributo es opcional
+        - _defecto: determina el valor por defecto
+    """
     __tablename__ = "atributo_tipo_item"
     _tipo = Column(String, nullable=False)
     _valor = Column(String, nullable=False)
