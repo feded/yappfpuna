@@ -7,6 +7,7 @@ import os
 import sys
 import transaction
 import yapp.models.proyecto.proyecto
+import yapp.models.fase.fase
 import yapp.models.roles.entidad
 import yapp.models.roles.privilegio
 import yapp.models.roles.rol

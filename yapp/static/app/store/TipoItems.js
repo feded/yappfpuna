@@ -11,11 +11,11 @@ Ext.define('YAPP.store.TipoItems', {
 	        create : 'http://localhost:6543/crearTipo',
 	        destroy : 'http://localhost:6543/eliminarTipo'
 		},
-		reader : {
+		reader : ({
 			type : 'json',
 			root : 'lista',
 			successProperty : 'sucess'
-		}
+		})
 	}
 });
 

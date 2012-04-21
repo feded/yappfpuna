@@ -185,6 +185,6 @@ def crear_rol(request):
 @view_config(route_name='logout')
 def logout(request):
     headers = forget(request)
-    request.session.invalidate()
+    #request.session.invalidate()
     return HTTPFound(location = request.route_url('login'),
                      headers = headers)

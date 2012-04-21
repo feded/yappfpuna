@@ -8,12 +8,12 @@ var formulario = Ext.define('YAPP.view.tipoItem.Edit', {
 	stores : [ 'TipoItems' , 'AtributoItem' ],
 	
 	initComponent : function() {
-		this.items = [ {
+		this.items = [{
 			xtype : 'form',
 			items : [ form_tipo ]
-		} ];
+		}];
 		
-		this.buttons = [ {
+		this.buttons = [  {
 			text : 'Guardar',
 			action : 'guardar'
 		}, {
