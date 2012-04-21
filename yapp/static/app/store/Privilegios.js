@@ -4,17 +4,17 @@ Ext.define('YAPP.store.Privilegios', {
 	autoLoad : true,
 	autoSync : true,
 	proxy : {
-		type : 'ajax',
+		type : 'rest',
 		api : {
-			read : 'http://localhost:6543/privilegios',
+			read : 'http://localhost:6543/privilegios/0',
 			update : 'http://localhost:6543/privilegios',
-			create : 'http://localhost:6543/privilegios',
+			create : 'http://localhost:6543/privilegios/0',
 			destroy : 'http://localhost:6543/privilegios'
 		},
 		reader : {
 			type : 'json',
 			root : 'privilegios',
-			successProperty : 'suceso'
+			successProperty : 'sucess'
 		}
 	}
 });
