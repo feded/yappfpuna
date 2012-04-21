@@ -10,6 +10,9 @@ import json
 
 @view_config(route_name='readproyectos')
 def read_proyectos(request):
+    """Metodo que maneja las llamadas para proyectos
+        - Retorna una lista si se envia GET
+    """
     rd = ProyectoDAO()
     entidades = rd.get_all()
     lista = [];
@@ -23,6 +26,9 @@ def read_proyectos(request):
 
 @view_config(route_name='createproyectos')
 def create_proyectos(request):
+    """Metodo que maneja las llamadas para proyectos
+        - CREATE : crea un proyecto
+    """
     u= Unpickler()
     entidad = u.restore(request.json_body);
     dao = ProyectoDAO()
@@ -44,6 +50,9 @@ def create_proyectos(request):
 
 @view_config(route_name='updateproyectos')
 def update_proyectos(request):
+    """Metodo que maneja las llamadas para proyectos
+        - PUT : modifica un proyecto
+    """
     u= Unpickler()
     dao = ProyectoDAO()
     entidad = u.restore(request.json_body);
@@ -62,6 +71,9 @@ def update_proyectos(request):
 
 @view_config(route_name='deleteproyectos')
 def delete_proyectos(request):
+    """Metodo que maneja las llamadas para proyectos
+        - DELETE : elimina un proyecto
+    """
     u= Unpickler()
     entidad = u.restore(request.json_body);
     dao = ProyectoDAO()

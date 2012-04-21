@@ -8,8 +8,7 @@ from yapp.models.entidad_padre import EntidadPadre
 
 class Proyecto(EntidadPadre):
     """Crea una Tabla Proyecto con 
-        - _nombre: nombre de la fase
-        - _proyecto: proyecto al que pertenece la fase
+        - _nombre: nombre del proyecto
         - _prioridad: representa la prioridad del proyecto
         - _estado: estado actual del proyecto
         - _lider: lider del proyecto
