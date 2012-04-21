@@ -26,8 +26,8 @@ class Suscripcion (Base, EntidadBase):
     _rol_id = Column(Integer, ForeignKey('rol_final._id'))
     _rol_final = relation(RolFinal, backref=backref('rolfinal'));
     
-    def __init__(self, nombre, estado, rol_final):
+    def __init__(self, nombre, entidad, rol_final):
         self._nombre = nombre;
-        self._estado = estado;
+        self._entidad = entidad;
         self._rol_final = rol_final;
         
