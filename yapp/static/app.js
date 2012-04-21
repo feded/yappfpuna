@@ -11,7 +11,8 @@ Ext.application({
         'AdministrarFases',
         'Privilegios',
         'Roles',
-        'TipoItem'
+        'TipoItem',
+        'Suscripciones'
         
     ],
     
