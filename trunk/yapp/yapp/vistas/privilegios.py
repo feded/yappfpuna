@@ -57,7 +57,7 @@ def get_privilegios(request):
         print "---------------------------"
         print objeto["_entidad"]
         print "---------------------------"
-        if (isinstance(objeto["_entidad"], map)):
+        if (isinstance(objeto["_entidad"], dict)):
             entidad = entidad_dao.get_query().filter(Entidad._nombre == objeto["_entidad"]["_nombre"]).first()
         else:
             entidad = entidad_dao.get_query().filter(Entidad._nombre == objeto["_entidad"]).first()
@@ -70,7 +70,7 @@ def get_privilegios(request):
         dao.update(privilegio);
         p = Pickler()
         aRet = p.flatten(privilegio)
-        return Response(json.dumps({'sucess': 'true', 'privilegios':aRet}))
+        return Response(json.dumps({'sucess': 'true'}))
 
     
 @view_config(route_name='entidades')

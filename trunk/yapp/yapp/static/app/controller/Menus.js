@@ -1,6 +1,6 @@
 Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
-
+	
 	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List',
 			'rol.List', 'tipoItem.List', 'suscripciones.List' ],
 
@@ -27,11 +27,11 @@ Ext.define('YAPP.controller.Menus', {
 			}
 		});
 	},
-
+	
 	adminProyectos : function(button) {
-
+		
 		var tabs = Ext.getCmp('tabPrincipal');
-
+		
 		var tab = tabs.add({
 			title : 'Administrar proyectos',
 			xtype : 'listarproyecto',
@@ -50,53 +50,53 @@ Ext.define('YAPP.controller.Menus', {
 			xtype : 'listarfase',
 			closable : true
 		});
-
+		
 		tabs.setActiveTab(tab);
-
+		
 	},
-
+	
 	adminRoles : function(button) {
-
+		
 		var tabs = Ext.getCmp('tabPrincipal');
-
+		
 		var tab = tabs.add({
 			title : 'Administrar roles',
 			xtype : 'rollist',
 			closable : true
 		});
-
+		
 		tabs.setActiveTab(tab);
-
+		
 	},
-
+	
 	adminPrivilegios : function(button) {
-
+		
 		var tabs = Ext.getCmp('tabPrincipal');
-
+		
 		var tab = tabs.add({
 			title : 'Administrar privilegios',
 			xtype : 'privilegiolist',
 			closable : true
 		});
-
+		
 		tabs.setActiveTab(tab);
-
+		
 	},
-
+	
 	adminTipoItems : function(button) {
-
+		
 		var tabs = Ext.getCmp('tabPrincipal');
-
+		
 		var tab = tabs.add({
 			title : 'Administrar tipo de items',
 			xtype : 'tipolist',
 			closable : true
 		});
-
+		
 		tabs.setActiveTab(tab);
-
+		
 	},
-		adminSuscripciones : function(button) {
+	adminSuscripciones : function(button) {
 		var tabs = Ext.getCmp('tabPrincipal');
 		
 		var tab = tabs.add({
