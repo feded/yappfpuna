@@ -23,7 +23,7 @@ def get_roles(request):
         rd = RolDAO()
         entidades = rd.get_all()
         lista = [];
-        p = Pickler()
+        p = Pickler(False, None)
         for entidad in entidades:
             rol = RolesLindos(entidad._id, entidad._nombre, entidad._estado)
             if (isinstance(entidad, RolFinal)):
@@ -43,7 +43,10 @@ def get_roles(request):
         print "--------------------------"
         if (entidad["accion"] == "POST"):
             estado_dao = RolEstadoDAO();
-            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first();
+            if (isinstance(entidad["_estado"], dict)):
+                estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]["_estado"]).first()
+            else:
+                estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first()
             if (entidad["_esFinal"] == True):
                 nueva_entidad = RolFinal(entidad["_nombre"], estado, entidad["_email"], entidad["_password"])
                 dao = RolFinalDAO()
@@ -69,7 +72,10 @@ def get_roles(request):
         entidad = u.restore(request.json_body);
         rol = dao.get_by_id(id_rol)
         estado_dao = RolEstadoDAO();
-        estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first();
+        if (isinstance(entidad["_estado"], dict)):
+            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]["_estado"]).first()
+        else:
+            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first()
         
         rolDAO = RolDAO();
         rolFinalDAO = RolFinalDAO();
@@ -86,14 +92,14 @@ def get_roles(request):
                 rolFinalDAO.update(vieja);
                 aRet = p.flatten(vieja)
                 p.flatten(entidad)
-                return Response(json.dumps({'sucess': 'true', 'users':aRet}))
+                return Response(json.dumps({'sucess': 'true'}))
             else:
                 nueva = Rol(vieja._nombre, estado);
                 rolFinalDAO.borrar(vieja)
                 rolDAO.crear(nueva);
                 aRet = p.flatten(nueva)
                 p.flatten(entidad)
-                return Response(json.dumps({'sucess': 'true', 'users':aRet}))
+                return Response(json.dumps({'sucess': 'true'}))
         else:
             if (entidad["_esFinal"] == True):
                 nueva = RolFinal(entidad["_nombre"], estado, entidad["_email"], entidad["_password"])
@@ -101,14 +107,14 @@ def get_roles(request):
                 rolFinalDAO.crear(nueva)
                 aRet = p.flatten(nueva)
                 p.flatten(entidad)
-                return Response(json.dumps({'sucess': 'true', 'users':aRet}))
+                return Response(json.dumps({'sucess': 'true'}))
             else:
                 vieja._nombre = entidad["_nombre"]
                 vieja._estado = estado;
                 rolDAO.update(vieja);
                 aRet = p.flatten(vieja)
                 p.flatten(entidad)
-                return Response(json.dumps({'sucess': 'true', 'users':aRet}))
+                return Response(json.dumps({'sucess': 'true'}))
         
 
 @view_config(route_name='estados_roles')
