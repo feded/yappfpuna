@@ -1,9 +1,3 @@
-'''
-Created on Mar 30, 2012
-
-@author: arturo
-'''
-
 from yapp.models import Base
 
 from sqlalchemy import (
@@ -15,7 +9,7 @@ from sqlalchemy import (
 class EntidadBase:
     
     _id = Column(Integer, primary_key=True)
-
+#    _sa_instance_state
     @property
     def id(self):
         return self._id
