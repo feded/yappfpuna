@@ -1,8 +1,3 @@
-'''
-Created on Mar 30, 2012
-
-@author: arturo
-'''
 from sqlalchemy import Column, String
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Integer

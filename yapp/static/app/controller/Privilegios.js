@@ -1,10 +1,14 @@
 Ext.define('YAPP.controller.Privilegios', {
 	extend : 'Ext.app.Controller',
-	views : [ 'privilegio.List', 'privilegio.Edit' ],
+	views : [ 
+		'privilegio.List', 
+		'privilegio.Edit' 
+		],
 	models : [ 'Privilegio' ],
 	stores : [ 'Privilegios' ],
 	requires : [ 'YAPP.model.Privilegio', 'YAPP.store.Privilegios' ],
 	init : function() {
+		console.log('Cargado controller Privilegios');
 		this.control({
 			'privilegiolist button[action=crear]' : {
 				click : this.botonCrearApretado
