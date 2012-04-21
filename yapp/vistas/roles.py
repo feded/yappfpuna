@@ -36,8 +36,11 @@ def get_roles(request):
         a_ret = json.dumps({'sucess': 'true', 'users':j_string})
         return Response(a_ret)
     if (request.method == 'POST'):
+        
         u = Unpickler()
         entidad = u.restore(request.json_body);
+        print request.json_body;
+        print "--------------------------"
         if (entidad["accion"] == "POST"):
             estado_dao = RolEstadoDAO();
             estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first();
@@ -132,12 +135,3 @@ class RolesLindos:
         self._esFinal = False;
         self._estado = estado;
         
-def info(var):
-    print "----CLASE----"
-    print var.__class__
-    print "---METODOS---"
-    print dir (var)
-    print "--ATRIBUTOS--"
-    print var
-    print "-------------"
-

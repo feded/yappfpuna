@@ -1,6 +1,6 @@
-Ext.define('YAPP.view.suscripciones.ListarSuscripcion', {
+Ext.define('YAPP.view.suscripciones.List', {
 	extend : 'Ext.grid.Panel',
-	alias : 'widget.listarsuscripcion',
+	alias : 'widget.suscripcioneslist',
 	store : 'Suscripciones',
 	
 	layout : 'fit',
@@ -26,36 +26,39 @@ Ext.define('YAPP.view.suscripciones.ListarSuscripcion', {
 		} ];
 		
 		this.columns = [ {
-			header : 'Proyecto',
+			header : 'ID',
+			dataIndex : '_id'
+		}, {
+			header : 'Nombre',
 			dataIndex : '_nombre'
 		}, {
-			header : 'Autor',
-			dataIndex : '_autor'
+			header : 'Entidad Padre',
+			flex : 1,
+			sortable : true,
+			dataIndex : '_entidad_padre',
+			renderer : this.renderizarEntidad
 		}, {
-			header : 'Prioridad',
-			dataIndex : '_prioridad'
-		}, {
-			header : 'Estado',
-			dataIndex : '_estado'
-		}, {
-			header : 'Líder de proyecto',
-			dataIndex : '_lider'
-		}, {
-			header : 'Nota',
-			dataIndex : '_nota'
-		}, {
-			header : 'Fecha de creación',
-			dataIndex : '_fecha_creacion'
-		}, {
-			header : 'Fecha de modificacion',
-			dataIndex : '_fecha_modificacion'
+			header : 'Rol',
+			flex : 1,
+			sortable : true,
+			dataIndex : '_rol_final',
+			renderer : this.renderizarRol
 		} ];
 		
 		this.callParent(arguments);
 		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
 	},
-	// la funcion de abajo se va a pasar a view
 	onSelectChange : function(selModel, selections) {
 		this.down('#delete').setDisabled(selections.length === 0);
+	},
+	renderizarEntidad : function(val) {
+		if (val == null)
+			return "vacio"
+		return val._nombre
+	},
+	renderizarRol : function(val) {
+		if (val == null)
+			return "vacio"
+		return val._nombre
 	}
 });

@@ -56,6 +56,8 @@ def main(global_config, **settings):
     config.add_route('roles', '/roles/{id_rol}')
     config.add_route('estados_roles', '/roles_estados')
     config.add_route('tipoItem', '/tipoItem')
+    config.add_route('entidades_padre','/entidades_padre')
+    config.add_route('suscripciones','/suscripciones/{id_suscripcion}')
     config.scan()
 #    config.scan("views")
 

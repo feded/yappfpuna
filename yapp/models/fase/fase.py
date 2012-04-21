@@ -9,7 +9,6 @@ class Fase (EntidadPadre):
     __mapper_args__ = {'polymorphic_identity': 'fase'}
     _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
     __tablename__ = "fase"
-    _nombre = Column(String, nullable=False)
     _proyecto_id = Column(Integer, ForeignKey('proyecto._id'))
     _proyecto = relation(Proyecto, primaryjoin=(_proyecto_id == Proyecto._id), backref=backref('fase'))
 
