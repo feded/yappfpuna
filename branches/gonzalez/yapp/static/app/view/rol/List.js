@@ -79,6 +79,8 @@ Ext.define('YAPP.view.rol.List', {
 });
 
 function renderizador(val) {
+	if (val == null)
+		return val;
 	return val._estado
-//	return ""
+	// return ""
 }
