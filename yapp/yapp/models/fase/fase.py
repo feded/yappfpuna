@@ -6,6 +6,10 @@ from yapp.models.entidad_base import EntidadBase
 from yapp.models.proyecto.proyecto import Proyecto
 
 class Fase (Base, EntidadBase):
+    """Crea una Tabla Proyecto con 
+        - _nombre: nombre de la fase
+        - _proyecto: proyecto al que pertenece la fase
+        """
     __tablename__ = "fase"
     _nombre = Column(String, nullable = False)
     _proyecto_id = Column(Integer, ForeignKey('proyecto._id'))

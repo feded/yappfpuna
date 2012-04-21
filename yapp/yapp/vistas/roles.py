@@ -17,6 +17,12 @@ import json
 
 @view_config(route_name='roles')
 def get_roles(request):
+    """Metodo que maneja las llamadas para roles
+        - Retorna una lista si se envia GET
+        - Agrega si se envia POST
+        - Modifica si se envia PUT
+        - Elimina si se envia DELETE
+    """
     print request.method;
 #    print request.json_body;
     if (request.method == 'GET'):
@@ -119,7 +125,9 @@ def get_roles(request):
 
 @view_config(route_name='estados_roles')
 def get_estado_roles(request):
-    print "ENTRE"
+    """Metodo que maneja las llamadas para estados de roles
+        - Retorna una lista si se envia GET
+    """
 #    if (request.method == 'GET'):
     re = RolEstadoDAO()
     entidades = re.get_query().all()
@@ -135,6 +143,7 @@ def get_estado_roles(request):
         
     
 class RolesLindos:
+    """Unidad de transporte para roles"""
     def __init__(self, _id, nombre, estado):
         self._id = _id;
         self._nombre = nombre;

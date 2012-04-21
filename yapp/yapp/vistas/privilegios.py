@@ -14,6 +14,12 @@ import json
 
 @view_config(route_name='privilegios')
 def get_privilegios(request):
+    """Metodo que maneja las llamadas para privilegios
+        - Retorna una lista si se envia GET
+        - Agrega si se envia POST
+        - Modifica si se envia PUT
+        - Elimina si se envia DELETE
+    """
     if (request.method == 'GET'):
         dao = PrivilegioDAO();
         entidades = dao.get_all()
@@ -75,6 +81,9 @@ def get_privilegios(request):
     
 @view_config(route_name='entidades')
 def get_entidades(request):
+    """Metodo que maneja las llamadas para entidades
+        - Retorna una lista si se envia GET
+    """
     if (request.method == 'GET'):
         dao = EntidadDAO();
         entidades = dao.get_all()
@@ -89,6 +98,7 @@ def get_entidades(request):
     
 
 class PrivilegiosLindos:
+    """Unidad de transporte para privilegios"""
     def __init__(self, _id, nombre, entidad):
         self._id = _id;
         self._nombre = nombre;

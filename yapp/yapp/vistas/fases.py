@@ -8,6 +8,9 @@ import json
 
 @view_config(route_name='readfases')
 def read_fases(request):
+    """
+    B{Metodo que retorna lista de fases}.
+        """
     dao = FaseDAO()
     entidades = dao.get_all()
     lista = [];
@@ -22,6 +25,10 @@ def read_fases(request):
 
 
 class FaseLinda:
+    """Fase para su envio por JSON
+        - _nombre: nombre del tipo de item
+        - _descripcion: comentario del tipo de item
+    """
     def __init__(self, _id, nombre, proyecto):
         self._id = _id
         self._nombre = nombre;

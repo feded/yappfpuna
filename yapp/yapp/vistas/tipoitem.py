@@ -14,6 +14,9 @@ from yapp.models.tipo_item.atributo_tipo_item import AtributoTipoItem
 
 @view_config(route_name='obtenerTipos')
 def get_tipos_item(request):
+    """Metodo que maneja las llamadas para tipos
+        - Retorna una lista si se envia GET
+    """
     print request.method
     if (request.method == 'GET'):
         #or request.method == 'OPTIONS'  
@@ -30,6 +33,9 @@ def get_tipos_item(request):
     
 @view_config(route_name='crearTipo')
 def create_tipo(request):
+    """Metodo que maneja las llamadas para tipos
+        - Crea un tipo si se envia POST
+    """
     if (request.method == 'POST'):
         print "-------------------------"
         print "-----Recibiendo POST-----"
@@ -45,38 +51,45 @@ def create_tipo(request):
         
 @view_config(route_name='eliminarTipo')
 def delete_tipo(request):
-        u = Unpickler()
-        entidad = u.restore(request.json_body);
+    """Metodo que maneja las llamadas para tipos
+        - Delete un tipo si se envia DELETE
+    """
+    u = Unpickler()
+    entidad = u.restore(request.json_body);
+    
+    print "Eliminando Tipo"
+    tipoItemDao = TipoItemDAO();
+    tipoItem = tipoItemDao.get_by_id(entidad["id"])
+    tipoItemDao.borrar(tipoItem)
+    return Response(json.dumps({'sucess': 'true'}))
         
-        print "Eliminando Tipo"
-        tipoItemDao = TipoItemDAO();
-        tipoItem = tipoItemDao.get_by_id(entidad["id"])
-        tipoItemDao.borrar(tipoItem)
-        return Response(json.dumps({'sucess': 'true'}))
-        
+
 @view_config(route_name='guardarTipo')
 def save_tipo(request):
-        u = Unpickler()
-        entidad = u.restore(request.json_body);
+    """Metodo que maneja las llamadas para tipos
+        - Delete un tipo si se envia POST
+    """
+    u = Unpickler()
+    entidad = u.restore(request.json_body);
+   
        
-           
-        tipoItemDao = TipoItemDAO();
-        tipoItemVieja = tipoItemDao.get_by_id(entidad["id"])
-        print tipoItemVieja
-        if (isinstance(vieja, TipoItem)):
-                vieja._nombre = entidad["_nombre"]
-                vieja._comentario = entidad["_comentariod"]
-                vieja._color = entidad["_color"]
-                vieja._prefijo = entidad["_prefijo"]
-                vieja._condicionado = entidad["_condicionado"]
-                TipoItemDAO.update(vieja);
-                return Response(json.dumps({'sucess': 'true'}))
+    tipoItemDao = TipoItemDAO();
+    tipoItemVieja = tipoItemDao.get_by_id(entidad["id"])
+    print tipoItemVieja
+    if (isinstance(tipoItemVieja, TipoItem)):
+            tipoItemVieja._nombre = entidad["_nombre"]
+            tipoItemVieja._comentario = entidad["_comentariod"]
+            tipoItemVieja._color = entidad["_color"]
+            tipoItemVieja._prefijo = entidad["_prefijo"]
+            tipoItemVieja._condicionado = entidad["_condicionado"]
+            TipoItemDAO.update(tipoItemVieja);
+            return Response(json.dumps({'sucess': 'true'}))
 
 
 @view_config(route_name='obtenerAtributos')
 def get_atributos_tipos_item(request): 
     if (request.method == 'GET'):
-        #or request.method == 'OPTIONS'
+        #or request.method == 'OPTIONviejaS'
         print  
         rd = AtributoTipoItemDAO()
         entidades = rd.get_query().all()
@@ -106,28 +119,28 @@ def create_atributo(request):
         
 @view_config(route_name='eliminarAtributo')
 def delete_atributo(request):
-        u = Unpickler()
-        entidad = u.restore(request.json_body);
-       
-        print "-----ELIMINANDO ATRIBUTO-----"
-        atributoItemDao = AtributoTipoItemDAO();
-        atributo = atributoItemDao.get_by_id(entidad["id"])
-        atributoItemDao.borrar(atributo)
-        return Response(json.dumps({'sucess': 'true'}))
+    u = Unpickler()
+    entidad = u.restore(request.json_body);
+   
+    print "-----ELIMINANDO ATRIBUTO-----"
+    atributoItemDao = AtributoTipoItemDAO();
+    atributo = atributoItemDao.get_by_id(entidad["id"])
+    atributoItemDao.borrar(atributo)
+    return Response(json.dumps({'sucess': 'true'}))
         
 @view_config(route_name='guardarAtributo')
 def save_atributo(request):
-        u = Unpickler()
-        entidad = u.restore(request.json_body);
-        
-        atributoItemDao = AtributoTipoItemDAO();
-        tipoItemVieja = atributoItemDao.get_by_id(entidad["id"])
-        print tipoItemVieja
-        if (isinstance(vieja, TipoItem)):
-                vieja._tipo = entidad["_tipo"]
-                vieja._valor = entidad["_valor"]
-                vieja._descripcion = entidad["_descripcion"]
-                vieja._opcional = entidad["_opcional"]
-                vieja._defecto = entidad["_defecto"]
-                AtributoTipoItemDAO.update(vieja);
-                return Response(json.dumps({'sucess': 'true'}))
+    u = Unpickler()
+    entidad = u.restore(request.json_body);
+    
+    atributoItemDao = AtributoTipoItemDAO();
+    tipoItemVieja = atributoItemDao.get_by_id(entidad["id"])
+    print tipoItemVieja
+    if (isinstance(tipoItemVieja, TipoItem)):
+            tipoItemVieja._tipo = entidad["_tipo"]
+            tipoItemVieja._valor = entidad["_valor"]
+            tipoItemVieja._descripcion = entidad["_descripcion"]
+            tipoItemVieja._opcional = entidad["_opcional"]
+            tipoItemVieja._defecto = entidad["_defecto"]
+            AtributoTipoItemDAO.update(tipoItemVieja);
+            return Response(json.dumps({'sucess': 'true'}))

@@ -11,7 +11,12 @@ from yapp.models.entidad_base import EntidadBase
 
 class Historial (Base, EntidadBase):
 
-    
+    """Crea una Tabla Historial con 
+        - _entidad: nombre de la tabla modificada
+        - _id_modificado : id del registro modificado
+        - _accion: accion realizada
+        - _usuario: usuario qeu realizo la accion
+    """
     
     __tablename__ = "historial"
     _entidad = Column(String, nullable=False);
