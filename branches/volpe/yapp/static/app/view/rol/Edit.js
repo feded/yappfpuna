@@ -31,6 +31,7 @@ var formulario = Ext.define('YAPP.view.rol.Edit', {
 var form_comun = {
 	xtype : 'fieldset',
 	title : 'Rol General',
+	scope : this,
 	items : [ {
 		xtype : 'textfield',
 		name : '_nombre',
@@ -41,7 +42,7 @@ var form_comun = {
 		fieldLabel : 'Estado',
 		name : '_estado',
 		store : Ext.create('YAPP.store.RolEstados'),
-		valueField : '_estado',
+//		valueField : 'RolEstado',
 		displayField : '_estado',
 		typeAhead : true,
 		queryMode : 'local',
@@ -52,6 +53,7 @@ var form_comun = {
 var form_final = {
 	xtype : 'fieldset',
 	checkboxToggle : true,
+	scope: this,
 	collapsed : true,
 	title : 'Rol Final',
 	items : [ {

@@ -1,7 +1,7 @@
-Ext.define('YAPP.view.proyecto.ListarProyecto', {
+Ext.define('YAPP.view.suscripciones.ListarSuscripcion', {
 	extend : 'Ext.grid.Panel',
-	alias : 'widget.listarproyecto',
-	store : 'Proyectos',
+	alias : 'widget.listarsuscripcion',
+	store : 'Suscripciones',
 	
 	layout : 'fit',
 	
@@ -11,13 +11,13 @@ Ext.define('YAPP.view.proyecto.ListarProyecto', {
 			items : [ {
 				iconCls : 'icon-add',
 				xtype : 'button',
-				text : 'Nuevo Proyecto',
+				text : 'Nueva Suscripcion',
 				scope : this,
 				action : 'crear'
 			}, '|', {
 				iconCls : 'icon-delete',
 				xtype : 'button',
-				text : 'Eliminar Proyecto',
+				text : 'Eliminar Suscripcion',
 				itemId : 'delete',
 				action : 'borrar',
 				disabled : true,
@@ -52,10 +52,7 @@ Ext.define('YAPP.view.proyecto.ListarProyecto', {
 		} ];
 		
 		this.callParent(arguments);
-		this.getSelectionModel().on('selectionchange', this.onSelectChange, this); // a
-		// eliminar
-		// esta
-		// parte
+		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
 	},
 	// la funcion de abajo se va a pasar a view
 	onSelectChange : function(selModel, selections) {
