@@ -19,6 +19,7 @@ yapp.egg-info/not-zip-safe
 yapp.egg-info/requires.txt
 yapp.egg-info/top_level.txt
 yapp/daos/__init__.py
+yapp/daos/atributo_tipo_item_dao.py
 yapp/daos/base_dao.py
 yapp/daos/entidad_padre_dao.py
 yapp/daos/fase_dao.py
@@ -62,6 +63,7 @@ yapp/static/app/controller/Privilegios.js
 yapp/static/app/controller/Roles.js
 yapp/static/app/controller/Suscripciones.js
 yapp/static/app/controller/TipoItem.js
+yapp/static/app/model/AtributoTipoItem.js
 yapp/static/app/model/Entidad.js
 yapp/static/app/model/EntidadPadre.js
 yapp/static/app/model/Fase.js
@@ -71,6 +73,7 @@ yapp/static/app/model/Rol.js
 yapp/static/app/model/RolEstado.js
 yapp/static/app/model/Suscripcion.js
 yapp/static/app/model/TipoItem.js
+yapp/static/app/store/AtributoTipoItem.js
 yapp/static/app/store/Entidades.js
 yapp/static/app/store/EntidadesPadres.js
 yapp/static/app/store/Fases.js
@@ -90,6 +93,7 @@ yapp/static/app/view/proyecto/NuevoProyecto.js
 yapp/static/app/view/rol/Edit.js
 yapp/static/app/view/rol/List.js
 yapp/static/app/view/suscripciones/List.js
+yapp/static/app/view/tipoItem/AtributoEdit.js
 yapp/static/app/view/tipoItem/AtributosList.js
 yapp/static/app/view/tipoItem/Edit.js
 yapp/static/app/view/tipoItem/List.js
