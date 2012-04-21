@@ -9,17 +9,11 @@ import unittest
 import transaction
 
 def _initTestingDB():
+    """Configura sesion para los tests"""
     engine = create_engine('postgres://yapp:yapp@127.0.0.1:5432/yapp')
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     return DBSession
-    
-#
-#class _initTestingDB(unittest.TestCase):
-#    def setUp(self):
-#        self.engine = create_engine('postgres://yapp:yapp@127.0.0.1:5432/yapp')
-#        DBSession.configure(bind=self.engine)
-#        Base.metadata.create_all(self.engine)
 
 class creaProyecto(unittest.TestCase):
     def setUp(self):

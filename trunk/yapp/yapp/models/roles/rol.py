@@ -5,6 +5,7 @@ from sqlalchemy.types import Integer
 from yapp.models import Base
 from yapp.models.entidad_base import EntidadBase
 from yapp.models.roles.rol_estado import RolEstado
+#import yapp.models.roles.rol_estado
 
 class Rol (Base, EntidadBase):
     __tablename__ = "rol"

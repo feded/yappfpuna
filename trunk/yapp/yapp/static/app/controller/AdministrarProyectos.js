@@ -25,8 +25,13 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 				},
             	
             	'listarproyecto': {
-                	itemdblclick: this.editarProyecto
+            		itemdblclick: this.editarProyecto
             	},
+            	
+//            	'listarproyecto': {
+//            		datachanged: this.actualizarFase
+//            	},
+            	
             	'nuevoproyecto button[action=guardar]': {
             		click: this.guardarNuevoProyecto
             	},
