@@ -55,6 +55,7 @@ yapp/static/app.js
 yapp/static/crearProyecto.js
 yapp/static/logo_yapp.png
 yapp/static/logo_yapp_mini.png
+yapp/static/app/controller/AdministrarFases.js
 yapp/static/app/controller/AdministrarProyectos.js
 yapp/static/app/controller/Menus.js
 yapp/static/app/controller/Privilegios.js
@@ -63,6 +64,7 @@ yapp/static/app/controller/Suscripciones.js
 yapp/static/app/controller/TipoItem.js
 yapp/static/app/model/Entidad.js
 yapp/static/app/model/EntidadPadre.js
+yapp/static/app/model/Fase.js
 yapp/static/app/model/Privilegio.js
 yapp/static/app/model/Proyecto.js
 yapp/static/app/model/Rol.js
@@ -71,6 +73,7 @@ yapp/static/app/model/Suscripcion.js
 yapp/static/app/model/TipoItem.js
 yapp/static/app/store/Entidades.js
 yapp/static/app/store/EntidadesPadres.js
+yapp/static/app/store/Fases.js
 yapp/static/app/store/Privilegios.js
 yapp/static/app/store/Proyectos.js
 yapp/static/app/store/RolEstados.js
@@ -78,6 +81,7 @@ yapp/static/app/store/Roles.js
 yapp/static/app/store/Suscripciones.js
 yapp/static/app/store/TipoItems.js
 yapp/static/app/view/Viewport.js
+yapp/static/app/view/fase/ListarFase.js
 yapp/static/app/view/privilegio/Edit.js
 yapp/static/app/view/privilegio/List.js
 yapp/static/app/view/proyecto/EditarProyecto.js
@@ -4481,6 +4485,7 @@ yapp/templates/index.pt
 yapp/templates/login/login.pt
 yapp/templates/rol/new_rol.pt
 yapp/vistas/__init__.py
+yapp/vistas/fases.py
 yapp/vistas/privilegios.py
 yapp/vistas/proyectos.py
 yapp/vistas/roles.py
