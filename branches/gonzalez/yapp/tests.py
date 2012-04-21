@@ -8,15 +8,31 @@ from yapp.models.proyecto.proyecto import Proyecto
 import unittest
 import transaction
 
+<<<<<<< .working
 def _initTestingDB():
     """Configura sesion para los tests"""
     engine = create_engine('postgres://yapp:yapp@127.0.0.1:5432/yapp')
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     return DBSession
+=======
+def _initTestingDB():
+    engine = create_engine('postgres://yapp:yapp@127.0.0.1:5432/yapp')
+    DBSession.configure(bind=engine)
+    Base.metadata.create_all(engine)
+    return DBSession
+    
+#
+#class _initTestingDB(unittest.TestCase):
+#    def setUp(self):
+#        self.engine = create_engine('postgres://yapp:yapp@127.0.0.1:5432/yapp')
+#        DBSession.configure(bind=self.engine)
+#        Base.metadata.create_all(self.engine)
+>>>>>>> .merge-right.r151
 
 class creaProyecto(unittest.TestCase):
     def setUp(self):
+<<<<<<< .working
         self.session = _initTestingDB()
         
     def tearDown(self):
@@ -24,6 +40,14 @@ class creaProyecto(unittest.TestCase):
         
     def runTest(self):
         """Testea la creacion de un proyecto en la base de datos"""
+=======
+        self.session = _initTestingDB()
+        
+    def tearDown(self):
+        self.session.remove()
+        
+    def runTest(self):
+>>>>>>> .merge-right.r151
         with transaction.manager:
             dao = ProyectoDAO()
             proyecto = Proyecto('ProyectoPrueba','Yapp',1,'Elaboracion','Yapp','Proyecto para test','19042012','12042012')
@@ -47,6 +71,7 @@ class creaProyecto(unittest.TestCase):
 
 class eliminarProyecto(unittest.TestCase):
     def setUp(self):
+<<<<<<< .working
         self.session = _initTestingDB()
         
     def tearDown(self):
@@ -54,6 +79,14 @@ class eliminarProyecto(unittest.TestCase):
         
     def runTest(self):
         """Testea la eliminacion de un proyecto en la base de datos"""
+=======
+        self.session = _initTestingDB()
+        
+    def tearDown(self):
+        self.session.remove()
+        
+    def runTest(self):
+>>>>>>> .merge-right.r151
         with transaction.manager:
             dao = ProyectoDAO()
             entidad = dao.get_query().filter_by(_nombre='ProyectoPrueba').first();

@@ -43,9 +43,9 @@ def index_view(request):
 
 @view_config(route_name='login' , renderer="templates/login/login.pt")
 def login_view(request):
-    if request.method == 'POST' and request.POST.get("type") == 'login':
-        mail = request.POST.get("usuario")
-        password = request.POST.get("password")
+    if request.method == 'POST' and request.POST.get_entidades("type") == 'login':
+        mail = request.POST.get_entidades("usuario")
+        password = request.POST.get_entidades("password")
         rh = RolFinalDAO()
         rol = rh.get_query().filter_by(_email=mail , _password=password).first()
         if rol != None:
@@ -56,9 +56,9 @@ def login_view(request):
             print 'user' in session
             return Response(json.dumps({'success': True}))
         return Response( json.dumps({'failure': True}))
-    elif request.method == 'POST' and request.POST.get("type") == 'olvide':
+    elif request.method == 'POST' and request.POST.get_entidades("type") == 'olvide':
         print "COMO ESTAS GATO PUTO"
-        email = request.POST.get("usuario")
+        email = request.POST.get_entidades("usuario")
         rh = RolFinalDAO()
         rol = rh.get_query().filter_by(_email=email).first()
         # enviar un mail al cliente con nueva contrasena
@@ -83,8 +83,8 @@ def crearProyecto_view(request):
     print 'Renderizando proyecto'
     if request.method == 'POST':
         print 'Creando proyecto'
-        nombre = request.POST.get('nombre')
-        autor = request.POST.get('autor')
+        nombre = request.POST.get_entidades('nombre')
+        autor = request.POST.get_entidades('autor')
         proyecto = Proyecto(nombre, autor)
         p_dao = ProyectoDAO();
         p_dao.crear(proyecto)
@@ -101,12 +101,12 @@ def crear_rol(request):
 #    if request.method == 'POST':
     if request.method == 'POST':
         print "Creando nuevo rol"
-        nombre = request.POST.get('nombre')
-        estado = request.POST.get('estado')
-        no_es_final = request.POST.get('email') != ""
+        nombre = request.POST.get_entidades('nombre')
+        estado = request.POST.get_entidades('estado')
+        no_es_final = request.POST.get_entidades('email') != ""
         if no_es_final == True:
-            email = request.POST.get('email')
-            password = request.POST.get('password')
+            email = request.POST.get_entidades('email')
+            password = request.POST.get_entidades('password')
             rf = RolFinal(nombre, estado, email, password)
             dao = RolFinalDAO()
             dao.crear(rf)
@@ -121,7 +121,7 @@ def crear_rol(request):
 #@view_config(route_name='olvide', renderer='templates/login/olvide.pt')
 #def olvide(request):
 #    if request.method == 'GET':
-#        email = request.GET.get("email")
+#        email = request.GET.get_entidades("email")
 ## enviar un mail al cliente con nueva contrasena
 #        rh = RolFinalDAO()
 #        rol = rh.get_query().filter_by(_email=email).first()
@@ -142,7 +142,7 @@ def crear_rol(request):
 #    referrer = request.url
 #    if referrer == login_url:
 #        referrer = '/' # never use the login form itself as came_from
-#    came_from = request.params.get('came_from', referrer)
+#    came_from = request.params.get_entidades('came_from', referrer)
 #    message = ''
 #    usuario = ''
 #    password = ''
