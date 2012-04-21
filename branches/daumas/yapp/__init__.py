@@ -8,6 +8,8 @@ from yapp.security import groupfinder
 from pyramid_mailer.mailer import Mailer
 import os
 import vistas.proyectos
+import vistas.privilegios
+import vistas.roles
 
 
 
@@ -33,15 +35,13 @@ def main(global_config, **settings):
     
     mailer = Mailer()
     config.registry['mailer'] = Mailer.from_settings(settings)
-    
-#    config.add_static_view('static', 'static', cache_max_age=3600)
-#    config.add_route('home', '/')
     config.add_static_view('static', os.path.join(here, 'static'))
     config.add_route('login', '/')
     config.add_route('index', '/index')
-    config.add_route('proyectos', '/proyectos')
-#    config.add_route('main', '/main')
-#   config.add_route('olvide', '/olvide')
+    config.add_route('readproyectos', '/readProyectos')
+    config.add_route('createproyectos', '/createProyectos')
+    config.add_route('updateproyectos', '/updateProyectos')
+    config.add_route('deleteproyectos', '/deleteProyectos')
     config.add_route('logout', '/logout')
     config.add_route('crearProyecto', '/crearProyecto')
     config.add_route('crearRol', '/crearRol')
@@ -53,6 +53,10 @@ def main(global_config, **settings):
     config.add_route('crearTipo', '/crearTipo')
     config.add_route('eliminarTipo', '/eliminarTipo')
     config.add_route('guardarTipo', '/guardarTipo')
+    config.add_route('obtenerAtributos', '/atributoItem/lista')
+    config.add_route('crearAtributo', '/crearAtributo')
+    config.add_route('eliminarAtributo', '/eliminarAtributo')
+    config.add_route('guardarAtributo', '/guardarAtributo')
     config.scan()
 #    config.scan("views")
 

@@ -22,6 +22,7 @@ yapp.egg-info/top_level.txt
 yapp/daos/__init__.py
 yapp/daos/atributo_tipo_item_dao.py
 yapp/daos/base_dao.py
+yapp/daos/fase_dao.py
 yapp/daos/privilegio_dao.py
 yapp/daos/proyecto_dao.py
 yapp/daos/rol_dao.py
@@ -32,6 +33,8 @@ yapp/models/entidad_base.py
 yapp/models/historial.py
 yapp/models/pages.py
 yapp/models/root_factory.py
+yapp/models/fase/__init__.py
+yapp/models/fase/fase.py
 yapp/models/proyecto/__init__.py
 yapp/models/proyecto/proyecto.py
 yapp/models/roles/__init__.py
@@ -54,12 +57,14 @@ yapp/static/app/controller/Menus.js
 yapp/static/app/controller/Privilegios.js
 yapp/static/app/controller/Roles.js
 yapp/static/app/controller/TipoItem.js
+yapp/static/app/model/AtributoTipoItem.js
 yapp/static/app/model/Entidad.js
 yapp/static/app/model/Privilegio.js
 yapp/static/app/model/Proyecto.js
 yapp/static/app/model/Rol.js
 yapp/static/app/model/RolEstado.js
 yapp/static/app/model/TipoItem.js
+yapp/static/app/store/AtributoTipoItem.js
 yapp/static/app/store/Entidades.js
 yapp/static/app/store/Privilegios.js
 yapp/static/app/store/Proyectos.js
@@ -69,11 +74,13 @@ yapp/static/app/store/TipoItems.js
 yapp/static/app/view/Viewport.js
 yapp/static/app/view/privilegio/Edit.js
 yapp/static/app/view/privilegio/List.js
-yapp/static/app/view/proyecto/CrearProyecto.js
 yapp/static/app/view/proyecto/EditarProyecto.js
+yapp/static/app/view/proyecto/ListarProyecto.js
+yapp/static/app/view/proyecto/NuevoProyecto.js
 yapp/static/app/view/rol/ABM.js
 yapp/static/app/view/rol/Edit.js
 yapp/static/app/view/rol/List.js
+yapp/static/app/view/tipoItem/AtributoEdit.js
 yapp/static/app/view/tipoItem/AtributosList.js
 yapp/static/app/view/tipoItem/Edit.js
 yapp/static/app/view/tipoItem/List.js
