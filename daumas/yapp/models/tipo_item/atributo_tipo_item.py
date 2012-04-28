@@ -22,14 +22,14 @@ class AtributoTipoItem(EntidadBase, Base):
     _descripcion = Column(String, nullable=True)
     _opcional = Column(Boolean)
     _defecto = Column(String, nullable=True)
-   # _tipo_item_id = Column(Integer, ForeignKey('tipo_item._id'))
-   # _tipo_item = relation(TipoItem, backref=backref('tipo_item'))
-    def __init__(self, tipo, valor, descripcion, opcional, defecto):
+    _tipo_item_id = Column(Integer, ForeignKey('tipo_item._id'))
+    #_tipo_item = relation(TipoItem, backref=backref('tipo_item'))
+    def __init__(self, tipo, valor, descripcion, opcional, defecto, tipo_item_id=None):
         self._tipo = tipo
         self._valor = valor
         self._descripcion = descripcion
         self._opcional = opcional 
         self._defecto = defecto
-        #self._tipo_item = tipoItem
+        self._tipo_item_id = tipo_item_id
         
         
