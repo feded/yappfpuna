@@ -27,17 +27,29 @@ Ext.define('YAPP.view.tipoItem.List' ,{
 	        {header: 'Color', sortable : true, dataIndex: '_color'},
 	        {header: 'Prefijo', sortable : true, dataIndex: '_prefijo'},
 	        {header: 'Condicionado', sortable : true, dataIndex: '_condicionado'},
-			{header: 'Atributos', xtype: 'actioncolumn', 
-				renderer: function(value, meta, record) {
-				
-			    var id = Ext.id();
-			
-			    Ext.Function.defer(function(){
-	    			new Ext.Button({renderTo: id, text: 'Ver',height: 20,  width: 90});
-	    			}, 25);
-			    	return '<span id="' + id + '"></span>';
-			
-			  }
+			{header: 'Atributos', xtype: 'actioncolumn', dataIndex: 'id',
+				 items: [
+	                {
+	                    icon   : '/static/atributo.png',     
+                    	tooltip: 'Agregar-Editar Atributos',   
+                    	cursor: 'pointer',           
+	                   
+	                   
+	                    handler: function(grid, rowIndex, colIndex) {
+	                        var rec = grid.getStore().getAt(rowIndex);
+	                    }
+	                }
+	            ]
+//				renderer: function(value, meta, record) {
+//				
+//			    var id = Ext.id();
+//			
+//			    new Ext.Function.defer(function(){
+//	    			new Ext.Button({renderTo: id, text: 'Ver',height: 20, action: 'verAtributos' ,   width: 90});
+//	    			}, 25);
+//			    	return '<span id="' + id + '"></span>';
+//			
+//			  }
 		   	}	 
 		];
 		this.callParent();
