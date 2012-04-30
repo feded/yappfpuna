@@ -2,7 +2,7 @@ Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
 	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List',
-			'rol.List', 'tipoItem.List', 'suscripciones.List' ],
+			'rol.List', 'tipoItem.List', 'suscripciones.List', 'recurso.ListarRecurso' ],
 
 	init : function() {
 		console.log('Cargado controller Menus');
@@ -24,6 +24,9 @@ Ext.define('YAPP.controller.Menus', {
 			},
 			'viewport button[action=adminSuscripciones]' : {
 				click : this.adminSuscripciones
+			},
+			'viewport button[action=adminRecursos]' : {
+				click : this.adminRecursos
 			}
 		});
 	},
@@ -53,6 +56,19 @@ Ext.define('YAPP.controller.Menus', {
 		
 		tabs.setActiveTab(tab);
 		
+	},
+	adminRecursos : function(button) {
+		
+		var tabs = Ext.getCmp('tabPrincipal');
+		
+		var tab = tabs.add({
+			title : 'Administrar recursos',
+			xtype : 'listarrecurso',
+			closable : true
+		});
+
+		tabs.setActiveTab(tab);
+
 	},
 	
 	adminRoles : function(button) {
