@@ -9,11 +9,11 @@ Ext.define('YAPP.store.Fases', {
         
 	proxy : {
     	type : 'rest',
-    	//url: '/readFases',
-    	api:{
-    		read : 'http://localhost:6543/readFases',
-    		create : 'http://localhost:6543/createFases'
-    	},
+    	url: '/fases',
+//    	api:{
+//    		read : 'http://localhost:6543/readFases',
+//    		create : 'http://localhost:6543/createFases'
+//    	},
 //        api : {
 //        	read : 'http://localhost:6543/readFases',
 //        	update : 'http://localhost:6543/updateFases',
