@@ -25,6 +25,11 @@ Ext.define('YAPP.controller.AdministrarFases', {
             		click: this.guardarNuevaFase
             	},
             	
+            	'listarfase button[action=borrar]': {
+            		click: this.borrarFase
+            	},
+            	
+            	
         });
 	},	
 	
@@ -60,7 +65,6 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	},
 	
 	guardarNuevaFase: function(button){
-		console.log('guardar fase');
 		var win = button.up('window');
 		var form = win.down('form');
 		var record = form.getRecord();
@@ -68,6 +72,14 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		record.set(values);	
 		win.close();
 		this.getFasesStore().insert(0, record);
-	}
+	},
+	
+	borrarFase: function(button) {
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		this.getFasesStore().remove(selection)
+	}	
+	
 	
 });
