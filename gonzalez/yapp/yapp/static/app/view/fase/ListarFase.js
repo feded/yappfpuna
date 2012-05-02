@@ -12,12 +12,12 @@ Ext.define('YAPP.view.fase.ListarFase' ,{
                                 xtype : 'toolbar',
                                 items : [ 
                                 		 	{
-                                			xtype: 'combobox',
-                                			fieldLabel: 'Proyecto',
-    										store: Ext.create('YAPP.store.Proyectos'),
-    										displayField: '_nombre',
-    										queryMode : 'local',
-    										valueField: 'id',
+                                				xtype: 'combobox',
+                                				fieldLabel: 'Proyecto',
+    											store: Ext.create('YAPP.store.Proyectos'),
+    											displayField: '_nombre',
+    											queryMode : 'local',
+    											valueField: 'id',
                                 		   },
 //                                		   {
 //                        	        		xtype: 'button',
@@ -27,18 +27,28 @@ Ext.define('YAPP.view.fase.ListarFase' ,{
 //                        					},
                         					 '|',
                         					{
-                                	        xtype: 'button',
-                                    	    text : 'Nuevo Fase',
-                                        	scope : this,
-                                        	action : 'crear'
-                                			}, '|', {
-                                        	xtype: 'button',
-                                        	text : 'Eliminar Fase',
-                                        	itemId : 'delete',
-                                        	action : 'borrar',
-                                        	disabled : true,
-                                        	scope : this
-                                		} ]
+                                	        	xtype: 'button',
+                                    	    	text : 'Nuevo Fase',
+                                        		scope : this,
+                                        		action : 'crear'
+                                			}, '|',
+                                			 {
+                                        		xtype: 'button',
+                                        		text : 'Eliminar Fase',
+                                        		itemId : 'delete',
+                                        		action : 'borrar',
+                                        		disabled : true,
+                                        		scope : this
+                                			},
+                                			{
+                                        		xtype: 'button',
+                                        		text : 'Atributos',
+                                        		itemId : 'atributo',
+                                        		action : 'atributo',
+                                        		disabled : true,
+                                        		scope : this
+                                			}
+                                		]
                                 }];
       
       
@@ -53,6 +63,7 @@ Ext.define('YAPP.view.fase.ListarFase' ,{
     //la funcion de abajo se va a pasar a view
     onSelectChange : function(selModel, selections) {
                 this.down('#delete').setDisabled(selections.length === 0);
+                this.down('#atributo').setDisabled(selections.length === 0);
     }
 });
 

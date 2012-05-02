@@ -7,6 +7,7 @@ Ext.define('YAPP.view.fase.NuevaFase', {
     autoShow: true,
 
     initComponent: function() {
+    	
         this.items = [
             {
                 xtype: 'form',
@@ -14,12 +15,33 @@ Ext.define('YAPP.view.fase.NuevaFase', {
                     {
                         xtype: 'textfield',
                         name : '_nombre',
-                        fieldLabel: 'Fase'
+                        fieldLabel: 'Nombre'
                     }
+//					{
+//                    	xtype: 'gridpanel',
+//                    	store: 'AtributoFase',
+//                    	dockedItems : [ {
+//                                			xtype : 'toolbar',
+//                                				items : [ {
+//                                	        		xtype: 'button',
+//                                    	    		text : 'Nuevo Atributo',
+//                                        			scope : this,
+//                                        			action : 'crearAtributo'
+//                                					}, '|', {
+//                                        			xtype: 'button',
+//                                        			text : 'Eliminar Atributo',
+//                                        			action : 'borrarAtributo',
+//                                        			scope : this
+//                                				} ]
+//                                		}],
+//                    	columns : [
+//							{header:'Atributo', dataIndex:'_nombre'}
+//						]
+//                    }
+					
                 ]
             }
         ];
-
         this.buttons = [
             {
                 text: 'Guardar',
@@ -33,5 +55,5 @@ Ext.define('YAPP.view.fase.NuevaFase', {
         ];
 
         this.callParent(arguments);
-    }
+    },
 });
