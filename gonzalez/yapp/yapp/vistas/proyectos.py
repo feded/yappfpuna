@@ -34,11 +34,15 @@ def create_proyectos(request):
     dao = ProyectoDAO()
     nuevo_proyecto = Proyecto(entidad["_nombre"],entidad["_autor"],entidad["_prioridad"],entidad["_estado"],entidad["_lider"],entidad["_nota"],entidad["_fecha_creacion"],entidad["_fecha_modificacion"])
     dao.crear(nuevo_proyecto)
-    for i in range(0,3):
-        nombre_fase = "Fase " + str(i)+ " de " + entidad["_nombre"]
-        nueva_fase = Fase(nombre_fase, nuevo_proyecto)
-        dao_fase = FaseDAO()
-        dao_fase.crear(nueva_fase)
+#    for i in range(0,3):
+    nombre_fase = "Fase por defecto de " + entidad["_nombre"]
+    orden = 1
+    comentario = "Fase creada por defecto"
+    estado = "Pendiente"
+    color = "0"
+    nueva_fase = Fase(nombre_fase, nuevo_proyecto, orden, comentario, estado,color)
+    dao_fase = FaseDAO()
+    dao_fase.crear(nueva_fase)
     
     lista = []
     p = Pickler()

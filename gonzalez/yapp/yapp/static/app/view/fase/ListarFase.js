@@ -53,8 +53,11 @@ Ext.define('YAPP.view.fase.ListarFase' ,{
       
       
 		this.columns = [
-			{header:'Fase', dataIndex:'_nombre'}
-//			{header:'ID proyecto', dataIndex:'_proyecto', renderer : renderProyectoFase}
+			{header:'Fase', dataIndex:'_nombre'},
+			{header:'Orden', dataIndex:'_orden'},
+			{header:'Comentario', dataIndex:'_comentario'},
+			{header:'Estado', dataIndex:'_estado'},
+			{header:'Color', dataIndex:'_color'}
         ];   
 
         this.callParent(arguments);

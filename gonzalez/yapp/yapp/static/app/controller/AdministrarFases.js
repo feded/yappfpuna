@@ -62,7 +62,8 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var cb = win.down('combobox');
 		
 //		console.log(cb.getValue());
-		fase.data._proyecto_id = cb.getValue();  
+		fase.data._proyecto_id = cb.getValue();
+		fase.data._estado = "Pendiente";
 //		var fecha = new Date();
 //		var hoy = Ext.Date.format(fecha,'Y-m-d, g:i a');
 //		proyecto.data._fecha_creacion = hoy;

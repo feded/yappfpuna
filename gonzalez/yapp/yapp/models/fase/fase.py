@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Boolean
+from sqlalchemy import Column, String, Integer
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.orm import relation, backref
 from yapp.models import Base
@@ -12,9 +12,17 @@ class Fase (Base, EntidadBase):
         """
     __tablename__ = "fase"
     _nombre = Column(String, nullable = False)
+    _orden = Column(Integer, nullable = False)
+    _comentario = Column(String, nullable = False)
+    _estado = Column(String, nullable = False)
+    _color = Column(String, nullable = False)
     _proyecto_id = Column(Integer, ForeignKey('proyecto._id'))
     _proyecto = relation(Proyecto, backref=backref('proyecto'))
 
-    def __init__(self, nombre, proyecto):
+    def __init__(self, nombre, proyecto, orden, comentario, estado, color):
         self._nombre = nombre;
         self._proyecto = proyecto;
+        self._orden = orden;
+        self._comentario = comentario;
+        self._estado = estado;
+        self._color = color;

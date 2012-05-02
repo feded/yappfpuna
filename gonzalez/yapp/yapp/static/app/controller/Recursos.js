@@ -25,6 +25,7 @@ Ext.define('YAPP.controller.Recursos', {
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);	
+//		console.log(values);
 		win.close();
 		this.getRecursosStore().insert(0, record);
 	},
