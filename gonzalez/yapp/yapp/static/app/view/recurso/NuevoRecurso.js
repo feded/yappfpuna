@@ -36,12 +36,31 @@ Ext.define('YAPP.view.recurso.NuevoRecurso', {
 								displayField : '_tipo',
 								typeAhead : true,
 								queryMode : 'local',
-								emptyText : 'Seleccione un tipo...'
+								emptyText : 'Seleccione un tipo...',
+								listeners: {
+    								select: function(combo, record, index) {
+      									var tipo = combo.getValue();
+      									var win = combo.up('window');
+      									if(tipo == 'Persona'){
+            								win.down('#verCantidad').setVisible(false);
+      									}
+            							else{
+            								win.down('#verCantidad').setVisible(true);
+            							}
+            								
+    								}
+  								}
 							},
 							{
                         		xtype: 'textfield',
                         		name : '_descripcion',
                         		fieldLabel: 'Descripcion'
+                    		},
+                    		{
+                        		xtype: 'textfield',
+                        		itemId : 'verCantidad',
+                        		hidden: true,
+                        		fieldLabel: 'Cantidad disponible'
                     		}
 							
                 		]
