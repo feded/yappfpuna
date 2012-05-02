@@ -2,10 +2,10 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	extend: 'Ext.app.Controller',
 	
 	views: [
-		'fase.ListarFase', 'fase.NuevaFase'
+		'fase.ListarFase', 'fase.NuevaFase', 'fase.NuevoAtributoFase', 'fase.ListarAtributoFase'
 		],
-	stores:['Fases'],
-	models:['Fase'],
+	stores:['Fases', 'AtributoFase'],
+	models:['Fase', 'AtributoFase'],
 	
 	init:function(){
 		console.log('Cargado controller AdministrarFases');
@@ -25,9 +25,16 @@ Ext.define('YAPP.controller.AdministrarFases', {
             		click: this.guardarNuevaFase
             	},
             	
+            	'listarfase button[action=atributo]': {
+            		click: this.Atributo
+            	},
+            	
             	'listarfase button[action=borrar]': {
             		click: this.borrarFase
-            	},
+            	}
+//            	'nuevoatributofase button[action=guardar]': {
+//            		click: this.guardarNuevoAtributo
+//            	},
             	
             	
         });
@@ -64,6 +71,35 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		view.down('form').loadRecord(fase);
 	},
 	
+	Atributo: function(button){
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		
+		
+		var store = this.getStore('AtributoFase');
+		store.load({
+			params: {
+				id : selection.data.id
+			}
+		});
+		var tabs = Ext.getCmp('tabPrincipal');
+		
+		var tab = tabs.add({
+			title : 'Administrar atributos fases',
+			xtype : 'listaratributofase',
+			closable : true
+		});
+
+		tabs.setActiveTab(tab);
+		
+//		var view = Ext.widget('nuevoatributofase');
+//        var atributo = new YAPP.model.AtributoFase();
+//        		
+//		view.down('form').loadRecord(atributo);
+		
+	},
+	
 	guardarNuevaFase: function(button){
 		var win = button.up('window');
 		var form = win.down('form');
@@ -72,14 +108,24 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		record.set(values);	
 		win.close();
 		this.getFasesStore().insert(0, record);
+//		this.getAtributoFaseStore().sync();
 	},
+	
+//	guardarNuevoAtributo: function(button){
+//		var win = button.up('window');
+//		var form = win.down('form');
+//		var record = form.getRecord();
+//		var values = form.getValues();
+//		record.set(values);	
+//		win.close();
+//		this.getAtributoFaseStore().insert(0, record);
+//	},
 	
 	borrarFase: function(button) {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		this.getFasesStore().remove(selection)
-	}	
-	
+	}
 	
 });

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, Boolean
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.orm import relation, backref
 from yapp.models import Base

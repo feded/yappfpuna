@@ -46,6 +46,7 @@ def main(global_config, **settings):
     config.add_route('deleteproyectos', '/deleteProyectos')
     config.add_route('obtenercrearfases', '/fases')
     config.add_route('actualizareliminarfases', '/fases/{id}')
+    config.add_route('obtenercrearatributofase', '/atributofase')
     config.add_route('obtenercrearrecursos', '/recursos')
     config.add_route('logout', '/logout')
     config.add_route('crearProyecto', '/crearProyecto')

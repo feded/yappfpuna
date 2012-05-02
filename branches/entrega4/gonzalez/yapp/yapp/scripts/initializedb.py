@@ -13,6 +13,7 @@ import transaction
 import yapp.models.entidad_padre
 import yapp.models.recurso.recurso
 import yapp.models.fase.fase
+import yapp.models.fase.atributo_fase
 import yapp.models.proyecto.proyecto
 import yapp.models.fase.fase
 import yapp.models.roles.entidad
