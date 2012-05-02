@@ -28,8 +28,10 @@ Ext.define('YAPP.view.recurso.ListarRecurso' ,{
       
       
 		this.columns = [
-			{header:'Recurso', dataIndex:'_nombre'}
-//			{header:'ID proyecto', dataIndex:'_proyecto', renderer : renderProyectoFase}
+			{header:'Recurso', dataIndex:'_nombre'},
+//			{header:'Tipo', dataIndex:'_tipo_id'}
+			{header:'Tipo', dataIndex:'_tipo', renderer : renderizador},
+			{header:'Descripcion', dataIndex:'_descripcion'}
         ];   
 
         this.callParent(arguments);
@@ -40,8 +42,9 @@ Ext.define('YAPP.view.recurso.ListarRecurso' ,{
                 this.down('#delete').setDisabled(selections.length === 0);
     }
 });
-
-//function renderProyectoFase(val) {
-//	return val._nombre
-////	return ""
-//}
+function renderizador(val) {
+	if (val == null)
+		return val;
+	return val._tipo
+	// return ""
+}

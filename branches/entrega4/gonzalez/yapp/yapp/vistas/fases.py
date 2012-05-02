@@ -18,7 +18,7 @@ def obtener_crear_fases(request):
         lista = [];
         p = Pickler(False,None)
         for entidad in entidades:
-            entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id)
+            entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id,entidad._orden, entidad._comentario, entidad._estado,entidad._color)
             lista.append(p.flatten(entidadLinda))    
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'fases':j_string})    
@@ -32,7 +32,7 @@ def obtener_crear_fases(request):
         proyecto = dao.get_by_id(entidad["_proyecto_id"])
     
         dao = FaseDAO()
-        nueva_fase = Fase(entidad["_nombre"],proyecto)
+        nueva_fase = Fase(entidad["_nombre"],proyecto,entidad["_orden"],entidad["_comentario"],entidad["_estado"],entidad["_color"])
         dao.crear(nueva_fase)
         
         lista = []
@@ -82,7 +82,11 @@ def obtener_crear_atributofase(request):
 
 
 class FaseLinda:
-    def __init__(self, _id, nombre, proyecto):
+    def __init__(self, _id, nombre, proyecto,orden,comentario, estado,color):
         self._id = _id
         self._nombre = nombre;
         self._proyecto_id = proyecto;
+        self._orden = orden;
+        self._comentario = comentario;
+        self._estado = estado;
+        self._color = color;
