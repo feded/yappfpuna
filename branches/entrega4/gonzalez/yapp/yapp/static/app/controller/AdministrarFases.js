@@ -3,7 +3,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	
 	views: [
 		'fase.ListarFase', 'fase.NuevaFase', 'fase.NuevoAtributoFase', 'fase.ListarAtributoFase',
-		'fase.NuevoAtributoFase'
+		'fase.NuevoAtributoFase', 'fase.EditarAtributoFase'
 		],
 	stores:['Fases', 'AtributoFase'],
 	models:['Fase', 'AtributoFase'],
@@ -49,6 +49,12 @@ Ext.define('YAPP.controller.AdministrarFases', {
             	
             	'nuevoatributofase button[action=guardar]': {
             		click: this.guardarNuevoAtributoFase
+            	},
+            	'listaratributofase': {
+            		itemdblclick: this.editarAtributoFase
+            	},
+            	'editaratributofase button[action=guardar]': {
+            		click: this.guardarEditarAtributoFase
             	},
             	
         });
@@ -155,6 +161,19 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		this.getAtributoFaseStore().remove(selection)
-	}
+	},
+	editarAtributoFase: function(grid, record){
+		var view = Ext.widget('editaratributofase');
+        view.down('form').loadRecord(record);
+	},
+	
+	guardarEditarAtributoFase: function(button){
+		var win = button.up('window');
+		var form = win.down('form');
+		var record = form.getRecord();
+		var values = form.getValues();
+		record.set(values);
+		win.close();
+	},
 	
 });
