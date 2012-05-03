@@ -9,6 +9,6 @@ Ext.define('YAPP.model.AtributoFase', {
         	{
         		name : '_fase_id',
         		type : 'int'
-        	}
+        	},'_descripcion', '_valor'
         	]
 });

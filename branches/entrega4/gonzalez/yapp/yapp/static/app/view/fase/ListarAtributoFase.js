@@ -4,7 +4,7 @@ Ext.define('YAPP.view.fase.ListarAtributoFase' ,{
     store: 'AtributoFase',
     
     layout: 'fit',
-
+    
     initComponent: function() {
 		  this.dockedItems = [ {
                                 xtype : 'toolbar',
@@ -28,7 +28,9 @@ Ext.define('YAPP.view.fase.ListarAtributoFase' ,{
       
       
 		this.columns = [
-			{header:'Atibuto', dataIndex:'_nombre'}
+			{header:'Nombre', dataIndex:'_nombre'},
+			{header:'Descripcion', dataIndex:'_descripcion'},
+			{header:'Valor', dataIndex:'_valor'}
         ];   
 
         this.callParent(arguments);
@@ -37,6 +39,5 @@ Ext.define('YAPP.view.fase.ListarAtributoFase' ,{
     //la funcion de abajo se va a pasar a view
     onSelectChange : function(selModel, selections) {
                 this.down('#delete').setDisabled(selections.length === 0);
-                this.down('#atributo').setDisabled(selections.length === 0);
     }
 });

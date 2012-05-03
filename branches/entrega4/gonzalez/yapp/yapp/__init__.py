@@ -47,6 +47,7 @@ def main(global_config, **settings):
     config.add_route('obtenercrearfases', '/fases')
     config.add_route('actualizareliminarfases', '/fases/{id}')
     config.add_route('obtenercrearatributofase', '/atributofase')
+    config.add_route('actualizareliminaratributofase', '/atributofase/{id}')
     config.add_route('obtenercrearrecursos', '/recursos')
     config.add_route('tipos_recursos', '/tipo_recurso')
     config.add_route('logout', '/logout')
