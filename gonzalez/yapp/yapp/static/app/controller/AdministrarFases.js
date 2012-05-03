@@ -2,10 +2,16 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	extend: 'Ext.app.Controller',
 	
 	views: [
-		'fase.ListarFase', 'fase.NuevaFase', 'fase.NuevoAtributoFase', 'fase.ListarAtributoFase'
+		'fase.ListarFase', 'fase.NuevaFase', 'fase.NuevoAtributoFase', 'fase.ListarAtributoFase',
+		'fase.NuevoAtributoFase'
 		],
 	stores:['Fases', 'AtributoFase'],
 	models:['Fase', 'AtributoFase'],
+	
+	refs: [{
+    	selector: 'listarfase gridview',
+    	ref: 'grilla'
+	}],
 	
 	init:function(){
 		console.log('Cargado controller AdministrarFases');
@@ -31,11 +37,19 @@ Ext.define('YAPP.controller.AdministrarFases', {
             	
             	'listarfase button[action=borrar]': {
             		click: this.borrarFase
-            	}
-//            	'nuevoatributofase button[action=guardar]': {
-//            		click: this.guardarNuevoAtributo
-//            	},
+            	},
             	
+            	'listaratributofase button[action=crear]': {
+            		click: this.crearAtributo
+            	},
+            	
+            	'listaratributofase button[action=borrar]': {
+            		click: this.borrarAtributoFase
+            	},
+            	
+            	'nuevoatributofase button[action=guardar]': {
+            		click: this.guardarNuevoAtributoFase
+            	},
             	
         });
 	},	
@@ -72,6 +86,19 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		view.down('form').loadRecord(fase);
 	},
 	
+	crearAtributo: function(button){
+		var view = Ext.widget('nuevoatributofase');
+        var atributofase = new YAPP.model.AtributoFase();
+        
+       	var g = this.getGrilla();
+       	var selection = g.getSelectionModel().getSelection()[0];
+       	
+       	atributofase.data._fase_id = selection.data.id;
+	
+        
+		view.down('form').loadRecord(atributofase);
+	},
+	
 	Atributo: function(button){
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
@@ -93,12 +120,6 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		});
 
 		tabs.setActiveTab(tab);
-		
-//		var view = Ext.widget('nuevoatributofase');
-//        var atributo = new YAPP.model.AtributoFase();
-//        		
-//		view.down('form').loadRecord(atributo);
-		
 	},
 	
 	guardarNuevaFase: function(button){
@@ -112,21 +133,28 @@ Ext.define('YAPP.controller.AdministrarFases', {
 //		this.getAtributoFaseStore().sync();
 	},
 	
-//	guardarNuevoAtributo: function(button){
-//		var win = button.up('window');
-//		var form = win.down('form');
-//		var record = form.getRecord();
-//		var values = form.getValues();
-//		record.set(values);	
-//		win.close();
-//		this.getAtributoFaseStore().insert(0, record);
-//	},
+	guardarNuevoAtributoFase: function(button){
+		var win = button.up('window');
+		var form = win.down('form');
+		var record = form.getRecord();
+		var values = form.getValues();
+		record.set(values);	
+		win.close();
+		this.getAtributoFaseStore().insert(0, record);
+	},
 	
 	borrarFase: function(button) {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		this.getFasesStore().remove(selection)
+	},
+	
+	borrarAtributoFase: function(button) {
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		this.getAtributoFaseStore().remove(selection)
 	}
 	
 });

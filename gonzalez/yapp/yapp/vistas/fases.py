@@ -54,30 +54,45 @@ def actualizar_eliminar_fase(request):
 
 @view_config(route_name='obtenercrearatributofase')
 def obtener_crear_atributofase(request):
-    
-#    id = 0;
-#    rd = FaseDAO()
-#    entidades = rd.get_all()
-#    for entidad in entidades:
-#        id = entidad._id
-#    id = id + 1
-    print '-----------------------------------------------'
-    print '-----------------------------------------------'
-    print 'estamos en atributofase'
-    
-    id = request.GET.get('id')
-    rd = AtributoFaseDAO()
-    entidades = rd.get_query().filter(AtributoFase._fase_id == id).all()
-#    entidades = rd.get_query().filter(AtributoFase._fase_id == fase_id).all()
-#    entidades = rd.get_all()
-    lista = [];
-    p = Pickler()
-    for entidad in entidades:
-        lista.append(p.flatten(entidad))    
-    j_string = p.flatten(lista)
-    a_ret = json.dumps({'sucess': 'true', 'atributofase':j_string})
+    if (request.method == 'GET'):
+        id = request.GET.get('id')
+        rd = AtributoFaseDAO()
+        entidades = rd.get_query().filter(AtributoFase._fase_id == id).all()
+        lista = [];
+        p = Pickler()
+        for entidad in entidades:
+            lista.append(p.flatten(entidad))    
+        j_string = p.flatten(lista)
+        a_ret = json.dumps({'sucess': 'true', 'atributofase':j_string})
 
-    return Response(a_ret)
+        return Response(a_ret)
+    else:    
+        u= Unpickler()
+        entidad = u.restore(request.json_body);
+        
+        dao = FaseDAO()
+        fase = dao.get_by_id(entidad["_fase_id"])
+    
+        dao = AtributoFaseDAO()
+        nuevo_atributo = AtributoFase(entidad["_nombre"],fase,entidad["_descripcion"],entidad["_valor"])
+        dao.crear(nuevo_atributo)
+        
+        lista = []
+        p = Pickler()
+        lista.append(p.flatten(nuevo_atributo))
+        j_string = p.flatten(lista)
+        a_ret = json.dumps({'sucess': 'true', 'atributofases':j_string})
+    
+        return Response(a_ret)
+
+@view_config(route_name='actualizareliminaratributofase')
+def actualizar_eliminar_atributofase(request):
+    u= Unpickler()
+    entidad = u.restore(request.json_body);
+    dao = AtributoFaseDAO()
+    atributo = dao.get_by_id(entidad["id"])     
+    dao.borrar(atributo)
+    return Response(json.dumps({'sucess': 'true'}))
    
 
 
