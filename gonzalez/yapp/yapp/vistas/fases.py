@@ -87,12 +87,25 @@ def obtener_crear_atributofase(request):
 
 @view_config(route_name='actualizareliminaratributofase')
 def actualizar_eliminar_atributofase(request):
-    u= Unpickler()
-    entidad = u.restore(request.json_body);
-    dao = AtributoFaseDAO()
-    atributo = dao.get_by_id(entidad["id"])     
-    dao.borrar(atributo)
-    return Response(json.dumps({'sucess': 'true'}))
+    if (request.method == 'DELETE'):
+        u= Unpickler()
+        entidad = u.restore(request.json_body);
+        dao = AtributoFaseDAO()
+        atributo = dao.get_by_id(entidad["id"])     
+        dao.borrar(atributo)
+        return Response(json.dumps({'sucess': 'true'}))
+
+    else:
+        u= Unpickler()
+        dao = AtributoFaseDAO()
+        entidad = u.restore(request.json_body);
+        vieja = dao.get_by_id(entidad["id"])
+        vieja._nombre = entidad["_nombre"]
+        vieja._autor = entidad["_descripcion"]
+        vieja._prioridad = entidad["_valor"]
+        
+        dao.update(vieja)
+        return Response(json.dumps({'sucess': 'true'}))
    
 
 
