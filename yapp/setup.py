@@ -1,3 +1,10 @@
+"""
+Pasos para ejectuar este archivo.
+1. Crear un entorno virtual
+2. Activarlo
+3. Instalar el paquete postgresql-devel
+4. etc.
+"""
 import os
 
 from setuptools import setup, find_packages
@@ -14,6 +21,9 @@ requires = [
     'pyramid_debugtoolbar',
     'zope.sqlalchemy',
     'waitress',
+    'jsonpickle',
+    'psycopg2',
+    'pyramid_mailer'
     ]
 
 setup(name='yapp',
