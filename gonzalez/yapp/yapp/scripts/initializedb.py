@@ -17,6 +17,7 @@ import yapp.models.recurso.recurso
 import yapp.models.recurso.tipo_recurso
 import yapp.models.fase.fase
 import yapp.models.fase.atributo_fase
+import yapp.models.fase.tipo_fase
 import yapp.models.proyecto.proyecto
 import yapp.models.fase.fase
 import yapp.models.roles.entidad

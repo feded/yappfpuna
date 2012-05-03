@@ -12,7 +12,7 @@ class AtributoFase (Base, EntidadBase):
     _descripcion = Column(String, nullable = False) #Ver si va a poder ser null
     _valor = Column(String, nullable = False)       #Ver si va a poder ser null
     _fase_id = Column(Integer, ForeignKey('fase._id'))
-    _fase = relation(Fase, backref=backref('fase'))
+    _fase = relation(Fase, backref=backref('fase_atributo'))
 
     def __init__(self, nombre, fase, descripcion, valor):
         self._nombre = nombre;
