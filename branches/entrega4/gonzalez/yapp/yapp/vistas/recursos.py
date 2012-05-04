@@ -22,7 +22,7 @@ def obtener_crear_recursos(request):
         lista = [];
         p = Pickler()
         for entidad in entidades:
-            a = RecursosLindos(entidad._id, entidad._nombre, entidad._tipo,entidad._descripcion)
+            a = RecursosLindos(entidad._id, entidad._nombre, entidad._tipo,entidad._descripcion,entidad._tipo._tipo)
             lista.append(p.flatten(a))    
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})    
@@ -73,9 +73,10 @@ def get_tipos_recurso(request):
     return Response(a_ret)
 
 class RecursosLindos:
-    def __init__(self, _id, nombre, tipo, descripcion):
+    def __init__(self, _id, nombre, tipo, descripcion,tipo_nombre):
         self._id = _id;
         self._nombre = nombre;
         self._tipo = tipo;
         self._descripcion = descripcion;
+        self.tipo_nombre = tipo_nombre;
         

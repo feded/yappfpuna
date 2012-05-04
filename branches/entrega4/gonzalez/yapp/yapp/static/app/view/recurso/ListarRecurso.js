@@ -30,7 +30,8 @@ Ext.define('YAPP.view.recurso.ListarRecurso' ,{
 		this.columns = [
 			{header:'Recurso', dataIndex:'_nombre'},
 //			{header:'Tipo', dataIndex:'_tipo_id'}
-			{header:'Tipo', dataIndex:'_tipo',renderer : renderizador},
+//			{header:'Tipo', dataIndex:'_tipo',renderer : renderizador},
+			{header:'Tipo', dataIndex:'tipo_nombre'},
 			{header:'Descripcion', dataIndex:'_descripcion'}
         ];   
 
