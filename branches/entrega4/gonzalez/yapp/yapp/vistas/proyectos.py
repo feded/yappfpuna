@@ -13,9 +13,10 @@ import json
 
 @view_config(route_name='readproyectos')
 def read_proyectos(request):
-    """Metodo que maneja las llamadas para proyectos
-        - Retorna una lista si se envia GET
     """
+    @summary: Maneja las solicitudes para recuperar los proyectos.
+    """
+    
     rd = ProyectoDAO()
     entidades = rd.get_all()
     lista = [];
@@ -29,8 +30,9 @@ def read_proyectos(request):
 
 @view_config(route_name='createproyectos')
 def create_proyectos(request):
-    """Metodo que maneja las llamadas para proyectos
-        - CREATE : crea un proyecto
+    """
+    @summary: Maneja las solicitudes para crear los proyectos. El proyecto nuevo se crea
+            con una fase por defecto
     """
     u= Unpickler()
     entidad = u.restore(request.json_body);
@@ -64,8 +66,8 @@ def create_proyectos(request):
 
 @view_config(route_name='updateproyectos')
 def update_proyectos(request):
-    """Metodo que maneja las llamadas para proyectos
-        - PUT : modifica un proyecto
+    """
+    @summary: Maneja las solicitudes para actualizacion de proyectos.
     """
     u= Unpickler()
     dao = ProyectoDAO()
@@ -85,8 +87,9 @@ def update_proyectos(request):
 
 @view_config(route_name='deleteproyectos')
 def delete_proyectos(request):
-    """Metodo que maneja las llamadas para proyectos
-        - DELETE : elimina un proyecto
+    """
+    @summary: Maneja las solicitudes para eliminar proyectos. Al eliminar el proyecto
+        se eliman sus fases e items.
     """
     u= Unpickler()
     entidad = u.restore(request.json_body);
@@ -97,6 +100,5 @@ def delete_proyectos(request):
     for fase in fases:
         fase_dao.borrar(fase);
          
-    
     dao.borrar(proyecto)
     return Response(json.dumps({'sucess': 'true'}))

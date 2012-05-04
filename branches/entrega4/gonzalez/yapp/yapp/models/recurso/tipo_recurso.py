@@ -4,8 +4,9 @@ from yapp.models.entidad_base import EntidadBase
 
 
 class TipoRecurso (Base, EntidadBase):
-    """Crea una Tabla RolEstado con 
-        - _estado: cadena que representa el estado del rol
+    """
+    @summary: Crea una Tabla Tipo_Recurso. Los tipos de recursos bases.
+    @param _tipo: el nombre del recurso.
     """
     __tablename__ = "tipo_recurso"
     _tipo = Column(String, nullable = False)

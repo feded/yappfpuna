@@ -6,8 +6,15 @@ from sqlalchemy.schema import ForeignKey
 from sqlalchemy.orm import relation, backref
 
 class AtributoFase (Base, EntidadBase):
+    """
+    @summary: Crea un tabla Atributo_Fase. Los atributos particulares de una fase.
+    @param _nombre: nombre del atributo particular de la fase.
+    @param _descripcion: lo que guarda el atributo de la fase.
+    @param _valor: contenido del atributo de la fase .
+    @param fase: fase a la cual esta asociado el atributo.
+    """
 
-    __tablename__ = "atributofase"
+    __tablename__ = "atributo_fase"
     _nombre = Column(String, nullable = False)
     _descripcion = Column(String, nullable = False) #Ver si va a poder ser null
     _valor = Column(String, nullable = False)       #Ver si va a poder ser null

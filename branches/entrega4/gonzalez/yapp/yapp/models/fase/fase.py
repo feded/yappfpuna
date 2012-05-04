@@ -6,10 +6,15 @@ from yapp.models.entidad_base import EntidadBase
 from yapp.models.proyecto.proyecto import Proyecto
 
 class Fase (Base, EntidadBase):
-    """Crea una Tabla Proyecto con 
-        - _nombre: nombre de la fase
-        - _proyecto: proyecto al que pertenece la fase
-        """
+    """
+    @summary: Crea una Tabla Fase.  
+    @param _nombre: nombre de la fase.
+    @param _orden: orden de la fase dentro del proyecto.
+    @param _comentario: algun comentario acerca de la fase.
+    @param _estado: el estado actual de la fase.
+    @param _color: el color de la fase.
+    @param _proyecto: proyecto al cual pertenece la fase.
+    """
     __tablename__ = "fase"
     _nombre = Column(String, nullable = False)
     _orden = Column(Integer, nullable = False)
