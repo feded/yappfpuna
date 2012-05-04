@@ -1,10 +1,11 @@
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.schema import ForeignKey
-from sqlalchemy.orm import relation
+from sqlalchemy.orm import relation, backref
 from yapp.models import Base
 from yapp.models.entidad_base import EntidadBase
 from yapp.models.proyecto.proyecto import Proyecto
 from sqlalchemy.types import Boolean ,Date
+from yapp.models.tipo_item.tipo_item import TipoItem
 
 class Item (Base, EntidadBase):
     """Crea una Tabla item con 
@@ -14,6 +15,7 @@ class Item (Base, EntidadBase):
     __tablename__ = "item"
     _nombre = Column(String, nullable = False)
     _tipo_item_id = Column(Integer, ForeignKey('tipo_item._id'))
+    #_tipo_item = relation(TipoItem, backref=backref('tipo_item'))
     _fase_id = Column(Integer, ForeignKey('fase._id'))
     _duracion = Column(Integer , nullable = False)
     _condicionado = Column(Boolean, nullable = False)
@@ -36,3 +38,4 @@ class Item (Base, EntidadBase):
         self._fecha_fin = fecha_fin
         self._antecesor_id = antecesor_id
         self._padre_id = padre_id
+        #self._tipo_item = tipo_item
