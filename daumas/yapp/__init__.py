@@ -11,6 +11,7 @@ import vistas.proyectos
 import vistas.privilegios
 import vistas.roles
 import vistas.fases
+import vistas.recursos
 
 
 
@@ -43,7 +44,14 @@ def main(global_config, **settings):
     config.add_route('createproyectos', '/createProyectos')
     config.add_route('updateproyectos', '/updateProyectos')
     config.add_route('deleteproyectos', '/deleteProyectos')
-    config.add_route('readfases', '/readFases')
+    config.add_route('obtenercrearfases', '/fases')
+    config.add_route('actualizareliminarfases', '/fases/{id}')
+    config.add_route('obtenercrearatributofase', '/atributofase')
+    config.add_route('actualizareliminaratributofase', '/atributofase/{id}')
+    config.add_route('obtenercreartipofase', '/tipofase')
+    config.add_route('eliminartipofase', '/tipofase/{id}')
+    config.add_route('obtenercrearrecursos', '/recursos')
+    config.add_route('tipos_recursos', '/tipo_recurso')
     config.add_route('logout', '/logout')
     config.add_route('crearProyecto', '/crearProyecto')
     config.add_route('crearRol', '/crearRol')

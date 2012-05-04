@@ -1,6 +1,6 @@
-Ext.define('YAPP.store.Fases', {
+Ext.define('YAPP.store.AtributoFase', {
 	extend: 'Ext.data.Store',
-	model: 'YAPP.model.Fase',
+	model: 'YAPP.model.AtributoFase',
 	
 //	autoLoad : true,
     autoSync: true,
@@ -9,7 +9,7 @@ Ext.define('YAPP.store.Fases', {
         
 	proxy : {
     	type : 'rest',
-    	url: '/fases',
+    	url: '/atributofase',
 //    	api:{
 //    		read : 'http://localhost:6543/readFases',
 //    		create : 'http://localhost:6543/createFases'
@@ -22,7 +22,7 @@ Ext.define('YAPP.store.Fases', {
 //        },
         reader : {
         	type : 'json',
-            root : 'fases',
+            root : 'atributofase',
             successProperty : 'sucess'
             }
         }

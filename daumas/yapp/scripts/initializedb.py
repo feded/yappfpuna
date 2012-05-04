@@ -2,16 +2,27 @@ from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config
 from yapp.daos.privilegio_dao import PrivilegioDAO, EntidadDAO
 from yapp.daos.rol_dao import RolFinalDAO, RolEstadoDAO, RolDAO
+from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO
+from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import Base, DBSession
 from yapp.models.historial import Historial
 from yapp.models.roles.entidad import Entidad
 from yapp.models.roles.rol_estado import RolEstado
 from yapp.models.roles.rol_final import RolFinal
+from yapp.models.recurso.tipo_recurso import TipoRecurso
+from yapp.models.tipo_item.tipo_item import TipoItem
 import os
 import sys
 import transaction
 import yapp.models.entidad_padre
+import yapp.models.recurso.recurso
+import yapp.models.recurso.recurso_persona
+import yapp.models.recurso.recurso_bien
+import yapp.models.recurso.recurso_material
+import yapp.models.recurso.tipo_recurso
 import yapp.models.fase.fase
+import yapp.models.fase.atributo_fase
+import yapp.models.fase.tipo_fase
 import yapp.models.proyecto.proyecto
 import yapp.models.fase.fase
 import yapp.models.roles.entidad
@@ -67,6 +78,23 @@ def main(argv=sys.argv):
             DBSession.add(estado);
             estado = RolEstado("Suspendido");
             DBSession.add(estado);
+            
+    items = TipoRecursoDAO().get_all()
+    if (len(items) == 0):
+        with transaction.manager:
+            tipo = TipoRecurso("Persona")
+            DBSession.add(tipo);
+            tipo = TipoRecurso("Bien");
+            DBSession.add(tipo);
+            tipo = TipoRecurso("Material");
+            DBSession.add(tipo);
+            
+    items = TipoItemDAO().get_all()
+    if (len(items) == 0):
+        with transaction.manager:
+            tipoItem = TipoItem("Tipo item por defecto", "Tipo po defecto", 0, "TD", False)
+            DBSession.add(tipoItem);
+
             
     items = RolFinalDAO().get_query().filter(RolFinal._email == "admin").first();
     if (items == None) :
