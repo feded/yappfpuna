@@ -49,6 +49,9 @@ Ext.define('YAPP.controller.AdministrarFases', {
             	'listartipofase button[action=agregar]': {
             		click: this.agregarTipo
             	},
+            	'listartipofase button[action=quitar]': {
+            		click: this.quitarTipo
+            	},
             	'nuevoatributofase button[action=guardar]': {
             		click: this.guardarNuevoAtributoFase
             	},
@@ -82,32 +85,37 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	agregarTipo: function(button){
 //        var tipofase = new YAPP.model.TipoFase();
         
-//        var tipoFase = Ext.create('YAPP.model.TipoFase', {
-//    		name : 'Conan',
-//    		age  : 24,
-//    		phone: '555-555-5555'
-//		});
         		
-//		var win = button.up('grid');
-//		var cb = win.down('combobox');
-//		
-//		var storeTipo = cb.getStore();
-//		var tipo = storeTipo.findRecord('id',cb.getValue());
-//		
-//		var g = this.getGrilla();
-//		var fase = g.getSelectionModel().getSelection()[0];
-//
-// 		var tipoFase = Ext.create('YAPP.model.TipoFase', {
-//    		_tipo : tipo.data._nombre,
-//    		_fase  : fase.data.id
-//		});
-//		
+		var win = button.up('grid');
+		var cb = win.down('combobox');
+		
+		var storeTipo = cb.getStore();
+		var tipo = storeTipo.findRecord('id',cb.getValue());
+		
+		var g = this.getGrilla();
+		var fase = g.getSelectionModel().getSelection()[0];
+
+ 		var tipoFase = Ext.create('YAPP.model.TipoFase', {
+    		_tipo : tipo.data.id,
+    		tipo_nombre : tipo.data._nombre,
+    		_fase  : fase.data.id
+		});
+		
 //		console.log (tipoFase);
-//		var storeTipoFase = win.getStore();
-//		storeTipoFase.insert(0, tipoFase);
+		var storeTipoFase = win.getStore();
+		storeTipoFase.insert(0, tipoFase);
 		
 		
 	},
+	
+	quitarTipo: function(button){
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		var storeTipoFase = win.getStore()
+		storeTipoFase.remove(selection)	
+	},
+	
 	
 	
 	crearFase: function(button){
