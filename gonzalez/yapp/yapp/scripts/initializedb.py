@@ -3,12 +3,14 @@ from sqlalchemy import engine_from_config
 from yapp.daos.privilegio_dao import PrivilegioDAO, EntidadDAO
 from yapp.daos.rol_dao import RolFinalDAO, RolEstadoDAO, RolDAO
 from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO
+from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import Base, DBSession
 from yapp.models.historial import Historial
 from yapp.models.roles.entidad import Entidad
 from yapp.models.roles.rol_estado import RolEstado
 from yapp.models.roles.rol_final import RolFinal
 from yapp.models.recurso.tipo_recurso import TipoRecurso
+from yapp.models.tipo_item.tipo_item import TipoItem
 import os
 import sys
 import transaction
@@ -82,6 +84,13 @@ def main(argv=sys.argv):
             DBSession.add(tipo);
             tipo = TipoRecurso("Material");
             DBSession.add(tipo);
+            
+    items = TipoItemDAO().get_all()
+    if (len(items) == 0):
+        with transaction.manager:
+            tipoItem = TipoItem("Tipo item por defecto", "Tipo po defecto", 0, "TD", False)
+            DBSession.add(tipoItem);
+
             
     items = RolFinalDAO().get_query().filter(RolFinal._email == "admin").first();
     if (items == None) :

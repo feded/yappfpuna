@@ -3,7 +3,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	
 	views: [
 		'fase.ListarFase', 'fase.NuevaFase', 'fase.NuevoAtributoFase', 'fase.ListarAtributoFase',
-		'fase.NuevoAtributoFase', 'fase.EditarAtributoFase'
+		'fase.NuevoAtributoFase', 'fase.EditarAtributoFase', 'fase.ListarTipoFase'
 		],
 	stores:['Fases', 'AtributoFase'],
 	models:['Fase', 'AtributoFase'],
@@ -46,7 +46,9 @@ Ext.define('YAPP.controller.AdministrarFases', {
             	'listaratributofase button[action=borrar]': {
             		click: this.borrarAtributoFase
             	},
-            	
+            	'listartipofase button[action=agregar]': {
+            		click: this.agregarTipo
+            	},
             	'nuevoatributofase button[action=guardar]': {
             		click: this.guardarNuevoAtributoFase
             	},
@@ -56,6 +58,9 @@ Ext.define('YAPP.controller.AdministrarFases', {
             	'editaratributofase button[action=guardar]': {
             		click: this.guardarEditarAtributoFase
             	},
+            	'listarfase button[action=tipo]': {
+            		click: this.Tipo
+            	}
             	
         });
 	},	
@@ -74,6 +79,37 @@ Ext.define('YAPP.controller.AdministrarFases', {
 			}
 		});
 	},
+	agregarTipo: function(button){
+//        var tipofase = new YAPP.model.TipoFase();
+        
+//        var tipoFase = Ext.create('YAPP.model.TipoFase', {
+//    		name : 'Conan',
+//    		age  : 24,
+//    		phone: '555-555-5555'
+//		});
+        		
+//		var win = button.up('grid');
+//		var cb = win.down('combobox');
+//		
+//		var storeTipo = cb.getStore();
+//		var tipo = storeTipo.findRecord('id',cb.getValue());
+//		
+//		var g = this.getGrilla();
+//		var fase = g.getSelectionModel().getSelection()[0];
+//
+// 		var tipoFase = Ext.create('YAPP.model.TipoFase', {
+//    		_tipo : tipo.data._nombre,
+//    		_fase  : fase.data.id
+//		});
+//		
+//		console.log (tipoFase);
+//		var storeTipoFase = win.getStore();
+//		storeTipoFase.insert(0, tipoFase);
+		
+		
+	},
+	
+	
 	crearFase: function(button){
 		var view = Ext.widget('nuevafase');
         var fase = new YAPP.model.Fase();
@@ -122,6 +158,29 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var tab = tabs.add({
 			title : 'Administrar atributos fases',
 			xtype : 'listaratributofase',
+			closable : true
+		});
+
+		tabs.setActiveTab(tab);
+	},
+	
+	Tipo: function(button){
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		
+		
+		var store = this.getStore('TipoFase');
+		store.load({
+			params: {
+				id : selection.data.id
+			}
+		});
+		var tabs = Ext.getCmp('tabPrincipal');
+		
+		var tab = tabs.add({
+			title : 'Administrar tipos fase',
+			xtype : 'listartipofase',
 			closable : true
 		});
 

@@ -4,8 +4,11 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
+from yapp.daos.tipo_fase_dao import TipoFaseDAO
+from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models.fase.fase import Fase
 from yapp.models.proyecto.proyecto import Proyecto
+from yapp.models.fase.tipo_fase import TipoFase
 import json
 
 @view_config(route_name='readproyectos')
@@ -43,6 +46,13 @@ def create_proyectos(request):
     nueva_fase = Fase(nombre_fase, nuevo_proyecto, orden, comentario, estado,color)
     dao_fase = FaseDAO()
     dao_fase.crear(nueva_fase)
+    
+    dao_tipo_item = TipoItemDAO()
+    tipo_item = dao_tipo_item.get_by_id(1)
+    
+    nuevo_tipo_fase = TipoFase(nueva_fase,tipo_item)
+    dao_tipo_fase = TipoFaseDAO()
+    dao_tipo_fase.crear(nuevo_tipo_fase)
     
     lista = []
     p = Pickler()

@@ -47,6 +47,14 @@ Ext.define('YAPP.view.fase.ListarFase' ,{
                                         		action : 'atributo',
                                         		disabled : true,
                                         		scope : this
+                                			},
+                                			{
+                                        		xtype: 'button',
+                                        		text : 'Tipos de items',
+                                        		itemId : 'tipo',
+                                        		action : 'tipo',
+                                        		disabled : true,
+                                        		scope : this
                                 			}
                                 		]
                                 }];
@@ -67,6 +75,7 @@ Ext.define('YAPP.view.fase.ListarFase' ,{
     onSelectChange : function(selModel, selections) {
                 this.down('#delete').setDisabled(selections.length === 0);
                 this.down('#atributo').setDisabled(selections.length === 0);
+                this.down('#tipo').setDisabled(selections.length === 0);
     }
 });
 
