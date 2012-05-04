@@ -14,6 +14,19 @@ Ext.define('YAPP.model.Recurso', {
         	 {
 				name : '_tipo',
 				type : 'YAPP.model.TipoRecurso'
-			}, '_descripcion'	
+			}, '_descripcion',
+			{
+				name : '_costo_hora',
+                type : 'int'
+			},
+			{
+				name : '_costo_cantidad',
+                type : 'int'
+			},
+			{
+				name : '_cantidad',
+                type : 'int'
+			}
+			
         	]
 });

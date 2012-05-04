@@ -11,6 +11,7 @@ Ext.define('YAPP.model.TipoFase', {
 				name : '_tipo',
 				type : 'YAPP.model.TipoItem'
 			},
+			'tipo_nombre',
 			{
 				name : '_fase',
 				type : 'YAPP.model.Fase'

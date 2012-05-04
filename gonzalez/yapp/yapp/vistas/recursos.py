@@ -3,7 +3,13 @@ from jsonpickle.unpickler import Unpickler
 from pyramid.response import Response
 from pyramid.view import view_config
 from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO
+from yapp.daos.recurso_persona_dao import RecursoPersonaDAO
+from yapp.daos.recurso_bien_dao import RecursoBienDAO
+from yapp.daos.recurso_material_dao import RecursoMaterialDAO
 from yapp.models.recurso.recurso import Recurso
+from yapp.models.recurso.recurso_persona import RecursoPersona
+from yapp.models.recurso.recurso_bien import RecursoBien
+from yapp.models.recurso.recurso_material import RecursoMaterial
 from yapp.models.recurso.tipo_recurso import TipoRecurso
 
 import json
@@ -30,8 +36,19 @@ def obtener_crear_recursos(request):
         tipo_dao = TipoRecursoDAO()
         tipo = tipo_dao.get_query().filter(TipoRecurso._tipo == entidad["_tipo"]).first()
     
-        dao = RecursoDAO()
-        nuevo_recurso = Recurso(entidad["_nombre"],tipo,entidad["_descripcion"])
+        
+        
+        if (entidad["_tipo"] == "Persona"):
+            nuevo_recurso = RecursoPersona(entidad["_nombre"],tipo,entidad["_descripcion"],entidad["_costo_hora"])
+            dao = RecursoPersonaDAO()
+        elif (entidad["_tipo"] == "Bien"):
+            nuevo_recurso = RecursoBien(entidad["_nombre"],tipo,entidad["_descripcion"],entidad["_costo_cantidad"],entidad["_cantidad"])
+            dao = RecursoBienDAO()
+        elif (entidad["_tipo"] == "Material"):
+            nuevo_recurso = RecursoMaterial(entidad["_nombre"],tipo,entidad["_descripcion"],entidad["_costo_cantidad"],entidad["_cantidad"])
+            dao = RecursoMaterialDAO()
+#            nuevo_recurso = Recurso(entidad["_nombre"],tipo,entidad["_descripcion"])
+#            dao = RecursoDAO()clea
         dao.crear(nuevo_recurso)
         
         lista = []
@@ -56,7 +73,6 @@ def get_tipos_recurso(request):
     return Response(a_ret)
 
 class RecursosLindos:
-    """Unidad de transporte para roles"""
     def __init__(self, _id, nombre, tipo, descripcion):
         self._id = _id;
         self._nombre = nombre;

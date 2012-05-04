@@ -5,10 +5,12 @@ from pyramid.view import view_config
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.atributo_fase_dao import AtributoFaseDAO
 from yapp.daos.tipo_fase_dao import TipoFaseDAO
+from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
 from yapp.models.fase.fase import Fase
 from yapp.models.fase.atributo_fase import AtributoFase
 from yapp.models.fase.tipo_fase import TipoFase
+from yapp.models.tipo_item.tipo_item import TipoItem
 import json
 
 @view_config(route_name='obtenercrearfases')
@@ -118,7 +120,12 @@ def obtener_crear_tipofase(request):
         lista = [];
         p = Pickler()
         for entidad in entidades:
-            a = TipoFaseLindos(entidad._id, entidad._fase, entidad._tipo)
+#            print '-------------------------'
+#            print '-------------------------'
+#            print entidad
+#            dao = TipoItemDAO()
+#            tipo_nombre = dao.get_by_id(entidad._tipo._id)
+            a = TipoFaseLindos(entidad._id, entidad._fase, entidad._tipo,entidad._tipo._nombre)
             lista.append(p.flatten(a))    
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'tipofase':j_string})
@@ -136,7 +143,8 @@ class FaseLinda:
         self._color = color;
 
 class TipoFaseLindos:
-    def __init__(self, _id, fase, tipo):
+    def __init__(self, _id, fase, tipo,tipo_nombre):
         self._id = _id;
         self._fase = fase;
         self._tipo = tipo;
+        self.tipo_nombre = tipo_nombre;

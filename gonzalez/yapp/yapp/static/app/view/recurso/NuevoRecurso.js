@@ -42,9 +42,13 @@ Ext.define('YAPP.view.recurso.NuevoRecurso', {
       									var tipo = combo.getValue();
       									var win = combo.up('window');
       									if(tipo == 'Persona'){
+            								win.down('#verCostoCantidad').setVisible(false);
+            								win.down('#verCostoHora').setVisible(true);
             								win.down('#verCantidad').setVisible(false);
       									}
             							else{
+            								win.down('#verCostoHora').setVisible(false);
+            								win.down('#verCostoCantidad').setVisible(true);
             								win.down('#verCantidad').setVisible(true);
             							}
             								
@@ -58,9 +62,24 @@ Ext.define('YAPP.view.recurso.NuevoRecurso', {
                     		},
                     		{
                         		xtype: 'textfield',
+                        		name : '_costo_hora',
+                        		itemId : 'verCostoHora',
+                        		hidden: true,
+                        		fieldLabel: 'Costo/hora'
+                    		},
+                    		{
+                        		xtype: 'textfield',
+                        		name : '_costo_cantidad',
+                        		itemId : 'verCostoCantidad',
+                        		hidden: true,
+                        		fieldLabel: 'Costo/cantidad'
+                    		},
+                    		{
+                        		xtype: 'textfield',
+                        		name : '_cantidad',
                         		itemId : 'verCantidad',
                         		hidden: true,
-                        		fieldLabel: 'Cantidad disponible'
+                        		fieldLabel: 'Cantidad'
                     		}
 							
                 		]

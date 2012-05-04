@@ -16,6 +16,9 @@ import sys
 import transaction
 import yapp.models.entidad_padre
 import yapp.models.recurso.recurso
+import yapp.models.recurso.recurso_persona
+import yapp.models.recurso.recurso_bien
+import yapp.models.recurso.recurso_material
 import yapp.models.recurso.tipo_recurso
 import yapp.models.fase.fase
 import yapp.models.fase.atributo_fase
