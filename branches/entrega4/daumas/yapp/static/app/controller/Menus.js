@@ -2,7 +2,7 @@ Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
 	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List',
-			'rol.List', 'tipoItem.List', 'suscripciones.List', 'item.List' ],
+			'rol.List', 'tipoItem.List', 'suscripciones.List', 'item.List', 'recurso.ListarRecurso' ],
 
 	init : function() {
 		console.log('Cargado controller Menus');
