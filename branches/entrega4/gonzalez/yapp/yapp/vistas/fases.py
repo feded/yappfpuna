@@ -4,9 +4,11 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.atributo_fase_dao import AtributoFaseDAO
+from yapp.daos.tipo_fase_dao import TipoFaseDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
 from yapp.models.fase.fase import Fase
 from yapp.models.fase.atributo_fase import AtributoFase
+from yapp.models.fase.tipo_fase import TipoFase
 import json
 
 @view_config(route_name='obtenercrearfases')
@@ -107,7 +109,21 @@ def actualizar_eliminar_atributofase(request):
         dao.update(vieja)
         return Response(json.dumps({'sucess': 'true'}))
    
+@view_config(route_name='obtenercreartipofase')
+def obtener_crear_tipofase(request):
+    if (request.method == 'GET'):
+        id = request.GET.get('id')
+        rd = TipoFaseDAO()
+        entidades = rd.get_query().filter(TipoFase._fase_id == id).all()
+        lista = [];
+        p = Pickler()
+        for entidad in entidades:
+            a = TipoFaseLindos(entidad._id, entidad._fase, entidad._tipo)
+            lista.append(p.flatten(a))    
+        j_string = p.flatten(lista)
+        a_ret = json.dumps({'sucess': 'true', 'tipofase':j_string})
 
+        return Response(a_ret)
 
 class FaseLinda:
     def __init__(self, _id, nombre, proyecto,orden,comentario, estado,color):
@@ -118,3 +134,9 @@ class FaseLinda:
         self._comentario = comentario;
         self._estado = estado;
         self._color = color;
+
+class TipoFaseLindos:
+    def __init__(self, _id, fase, tipo):
+        self._id = _id;
+        self._fase = fase;
+        self._tipo = tipo;
