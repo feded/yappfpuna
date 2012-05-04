@@ -28,3 +28,8 @@ class EntidadBase:
             raise ValueError("ID debe ser numerico y mayor a 0")
         else:
             self._id = id
+            
+class EntidadBaseDTO(object):
+    """Clase que representa una entidad base para ser enviada"""
+    def __init__(self, id):
+        self._id = id;

@@ -1,11 +1,11 @@
-var formulario = Ext.define('YAPP.view.privilegio.Edit', {
+Ext.define('YAPP.view.privilegio.Edit', {
 	extend : 'Ext.window.Window',
 	alias : 'widget.privilegioedit',
 	
 	title : 'Editar Privilegio',
 	layout : 'fit',
 	autoShow : true,
-	stores : [ 'Entidades' ],
+// stores : [ 'EntidadesPadres' ],
 	
 	initComponent : function() {
 		this.items = [ {
@@ -24,11 +24,22 @@ var formulario = Ext.define('YAPP.view.privilegio.Edit', {
 					fieldLabel : 'Entidad',
 					name : '_entidad',
 					store : Ext.create('YAPP.store.Entidades'),
-					valueField : '_nombre',
+					valueField : 'id',
 					displayField : '_nombre',
 					typeAhead : true,
 					queryMode : 'local',
 					emptyText : 'Seleccione una entidad...'
+				}, {
+					xtype : 'combobox',
+					fieldLabel : 'Instancia',
+					id : 'comboEntidadPadre',
+					name : '_entidad_padre',
+					valueField : 'id',
+					displayField : '_nombre',
+					typeAhead : true,
+					queryMode : 'local',
+					emptyText : 'Seleccione una entidad...',
+//					store : Ext.create('YAPP.store.EntidadesPadres')
 				} ]
 			} ]
 		} ];

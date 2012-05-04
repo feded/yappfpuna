@@ -2,7 +2,7 @@ Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
 	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List',
-			'rol.List', 'tipoItem.List', 'suscripciones.List' ],
+			'rol.ABM', 'rol.List', 'tipoItem.List', 'suscripciones.List' ],
 
 	init : function() {
 		console.log('Cargado controller Menus');
@@ -61,7 +61,7 @@ Ext.define('YAPP.controller.Menus', {
 		
 		var tab = tabs.add({
 			title : 'Administrar roles',
-			xtype : 'rollist',
+			xtype : 'rolabm',
 			closable : true
 		});
 		
