@@ -90,6 +90,29 @@ Ext.onReady(function() {
 					if (btn == 'ok') {
 						var redirect = 'index';
 						window.location = redirect;
+//						Ext.application({
+//						    name: 'YAPP',
+//						    
+//						    appFolder: '/static/app',
+//						    
+//						    autoCreateViewport: true,
+//						    
+//						    controllers: [
+//						        'Menus',
+//						        'AdministrarProyectos',
+//						        'AdministrarFases',
+//						        'Privilegios',
+//						        'Roles',
+//						        'TipoItem',
+//						        'Suscripciones'
+//						        
+//						    ],
+//						    
+//						    launch: function() {
+//						        win.hide();
+//						        return
+//						    }
+//						});
 					}
 				});
 			},

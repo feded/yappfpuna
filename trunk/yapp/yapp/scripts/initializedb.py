@@ -34,6 +34,7 @@ import yapp.models.root_factory
 import yapp.models.suscripcion.suscripcion
 import yapp.models.tipo_item.atributo_tipo_item
 import yapp.models.tipo_item.tipo_item
+import yapp.models.item.item
 
 
 #from yapp.models.roles import *
@@ -98,5 +99,5 @@ def main(argv=sys.argv):
     items = RolFinalDAO().get_query().filter(RolFinal._email == "admin").first();
     if (items == None) :
         estadoActivo = RolEstadoDAO().get_query().filter(RolEstado._estado == "Activo").first();
-        admin = RolFinal("admin", estado, estadoActivo, "admin");
+        admin = RolFinal("admin", estadoActivo, "admin" , "admin");
         DBSession.add(admin);
