@@ -36,7 +36,8 @@ Ext.define('YAPP.view.fase.ListarTipoFase' ,{
       
       
 		this.columns = [
-			{header:'Tipo', dataIndex:'_tipo', renderer : renderizador}
+//			{header:'Tipo', dataIndex:'_tipo', renderer : renderizador}
+			{header:'Tipo', dataIndex:'tipo_nombre'}
         ];   
 
         this.callParent(arguments);
