@@ -131,6 +131,36 @@ def obtener_crear_tipofase(request):
         a_ret = json.dumps({'sucess': 'true', 'tipofase':j_string})
 
         return Response(a_ret)
+    elif (request.method == 'POST'):
+        u= Unpickler()
+        entidad = u.restore(request.json_body);
+        
+        dao = FaseDAO()
+        fase = dao.get_by_id(entidad["_fase"])
+        dao = TipoItemDAO()
+        tipo = dao.get_by_id(entidad["_tipo"])
+    
+        dao = TipoFaseDAO()
+        nuevo_tipo_fase = TipoFase(fase,tipo)
+        dao.crear(nuevo_tipo_fase)
+        
+        lista = []
+        p = Pickler()
+        lista.append(p.flatten(nuevo_tipo_fase))
+        j_string = p.flatten(lista)
+        a_ret = json.dumps({'sucess': 'true', 'atributofases':j_string})
+    
+        return Response(a_ret)
+
+@view_config(route_name='eliminartipofase')
+def eliminar_tipofase(request):
+    if (request.method == 'DELETE'):
+        u= Unpickler()
+        entidad = u.restore(request.json_body);
+        dao = TipoFaseDAO()
+        tipo_fase= dao.get_by_id(entidad["id"])     
+        dao.borrar(tipo_fase)
+        return Response(json.dumps({'sucess': 'true'}))        
 
 class FaseLinda:
     def __init__(self, _id, nombre, proyecto,orden,comentario, estado,color):
