@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String
 from yapp.models import Base
-from yapp.models.entidad_base import EntidadBase
+from yapp.models.entidad_base import EntidadBase, EntidadBaseDTO
 
 
 class RolEstado (Base, EntidadBase):
@@ -13,4 +13,7 @@ class RolEstado (Base, EntidadBase):
     def __init__(self, estado):
         self._estado = estado
         
-    
+class RolEstadoDTO (EntidadBaseDTO):
+    def __init__(self, id, estado):
+        super(RolEstadoDTO, self).__init__(id);
+        self._estado = estado;

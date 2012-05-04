@@ -7,9 +7,12 @@ from jsonpickle.pickler import Pickler
 from jsonpickle.unpickler import Unpickler
 from pyramid.response import Response
 from pyramid.view import view_config
-from yapp.daos.privilegio_dao import PrivilegioDAO, EntidadDAO
-from yapp.models.roles.entidad import Entidad
-from yapp.models.roles.privilegio import Privilegio
+from yapp.daos.entidad_dao import EntidadDAO
+from yapp.daos.entidad_padre_dao import EntidadPadreDAO
+from yapp.daos.privilegio_dao import PrivilegioDAO
+from yapp.models.entidad_padre import EntidadPadre, EntidadPadreDTO
+from yapp.models.roles.entidad import EntidadDTO
+from yapp.models.roles.privilegio import Privilegio, PrivilegiosDTO
 import json
 
 @view_config(route_name='privilegios')
@@ -26,7 +29,7 @@ def get_privilegios(request):
         lista = [];
         p = Pickler()
         for entidad in entidades:
-            n_entidad = PrivilegiosLindos(entidad._id, entidad._nombre, entidad._entidad)
+            n_entidad = PrivilegiosDTO(entidad)
             lista.append(p.flatten(n_entidad))
             
         j_string = p.flatten(lista)
@@ -34,19 +37,25 @@ def get_privilegios(request):
         return Response(a_ret)
     
     if (request.method == 'POST'):
+        print "-------------------"
+        print request.json_body
+        print "-------------------"
         u = Unpickler()
         objeto = u.restore(request.json_body);
-        entidad_dao = EntidadDAO();
-        if (isinstance(objeto["_entidad"], dict)):
-            entidad = entidad_dao.get_query().filter(Entidad._nombre == objeto["_entidad"]["_nombre"]).first()
+        entidad = EntidadDAO().get_by_id(objeto['_entidad']);
+        if (objeto['_entidad_padre'] == None):
+            entidad_padre = None
         else:
-            entidad = entidad_dao.get_query().filter(Entidad._nombre == objeto["_entidad"]).first()
-        nueva_entidad = Privilegio(objeto["_nombre"], entidad);
-        dao = PrivilegioDAO()
-        dao.crear(nueva_entidad);
+            entidad_padre = EntidadPadreDAO().get_by_id(objeto['_entidad_padre']);
+        privilegio = Privilegio(objeto['_nombre'], entidad, entidad_padre);
+        dao = PrivilegioDAO();
+        dao.crear(privilegio);
+        
+#        nueva_entidad = Privilegio(objeto["_nombre"], entidad);
+#        dao = PrivilegioDAO()
+#        dao.crear(nueva_entidad);
         p = Pickler()
-        aRet = p.flatten(nueva_entidad)
-        print nueva_entidad.__dict__
+        aRet = p.flatten(privilegio)
         return Response(json.dumps({'sucess': 'true', 'privilegios':aRet}))
     
     if (request.method == 'DELETE'):
@@ -59,15 +68,7 @@ def get_privilegios(request):
     if (request.method == 'PUT') :
         u = Unpickler()
         objeto = u.restore(request.json_body)
-        entidad_dao = EntidadDAO()
-        print "---------------------------"
-        print objeto["_entidad"]
-        print "---------------------------"
-        if (isinstance(objeto["_entidad"], dict)):
-            entidad = entidad_dao.get_query().filter(Entidad._nombre == objeto["_entidad"]["_nombre"]).first()
-        else:
-            entidad = entidad_dao.get_query().filter(Entidad._nombre == objeto["_entidad"]).first()
-            
+        entidad = get_entidad_padre(objeto)
         dao = PrivilegioDAO()
         id_privilegio = request.matchdict['id_privilegio']
         privilegio = dao.get_by_id(id_privilegio);
@@ -78,7 +79,17 @@ def get_privilegios(request):
         aRet = p.flatten(privilegio)
         return Response(json.dumps({'sucess': 'true'}))
 
-    
+
+def get_entidad_padre(objeto):
+    entidad_dao = EntidadPadreDAO();
+    if (objeto["_entidad"] == ""):
+        return None;
+    if (isinstance(objeto["_entidad"], dict)):
+        entidad = entidad_dao.get_query().filter(EntidadPadre._id == objeto["_entidad"]["_id"]).first()
+    else:
+        entidad = entidad_dao.get_query().filter(EntidadPadre._id == objeto["_entidad"]).first()
+    return entidad;
+
 @view_config(route_name='entidades')
 def get_entidades(request):
     """Metodo que maneja las llamadas para entidades
@@ -90,19 +101,13 @@ def get_entidades(request):
         lista = [];
         p = Pickler()
         for objeto in entidades:
-            lista.append(p.flatten(objeto))
+            epDAO = EntidadDTO(objeto);
+#            print epDAO._nombre;
+            lista.append(p.flatten(epDAO))
             
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
         return Response(a_ret)
-    
-
-class PrivilegiosLindos:
-    """Unidad de transporte para privilegios"""
-    def __init__(self, _id, nombre, entidad):
-        self._id = _id;
-        self._nombre = nombre;
-        self._entidad = entidad;
 
 def info(var):
     print "----CLASE----"

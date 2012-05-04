@@ -1,6 +1,6 @@
 Ext.define('YAPP.controller.Roles', {
 	extend : 'Ext.app.Controller',
-	views : [ 'rol.List', 'rol.Edit' ],
+	views : [ 'rol.ABM', 'rol.List', 'rol.Edit' ],
 	models : [ 'Rol' ],
 	stores : [ 'Roles' ],
 	requires : [ 'YAPP.model.Rol', 'YAPP.store.Roles' ],
@@ -24,7 +24,7 @@ Ext.define('YAPP.controller.Roles', {
 	
 	editUser : function(grid, record) {
 		// console.log('Double clicked on ' + record.get('_nombre'));
-		record.data.accion='PUT'
+		record.data.accion = 'PUT'
 		this.ventanaRol(record);
 	},
 	botonEditGuardarApretado : function(button) {

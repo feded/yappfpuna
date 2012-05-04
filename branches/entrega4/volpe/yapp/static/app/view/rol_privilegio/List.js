@@ -1,9 +1,9 @@
-Ext.define('YAPP.view.rol.List', {
+Ext.define('YAPP.view.rol_privilegio.List', {
 	extend : 'Ext.grid.Panel',
-	alias : 'widget.rollist',
+	alias : 'widget.rolprivilegiolist',
 	
 	// title : 'Todos los roles',
-	store : 'Roles',
+	store : 'Privilegios del rol',
 	layout : 'fit',
 	// requires : [ 'Ext.grid.plugin.CellEditing', 'Ext.form.field.Text',
 	// 'Ext.toolbar.TextItem' ],
@@ -19,13 +19,11 @@ Ext.define('YAPP.view.rol.List', {
 			dockedItems : [ {
 				xtype : 'toolbar',
 				items : [ {
-					iconCls : 'icon-add',
-					text : 'Nuevo Rol',
+					text : 'Agregar privilegio',
 					scope : this,
 					action : 'crear'
 				}, '|', {
-					iconCls : 'icon-delete',
-					text : 'Eliminar Rol',
+					text : 'Eliminar privilegio',
 					itemId : 'delete',
 					action : 'borrar',
 					disabled : true,
@@ -33,31 +31,21 @@ Ext.define('YAPP.view.rol.List', {
 				} ]
 			} ],
 			columns : [ {
-				text : 'ID',
-				width : 40,
-				sortable : true,
-				dataIndex : 'id'
-			}, {
-				text : 'Nombre',
+				text : 'Privilegio',
 				flex : 1,
 				sortable : true,
-				dataIndex : '_nombre'
+				dataIndex : '_privilegio',
+				renderer : renderizar_rol_privilegio
 			}, {
-				header : 'Estado',
+				header : 'Entidad',
 				flex : 1,
 				sortable : true,
-				dataIndex : '_estado',
-				renderer : renderizador_estado_rol,
+				dataIndex : '_entidad_padre',
+				renderer : renderizar_rol_entidad_padre,
 				field : {
 					type : 'textfield'
 				}
-			}, {
-				header : 'Final',
-				width : 40,
-				flex : 0,
-				sortable : true,
-				dataIndex : '_esFinal'
-			} ]
+			}]
 		});
 		this.callParent(arguments);
 		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
@@ -68,11 +56,17 @@ Ext.define('YAPP.view.rol.List', {
 
 });
 
-function renderizador_estado_rol(val) {
+function renderizar_rol_privilegio(val) {
 	if (val == null)
 		return val;
-	if (val._estado == null)
+	if (val._nombre == null)
 		return val
-	return val._estado
-	// return ""
+	return val._nombre
+}
+function renderizar_rol_entidad_padre(val) {
+	if (val == null)
+		return val;
+	if (val._nombre == null)
+		return val
+	return val._nombre
 }

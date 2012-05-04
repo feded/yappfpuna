@@ -66,38 +66,7 @@ def eliminar_suscripcion(request, id):
     a_ret = json.dumps({'sucess': 'true', 'suscripciones':j_string})
     return Response(a_ret)
 
-@view_config(route_name='entidades_padre')
-def get_entidades_padre(request):
-    """B{Metodo que retorna una lista de entidades finales}
-        - B{Parametros:} 
-            - B{Request:} peticion enviada por el navegador
-        - B{Retorna:}
-            - B{JSON:} Json compuesto, por un boolean B{sucess} 
-            con el estado de la operacion y B{entidades} un json de entidades.
-    """
-    get_entidades(request)
-    if (request.method == 'GET'):
-        return get_entidades(request);
-    return {}
-        
-def get_entidades(request):
-    """B{Metodo que retorna una lista de suscripciones}
-        - B{Parametros:} 
-            - B{Request:} peticion enviada por el navegador
-        - B{Retorna:}
-            - B{JSON:} Json compuesto, por un boolean B{sucess} 
-            con el estado de la operacion y B{suscripciones} un json de suscripciones.
-    """
-    dao = EntidadPadreDAO()
-    entidades = dao.get_all()
-    lista = [];
-    p = Pickler()
-    for entidad in entidades:
-        lista.append(p.flatten(entidad))
-    
-    j_string = p.flatten(lista)
-    a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
-    return Response(a_ret)
+
 
 class SuscrpcionesLindos:
     def __init__(self, _id, nombre, rol, entidad):

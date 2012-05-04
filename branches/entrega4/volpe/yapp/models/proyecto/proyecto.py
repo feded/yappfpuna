@@ -36,3 +36,11 @@ class Proyecto(EntidadPadre):
         self._nota = nota;
         self._fecha_creacion = fecha_creacion;
         self._fecha_modificacion = fecha_modificacion;
+        
+class ProyectoDTO():
+    def __init__(self, proyecto):
+        if (proyecto == None):
+            return
+        self._id = proyecto._id;
+        self._nombre = proyecto._nombre;
+        self._descripcion = proyecto._descripcion;
