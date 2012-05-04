@@ -57,6 +57,8 @@ def main(global_config, **settings):
     config.add_route('guardarTipo', '/guardarTipo')
     config.add_route('crearListarAtributos', '/atributoItem')
     config.add_route('editarEliminarAtributos', '/atributoItem/{id}')
+    config.add_route('crearListarItems', '/item')
+    config.add_route('editarEliminarItems', '/item/{id}')
     config.add_route('crearAtributo', '/crearAtributo')
     config.add_route('eliminarAtributo', '/eliminarAtributo')
     config.add_route('guardarAtributo', '/guardarAtributo')
