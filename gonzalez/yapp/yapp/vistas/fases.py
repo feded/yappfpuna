@@ -15,6 +15,11 @@ import json
 
 @view_config(route_name='obtenercrearfases')
 def obtener_crear_fases(request):
+    """
+    @summary: Maneja las solicitudes para obtener y crear fases.
+              Las fases nuevas soportan por defecto un tipo de item.
+    """
+
     if (request.method == 'GET'):
         proyecto_id = request.GET.get('id')
         rd = FaseDAO()
@@ -49,15 +54,33 @@ def obtener_crear_fases(request):
 
 @view_config(route_name='actualizareliminarfases')
 def actualizar_eliminar_fase(request):
+    """
+    @summary: Maneja las solicitudes para actualizar y elimninar fases.
+              Al eliminar la fase se eliminan sus atributos particulares y los tipos de items que soporta.                
+    """
     u= Unpickler()
     entidad = u.restore(request.json_body);
     dao = FaseDAO()
-    fase = dao.get_by_id(entidad["id"])     
+    fase = dao.get_by_id(entidad["id"])
+    
+    atributo_fase_dao = AtributoFaseDAO()
+    atributos = atributo_fase_dao.get_query().filter(AtributoFase._fase_id == fase._id).all();
+    for atributo in atributos:
+        atributo_fase_dao.borrar(atributo);
+        
+    tipo_fase_dao = TipoFaseDAO()
+    tipos = tipo_fase_dao.get_query().filter(TipoFase._fase_id == fase._id).all();
+    for tipo in tipos:
+        tipo_fase_dao.borrar(tipo);
+    
     dao.borrar(fase)
     return Response(json.dumps({'sucess': 'true'}))
 
 @view_config(route_name='obtenercrearatributofase')
 def obtener_crear_atributofase(request):
+    """
+    @summary: Maneja las solicitudes para obtener y crear atributos particulares de una fase.                  
+    """
     if (request.method == 'GET'):
         id = request.GET.get('id')
         rd = AtributoFaseDAO()
@@ -91,6 +114,9 @@ def obtener_crear_atributofase(request):
 
 @view_config(route_name='actualizareliminaratributofase')
 def actualizar_eliminar_atributofase(request):
+    """
+    @summary: Maneja las solicitudes para actualizar y elimninar atributos particulares de una fase.                        
+    """
     if (request.method == 'DELETE'):
         u= Unpickler()
         entidad = u.restore(request.json_body);
@@ -113,6 +139,9 @@ def actualizar_eliminar_atributofase(request):
    
 @view_config(route_name='obtenercreartipofase')
 def obtener_crear_tipofase(request):
+    """
+    @summary: Maneja las solicitudes para obtener y asociar tipos de items a una fase en particular.                
+    """
     if (request.method == 'GET'):
         id = request.GET.get('id')
         rd = TipoFaseDAO()
@@ -120,11 +149,6 @@ def obtener_crear_tipofase(request):
         lista = [];
         p = Pickler()
         for entidad in entidades:
-#            print '-------------------------'
-#            print '-------------------------'
-#            print entidad
-#            dao = TipoItemDAO()
-#            tipo_nombre = dao.get_by_id(entidad._tipo._id)
             a = TipoFaseLindos(entidad._id, entidad._fase, entidad._tipo,entidad._tipo._nombre)
             lista.append(p.flatten(a))    
         j_string = p.flatten(lista)
@@ -154,6 +178,9 @@ def obtener_crear_tipofase(request):
 
 @view_config(route_name='eliminartipofase')
 def eliminar_tipofase(request):
+    """
+    @summary: Maneja las solicitudes elimninar soporte de tipos de item de una fase.
+    """
     if (request.method == 'DELETE'):
         u= Unpickler()
         entidad = u.restore(request.json_body);
@@ -163,6 +190,9 @@ def eliminar_tipofase(request):
         return Response(json.dumps({'sucess': 'true'}))        
 
 class FaseLinda:
+    """
+    @summary: Unidad de transporte para fases.         
+    """
     def __init__(self, _id, nombre, proyecto,orden,comentario, estado,color):
         self._id = _id
         self._nombre = nombre;
@@ -173,6 +203,9 @@ class FaseLinda:
         self._color = color;
 
 class TipoFaseLindos:
+    """
+    @summary: Unidad de transporte para tipos fases.                
+    """
     def __init__(self, _id, fase, tipo,tipo_nombre):
         self._id = _id;
         self._fase = fase;

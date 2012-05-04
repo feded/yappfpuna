@@ -16,6 +16,9 @@ import json
 
 @view_config(route_name='obtenercrearrecursos')
 def obtener_crear_recursos(request):
+    """
+    @summary: Maneja las solicitudes para obtener y crear recursos.
+    """
     if (request.method == 'GET'):
         rd = RecursoDAO()
         entidades = rd.get_all()
@@ -47,8 +50,7 @@ def obtener_crear_recursos(request):
         elif (entidad["_tipo"] == "Material"):
             nuevo_recurso = RecursoMaterial(entidad["_nombre"],tipo,entidad["_descripcion"],entidad["_costo_cantidad"],entidad["_cantidad"])
             dao = RecursoMaterialDAO()
-#            nuevo_recurso = Recurso(entidad["_nombre"],tipo,entidad["_descripcion"])
-#            dao = RecursoDAO()clea
+            
         dao.crear(nuevo_recurso)
         
         lista = []
@@ -61,6 +63,9 @@ def obtener_crear_recursos(request):
 
 @view_config(route_name='tipos_recursos')
 def get_tipos_recurso(request):
+    """
+    @summary: Maneja las solicitudes para recuperar los tipos de recursos.
+    """
     re = TipoRecursoDAO()
     entidades = re.get_query().all()
     lista = [];
@@ -73,6 +78,9 @@ def get_tipos_recurso(request):
     return Response(a_ret)
 
 class RecursosLindos:
+    """
+    @summary: Unidad de transporte para recursos.         
+    """
     def __init__(self, _id, nombre, tipo, descripcion,tipo_nombre):
         self._id = _id;
         self._nombre = nombre;

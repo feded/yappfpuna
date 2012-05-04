@@ -6,6 +6,12 @@ from yapp.models.entidad_base import EntidadBase
 from yapp.models.recurso.tipo_recurso import TipoRecurso
 
 class Recurso (Base, EntidadBase):
+    """
+    @summary: Crea una Tabla Recurso. Los Recursos pueden ser asignados a items.
+    @param _nombre: nombre del recurso.
+    @param _descripcion: una breve descripcion del recurso.
+    @param _tipo: tipo de recurso. Puede ser persona, bien o material.
+    """
     __tablename__ = "recurso"
     _nombre = Column(String, nullable = False)
     _tipo_id = Column(Integer, ForeignKey('tipo_recurso._id'))
