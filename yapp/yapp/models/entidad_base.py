@@ -8,6 +8,11 @@ from sqlalchemy import (
 
 class EntidadBase:
 
+    """Define los campos base de una Tabla con 
+        - _id: id de todas las entidades
+        TODO:- _fecha_creacion = fecha de creacion
+    """
+    
     _id = Column(Integer, primary_key=True)
 #    _sa_instance_state
     @property

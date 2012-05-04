@@ -13,6 +13,7 @@ Ext.application({
         'Roles',
         'TipoItem',
         'Suscripciones',
+        'Item',
         'Recursos'
         
     ],

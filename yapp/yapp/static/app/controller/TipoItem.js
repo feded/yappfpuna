@@ -32,24 +32,41 @@ Ext.define('YAPP.controller.TipoItem', {
         	'tipolist actioncolumn':{
                 click: this.verAtributos
             },
+//            'tipolist button[action=verAtributos]':{
+//                click: this.verAtributos
+//            },
             'tipolist button[action=borrar]' : {
 				click : this.borrarTipoItem
 			},
+			'atributosList':{
+				itemdblclick: this.editarAtributo
+			},
+			'atributosList button[action=borrar]':{
+				click: this.borrarAtributo
+			}
 
         });
 	},
 	
-	verAtributos : function(button){
+	verAtributos : function(grid, view, recordIndex, cellIndex, item, e){
 		var tabs = Ext.getCmp('tabPrincipal');
-//		var store = this.getTipoItemsStore()
-//		console.log(record);
-//		console.log(this.getAtributoTipoItemsStore().load({params:{id:record}}))
-		
-			
+		tipoId = this.getTipoItemsStore().getAt(recordIndex).get('id');
+//		console.log(tipoId)
+//		this.getAtributoTipoItemStore().clearFilter(true)
+//		this.getAtributoTipoItemStore().filter('_tipo_item_id', tipoId);
+//		var tab = Ext.getCmpByName('Atributos Tipo Item')
 		var tab = tabs.add({
 			title : 'Atributos Tipo Item',
-			xtype : 'atributosList'
+			xtype : 'atributosList',
+			closable : true
+			});
+		var store = this.getStore('AtributoTipoItem');
+		store.load({
+			params:{
+				id: tipoId
+				}
 		});
+		
 		
 		tabs.setActiveTab(tab);
 	},
@@ -57,22 +74,24 @@ Ext.define('YAPP.controller.TipoItem', {
 	crearAtributo : function(button){
 		var view = Ext.widget('atributoedit');
     	console.log('Boton crear atributo apretaRdo');
-		var tipoItem = new YAPP.model.AtributoTipoItem();
-		tipoItem.data.accion = "POST";
-		view.down('form').loadRecord(tipoItem);
+		var atributoTipoItem = new YAPP.model.AtributoTipoItem();
+		atributoTipoItem.data._tipo_item_id = tipoId;
+		atributoTipoItem.data.accion = 'POST'
+		view.down('form').loadRecord(atributoTipoItem);
     },
     
     guardarAtributo: function(button){
+    	console.log('Entre a guardar')
     	var win = button.up('window');
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);
 		if (record.data._opcional == 'on')record.data._opcional = 'true'
-		else record.data._opcional = 'false' 
-		console.log(record);
+		else record.data._opcional = 'false'
 		win.close();
-		this.getAtributoTipoItemStore().insert(0, record);
+		if (record.data.accion == "POST")
+			this.getAtributoTipoItemStore().insert(0, record);
     },
     
     guardarTipoItem : function(button) {
@@ -83,38 +102,31 @@ Ext.define('YAPP.controller.TipoItem', {
 		record.set(values);
 		if (record.data._condicionado == 'on')record.data._condicionado = 'true'
 		else record.data._condicionado = 'false' 
-		console.log(record);
 		win.close();
-		this.getTipoItemsStore().insert(0, record);
+		console.log(record.data.accion)
+		if (record.data.accion == "POST")
+			this.getTipoItemsStore().insert(0, record);
 			
 	},
     crearTipoItem : function(button){
     	var view = Ext.widget('tipoItemedit');
     	console.log('Boton crear apretaRdo');
 		var tipoItem = new YAPP.model.TipoItem();
-		tipoItem.data.accion = "POST";
+		tipoItem.data.accion = 'POST';
 		view.down('form').loadRecord(tipoItem);
     },
     
   	editarTipoItem: function(grid, record){
-//		var store = this.getTipoItemsStore()
-//		console.log(record);
-//		this.getAtributoTipoItemStore().load({params:{id:record.data.id}})
-//  		this.getAtributoTipoItemStore().each(function(record)  
-//		{  
-//		 console.log(record); 
-//		},this)
-  		
-  		
 		var view = Ext.widget('tipoItemedit');
 		view.setTitle('Editar Tipo Item');
-		record.data.accion = "PUT";
-//		var fecha = new Date();
-//		var hoy = Ext.Date.format(fecha,'Y-m-d, g:i a');
-//		record.data._fecha_modificacion = hoy;
-		
         view.down('form').loadRecord(record);
 	},
+	
+	editarAtributo : function (grid, record) {
+	 	var view = Ext.widget('atributoedit');
+		view.setTitle('Editar Tipo Item');
+	    view.down('form').loadRecord(record);
+ 	},
 	
 	borrarTipoItem: function(button) {
 		var win = button.up('grid');
@@ -123,6 +135,13 @@ Ext.define('YAPP.controller.TipoItem', {
 		selection.data.accion = "DELETE"
 		this.getTipoItemsStore().remove(selection)
 	},
+	borrarAtributo: function(button){
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		selection.data.accion = "DELETE"
+		this.getAtributoTipoItemStore().remove(selection)
+	}
 
 });
 

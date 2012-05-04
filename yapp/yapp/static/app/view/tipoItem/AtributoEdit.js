@@ -5,7 +5,7 @@ var formulario = Ext.define('YAPP.view.tipoItem.AtributoEdit', {
 	title : 'Editar Atributo Tipo Item',
 	layout : 'fit',
 	autoShow : true,
-	stores : [ 'AtributoItem' ],
+	stores : [ 'AtributoItem', 'TipoItems' ],
 	
 	initComponent : function() {
 		this.items = [ {
@@ -53,6 +53,6 @@ var form_atributo = {
 		name : '_defecto',
 		fieldLabel : 'Campo por Defecto',
 		allowBlank : false
-	} ]
+	} ] 
 };
 
