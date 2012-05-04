@@ -4,15 +4,19 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
+from yapp.daos.tipo_fase_dao import TipoFaseDAO
+from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models.fase.fase import Fase
 from yapp.models.proyecto.proyecto import Proyecto
+from yapp.models.fase.tipo_fase import TipoFase
 import json
 
 @view_config(route_name='readproyectos')
 def read_proyectos(request):
-    """Metodo que maneja las llamadas para proyectos
-        - Retorna una lista si se envia GET
     """
+    @summary: Maneja las solicitudes para recuperar los proyectos.
+    """
+    
     rd = ProyectoDAO()
     entidades = rd.get_all()
     lista = [];
@@ -26,19 +30,31 @@ def read_proyectos(request):
 
 @view_config(route_name='createproyectos')
 def create_proyectos(request):
-    """Metodo que maneja las llamadas para proyectos
-        - CREATE : crea un proyecto
+    """
+    @summary: Maneja las solicitudes para crear los proyectos. El proyecto nuevo se crea
+            con una fase por defecto
     """
     u= Unpickler()
     entidad = u.restore(request.json_body);
     dao = ProyectoDAO()
     nuevo_proyecto = Proyecto(entidad["_nombre"],entidad["_autor"],entidad["_prioridad"],entidad["_estado"],entidad["_lider"],entidad["_nota"],entidad["_fecha_creacion"],entidad["_fecha_modificacion"])
     dao.crear(nuevo_proyecto)
-    for i in range(0,3):
-        nombre_fase = "Fase " + str(i)+ " de " + entidad["_nombre"]
-        nueva_fase = Fase(nombre_fase, nuevo_proyecto)
-        dao_fase = FaseDAO()
-        dao_fase.crear(nueva_fase)
+#    for i in range(0,3):
+    nombre_fase = "Fase por defecto de " + entidad["_nombre"]
+    orden = 1
+    comentario = "Fase creada por defecto"
+    estado = "Pendiente"
+    color = "0"
+    nueva_fase = Fase(nombre_fase, nuevo_proyecto, orden, comentario, estado,color)
+    dao_fase = FaseDAO()
+    dao_fase.crear(nueva_fase)
+    
+    dao_tipo_item = TipoItemDAO()
+    tipo_item = dao_tipo_item.get_by_id(1)
+    
+    nuevo_tipo_fase = TipoFase(nueva_fase,tipo_item)
+    dao_tipo_fase = TipoFaseDAO()
+    dao_tipo_fase.crear(nuevo_tipo_fase)
     
     lista = []
     p = Pickler()
@@ -50,8 +66,8 @@ def create_proyectos(request):
 
 @view_config(route_name='updateproyectos')
 def update_proyectos(request):
-    """Metodo que maneja las llamadas para proyectos
-        - PUT : modifica un proyecto
+    """
+    @summary: Maneja las solicitudes para actualizacion de proyectos.
     """
     u= Unpickler()
     dao = ProyectoDAO()
@@ -71,8 +87,9 @@ def update_proyectos(request):
 
 @view_config(route_name='deleteproyectos')
 def delete_proyectos(request):
-    """Metodo que maneja las llamadas para proyectos
-        - DELETE : elimina un proyecto
+    """
+    @summary: Maneja las solicitudes para eliminar proyectos. Al eliminar el proyecto
+        se eliman sus fases e items.
     """
     u= Unpickler()
     entidad = u.restore(request.json_body);
@@ -83,6 +100,5 @@ def delete_proyectos(request):
     for fase in fases:
         fase_dao.borrar(fase);
          
-    
     dao.borrar(proyecto)
     return Response(json.dumps({'sucess': 'true'}))
