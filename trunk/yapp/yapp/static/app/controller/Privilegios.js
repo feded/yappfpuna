@@ -2,9 +2,12 @@ Ext.define('YAPP.controller.Privilegios', {
 	extend : 'Ext.app.Controller',
 	views : [ 'privilegio.List', 'privilegio.Edit' ],
 	models : [ 'Privilegio' ],
-	stores : [ 'Privilegios' ],
+	stores : [ 'Privilegios', 'EntidadesPadres' ],
 	requires : [ 'YAPP.model.Privilegio', 'YAPP.store.Privilegios' ],
-	
+	refs : [ {
+		selector : 'privilegioedit combobox[name=_entidad_padre]',
+		ref : 'comboEntidadPadre'
+	} ],
 	init : function() {
 		// console.log('Cargado controller Privilegios');
 		this.control({
@@ -21,6 +24,10 @@ Ext.define('YAPP.controller.Privilegios', {
 			'privilegiolist button[action=borrar]' : {
 				click : this.botonBorrarApretado
 			},
+			
+			'privilegioedit combobox[name=_entidad]' : {
+				change : this.changeEntidad
+			}
 		
 		});
 	},
@@ -59,9 +66,26 @@ Ext.define('YAPP.controller.Privilegios', {
 		record.set(values);
 		console.log(record)
 		win.close();
-		if (record.data.accion == "CREAR"){
+		if (record.data.accion == "CREAR") {
 			console.log("ENTREE");
 			this.getPrivilegiosStore().insert(0, record);
 		}
 	},
+	
+	changeEntidad : function(object, newValue, oldValue, eOpts) {
+		var combo = this.getComboEntidadPadre();
+		var store = this.getEntidadesPadresStore();
+		console.log(object.getValue())
+		if (object.getValue() == '') {
+			return;
+		}
+		combo.store = store;
+		store.load({
+			params : {
+				id : object.getValue()
+			}
+		});
+		// this.getEntidadesPadresStore().load();
+		// object.store = this.getEntidadesPadresStore()
+	}
 });

@@ -3,8 +3,8 @@ from sqlalchemy.orm import relation, backref
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Integer
 from yapp.models import Base
-from yapp.models.entidad_base import EntidadBase
-from yapp.models.roles.rol_estado import RolEstado
+from yapp.models.entidad_base import EntidadBase, EntidadBaseDTO
+from yapp.models.roles.rol_estado import RolEstado, RolEstadoDTO
 #import yapp.models.roles.rol_estado
 
 class Rol (Base, EntidadBase):
@@ -28,4 +28,10 @@ class Rol (Base, EntidadBase):
         self._nombre = nombre;
         self._estado = estado;
         
-    
+class RolDTO(EntidadBaseDTO):
+    """Unidad de transporte para roles"""
+    def __init__(self, rol):
+        super(RolDTO, self).__init__(rol._id);
+        self._nombre = rol._nombre;
+        self._esFinal = False;
+        self._estado = RolEstadoDTO(rol._estado);

@@ -9,9 +9,10 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config
-from yapp.daos.rol_dao import RolFinalDAO, RolEstadoDAO, RolDAO
-from yapp.models.roles.rol import Rol
-from yapp.models.roles.rol_estado import RolEstado
+from yapp.daos.rol_dao import RolEstadoDAO, RolDAO
+from yapp.daos.rol_final_dao import RolFinalDAO
+from yapp.models.roles.rol import Rol, RolDTO
+from yapp.models.roles.rol_estado import RolEstado, RolEstadoDTO
 from yapp.models.roles.rol_final import RolFinal
 import json
 
@@ -31,7 +32,7 @@ def get_roles(request):
         lista = [];
         p = Pickler(False, None)
         for entidad in entidades:
-            rol = RolesLindos(entidad._id, entidad._nombre, entidad._estado)
+            rol = RolDTO(entidad)
             if (isinstance(entidad, RolFinal)):
                 rol._esFinal = True;
                 rol._password = entidad._password;
@@ -141,12 +142,4 @@ def get_estado_roles(request):
 #    print a_ret
     return Response(a_ret)
         
-    
-class RolesLindos:
-    """Unidad de transporte para roles"""
-    def __init__(self, _id, nombre, estado):
-        self._id = _id;
-        self._nombre = nombre;
-        self._esFinal = False;
-        self._estado = estado;
         
