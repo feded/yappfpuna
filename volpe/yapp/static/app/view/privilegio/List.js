@@ -57,13 +57,13 @@ Ext.define('YAPP.view.privilegio.List', {
 
 function renderizarEntidad(val) {
 	// console.log(val)
-	if (val != null)
+	if (val != null && val._nombre != null)
 		return val._nombre
-	return val;
+	return "A asignar";
 }
 
 function renderizarEntidadPadre(val) {
-	if (val != null)
+	if (val != null && val._nombre != null)
 		return val._nombre
 	return "A asignar";
 }

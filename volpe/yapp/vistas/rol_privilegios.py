@@ -10,13 +10,17 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config
+from yapp.daos.entidad_padre_dao import EntidadPadreDAO
+from yapp.daos.privilegio_dao import PrivilegioDAO
+from yapp.daos.rol_dao import RolDAO
 from yapp.daos.rol_privilegio_dao import RolPrivilegioDAO
 from yapp.models.roles.rol_privilegio import RolPrivilegio, RolPrivilegioDTO
 import json
+from yapp.models.roles.privilegio import PrivilegioDTO
 
 @view_config(route_name='rolPrivilegios')
 def get_roles(request):
-    """Metodo que maneja las llamadas para los privilegios de un rol
+    """Metodo que maneja las llamadas para los privilegios de un privilegio_rol
     """
     if (request.method == 'GET'):
         dao = RolPrivilegioDAO()
@@ -34,42 +38,40 @@ def get_roles(request):
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'lista':j_string})
         return Response(a_ret)
-#    if (request.method == 'POST'):
-#        
-#        u = Unpickler()
-#        entidad = u.restore(request.json_body);
-#        print request.json_body;
-#        print "--------------------------"
-#        if (entidad["accion"] == "POST"):
-#            estado_dao = RolEstadoDAO();
-#            if (isinstance(entidad["_estado"], dict)):
-#                estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]["_estado"]).first()
-#            else:
-#                estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first()
-#            if (entidad["_esFinal"] == True):
-#                nueva_entidad = RolFinal(entidad["_nombre"], estado, entidad["_email"], entidad["_password"])
-#                dao = RolFinalDAO()
-#            else:
-#                nueva_entidad = Rol(entidad["_nombre"], estado)
-#                dao = RolDAO()
-#            dao.crear(nueva_entidad);
-#            p = Pickler()
-#            aRet = p.flatten(nueva_entidad)
-#            p.flatten(entidad)
-#            return Response(json.dumps({'sucess': 'true', 'users':aRet}))
-#    if (request.method == 'DELETE'):
-#        dao = RolDAO()
-#        u = Unpickler()
-#        entidad = u.restore(request.json_body);
-#        rol = dao.get_by_id(entidad["id"])
-#        dao.borrar(rol)
-#        return Response(json.dumps({'sucess': 'true'}))
+    if (request.method == 'POST'):
+        u = Unpickler()
+        entidad = u.restore(request.json_body);
+        print request.json_body;
+        print "--------------------------"
+        privilegio_rol = RolDAO().get_by_id(entidad['_rol']);
+        if (entidad['_privilegio'] == None):
+            privilegio = None;
+        else:
+            privilegio = PrivilegioDAO().get_by_id(entidad['_privilegio'])
+        if (entidad['_entidad_padre'] == None):
+            entidad_padre = None
+        else:
+            entidad_padre = EntidadPadreDAO().get_by_id(entidad['_entidad_padre'])
+        dao = RolPrivilegioDAO();
+        nueva_entidad = RolPrivilegio(privilegio_rol, privilegio, entidad_padre);
+        
+        dao.crear(nueva_entidad);
+        p = Pickler()
+        aRet = p.flatten(nueva_entidad)
+        return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
+    if (request.method == 'DELETE'):
+        dao = RolPrivilegioDAO()
+        u = Unpickler()
+        entidad = u.restore(request.json_body);
+        privilegio_rol = dao.get_by_id(entidad["id"])
+        dao.borrar(privilegio_rol)
+        return Response(json.dumps({'sucess': 'true'}))
 #    if (request.method == 'PUT'):
 #        u = Unpickler()
 #        dao = RolDAO()
 #        id_rol = request.matchdict['id_rol']
 #        entidad = u.restore(request.json_body);
-#        rol = dao.get_by_id(id_rol)
+#        privilegio_rol = dao.get_by_id(id_rol)
 #        estado_dao = RolEstadoDAO();
 #        if (isinstance(entidad["_estado"], dict)):
 #            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]["_estado"]).first()

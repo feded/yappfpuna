@@ -2,20 +2,14 @@ Ext.define('YAPP.view.rol_privilegio.List', {
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.rolprivilegiolist',
 	
-	// title : 'Todos los roles',
-	store : 'Privilegios del rol',
+	store : 'RolPrivilegios',
 	layout : 'fit',
-	// requires : [ 'Ext.grid.plugin.CellEditing', 'Ext.form.field.Text',
-	// 'Ext.toolbar.TextItem' ],
 	
 	initComponent : function() {
-		
-		// this.editing = Ext.create('Ext.grid.plugin.CellEditing');
 		
 		Ext.apply(this, {
 			iconCls : 'icon-grid',
 			frame : true,
-//			plugins : [ this.editing ],
 			dockedItems : [ {
 				xtype : 'toolbar',
 				items : [ {
@@ -45,7 +39,7 @@ Ext.define('YAPP.view.rol_privilegio.List', {
 				field : {
 					type : 'textfield'
 				}
-			}]
+			} ]
 		});
 		this.callParent(arguments);
 		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);

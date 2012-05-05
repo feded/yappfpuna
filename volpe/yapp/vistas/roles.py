@@ -32,7 +32,7 @@ def get_roles(request):
         lista = [];
         p = Pickler(False, None)
         for entidad in entidades:
-            rol = RolDTO(entidad._id, entidad._nombre, entidad._estado)
+            rol = RolDTO(entidad)
             if (isinstance(entidad, RolFinal)):
                 rol._esFinal = True;
                 rol._password = entidad._password;

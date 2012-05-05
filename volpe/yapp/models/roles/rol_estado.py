@@ -13,7 +13,7 @@ class RolEstado (Base, EntidadBase):
     def __init__(self, estado):
         self._estado = estado
         
-class RolEstadoDTO (EntidadBaseDTO):
-    def __init__(self, id, estado):
-        super(RolEstadoDTO, self).__init__(id);
-        self._estado = estado;
+class RolEstadoDTO ():
+    def __init__(self, estado):
+        self._id = estado._id,
+        self._estado = estado._estado;

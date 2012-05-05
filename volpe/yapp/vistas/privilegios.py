@@ -12,7 +12,7 @@ from yapp.daos.entidad_padre_dao import EntidadPadreDAO
 from yapp.daos.privilegio_dao import PrivilegioDAO
 from yapp.models.entidad_padre import EntidadPadre, EntidadPadreDTO
 from yapp.models.roles.entidad import EntidadDTO
-from yapp.models.roles.privilegio import Privilegio, PrivilegiosDTO
+from yapp.models.roles.privilegio import Privilegio, PrivilegioDTO
 import json
 
 @view_config(route_name='privilegios')
@@ -29,7 +29,7 @@ def get_privilegios(request):
         lista = [];
         p = Pickler()
         for entidad in entidades:
-            n_entidad = PrivilegiosDTO(entidad)
+            n_entidad = PrivilegioDTO(entidad)
             lista.append(p.flatten(n_entidad))
             
         j_string = p.flatten(lista)
@@ -42,11 +42,14 @@ def get_privilegios(request):
         print "-------------------"
         u = Unpickler()
         objeto = u.restore(request.json_body);
-        entidad = EntidadDAO().get_by_id(objeto['_entidad']);
-        if (objeto['_entidad_padre'] == None):
+        if (objeto['_entidad_padre'] == ''):
             entidad_padre = None
         else:
             entidad_padre = EntidadPadreDAO().get_by_id(objeto['_entidad_padre']);
+        if (objeto['_entidad'] == ''):
+            entidad = None
+        else:
+            entidad = EntidadDAO().get_by_id(objeto['_entidad']);
         privilegio = Privilegio(objeto['_nombre'], entidad, entidad_padre);
         dao = PrivilegioDAO();
         dao.crear(privilegio);
