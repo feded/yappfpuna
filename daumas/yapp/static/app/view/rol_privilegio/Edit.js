@@ -1,24 +1,28 @@
-Ext.define('YAPP.view.privilegio.Edit', {
+Ext.define('YAPP.view.rol_privilegio.Edit', {
 	extend : 'Ext.window.Window',
-	alias : 'widget.privilegioedit',
+	alias : 'widget.rolprivilegioedit',
 	
-	title : 'Editar Privilegio',
+	title : 'Editar privilegio del rol',
 	layout : 'fit',
 	autoShow : true,
-// stores : [ 'EntidadesPadres' ],
+	// stores : [ 'EntidadesPadres' ],
 	
 	initComponent : function() {
 		this.items = [ {
 			xtype : 'form',
 			items : [ {
 				xtype : 'fieldset',
-				title : 'Privilegio',
 				scopte : this,
 				items : [ {
-					xtype : 'textfield',
-					name : '_nombre',
-					fieldLabel : 'Nombre',
-					allowBlank : false
+					xtype : 'combobox',
+					fieldLabel : 'Privilegio',
+					name : '_privilegio',
+					store : Ext.create('YAPP.store.Privilegios'),
+					valueField : 'id',
+					displayField : '_nombre',
+					typeAhead : true,
+					queryMode : 'local',
+					emptyText : 'Seleccione un privilegio...'
 				}, {
 					xtype : 'combobox',
 					fieldLabel : 'Entidad',
@@ -39,7 +43,7 @@ Ext.define('YAPP.view.privilegio.Edit', {
 					typeAhead : true,
 					queryMode : 'local',
 					emptyText : 'Seleccione una entidad...',
-//					store : Ext.create('YAPP.store.EntidadesPadres')
+				// store : Ext.create('YAPP.store.EntidadesPadres')
 				} ]
 			} ]
 		} ];

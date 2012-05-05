@@ -1,8 +1,5 @@
-from sqlalchemy.schema import Column
-from sqlalchemy.types import String
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, String
-from sqlalchemy.types import Integer
+from sqlalchemy.types import Integer, Integer, String, String
 from yapp.models import Base
 from yapp.models.entidad_padre import EntidadPadre
 
@@ -17,7 +14,7 @@ class Proyecto(EntidadPadre):
     @param _fecha_creacion: fecha de creacion del proyecto.
     @param _fecha_modificacion: fecha de ultima modificacion del proyecto.
     """
-    __mapper_args__ = {'polymorphic_identity': 'proyecto'}
+#    __mapper_args__ = {'polymorphic_identity': 'proyecto'}
     _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
     __tablename__ = "proyecto"
     
@@ -37,3 +34,11 @@ class Proyecto(EntidadPadre):
         self._nota = nota;
         self._fecha_creacion = fecha_creacion;
         self._fecha_modificacion = fecha_modificacion;
+        
+class ProyectoDTO():
+    def __init__(self, proyecto):
+        if (proyecto == None):
+            return
+        self._id = proyecto._id;
+        self._nombre = proyecto._nombre;
+        self._descripcion = proyecto._descripcion;

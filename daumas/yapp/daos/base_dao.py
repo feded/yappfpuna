@@ -4,11 +4,11 @@ Created on Mar 31, 2012
 @author: arturo
 '''
 from yapp.models import DBSession
-from yapp.models.historial import Historial
+from yapp.models.historial import Historial, Historial
 import abc
 import transaction
 
-class BaseDAO:
+class BaseDAO :
     @abc.abstractmethod
     def get_clase(self):
         """B{Metodo que retorna la entidad que maneja el DAO (Data Access Object)}
@@ -76,7 +76,6 @@ class BaseDAO:
         DBSession.add(historia)
         DBSession.merge(entidad)
 
-from yapp.models.historial import Historial
 class HistorialDAO(BaseDAO):
     def get_clase(self):
         return Historial
