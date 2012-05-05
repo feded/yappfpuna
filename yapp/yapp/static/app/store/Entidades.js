@@ -4,9 +4,9 @@ Ext.define('YAPP.store.Entidades', {
 	autoLoad : true,
 	
 	proxy : {
-		type : 'ajax',
+		type : 'rest',
 		api: {
-	        read: 'http://localhost:6543/entidades',
+	        read: '/entidades',
 	    },
 		reader : {
 			type : 'json',

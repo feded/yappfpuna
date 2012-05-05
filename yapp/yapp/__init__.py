@@ -39,7 +39,7 @@ def main(global_config, **settings):
     config.registry['mailer'] = Mailer.from_settings(settings)
     config.add_static_view('static', os.path.join(here, 'static'))
     config.add_route('login', '/')
-    config.add_route('index', '/index')
+#    config.add_route('index', '/index')
     config.add_route('readproyectos', '/readProyectos')
     config.add_route('createproyectos', '/createProyectos')
     config.add_route('updateproyectos', '/updateProyectos')

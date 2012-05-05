@@ -10,8 +10,27 @@ var formulario = Ext.define('YAPP.view.esquema.AtributoEdit', {
 	initComponent : function() {
 		this.items = [ {
 			xtype : 'form',
-			items : [ form_atributo_esquema ]
-		} ];
+			items : [ {
+					xtype : 'textfield',
+					name : '_nombre',
+					fieldLabel : 'Nombre',
+					allowBlank : false
+				},{
+					xtype : 'textfield',
+					name : '_tipo',
+					fieldLabel : 'Tipo',
+					allowBlank : false
+				},{
+					xtype : 'textfield',
+					name : '_valor',
+					fieldLabel : 'Valor',
+				},{
+					xtype : 'textfield',
+					name : '_descripcion',
+					fieldLabel : 'Descripcion',
+					allowBlank : false
+				}]
+		}];
 		
 		this.buttons = [  {
 			text : 'Guardar',
@@ -26,28 +45,5 @@ var formulario = Ext.define('YAPP.view.esquema.AtributoEdit', {
 	}
 
 });
-var form_atributo_esquema = {
-	xtype : 'fieldset',
-	title : 'Atributo Esquema',
-	items : [ {
-		xtype : 'textfield',
-		name : '_nombre',
-		fieldLabel : 'Nombre',
-		allowBlank : false
-	},{
-		xtype : 'textfield',
-		name : '_tipo',
-		fieldLabel : 'Tipo',
-		allowBlank : false
-	},{
-		xtype : 'textfield',
-		name : '_valor',
-		fieldLabel : 'Valor',
-	},{
-		xtype : 'textfield',
-		name : '_descripcion',
-		fieldLabel : 'Descripcion',
-		allowBlank : false
-	}, ] 
-};
+
 

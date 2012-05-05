@@ -6,9 +6,9 @@ Ext.define('YAPP.store.RolPrivilegios', {
 	proxy : {
 		type : 'rest',
 		api : {
-			read : 'http://localhost:6543/rolPrivilegios/0',
-			create : 'http://localhost:6543/rolPrivilegios/0',
-			destroy : 'http://localhost:6543/rolPrivilegios'
+			read : '/rolPrivilegios/0',
+			create : '/rolPrivilegios/0',
+			destroy : '/rolPrivilegios'
 		},
 		reader : ({
 			type : 'json',

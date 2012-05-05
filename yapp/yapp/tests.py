@@ -220,4 +220,31 @@ class eliminarAtributoTipoItem(unittest.TestCase):
             dao.borrar(entidad)
             entidad = dao.get_query().filter_by(_tipo='1').first();
             self.assertEqual(entidad, None, "Atributo tipo item no eliminado")       
-     
+
+class crearEsquema(unittest.TestCase):
+    def setUp(self):
+        self.setssion = _initTestingDB()
+    def tearDown(self):
+        self.session.remove()
+    def runTest(self):
+        """Testeando crear Esquema"""
+        print self.shortDescription()
+        with transaction.manager:
+            dao = RolFinalDAO()
+            rolFinal = dao.get_query().filter_by(_nombre='admin').first()
+            dao = ProyectoDAO()
+            proyecto = Proyecto("ProyectoPrueba",rolFinal._id , 5, "TEST",rolFinal._id , "nota", "hoy", "manhana")            
+            dao.crear(proyecto)
+            entidad = dao.get_query().filter_by(_proyecto_id=1).first();
+            self.assertNotEqual(entidad, None, "proyecto no creado")
+            dao = FaseDAO()
+            fase = Fase(3, "FasePrueba", proyecto._id, 2, "coment", "TEST", "000000")
+            dao.crear(fase)
+            entidad = dao.get_query().filter_by(_fase_id=3).first();
+            self.assertNotEqual(entidad, None, "fase no creada")
+            dao = EsquemaDAO()
+            esquema = Esquema("esquemaPrueba", "prueba", "etqprueba", "000000", fase._id)
+            dao.crear(esquema)
+            entidad = dao.get_query().filter_by(_esquema_id=1).first();
+            self.assertNotEqual(entidad, None, "esquema no creado")
+        

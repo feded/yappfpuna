@@ -26,6 +26,6 @@ class AtributoEsquema(Base, EntidadBase):
     def __init__(self, nombre, descripcion,  tipo, valor, esquema_id):
         self._nombre = nombre
         self._descripcion = descripcion
-        self._tipo = etiqueta
+        self._tipo = tipo
         self._valor = valor
         self._esquema_id = esquema_id

@@ -31,11 +31,16 @@ var formulario = Ext.define('YAPP.view.esquema.Edit', {
 		allowBlank : false
 	},
 	{
-		xtype : 'textfield',
-		name : '_color',
-		fieldLabel : 'Color',
-		allowBlank : false
-	},
+		xtype: 'fieldcontainer',
+		fieldLabel: 'Color',
+		items: [
+				{
+					xtype: 'textfield',
+					name : '_color',
+					itemId : 'color',
+				},colorPicker
+				]
+	}
 			]
 		} ];
 		

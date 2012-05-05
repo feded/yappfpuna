@@ -6,10 +6,10 @@ Ext.define('YAPP.store.TipoItems', {
 	proxy : {
 		type : 'ajax',
 		api : {
-			read : 'http://localhost:6543/obtenerTipos',
-	        update : 'http://localhost:6543/guardarTipo',
-	        create : 'http://localhost:6543/crearTipo',
-	        destroy : 'http://localhost:6543/eliminarTipo'
+			read : '/obtenerTipos',
+	        update : '/guardarTipo',
+	        create : '/crearTipo',
+	        destroy : '/eliminarTipo'
 		},
 		reader : ({
 			type : 'json',

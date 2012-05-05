@@ -91,9 +91,10 @@ Ext.define('YAPP.view.Viewport', {
 		                href: 'calculoImpacto'
 		            },
 		            {
+		            	xtype:'button',
 		                text: 'SALIR',
 		                textAlign: 'left',
-		                href: 'logout'
+		                action: 'logout'
 		            }
         			]
 			},{
