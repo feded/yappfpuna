@@ -4,6 +4,7 @@ Ext.define('YAPP.view.privilegio.List', {
 	
 	title : 'Privilegios',
 	store : 'Privilegios',
+	layout : 'fit',
 	
 	initComponent : function() {
 		this.dockedItems = [ {
@@ -39,6 +40,12 @@ Ext.define('YAPP.view.privilegio.List', {
 			field : {
 				type : 'textfield'
 			}
+		}, {
+			header : 'Asignado a',
+			flex : 1,
+			sortable : true,
+			dataIndex : '_entidad_padre',
+			renderer : renderizarEntidadPadre
 		} ];
 		this.callParent(arguments);
 		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
@@ -49,8 +56,14 @@ Ext.define('YAPP.view.privilegio.List', {
 });
 
 function renderizarEntidad(val) {
-//	console.log(val)
-	if (val != null)
+	// console.log(val)
+	if (val != null && val._nombre != null)
 		return val._nombre
-	return "Vacio"
+	return "A asignar";
+}
+
+function renderizarEntidadPadre(val) {
+	if (val != null && val._nombre != null)
+		return val._nombre
+	return "A asignar";
 }

@@ -70,7 +70,7 @@ def main(global_config, **settings):
     config.add_route('crearAtributo', '/crearAtributo')
     config.add_route('eliminarAtributo', '/eliminarAtributo')
     config.add_route('guardarAtributo', '/guardarAtributo')
-    config.add_route('entidades_padre','/entidades_padre')
+    config.add_route('entidades_padre','/entidades_padre/{id_entidad}')
     config.add_route('suscripciones','/suscripciones/{id_suscripcion}')
     config.add_route('crearListarEsquemas', '/esquemas')
     config.add_route('editarEliminarEsquemas', '/esquemas/{id}')

@@ -3,10 +3,10 @@ Created on Apr 20, 2012
 
 @author: arturo
 '''
-from sqlalchemy import Column, Integer
+from sqlalchemy import Column
 from sqlalchemy.types import String
 from yapp.models import Base
-from yapp.models.entidad_base import EntidadBase
+from yapp.models.entidad_base import EntidadBase, EntidadBaseDTO
 
 
 class EntidadPadre (EntidadBase, Base):
@@ -23,3 +23,11 @@ class EntidadPadre (EntidadBase, Base):
     def __init__(self, nombre, descripcion):
         self._nombre = nombre
         self._descripcion = descripcion
+
+class EntidadPadreDTO (EntidadBaseDTO):
+    def __init__(self, entidad):
+#        super(EntidadPadreDTO, self).__init__(id)
+        self._id = entidad._id;
+        self._nombre = entidad._nombre;
+        self._descripcion = entidad._descripcion;
+        

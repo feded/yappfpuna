@@ -1,11 +1,14 @@
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config
+from yapp.daos.entidad_dao import EntidadDAO
+from yapp.daos.recurso_dao import TipoRecursoDAO
 from yapp.daos.privilegio_dao import PrivilegioDAO, EntidadDAO
 from yapp.daos.rol_dao import RolFinalDAO, RolEstadoDAO, RolDAO
 from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import Base, DBSession
 from yapp.models.historial import Historial
+from yapp.models.recurso.tipo_recurso import TipoRecurso
 from yapp.models.roles.entidad import Entidad
 from yapp.models.roles.rol_estado import RolEstado
 from yapp.models.roles.rol_final import RolFinal
@@ -100,6 +103,8 @@ def main(argv=sys.argv):
             
     items = RolFinalDAO().get_query().filter(RolFinal._email == "admin").first();
     if (items == None) :
-        estadoActivo = RolEstadoDAO().get_query().filter(RolEstado._estado == "Activo").first();
-        admin = RolFinal("admin", estadoActivo, "admin" , "admin");
-        DBSession.add(admin);
+        print "Creando ADMIN"
+        with transaction.manager:
+            estadoActivo = RolEstadoDAO().get_query().filter(RolEstado._estado == "Activo").first();
+            admin = RolFinal("admin", estadoActivo, "admin", "admin");
+            DBSession.add(admin);
