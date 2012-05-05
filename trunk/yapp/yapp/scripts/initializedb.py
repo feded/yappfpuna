@@ -27,6 +27,7 @@ import yapp.models.item.item
 import yapp.models.proyecto.proyecto
 import yapp.models.esquema.atributo_esquema
 import yapp.models.esquema.esquema
+import yapp.models.esquema.esquema_item
 import yapp.models.fase.atributo_fase
 import yapp.models.fase.fase
 import yapp.models.fase.fase

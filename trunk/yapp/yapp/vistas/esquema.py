@@ -9,6 +9,8 @@ from yapp.daos.esquema_dao import EsquemaDAO
 from yapp.models.esquema.esquema import Esquema
 from yapp.daos.atributo_esquema_dao import AtributoEsquemaDAO
 from yapp.models.esquema.atributo_esquema import AtributoEsquema
+from yapp.daos.esquema_item_dao import EsquemaItemDAO
+from yapp.models.esquema.esquema_item import EsquemaItem
 import json
 from yapp.models import DBSession
 from yapp.filter import Validador
@@ -23,10 +25,10 @@ def AG_esquemas(request):
         print entidades
         lista = [];
         p = Pickler(True, None)
-        val = Validador(request);
+#        val = Validador(request);
         for entidad in entidades:
-            if val.es_visible(entidad):
-                lista.append(p.flatten(entidad))
+#            if val.es_visible(entidad):
+            lista.append(p.flatten(entidad))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
         print a_ret
@@ -60,11 +62,11 @@ def BM_esquemas(request):
         #id = request.params.matchdict['id']
         esquemaDao = EsquemaDAO();
         esquema =  esquemaDao.get_by_id(entidad["id"])
-        esquema._tipo = entidad["_tipo"]
-        esquema._valor = entidad["_valor"]
+        esquema._nombre = entidad["_nombre"]
         esquema._descripcion = entidad["_descripcion"]
-        esquema._opcional = entidad["_opcional"]
-        esquema._defecto = entidad["_defecto"]
+        esquema._etiqueta = entidad["_etiqueta"]
+        esquema._color = entidad["_color"]
+        esquema._fase_id = entidad["_fase_id"]
         esquemaDao.update(esquema);
         return Response(json.dumps({'sucess': 'true'}))
 
@@ -101,7 +103,7 @@ def AG_atributos(request):
         atributoEsquemaDao = AtributoEsquemaDAO();
         
         print "Entidad" + str(entidad)                                       
-        nueva_entidad = AtributoEsquema(entidad["_nombre"], entidad["_descripcion"], entidad["_etiqueta"], entidad["_color"], entidad["_fase_id"])
+        nueva_entidad = AtributoEsquema(entidad["_nombre"], entidad["_descripcion"], entidad["_tipo"], entidad["_valor"], entidad["_esquema_id"])
 
         print "Esta es: " + str(nueva_entidad)
         
@@ -123,11 +125,11 @@ def BM_atributos(request):
         #id = request.params.matchdict['id']
         atributoEsquemaDao = AtributoEsquemaDAO();
         atributoEsquema =  atributoEsquemaDao.get_by_id(entidad["id"])
-        atributoEsquema._tipo = entidad["_tipo"]
-        atributoEsquema._valor = entidad["_valor"]
+        atributoEsquema._nombre = entidad["_nombre"]
         atributoEsquema._descripcion = entidad["_descripcion"]
-        atributoEsquema._opcional = entidad["_opcional"]
-        atributoEsquema._defecto = entidad["_defecto"]
+        atributoEsquema._etiqueta = entidad["_tipo"]
+        atributoEsquema._color = entidad["valor"]
+        atributoEsquema._fase_id = entidad["esquema_id"]
         atributoEsquemaDao.update(atributoEsquema);
         return Response(json.dumps({'sucess': 'true'}))
 
@@ -135,8 +137,67 @@ def BM_atributos(request):
         u = Unpickler()
         entidad = u.restore(request.json_body);
        
-        print "-----ELIMINANDO ESQUEMA-----"
+        print "-----ELIMINANDO Atributo de Esquema-----"
         atributoEsquemaDao = EsquemaDAO();
         atributoEsquema = atributoEsquemaDao.get_by_id(entidad["id"])
         atributoEsquemaDao.borrar(atributoEsquema)
+        return Response(json.dumps({'sucess': 'true'}))
+    
+@view_config(route_name='crearListarItemEsquemas')
+def AG_item_esquema(request): 
+    if (request.method == 'GET'):        
+        rd = EsquemaItemDAO()
+        esquema_id = request.GET.get('id')
+        entidades = rd.get_query().filter(EsquemaItem._esquema_id == esquema_id).all()
+        print entidades
+        lista = [];
+        p = Pickler(True, None)
+        for entidad in entidades:
+            lista.append(p.flatten(entidad))
+        j_string = p.flatten(lista)
+        a_ret = json.dumps({'sucess': True, 'lista':j_string})
+        print a_ret
+        return Response(a_ret)
+    elif (request.method == 'POST'):
+        print "-----CREANDO Entidad-----"
+        u = Unpickler()
+        entidad = u.restore(request.json_body);
+        esquemaItemDao = EsquemaItemDAO();
+        
+        print "Entidad" + str(entidad)                                       
+        nueva_entidad = EsquemaItem(entidad["_esquema_id"], entidad["_item_id"])
+
+        print "Esta es: " + str(nueva_entidad)
+        
+        esquemaItemDao.crear(nueva_entidad);
+        
+        lista = []
+        p = Pickler()
+        lista.append(p.flatten(nueva_entidad))
+        j_string = p.flatten(lista)
+        
+        return Response(json.dumps({'sucess': 'true', 'lista':j_string}))
+              
+        
+@view_config(route_name='editarEliminarItemEsquemas')
+def BM_item_esquema(request):
+    if (request.method == 'PUT'):
+        u = Unpickler()
+        entidad = u.restore(request.json_body);
+        #id = request.params.matchdict['id']
+        esquemaItemDao = EsquemaItemDAO();
+        esquemaItem =  esquemaItemDao.get_by_id(entidad["id"])
+        esquemaItem._esquema_id = entidad["_esquema_id"]
+        esquemaItem._item_id = entidad["_item_id"]
+        esquemaItemDao.update(esquemaItem);
+        return Response(json.dumps({'sucess': 'true'}))
+
+    elif (request.method == 'DELETE'):                            
+        u = Unpickler()
+        entidad = u.restore(request.json_body);
+       
+        print "-----ELIMINANDO Item de Esquema-----"
+        esquemaItemDao = EsquemaDAO();
+        esquemaItem = esquemaItemDao.get_by_id(entidad["id"])
+        esquemaItemDao.borrar(esquemaItem)
         return Response(json.dumps({'sucess': 'true'}))

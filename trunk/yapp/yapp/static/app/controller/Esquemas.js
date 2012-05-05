@@ -3,10 +3,14 @@ Ext.define('YAPP.controller.Esquemas', {
 	
 	views: [
 		'esquema.List',
-		'esquema.Edit'
+		'esquema.Edit',
+		'esquema.AtributoList',
+		'esquema.AtributoEdit',
+		'esquema.EsquemaItemList',
+		'esquema.EsquemaItemCreate'
 		],
-	stores:['Esquemas', 'Fases'],
-	models:['Esquema'],
+	stores:['Esquemas', 'Fases', 'AtributoEsquema', 'EsquemaItem'],
+	models:['Esquema', 'AtributoEsquema' , 'EsquemaItem' ],
 	refs : [ {
         selector : 'esquemaslist combobox[name=fasesCombo]',
         ref : 'fasesCombo'
@@ -46,16 +50,24 @@ Ext.define('YAPP.controller.Esquemas', {
             	'atributosesquemalist button[action=crearAtributo]': {
                 	click: this.crearAtributo
 	            },
-	            'atributoesquemaedit button[action=guardar]': {
+	            'atributoesquemaedit button[action=guardarAtributo]': {
 	                click: this.guardarAtributo
 	            },
 	            'atributosesquemalist':{
 					itemdblclick: this.editarAtributo
 				},
-				'atributosesquemalist button[action=borrar]':{
+				'atributosesquemalist button[action=borrarAtributo]':{
 					click: this.borrarAtributo
+				},
+            	'esquemaslist button[action=itemEsquema]' : {
+					click : this.itemEsquema
+				},
+				'esquemaItemList button[action=nuevoItem]':{
+					click : this.agregarItemEsquema
+				},
+				'esquemaItemList button[action=borrarItem]':{
+					click : this.eliminarItemEsquema
 				}
-            	
         });
 	},
 	
@@ -82,8 +94,8 @@ Ext.define('YAPP.controller.Esquemas', {
 			this.getEsquemasStore().insert(0, record);
 	},
 	
-	editarEsquema : function(button){
-		var view = Ext.widget('atributoesquemaedit');
+	editarEsquema : function(grid, record){
+		var view = Ext.widget('esquemaedit');
 		view.setTitle('Editar Esquema');
 	    view.down('form').loadRecord(record);
 	},
@@ -124,12 +136,12 @@ Ext.define('YAPP.controller.Esquemas', {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
-		
+		var esquemaId = selection.data.id;
 		
 		var store = this.getStore('AtributoEsquema');
 		store.load({
 			params: {
-				id : selection.data.id
+				id : esquemaId
 			}
 		});
 		
@@ -148,7 +160,7 @@ Ext.define('YAPP.controller.Esquemas', {
 		var view = Ext.widget('atributoesquemaedit');
     	console.log('Boton crear atributo apretado');
 		var atributoEsquema = new YAPP.model.AtributoEsquema();
-		atributoEsquema.data._tipo_item_id = tipoId;
+		atributoEsquema.data._esquema_id = esquemaId;
 		atributoEsquema.data.accion = 'POST'
 		view.down('form').loadRecord(atributoEsquema);
     },
@@ -175,8 +187,59 @@ Ext.define('YAPP.controller.Esquemas', {
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		selection.data.accion = "DELETE"
 		this.getAtributoTipoItemStore().remove(selection)
-	}
+	},
 	
+	itemEsquema : function(button){
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		var esquemaId = selection.data.id;
+		
+		var store = this.getStore('AtributoEsquema');
+		store.load({
+			params: {
+				id : esquemaId
+			}
+		});
+		
+		var tabs = Ext.getCmp('tabPrincipal');
+		
+		var tab = tabs.add({
+			title : 'Administrar Items de Esquema',
+			xtype : 'esquemaItemList',
+			closable : true
+		});
+
+		tabs.setActiveTab(tab);
+	},
+	
+	agregarItemEsquema : function(button){
+		var view = Ext.widget('esquemaItemCreate');
+    	console.log('Boton agregar Item apretado');
+		var esquemaItem = new YAPP.model.EsquemaItem();
+		esquemaItem.data._esquema_id = esquemaId;
+		esquemaItem.data.accion = 'POST'
+		view.down('form').loadRecord(esquemaItem);
+    },
+    
+    guardarItemEsquema: function(button){
+    	console.log('Entre a guardar')
+    	var win = button.up('window');
+		var form = win.down('form');
+		var record = form.getRecord();
+		var values = form.getValues();
+		record.set(values);
+		win.close();
+		if (record.data.accion == "POST")
+			this.getEsquemaItemStore().insert(0, record);
+    },
+	eliminarItemEsquema : function(button){
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		selection.data.accion = "DELETE"
+		this.getAtributoTipoItemStore().remove(selection)
+	}
 
 	
 });

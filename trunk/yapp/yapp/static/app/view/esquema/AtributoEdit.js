@@ -1,11 +1,11 @@
-var formulario = Ext.define('YAPP.view.tipoItem.AtributoEdit', {
+var formulario = Ext.define('YAPP.view.esquema.AtributoEdit', {
 	extend : 'Ext.window.Window',
 	alias : 'widget.atributoesquemaedit',
 	
-	title : 'Editar Atributo Tipo Item',
+	title : 'Editar Atributo Esquema',
 	layout : 'fit',
 	autoShow : true,
-	stores : [ 'AtributoItem', 'TipoItems' ],
+	stores : [ 'AtributoEsquema' ],
 	
 	initComponent : function() {
 		this.items = [ {
@@ -15,7 +15,7 @@ var formulario = Ext.define('YAPP.view.tipoItem.AtributoEdit', {
 		
 		this.buttons = [  {
 			text : 'Guardar',
-			action : 'guardar'
+			action : 'guardarAtributo'
 		}, {
 			text : 'Cancel',
 			scope : this,
