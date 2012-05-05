@@ -85,6 +85,8 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		var hoy = Ext.Date.format(fecha,'Y-m-d, g:i a');
 		record.data._fecha_modificacion = hoy;
 		
+		console.log(record);
+		
         view.down('form').loadRecord(record);
 	},
 	
@@ -105,8 +107,8 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		record.set(values);
 		var cb1 = this.getComboAutor();
 		var cb2 = this.getComboLider();
-		record.set('autor_nombre',cb1.getRawValue());
-		record.set('lider_nombre',cb2.getRawValue());
+//		record.set('autor_nombre',cb1.getRawValue());
+//		record.set('lider_nombre',cb2.getRawValue());
 		win.close();
 	},
 	

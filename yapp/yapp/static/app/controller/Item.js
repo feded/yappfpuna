@@ -54,6 +54,8 @@ Ext.define('YAPP.controller.Item', {
                 if (object.getValue() == '') {
                         return;
                 }
+                
+//                combo.clearValue();
                 combo.store = store;
                 store.load({
                         params : {
