@@ -1,9 +1,10 @@
+from sqlalchemy.orm import relation, backref
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, Integer, String
-from sqlalchemy.orm import relation, backref
 from yapp.models import Base
 from yapp.models.entidad_padre import EntidadPadre
 from yapp.models.roles.rol_final import RolFinal
+from yapp.models.roles.rol import RolDTO
 
 class Proyecto(EntidadPadre):
     """
@@ -46,3 +47,12 @@ class ProyectoDTO():
         self._id = proyecto._id;
         self._nombre = proyecto._nombre;
         self._descripcion = proyecto._descripcion;
+        self._lider = RolDTO(proyecto._lider)
+        self._autor = RolDTO(proyecto._autor)
+        self._prioridad = proyecto._prioridad;
+        self._estado = proyecto._estado;
+        self._nota = proyecto._nota;
+        self._fecha_creacion = proyecto._fecha_creacion;
+        self._fecha_modificacion = proyecto._fecha_modificacion;
+        self.autor_nombre = proyecto._autor._nombre
+        self.lider_nombre = proyecto._lider._nombre
