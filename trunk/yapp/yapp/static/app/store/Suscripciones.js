@@ -6,10 +6,12 @@ Ext.define('YAPP.store.Suscripciones', {
 	autoSync : true,
 	
 	proxy : {
-		type : 'ajax',
+		type : 'rest',
 		api : {
 			read : 'http://localhost:6543/suscripciones/0',
-			destroy : 'http://localhost:6543/suscripciones'
+			create : 'http://localhost:6543/suscripciones/0',
+			destroy : 'http://localhost:6543/suscripciones',
+			update : 'http://localhost:6543/suscripciones'
 		},
 		reader : {
 			type : 'json',

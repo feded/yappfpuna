@@ -50,7 +50,6 @@ Ext.define('YAPP.controller.Privilegios', {
 		// console.log('Boton crear apretaRdo');
 		var privilegio = new YAPP.model.Privilegio();
 		privilegio.data.accion = "CREAR";
-		console.log("CREANDO");
 		this.ventanaPrivilegio(privilegio);
 	},
 	ventanaPrivilegio : function(record) {

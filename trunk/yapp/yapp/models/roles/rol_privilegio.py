@@ -34,6 +34,7 @@ class RolPrivilegio (EntidadBase, Base):
         
 class RolPrivilegioDTO:
     def __init__(self, rol_privilegio):
+        self._id = rol_privilegio._id
         self._rol = RolDTO(rol_privilegio._rol)
         self._privilegio = PrivilegioDTO(rol_privilegio._privilegio)
         self._entidad_padre = EntidadPadreDTO(rol_privilegio._entidad_padre)

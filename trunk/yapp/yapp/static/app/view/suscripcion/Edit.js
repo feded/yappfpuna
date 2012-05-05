@@ -1,8 +1,8 @@
-Ext.define('YAPP.view.privilegio.Edit', {
+Ext.define('YAPP.view.suscripcion.Edit', {
 	extend : 'Ext.window.Window',
-	alias : 'widget.privilegioedit',
+	alias : 'widget.suscripcionedit',
 	
-	title : 'Editar Privilegio',
+	title : 'Editar Suscripcion',
 	layout : 'fit',
 	autoShow : true,
 	
@@ -11,7 +11,7 @@ Ext.define('YAPP.view.privilegio.Edit', {
 			xtype : 'form',
 			items : [ {
 				xtype : 'fieldset',
-				title : 'Privilegio',
+				title : 'Suscripcion',
 				scopte : this,
 				items : [ {
 					xtype : 'textfield',
@@ -21,8 +21,8 @@ Ext.define('YAPP.view.privilegio.Edit', {
 				}, {
 					xtype : 'combobox',
 					fieldLabel : 'Entidad',
-					name : '_entidad',
-					store : Ext.create('YAPP.store.Entidades'),
+					name : '_entidad_padre',
+					store : Ext.create('YAPP.store.EntidadesPadres'),
 					valueField : 'id',
 					displayField : '_nombre',
 					typeAhead : true,
@@ -30,15 +30,15 @@ Ext.define('YAPP.view.privilegio.Edit', {
 					emptyText : 'Seleccione una entidad...'
 				}, {
 					xtype : 'combobox',
-					fieldLabel : 'Instancia',
+					fieldLabel : 'Rol',
 					id : 'comboEntidadPadre',
-					name : '_entidad_padre',
+					name : '_rol_final',
+					store : Ext.create('YAPP.store.RolesFinales'),
 					valueField : 'id',
 					displayField : '_nombre',
 					typeAhead : true,
 					queryMode : 'local',
 					emptyText : 'Seleccione una entidad...',
-//					store : Ext.create('YAPP.store.EntidadesPadres')
 				} ]
 			} ]
 		} ];

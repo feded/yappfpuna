@@ -28,16 +28,16 @@ def get_entidades_padre(request):
 #        print request.GET.id
         id_entidad = request.GET.get('id')
         print id_entidad;
-        entidadDAO = EntidadDAO();
+        entidadDAO = EntidadDAO(request);
         entidad = entidadDAO.get_by_id(id_entidad);
-        if (id_entidad == '0'):
+        if (id_entidad == '0' or id_entidad == None):
             return get_entidades(request);
         if (entidad._nombre == "Proyecto"):
-            return get_proyectos();
+            return get_proyectos(request);
         if (entidad._nombre == "Fase"):
-            return get_fases()
+            return get_fases(request)
         if (entidad._nombre == "Esquema"):
-            return get_esquemas()
+            return get_esquemas(request)
         return get_entidades(request);
     return {}
 
@@ -49,7 +49,7 @@ def get_entidades(request):
             - B{JSON:} Json compuesto, por un boolean B{sucess} 
             con el estado de la operacion y B{suscripciones} un json de suscripciones.
     """
-    dao = EntidadPadreDAO()
+    dao = EntidadPadreDAO(request)
     entidades = dao.get_all()
     lista = [];
     p = Pickler()
@@ -60,8 +60,8 @@ def get_entidades(request):
     a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
     return Response(a_ret)
 
-def get_proyectos():
-    proyectoDAO = ProyectoDAO();
+def get_proyectos(request):
+    proyectoDAO = ProyectoDAO(request);
     entidades = proyectoDAO.get_all();
     p = Pickler();
     lista = [];
@@ -72,8 +72,8 @@ def get_proyectos():
     print a_ret;
     return Response(a_ret)
 
-def get_fases():
-    dao = FaseDAO();
+def get_fases(request):
+    dao = FaseDAO(request);
     entidades = dao.get_all();
     p = Pickler();
     lista = [];
@@ -84,8 +84,8 @@ def get_fases():
     print a_ret;
     return Response(a_ret)
 
-def get_esquemas():
-    dao = EsquemaDAO();
+def get_esquemas(request):
+    dao = EsquemaDAO(request);
     entidades = dao.get_all();
     p = Pickler();
     lista = [];

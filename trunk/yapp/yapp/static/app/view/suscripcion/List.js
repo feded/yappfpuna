@@ -1,6 +1,6 @@
-Ext.define('YAPP.view.suscripciones.List', {
+Ext.define('YAPP.view.suscripcion.List', {
 	extend : 'Ext.grid.Panel',
-	alias : 'widget.suscripcioneslist',
+	alias : 'widget.suscripcionlist',
 	store : 'Suscripciones',
 	
 	layout : 'fit',
@@ -27,7 +27,7 @@ Ext.define('YAPP.view.suscripciones.List', {
 		
 		this.columns = [ {
 			header : 'ID',
-			dataIndex : '_id'
+			dataIndex : 'id'
 		}, {
 			header : 'Nombre',
 			dataIndex : '_nombre'

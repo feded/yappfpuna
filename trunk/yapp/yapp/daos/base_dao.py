@@ -4,11 +4,18 @@ Created on Mar 31, 2012
 @author: arturo
 '''
 from yapp.models import DBSession
-from yapp.models.historial import Historial, Historial
+from yapp.models.entidad_padre import EntidadPadre
+from yapp.models.historial import Historial
+from yapp.models.suscripcion.notificacion import Notificacion
+from yapp.models.suscripcion.suscripcion import Suscripcion
 import abc
 import transaction
 
 class BaseDAO :
+    
+    def __init__(self, request):
+        self._request = request
+    
     @abc.abstractmethod
     def get_clase(self):
         """B{Metodo que retorna la entidad que maneja el DAO (Data Access Object)}
@@ -53,8 +60,9 @@ class BaseDAO :
         DBSession.add(entidad)
         lista = self.get_query().all();
         entidad = lista[len(lista) - 1];
-        historia = Historial(entidad.__tablename__, entidad._id, "CREACION", "");
+        historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
         DBSession.add(historia)
+        self.notificar(entidad, historia)
         return entidad;
          
     def borrar(self, entidad):
@@ -62,21 +70,40 @@ class BaseDAO :
         - B{Parametros:} 
             - B{entidad:} entidad a ser eliminada
         """
-        historia = Historial(entidad.__tablename__, entidad._id, "ELIMINACION", "");
+        historia = Historial(entidad.__tablename__, entidad._id, "ELIMINACION", self._request.session['user']._id);
         DBSession.add(historia)
         DBSession.delete(entidad);
+        self.notificar(entidad, historia)
         
     def update(self, entidad):
         """B{Metodo que actualiza una entidad en la base de datos, y almacena su modificacion en el historial}
         - B{Parametros:} 
             - B{entidad:} entidad a ser persistida
         """
-        dao = HistorialDAO();
-        historia = Historial(entidad.__tablename__, entidad._id, "MODIFICACION", "");
+        historia = Historial(entidad.__tablename__, entidad._id, "MODIFICACION", self._request.session['user']._id);
         DBSession.add(historia)
         DBSession.merge(entidad)
-
+        self.notificar(entidad, historia)
+    
+    def notificar(self, entidad, historia):
+        if (isinstance(entidad, EntidadPadre)):
+            print "-----------------"
+            dao = SuscripcionDAO(self._request)
+            nDAO = NotificacionDAO(self._request)
+            entidades = dao.get_query().filter(Suscripcion._entidad_padre_id == entidad._id);
+            for suscripcion in entidades:
+                notificacion = Notificacion(historia, suscripcion, False)
+                nDAO.crear(notificacion);
+        return
+    
 class HistorialDAO(BaseDAO):
     def get_clase(self):
         return Historial
 
+class SuscripcionDAO(BaseDAO):
+    def get_clase(self):
+        return Suscripcion
+    
+class NotificacionDAO(BaseDAO):
+    def get_clase(self):
+        return Notificacion

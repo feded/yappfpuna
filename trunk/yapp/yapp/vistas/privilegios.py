@@ -11,7 +11,7 @@ from yapp.daos.entidad_dao import EntidadDAO
 from yapp.daos.entidad_padre_dao import EntidadPadreDAO
 from yapp.daos.privilegio_dao import PrivilegioDAO
 from yapp.models.entidad_padre import EntidadPadre, EntidadPadreDTO
-from yapp.models.roles.entidad import EntidadDTO
+from yapp.models.roles.entidad import EntidadDTO, Entidad
 from yapp.models.roles.privilegio import Privilegio, PrivilegioDTO
 import json
 
@@ -24,7 +24,7 @@ def get_privilegios(request):
         - Elimina si se envia DELETE
     """
     if (request.method == 'GET'):
-        dao = PrivilegioDAO();
+        dao = PrivilegioDAO(request);
         entidades = dao.get_all()
         lista = [];
         p = Pickler()
@@ -37,25 +37,22 @@ def get_privilegios(request):
         return Response(a_ret)
     
     if (request.method == 'POST'):
-        print "-------------------"
-        print request.json_body
-        print "-------------------"
         u = Unpickler()
         objeto = u.restore(request.json_body);
         if (objeto['_entidad_padre'] == ''):
             entidad_padre = None
         else:
-            entidad_padre = EntidadPadreDAO().get_by_id(objeto['_entidad_padre']);
+            entidad_padre = EntidadPadreDAO(request).get_by_id(objeto['_entidad_padre']);
         if (objeto['_entidad'] == ''):
             entidad = None
         else:
-            entidad = EntidadDAO().get_by_id(objeto['_entidad']);
+            entidad = EntidadDAO(request).get_by_id(objeto['_entidad']);
         privilegio = Privilegio(objeto['_nombre'], entidad, entidad_padre);
-        dao = PrivilegioDAO();
+        dao = PrivilegioDAO(request);
         dao.crear(privilegio);
         
 #        nueva_entidad = Privilegio(objeto["_nombre"], entidad);
-#        dao = PrivilegioDAO()
+#        dao = PrivilegioDAO(request)
 #        dao.crear(nueva_entidad);
         p = Pickler()
         aRet = p.flatten(privilegio)
@@ -63,34 +60,54 @@ def get_privilegios(request):
     
     if (request.method == 'DELETE'):
         id_privilegio = request.matchdict['id_privilegio']
-        dao = PrivilegioDAO()
+        dao = PrivilegioDAO(request)
         entidad = dao.get_by_id(id_privilegio);
         dao.borrar(entidad)
         return Response(json.dumps({'sucess': 'true'}))
     
     if (request.method == 'PUT') :
+        print "-------------"
+        print request.json_body
+        print "-------------"
         u = Unpickler()
-        objeto = u.restore(request.json_body)
-        entidad = get_entidad_padre(objeto)
-        dao = PrivilegioDAO()
-        id_privilegio = request.matchdict['id_privilegio']
-        privilegio = dao.get_by_id(id_privilegio);
-        privilegio._nombre = objeto["_nombre"];
-        privilegio._entidad = entidad;
+        objeto = u.restore(request.json_body);
+        if (objeto['_entidad_padre'] == ''):
+            entidad_padre = None
+        else:
+            entidad_padre = get_entidad_padre(request, objeto);
+        if (objeto['_entidad'] == ''):
+            entidad = None
+        else:
+            entidad = get_entidad(request, objeto);
+        dao = PrivilegioDAO(request);
+        privilegio = dao.get_by_id(request.matchdict['id_privilegio']);
+        privilegio._nombre = objeto['_nombre']
+        privilegio._entidad = entidad
+        privilegio._entidad_padre = entidad_padre;
         dao.update(privilegio);
         p = Pickler()
-        aRet = p.flatten(privilegio)
+        aRet = p.flatten(PrivilegioDTO(privilegio))
         return Response(json.dumps({'sucess': 'true'}))
 
 
-def get_entidad_padre(objeto):
-    entidad_dao = EntidadPadreDAO();
+def get_entidad_padre(request, objeto):
+    entidad_dao = EntidadPadreDAO(request);
+    if (objeto["_entidad_padre"] == ""):
+        return None;
+    if (isinstance(objeto["_entidad_padre"], dict)):
+        entidad = entidad_dao.get_query().filter(EntidadPadre._id == objeto["_entidad_padre"]["_id"]).first()
+    else:
+        entidad = entidad_dao.get_query().filter(EntidadPadre._id == objeto["_entidad_padre"]).first()
+    return entidad;
+
+def get_entidad(request, objeto):
+    entidad_dao = EntidadDAO(request);
     if (objeto["_entidad"] == ""):
         return None;
     if (isinstance(objeto["_entidad"], dict)):
-        entidad = entidad_dao.get_query().filter(EntidadPadre._id == objeto["_entidad"]["_id"]).first()
+        entidad = entidad_dao.get_query().filter(Entidad._id == objeto["_entidad"]["_id"]).first()
     else:
-        entidad = entidad_dao.get_query().filter(EntidadPadre._id == objeto["_entidad"]).first()
+        entidad = entidad_dao.get_query().filter(Entidad._id == objeto["_entidad"]).first()
     return entidad;
 
 @view_config(route_name='entidades')
@@ -99,7 +116,7 @@ def get_entidades(request):
         - Retorna una lista si se envia GET
     """
     if (request.method == 'GET'):
-        dao = EntidadDAO();
+        dao = EntidadDAO(request);
         entidades = dao.get_all()
         lista = [];
         p = Pickler()

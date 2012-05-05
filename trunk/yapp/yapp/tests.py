@@ -2,21 +2,21 @@
 #from pyramid import testing
 #import transaction
 from sqlalchemy import create_engine
+from yapp.daos.atributo_tipo_item_dao import AtributoTipoItemDAO
+from yapp.daos.base_dao import SuscripcionDAO
+from yapp.daos.entidad_padre_dao import EntidadPadreDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
 from yapp.daos.rol_dao import RolEstadoDAO
 from yapp.daos.rol_final_dao import RolFinalDAO
+from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import DBSession, Base
+from yapp.models.entidad_padre import EntidadPadre
 from yapp.models.proyecto.proyecto import Proyecto
 from yapp.models.roles.rol_estado import RolEstado
 from yapp.models.roles.rol_final import RolFinal
-from yapp.daos.suscripcion_dao import SuscripcionDAO
 from yapp.models.suscripcion.suscripcion import Suscripcion
-from yapp.daos.entidad_padre_dao import EntidadPadreDAO
-from yapp.models.entidad_padre import EntidadPadre
-from yapp.daos.tipo_item_dao import TipoItemDAO
-from yapp.models.tipo_item.tipo_item import TipoItem
-from yapp.daos.atributo_tipo_item_dao import AtributoTipoItemDAO
 from yapp.models.tipo_item.atributo_tipo_item import AtributoTipoItem
+from yapp.models.tipo_item.tipo_item import TipoItem
 import transaction
 import unittest
 

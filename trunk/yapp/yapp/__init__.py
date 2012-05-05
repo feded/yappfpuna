@@ -80,6 +80,7 @@ def main(global_config, **settings):
     config.add_route('crearListarItemEsquemas', '/itemsEsquemas')
     config.add_route('editarEliminarItemEsquemas', '/itemsEsquemas/{id}')
     config.add_route('rolesfinales', '/rolesfinales/')
+    config.add_route('notificaciones', '/notificaciones/')
     config.scan()
 #    config.scan("views")
 
