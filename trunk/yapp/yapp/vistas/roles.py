@@ -19,7 +19,7 @@ import json
 
 @view_config(route_name='rolesfinales')
 def get_roles_finales(request):
-    dao = RolFinalDAO();
+    dao = RolFinalDAO(request);
     entidades = dao.get_all()
     lista = []
     p = Pickler(False, None)
@@ -46,7 +46,7 @@ def get_roles(request):
     print request.method;
 #    print request.json_body;
     if (request.method == 'GET'):
-        rd = RolDAO()
+        rd = RolDAO(request)
         entidades = rd.get_all()
         lista = [];
         p = Pickler(False, None)
@@ -68,24 +68,24 @@ def get_roles(request):
         print request.json_body;
         print "--------------------------"
         if (entidad["accion"] == "POST"):
-            estado_dao = RolEstadoDAO();
+            estado_dao = RolEstadoDAO(request);
             if (isinstance(entidad["_estado"], dict)):
                 estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]["_estado"]).first()
             else:
                 estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first()
             if (entidad["_esFinal"] == True):
                 nueva_entidad = RolFinal(entidad["_nombre"], estado, entidad["_email"], entidad["_password"])
-                dao = RolFinalDAO()
+                dao = RolFinalDAO(request)
             else:
                 nueva_entidad = Rol(entidad["_nombre"], estado)
-                dao = RolDAO()
+                dao = RolDAO(request)
             dao.crear(nueva_entidad);
             p = Pickler()
             aRet = p.flatten(nueva_entidad)
             p.flatten(entidad)
             return Response(json.dumps({'sucess': 'true', 'users':aRet}))
     if (request.method == 'DELETE'):
-        dao = RolDAO()
+        dao = RolDAO(request)
         u = Unpickler()
         entidad = u.restore(request.json_body);
         rol = dao.get_by_id(entidad["id"])
@@ -93,18 +93,18 @@ def get_roles(request):
         return Response(json.dumps({'sucess': 'true'}))
     if (request.method == 'PUT'):
         u = Unpickler()
-        dao = RolDAO()
+        dao = RolDAO(request)
         id_rol = request.matchdict['id_rol']
         entidad = u.restore(request.json_body);
         rol = dao.get_by_id(id_rol)
-        estado_dao = RolEstadoDAO();
+        estado_dao = RolEstadoDAO(request);
         if (isinstance(entidad["_estado"], dict)):
             estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]["_estado"]).first()
         else:
             estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first()
         
-        rolDAO = RolDAO();
-        rolFinalDAO = RolFinalDAO();
+        rolDAO = RolDAO(request);
+        rolFinalDAO = RolFinalDAO(request);
         vieja = rolDAO.get_by_id(entidad["id"]);
         p = Pickler()
         
@@ -149,7 +149,7 @@ def get_estado_roles(request):
         - Retorna una lista si se envia GET
     """
 #    if (request.method == 'GET'):
-    re = RolEstadoDAO()
+    re = RolEstadoDAO(request)
     entidades = re.get_query().all()
     lista = [];
     p = Pickler()

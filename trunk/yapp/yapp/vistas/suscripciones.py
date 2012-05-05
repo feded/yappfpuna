@@ -8,7 +8,7 @@ from jsonpickle.pickler import Pickler
 from jsonpickle.unpickler import Unpickler
 from pyramid.response import Response
 from pyramid.view import view_config
-from yapp.daos.base_dao import SuscripcionDAO, NotificacionDAO
+from yapp.daos.base_dao import NotificacionDAO, SuscripcionDAO
 from yapp.daos.entidad_padre_dao import EntidadPadreDAO
 from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.models.historial import HistorialDTO

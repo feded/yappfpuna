@@ -38,7 +38,7 @@ class creaProyecto(unittest.TestCase):
         """Testeando crear proyecto"""
         print self.shortDescription()    
         with transaction.manager:
-            dao = ProyectoDAO()
+            dao = ProyectoDAO(None)
             proyecto = Proyecto('ProyectoPrueba','Yapp',1,'Elaboracion','Yapp','Proyecto para test','19042012','12042012')
             dao.crear(proyecto)
             entidad = dao.get_query().filter_by(_nombre='ProyectoPrueba').first();
@@ -46,7 +46,7 @@ class creaProyecto(unittest.TestCase):
             
 #class editarProyecto(_initTestingDB):
 #    def runTest(self):
-#        dao = ProyectoDAO()
+#        dao = ProyectoDAO(None)
 #        entidad_vieja = dao.get_query().filter_by(_autor='Yapp').first();
 #        print(entidad_vieja._nombre)
 #        nombre_viejo = entidad_vieja._nombre
@@ -70,9 +70,9 @@ class crearRoFinal(unittest.TestCase):
         """Testeando crear rol final"""
         print self.shortDescription()
         with transaction.manager:
-            estado_dao = RolEstadoDAO();
+            estado_dao = RolEstadoDAO(None);
             estado = estado_dao.get_query().filter(RolEstado._estado == "Activo").first()
-            dao = RolFinalDAO()
+            dao = RolFinalDAO(None)
             entidad = RolFinal('Rol Prueba', estado , 'prueba@gmail.com', 'pass')
             dao.crear(entidad)
             entidad = dao.get_query().filter_by(_nombre='Rol Prueba').first();
@@ -91,11 +91,11 @@ class crearSuscripcion(unittest.TestCase):
         print self.shortDescription()
             
         with transaction.manager:
-            entidad_padre = EntidadPadreDAO();
+            entidad_padre = EntidadPadreDAO(None);
             estado = entidad_padre.get_query().filter(EntidadPadre._nombre == "ProyectoPrueba").first()
-            rol_final = RolFinalDAO();
+            rol_final = RolFinalDAO(None);
             rol = rol_final.get_query().filter(EntidadPadre._nombre == "Rol Prueba").first()
-            dao = SuscripcionDAO()
+            dao = SuscripcionDAO(None)
             entidad = Suscripcion('Suscripcion Prueba', estado , rol)
             dao.crear(entidad)
             entidad = dao.get_query().filter_by(_nombre='Suscripcion Prueba').first();
@@ -113,7 +113,7 @@ class eliminarSuscripcion(unittest.TestCase):
         """Testeando eliminar suscripcion"""
         print self.shortDescription()
         with transaction.manager:
-            dao = SuscripcionDAO()
+            dao = SuscripcionDAO(None)
             entidad = dao.get_query().filter_by(_nombre='Suscripcion Prueba').first();
             dao.borrar(entidad)
             entidad = dao.get_query().filter_by(_nombre='Suscripcion Prueba').first();
@@ -130,7 +130,7 @@ class eliminarProyecto(unittest.TestCase):
         """Testeando eliminar proyecto"""
         print self.shortDescription()
         with transaction.manager:
-            dao = ProyectoDAO()
+            dao = ProyectoDAO(None)
             entidad = dao.get_query().filter_by(_nombre='ProyectoPrueba').first();
             dao.borrar(entidad)
             entidad = dao.get_query().filter_by(_nombre='ProyectoPrueba').first();
@@ -147,7 +147,7 @@ class eliminarRolFinal(unittest.TestCase):
         """Testeando eliminar rol final"""
         print self.shortDescription()
         with transaction.manager:
-            dao = RolFinalDAO()
+            dao = RolFinalDAO(None)
             entidad = dao.get_query().filter_by(_nombre='Rol Prueba').first();
             dao.borrar(entidad)
             entidad = dao.get_query().filter_by(_nombre='Rol Prueba').first();
@@ -164,7 +164,7 @@ class crearTipoItem(unittest.TestCase):
         """Testeando crear tipo de item"""
         print self.shortDescription()
         with transaction.manager:
-            dao = TipoItemDAO()
+            dao = TipoItemDAO(None)
             tipo = TipoItem('TipoPrueba', 'prueba', 1, 'tp', False)
             dao.crear(tipo)
             entidad = dao.get_query().filter_by(_nombre='TipoPrueba').first();
@@ -181,7 +181,7 @@ class eliminarTipoItem(unittest.TestCase):
         """Testeando eliminar tipo de item"""
         print self.shortDescription()
         with transaction.manager:
-            dao = TipoItemDAO()
+            dao = TipoItemDAO(None)
             entidad = dao.get_query().filter_by(_nombre='TipoPrueba').first();
             dao.borrar(entidad)
             entidad = dao.get_query().filter_by(_nombre='TipoPrueba').first();
@@ -198,7 +198,7 @@ class crearAtributoTipoItem(unittest.TestCase):
         """Testeando crear atributo de tipo de item"""
         print self.shortDescription()
         with transaction.manager:
-            dao = AtributoTipoItemDAO()
+            dao = AtributoTipoItemDAO(None)
             tipo = AtributoTipoItem('1', 'valor', 'atributo particular', False, 'valor2')
             dao.crear(tipo)
             entidad = dao.get_query().filter_by(_tipo='1').first();
@@ -215,7 +215,7 @@ class eliminarAtributoTipoItem(unittest.TestCase):
         """Testeando eliminar atributo de tipo de item"""
         print self.shortDescription()
         with transaction.manager:
-            dao = AtributoTipoItemDAO()
+            dao = AtributoTipoItemDAO(None)
             entidad = dao.get_query().filter_by(_tipo='1').first();
             dao.borrar(entidad)
             entidad = dao.get_query().filter_by(_tipo='1').first();

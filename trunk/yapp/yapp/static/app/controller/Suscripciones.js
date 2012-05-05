@@ -4,8 +4,11 @@ Ext.define('YAPP.controller.Suscripciones', {
 	models : [ 'Suscripcion' ],
 	stores : [ 'Suscripciones', 'RolesFinales', 'Historiales' ],
 	refs : [ {
-		selector : 'notificaciones',
-		ref : 'notificaciones'
+		selector : 'suscripcionedit combobox[name=_entidad_padre]',
+		ref : 'comboEntidad'
+	}, {
+		selector : 'suscripcionedit combobox[name=_rol_final]',
+		ref : 'comboRolFinal'
 	} ],
 	init : function() {
 		this.control({
