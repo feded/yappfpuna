@@ -6,7 +6,7 @@ Ext.define('YAPP.store.RolesFinales', {
 	proxy : {
 		type : 'rest',
 		api : {
-			read : 'http://localhost:6543/rolesfinales/',
+			read : '/rolesfinales/',
 		},
 		reader : {
 			type : 'json',

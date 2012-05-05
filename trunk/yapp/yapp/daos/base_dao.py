@@ -60,9 +60,10 @@ class BaseDAO :
         DBSession.add(entidad)
         lista = self.get_query().all();
         entidad = lista[len(lista) - 1];
-        historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
-        DBSession.add(historia)
-        self.notificar(entidad, historia)
+        if (self._request!= None):
+            historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
+            DBSession.add(historia)
+            self.notificar(entidad, historia)
         return entidad;
          
     def borrar(self, entidad):
@@ -70,20 +71,24 @@ class BaseDAO :
         - B{Parametros:} 
             - B{entidad:} entidad a ser eliminada
         """
-        historia = Historial(entidad.__tablename__, entidad._id, "ELIMINACION", self._request.session['user']._id);
-        DBSession.add(historia)
         DBSession.delete(entidad);
-        self.notificar(entidad, historia)
+        if (self._request!= None):
+            historia = Historial(entidad.__tablename__, entidad._id, "ELIMINACION", self._request.session['user']._id);
+            DBSession.add(historia)
+           
+            self.notificar(entidad, historia)
         
     def update(self, entidad):
         """B{Metodo que actualiza una entidad en la base de datos, y almacena su modificacion en el historial}
         - B{Parametros:} 
             - B{entidad:} entidad a ser persistida
         """
-        historia = Historial(entidad.__tablename__, entidad._id, "MODIFICACION", self._request.session['user']._id);
-        DBSession.add(historia)
         DBSession.merge(entidad)
-        self.notificar(entidad, historia)
+        if (self._request!= None):
+            historia = Historial(entidad.__tablename__, entidad._id, "MODIFICACION", self._request.session['user']._id);
+            DBSession.add(historia)
+            
+            self.notificar(entidad, historia)
     
     def notificar(self, entidad, historia):
         if (isinstance(entidad, EntidadPadre)):

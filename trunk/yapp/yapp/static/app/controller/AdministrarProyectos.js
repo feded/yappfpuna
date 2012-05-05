@@ -107,8 +107,8 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		record.set(values);
 		var cb1 = this.getComboAutor();
 		var cb2 = this.getComboLider();
-//		record.set('autor_nombre',cb1.getRawValue());
-//		record.set('lider_nombre',cb2.getRawValue());
+		record.data.autor_nombre = cb1.getRawValue();
+		record.data.lider_nombre = cb2.getRawValue();
 		win.close();
 	},
 	

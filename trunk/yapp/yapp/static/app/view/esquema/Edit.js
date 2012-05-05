@@ -57,3 +57,15 @@ var formulario = Ext.define('YAPP.view.esquema.Edit', {
 	}
 
 });
+
+var colorPicker = Ext.create('Ext.picker.Color', {
+//    value: '993300',  // initial selected color
+    listeners: {
+        select: function(picker, selColor) {
+//            alert(selColor);
+			var texto = selColor;
+            var win = picker.up('window');
+            win.down('#color').setValue(texto);
+        }
+    }
+});

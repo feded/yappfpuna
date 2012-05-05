@@ -78,10 +78,14 @@ Ext.define('YAPP.controller.Privilegios', {
 		if (object.getValue() == '') {
 			return;
 		}
+		var id = object.getValue()
+		if (id._id != null)
+			id = id._id
+		console.log(object)
 		combo.store = store;
 		store.load({
 			params : {
-				id : object.getValue()
+				id : id
 			}
 		});
 		// this.getEntidadesPadresStore().load();
