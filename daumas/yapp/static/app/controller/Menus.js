@@ -1,7 +1,7 @@
 Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
-	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List',
+	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List', 'esquema.List',
 			'rol.List', 'tipoItem.List', 'suscripciones.List', 'item.List', 'recurso.ListarRecurso' ],
 
 	init : function() {
@@ -28,6 +28,12 @@ Ext.define('YAPP.controller.Menus', {
 			'viewport button[action=adminItems]' : {
 				click : this.adminItems
 			},
+			'viewport button[action=adminEsquemas]' : {
+				click : this.adminEsquemas
+			},
+			'viewport button[action=adminRecursos]' :{
+				click : this.adminRecursos
+			}
 		});
 	},
 	
@@ -130,4 +136,28 @@ Ext.define('YAPP.controller.Menus', {
 		tabs.setActiveTab(tab);
 		
 	},
+	adminRecursos : function(button) {
+        
+        var tabs = Ext.getCmp('tabPrincipal');
+        
+        var tab = tabs.add({
+                title : 'Administrar recursos',
+                xtype : 'listarrecurso',
+                closable : true
+        });
+
+        tabs.setActiveTab(tab);
+
+	},
+	adminEsquemas : function(button){
+		var tabs = Ext.getCmp('tabPrincipal');
+		
+		var tab = tabs.add({
+			title : 'Administrar Esquemas',
+			xtype : 'esquemaslist',
+			closable : true
+		});
+		
+		tabs.setActiveTab(tab);
+	}
 });

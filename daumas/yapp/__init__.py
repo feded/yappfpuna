@@ -72,6 +72,10 @@ def main(global_config, **settings):
     config.add_route('guardarAtributo', '/guardarAtributo')
     config.add_route('entidades_padre','/entidades_padre')
     config.add_route('suscripciones','/suscripciones/{id_suscripcion}')
+    config.add_route('crearListarEsquemas', '/esquemas')
+    config.add_route('editarEliminarEsquemas', '/esquemas/{id}')
+    config.add_route('crearListarAtributosEsquemas', '/atributosEsquemas')
+    config.add_route('editarEliminarAtributosEsquemas', '/atributosEsquemas/{id}')
     config.scan()
 #    config.scan("views")
 
