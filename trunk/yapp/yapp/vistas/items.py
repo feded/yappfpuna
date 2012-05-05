@@ -7,7 +7,11 @@ from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config
 from yapp.daos.tipo_item_dao import TipoItemDAO
+from yapp.daos.fase_dao import FaseDAO
+from yapp.daos.padre_item_dao import PadreItemDAO
 from yapp.models.tipo_item.tipo_item import TipoItem
+from yapp.models.item.item import Item
+from yapp.models.item.padre_item import PadreItem
 import json
 from yapp.models import DBSession
 
@@ -18,33 +22,52 @@ def AG_atributos_tipos_item(request):
         rd = ItemDAO()
         fase_id = request.GET.get('id')
         entidades = rd.get_query().filter(Item._fase_id == fase_id).all()
-       # entidades = rd.get_query().filter(Item._tipo_item_id == request.GET.get('id')).all()
-#        entidades = rd.get_query().all()
         print entidades
         lista = [];
+        padre_dao = PadreItemDAO()
         p = Pickler(True, None)
         for entidad in entidades:
-            lista.append(p.flatten(entidad))
+            padre_hijo = padre_dao.get_query().filter(PadreItem._hijo_id == entidad._id).first()
+            rd = ItemDAO()
+            padre = rd.get_by_id(padre_hijo._padre_id)
+            entidadLinda = ItemLindo(entidad._id, entidad._nombre, entidad._tipo_item, entidad._fase, entidad._duracion,entidad._condicionado, entidad._version, entidad._estado, entidad._fecha_inicio, entidad._fecha_fin, padre) 
+            lista.append(p.flatten(entidadLinda))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
-        print a_ret
+        
         return Response(a_ret)
     elif (request.method == 'POST'):
-        print "-----CREANDO ITEM-----"
         u = Unpickler()
         entidad = u.restore(request.json_body);
-        itemDao = ItemDAO();
         
-        print "Entidad" + str(entidad)                                       
-        nueva_entidad = Item(entidad["_tipo"], entidad["_valor"], entidad["_descripcion"], entidad["_opcional"], entidad["_defecto"], entidad["_tipo_item_id"])
+        dao_fase = FaseDAO()
+        fase = dao_fase.get_by_id(entidad["_fase"])
         
-        print "Esta es: " + str(nueva_entidad)
+        dao_tipo_item = TipoItemDAO()
+        tipo_item = dao_tipo_item.get_by_id(entidad["_tipo_item"])
+
+        antecesor = entidad["_antecesor_id"]
+
+        if(entidad["_antecesor_id"] == ""):
+            antecesor = None
+        if(entidad["_padre"] == ""):
+            padre = None
+        else:
+            dao_padre = ItemDAO()
+            padre = dao_padre.get_by_id(entidad["_padre"])
+                                  
+        nuevo_item = Item(entidad["_nombre"], tipo_item, fase, entidad["_duracion"],entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"])
+        itemDao = ItemDAO()
+        itemDao.crear(nuevo_item)
         
-        itemDao.crear(nueva_entidad);
+        padre_item_dao = PadreItemDAO()
+        padre_item = PadreItem(padre,nuevo_item)
+        padre_item_dao.crear(padre_item)
         
         lista = []
         p = Pickler()
-        lista.append(p.flatten(nueva_entidad))
+        lista.append(p.flatten(nuevo_item))
+
         j_string = p.flatten(lista)
         
         return Response(json.dumps({'sucess': 'true', 'lista':j_string}))
@@ -75,3 +98,20 @@ def BM_atributo(request):
         atributo = atributoItemDao.get_by_id(entidad["id"])
         atributoItemDao.borrar(atributo)
         return Response(json.dumps({'sucess': 'true'}))
+
+class ItemLindo:
+    """
+    @summary: Unidad de transporte para items.         
+    """
+    def __init__(self, _id, nombre, tipo_item, fase, duracion, condicionado, version, estado, fecha_inicio, fecha_fin, padre):
+        self._id = _id
+        self._nombre = nombre;
+        self._tipo_item = tipo_item;
+        self._fase = fase;
+        self._duracion = duracion;
+        self._condicionado = condicionado;
+        self._version = version;
+        self._estado = estado;
+        self._fecha_inicio = fecha_inicio;
+        self._fecha_fin = fecha_fin;
+        self._padre = padre;

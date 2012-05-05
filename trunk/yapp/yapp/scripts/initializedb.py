@@ -1,14 +1,16 @@
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config
+from yapp.daos.rol_dao import RolEstadoDAO, RolDAO
+from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.daos.entidad_dao import EntidadDAO
 from yapp.daos.privilegio_dao import PrivilegioDAO
-from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO, TipoRecursoDAO
+from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO
 from yapp.daos.rol_dao import RolEstadoDAO, RolDAO
 from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import Base, DBSession
 from yapp.models.historial import Historial
-from yapp.models.recurso.tipo_recurso import TipoRecurso, TipoRecurso
+from yapp.models.recurso.tipo_recurso import TipoRecurso
 from yapp.models.roles.entidad import Entidad
 from yapp.models.roles.rol_estado import RolEstado
 from yapp.models.roles.rol_final import RolFinal
@@ -17,6 +19,12 @@ import os
 import sys
 import transaction
 import yapp.models.entidad_padre
+import yapp.models.fase.atributo_fase
+import yapp.models.fase.fase
+import yapp.models.fase.fase
+import yapp.models.fase.tipo_fase
+import yapp.models.item.item
+import yapp.models.proyecto.proyecto
 import yapp.models.esquema.atributo_esquema
 import yapp.models.esquema.esquema
 import yapp.models.fase.atributo_fase
@@ -24,6 +32,7 @@ import yapp.models.fase.fase
 import yapp.models.fase.fase
 import yapp.models.fase.tipo_fase
 import yapp.models.item.item
+import yapp.models.item.padre_item
 import yapp.models.proyecto.proyecto
 import yapp.models.recurso.recurso
 import yapp.models.recurso.recurso_bien
