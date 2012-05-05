@@ -2,7 +2,7 @@ Ext.define('YAPP.store.Fases', {
 	extend: 'Ext.data.Store',
 	model: 'YAPP.model.Fase',
 	
-//	autoLoad : true,
+	autoLoad : true,
     autoSync: true,
     
 //    groupField: "_proyecto",

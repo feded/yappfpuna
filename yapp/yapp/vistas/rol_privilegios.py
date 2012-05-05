@@ -23,7 +23,7 @@ def get_roles(request):
     """Metodo que maneja las llamadas para los privilegios de un privilegio_rol
     """
     if (request.method == 'GET'):
-        dao = RolPrivilegioDAO()
+        dao = RolPrivilegioDAO(request)
         if (request.GET.get('id') != None):
             id = request.GET.get('id')
             entidades = dao.get_query().filter(RolPrivilegio._rol_id == id).all()
@@ -43,16 +43,16 @@ def get_roles(request):
         entidad = u.restore(request.json_body);
         print request.json_body;
         print "--------------------------"
-        privilegio_rol = RolDAO().get_by_id(entidad['_rol']);
+        privilegio_rol = RolDAO(request).get_by_id(entidad['_rol']);
         if (entidad['_privilegio'] == None):
             privilegio = None;
         else:
-            privilegio = PrivilegioDAO().get_by_id(entidad['_privilegio'])
+            privilegio = PrivilegioDAO(request).get_by_id(entidad['_privilegio'])
         if (entidad['_entidad_padre'] == None):
             entidad_padre = None
         else:
-            entidad_padre = EntidadPadreDAO().get_by_id(entidad['_entidad_padre'])
-        dao = RolPrivilegioDAO();
+            entidad_padre = EntidadPadreDAO(request).get_by_id(entidad['_entidad_padre'])
+        dao = RolPrivilegioDAO(request);
         nueva_entidad = RolPrivilegio(privilegio_rol, privilegio, entidad_padre);
         
         dao.crear(nueva_entidad);
@@ -60,7 +60,8 @@ def get_roles(request):
         aRet = p.flatten(nueva_entidad)
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
     if (request.method == 'DELETE'):
-        dao = RolPrivilegioDAO()
+        print request.json_body
+        dao = RolPrivilegioDAO(request)
         u = Unpickler()
         entidad = u.restore(request.json_body);
         privilegio_rol = dao.get_by_id(entidad["id"])
@@ -68,18 +69,18 @@ def get_roles(request):
         return Response(json.dumps({'sucess': 'true'}))
 #    if (request.method == 'PUT'):
 #        u = Unpickler()
-#        dao = RolDAO()
+#        dao = RolDAO(request)
 #        id_rol = request.matchdict['id_rol']
 #        entidad = u.restore(request.json_body);
 #        privilegio_rol = dao.get_by_id(id_rol)
-#        estado_dao = RolEstadoDAO();
+#        estado_dao = RolEstadoDAO(request);
 #        if (isinstance(entidad["_estado"], dict)):
 #            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]["_estado"]).first()
 #        else:
 #            estado = estado_dao.get_query().filter(RolEstado._estado == entidad["_estado"]).first()
 #        
-#        rolDAO = RolDAO();
-#        rolFinalDAO = RolFinalDAO();
+#        rolDAO = RolDAO(request);
+#        rolFinalDAO = RolFinalDAO(request);
 #        vieja = rolDAO.get_by_id(entidad["id"]);
 #        p = Pickler()
 #        

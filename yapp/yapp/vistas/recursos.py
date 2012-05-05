@@ -20,7 +20,7 @@ def obtener_crear_recursos(request):
     @summary: Maneja las solicitudes para obtener y crear recursos.
     """
     if (request.method == 'GET'):
-        rd = RecursoDAO()
+        rd = RecursoDAO(request)
         entidades = rd.get_all()
         lista = [];
         p = Pickler()
@@ -36,20 +36,20 @@ def obtener_crear_recursos(request):
         u= Unpickler()
         entidad = u.restore(request.json_body);
         
-        tipo_dao = TipoRecursoDAO()
+        tipo_dao = TipoRecursoDAO(request)
         tipo = tipo_dao.get_query().filter(TipoRecurso._tipo == entidad["_tipo"]).first()
     
         
         
         if (entidad["_tipo"] == "Persona"):
             nuevo_recurso = RecursoPersona(entidad["_nombre"],tipo,entidad["_descripcion"],entidad["_costo_hora"])
-            dao = RecursoPersonaDAO()
+            dao = RecursoPersonaDAO(request)
         elif (entidad["_tipo"] == "Bien"):
             nuevo_recurso = RecursoBien(entidad["_nombre"],tipo,entidad["_descripcion"],entidad["_costo_cantidad"],entidad["_cantidad"])
-            dao = RecursoBienDAO()
+            dao = RecursoBienDAO(request)
         elif (entidad["_tipo"] == "Material"):
             nuevo_recurso = RecursoMaterial(entidad["_nombre"],tipo,entidad["_descripcion"],entidad["_costo_cantidad"],entidad["_cantidad"])
-            dao = RecursoMaterialDAO()
+            dao = RecursoMaterialDAO(request)
             
         dao.crear(nuevo_recurso)
         
@@ -66,7 +66,7 @@ def get_tipos_recurso(request):
     """
     @summary: Maneja las solicitudes para recuperar los tipos de recursos.
     """
-    re = TipoRecursoDAO()
+    re = TipoRecursoDAO(request)
     entidades = re.get_query().all()
     lista = [];
     p = Pickler()

@@ -1,7 +1,7 @@
 Ext.define('YAPP.store.Esquemas', {
 	extend : 'Ext.data.Store',
 	model : 'YAPP.model.Esquema',
-	//autoLoad: true,
+	autoLoad: true,
 	autoSync: true,
 	proxy : {	
 		type: 'rest',

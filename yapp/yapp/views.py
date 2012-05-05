@@ -28,19 +28,14 @@
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
-from pyramid.security import remember, forget
-from pyramid.view import view_config, forbidden_view_config
-from sqlalchemy.types import Unicode
-from yapp.daos import proyecto_dao
+from pyramid.security import forget
+from pyramid.view import view_config
+from pyramid_mailer.message import Message
 from yapp.daos.proyecto_dao import ProyectoDAO
-from yapp.daos.rol_dao import RolDAO
 from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.models.proyecto.proyecto import Proyecto
-from yapp.models.roles.rol import Rol
-from yapp.models.roles.rol_final import RolFinal
-from yapp.security import USERS
-from pyramid_mailer.message import Message
 import json
+import yapp
 
 
 #Ponemos nuestros View callables
@@ -63,7 +58,7 @@ def login_view(request):
     if request.method == 'POST' and request.POST.get("type") == 'login':
         mail = request.POST.get("usuario")
         password = request.POST.get("password")
-        rh = RolFinalDAO()
+        rh = RolFinalDAO(request)
         rol = rh.get_query().filter_by(_email=mail , _password=password).first()
         if rol != None:
             print "logueando"
@@ -74,9 +69,8 @@ def login_view(request):
             return Response(json.dumps({'success': True}))
         return Response( json.dumps({'failure': True}))
     elif request.method == 'POST' and request.POST.get("type") == 'olvide':
-        print "COMO ESTAS GATO PUTO"
         email = request.POST.get("usuario")
-        rh = RolFinalDAO()
+        rh = RolFinalDAO(request)
         rol = rh.get_query().filter_by(_email=email).first()
         # enviar un mail al cliente con nueva contrasena
         if rol != None:
@@ -103,44 +97,21 @@ def crearProyecto_view(request):
         nombre = request.POST.get('nombre')
         autor = request.POST.get('autor')
         proyecto = Proyecto(nombre, autor)
-        p_dao = ProyectoDAO();
+        p_dao = ProyectoDAO(request);
         p_dao.crear(proyecto)
         return Response( json.dumps({'success': True}))
-#        rh = RolDAO()
+#        rh = RolDAO(request)
 #        rol = rh.get_by_id(1)
 #        rh.get_query().all()
 #        print rol._nombre;
     return {}
-
-@view_config(route_name='crearRol', renderer="templates/rol/new_rol.pt")
-def crear_rol(request):
-    print "Renderizando rol"
-#    if request.method == 'POST':
-    if request.method == 'POST':
-        print "Creando nuevo rol"
-        nombre = request.POST.get('nombre')
-        estado = request.POST.get('estado')
-        no_es_final = request.POST.get('email') != ""
-        if no_es_final == True:
-            email = request.POST.get('email')
-            password = request.POST.get('password')
-            rf = RolFinal(nombre, estado, email, password)
-            dao = RolFinalDAO()
-            dao.crear(rf)
-        else:
-            rf = Rol(nombre, estado)
-            dao = RolDAO()
-            dao.crear(rf)
-        return HTTPFound(location=request.route_url('main'))
-    return {}
-
 
 #@view_config(route_name='olvide', renderer='templates/login/olvide.pt')
 #def olvide(request):
 #    if request.method == 'GET':
 #        email = request.GET.get("email")
 ## enviar un mail al cliente con nueva contrasena
-#        rh = RolFinalDAO()
+#        rh = RolFinalDAO(request)
 #        rol = rh.get_query().filter_by(_email=email).first()
 #        if rol != None:
 #            return dict(
@@ -166,7 +137,7 @@ def crear_rol(request):
 #    if 'form.submitted' in request.params:
 #        mail = request.params['usuario']
 #        password = request.params['password']
-#        rh = RolFinalDAO()
+#        rh = RolFinalDAO(request)
 #        rol = rh.get_query().filter_by(_email=mail , _password=password).first()
 #        if rol != None:
 #            headers = remember(request, mail)

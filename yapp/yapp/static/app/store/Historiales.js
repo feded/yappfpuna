@@ -1,15 +1,17 @@
-Ext.define('YAPP.store.RolesFinales', {
+Ext.define('YAPP.store.Historiales', {
 	extend : 'Ext.data.Store',
-	model : 'YAPP.model.Rol',
+	model : 'YAPP.model.Historial',
+	
 	autoSync : true,
+	
 	proxy : {
 		type : 'rest',
 		api : {
-			read : 'http://localhost:6543/rolesfinales/',
+			read : '/notificaciones/',
 		},
 		reader : {
 			type : 'json',
-			root : 'users',
+			root : 'lista',
 			successProperty : 'sucess'
 		}
 	}

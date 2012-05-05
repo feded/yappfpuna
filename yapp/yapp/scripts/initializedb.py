@@ -1,7 +1,5 @@
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config
-from yapp.daos.rol_dao import RolEstadoDAO, RolDAO
-from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.daos.entidad_dao import EntidadDAO
 from yapp.daos.privilegio_dao import PrivilegioDAO
 from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO
@@ -10,7 +8,7 @@ from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import Base, DBSession
 from yapp.models.historial import Historial
-from yapp.models.recurso.tipo_recurso import TipoRecurso
+from yapp.models.recurso.tipo_recurso import TipoRecurso, TipoRecurso
 from yapp.models.roles.entidad import Entidad
 from yapp.models.roles.rol_estado import RolEstado
 from yapp.models.roles.rol_final import RolFinal
@@ -48,6 +46,7 @@ import yapp.models.roles.rol_final
 import yapp.models.roles.rol_privilegio
 import yapp.models.root_factory
 import yapp.models.suscripcion.suscripcion
+import yapp.models.suscripcion.notificacion
 import yapp.models.tipo_item.atributo_tipo_item
 import yapp.models.tipo_item.tipo_item
 
@@ -75,7 +74,7 @@ def main(argv=sys.argv):
 
     
     
-    entidad_dao = EntidadDAO();
+    entidad_dao = EntidadDAO(None);
     items = entidad_dao.get_all()
     if (len(items) == 0):
         with transaction.manager:
@@ -87,7 +86,7 @@ def main(argv=sys.argv):
             DBSession.add(entidad)
             entidad = Entidad("Esquema");
             DBSession.add(entidad)
-    items = RolEstadoDAO().get_all()
+    items = RolEstadoDAO(None).get_all()
     if (len(items) == 0):
         with transaction.manager:
             estado = RolEstado("Activo")
@@ -95,7 +94,7 @@ def main(argv=sys.argv):
             estado = RolEstado("Suspendido");
             DBSession.add(estado);
             
-    items = TipoRecursoDAO().get_all()
+    items = TipoRecursoDAO(None).get_all()
     if (len(items) == 0):
         with transaction.manager:
             tipo = TipoRecurso("Persona")
@@ -105,17 +104,17 @@ def main(argv=sys.argv):
             tipo = TipoRecurso("Material");
             DBSession.add(tipo);
             
-    items = TipoItemDAO().get_all()
+    items = TipoItemDAO(None).get_all()
     if (len(items) == 0):
         with transaction.manager:
             tipoItem = TipoItem("Tipo item por defecto", "Tipo po defecto", 0, "TD", False)
             DBSession.add(tipoItem);
 
             
-    items = RolFinalDAO().get_query().filter(RolFinal._email == "admin").first();
+    items = RolFinalDAO(None).get_query().filter(RolFinal._email == "admin").first();
     if (items == None) :
         print "Creando ADMIN"
         with transaction.manager:
-            estadoActivo = RolEstadoDAO().get_query().filter(RolEstado._estado == "Activo").first();
+            estadoActivo = RolEstadoDAO(None).get_query().filter(RolEstado._estado == "Activo").first();
             admin = RolFinal("admin", estadoActivo, "admin", "admin");
             DBSession.add(admin);
