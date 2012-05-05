@@ -1,4 +1,4 @@
-Ext.define('YAPP.store.Roles', {
+Ext.define('YAPP.store.RolesFinales', {
 	extend : 'Ext.data.Store',
 	model : 'YAPP.model.Rol',
 	autoLoad : true,
