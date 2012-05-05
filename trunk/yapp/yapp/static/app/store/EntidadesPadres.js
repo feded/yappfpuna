@@ -5,7 +5,7 @@ Ext.define('YAPP.store.EntidadesPadres', {
 	proxy : {
 		type : 'rest',
 		api : {
-			read : 'http://localhost:6543/entidades_padre/0',
+			read : '/entidades_padre/0',
 		},
 		reader : {
 			type : 'json',

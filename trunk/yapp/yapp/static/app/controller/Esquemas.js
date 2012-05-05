@@ -136,7 +136,7 @@ Ext.define('YAPP.controller.Esquemas', {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
-		var esquemaId = selection.data.id;
+		esquemaId = selection.data.id;
 		
 		var store = this.getStore('AtributoEsquema');
 		store.load({
@@ -186,7 +186,7 @@ Ext.define('YAPP.controller.Esquemas', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		selection.data.accion = "DELETE"
-		this.getAtributoTipoItemStore().remove(selection)
+		this.getAtributoEsquemaStore().remove(selection)
 	},
 	
 	itemEsquema : function(button){

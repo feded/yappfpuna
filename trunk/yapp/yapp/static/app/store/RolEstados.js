@@ -4,9 +4,9 @@ Ext.define('YAPP.store.RolEstados', {
 	autoLoad : true,
 	
 	proxy : {
-		type : 'ajax',
+		type : 'rest',
 		api: {
-	        read: 'http://localhost:6543/roles_estados',
+	        read: '/roles_estados',
 	    },
 		reader : {
 			type : 'json',

@@ -4,9 +4,9 @@ Ext.define('YAPP.store.TipoRecurso', {
 	autoLoad : true,
 	
 	proxy : {
-		type : 'ajax',
+		type : 'rest',
 		api: {
-	        read: 'http://localhost:6543/tipo_recurso',
+	        read: '/tipo_recurso',
 	    },
 		reader : {
 			type : 'json',

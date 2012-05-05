@@ -8,10 +8,10 @@ Ext.define('YAPP.store.Proyectos', {
 	proxy : {
     	type : 'ajax',
         api : {
-        	read : 'http://localhost:6543/readProyectos',
-        	update : 'http://localhost:6543/updateProyectos',
-        	create : 'http://localhost:6543/createProyectos',
-        	destroy : 'http://localhost:6543/deleteProyectos'
+        	read : '/readProyectos',
+        	update : '/updateProyectos',
+        	create : '/createProyectos',
+        	destroy : '/deleteProyectos'
         },
         reader : {
         	type : 'json',

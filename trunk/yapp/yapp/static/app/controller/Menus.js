@@ -33,6 +33,9 @@ Ext.define('YAPP.controller.Menus', {
 			},
 			'viewport button[action=adminRecursos]' :{
 				click : this.adminRecursos
+			},
+			'viewport button[action=logout]' :{
+				click : this.logout
 			}
 		});
 	},
@@ -159,5 +162,20 @@ Ext.define('YAPP.controller.Menus', {
 		});
 		
 		tabs.setActiveTab(tab);
+	},
+	logout : function(button){
+		var form = new Ext.FormPanel({
+		id : 'logout',
+		name : 'logout',
+		labelWidth : 80,
+		url : '/logout',
+		});
+		form.submit({
+			method : 'POST',
+			success : function() {
+				var redirect = '/';
+				window.location = redirect;
+			},
+		});
 	}
 });

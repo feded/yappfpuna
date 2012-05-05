@@ -40,9 +40,9 @@ import yapp
 
 #Ponemos nuestros View callables
 
-@view_config(route_name='index', renderer="templates/index.pt")
-def index_view(request):
-    return {}
+#@view_config(route_name='index', renderer="templates/index.pt")
+#def index_view(request):
+#    return {}
 
 #@view_config(route_name='main', renderer="templates/main.pt")
 #def main_view(request):
@@ -156,6 +156,5 @@ def crearProyecto_view(request):
 @view_config(route_name='logout')
 def logout(request):
     headers = forget(request)
-    #request.session.invalidate()
-    return HTTPFound(location = request.route_url('login'),
-                     headers = headers)
+    request.session.invalidate()
+    return Response(json.dumps({'success': True}))

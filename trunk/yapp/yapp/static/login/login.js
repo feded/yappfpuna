@@ -54,7 +54,7 @@ Ext.onReady(function() {
 					success : function() {
 						Ext.Msg.alert('Olvidé contraseña!', 'Su contraseña de acceso se ha enviado a su correo electrónico con el que se registro', function(btn, text) {
 							if (btn == 'ok') {
-								var redirect = '/';
+								var redirect = '/yapp';
 								window.location = redirect;
 							}
 						});
@@ -88,31 +88,31 @@ Ext.onReady(function() {
 			success : function(response, options) {
 				Ext.Msg.alert('Estado', 'Acceso correcto!', function(btn, text) {
 					if (btn == 'ok') {
-						var redirect = 'index';
-						window.location = redirect;
-//						Ext.application({
-//						    name: 'YAPP',
-//						    
-//						    appFolder: '/static/app',
-//						    
-//						    autoCreateViewport: true,
-//						    
-//						    controllers: [
-//						        'Menus',
-//						        'AdministrarProyectos',
-//						        'AdministrarFases',
-//						        'Privilegios',
-//						        'Roles',
-//						        'TipoItem',
-//						        'Suscripciones'
-//						        
-//						    ],
-//						    
-//						    launch: function() {
-//						        win.hide();
-//						        return
-//						    }
-//						});
+						//var redirect = 'index';
+						//window.location = redirect;
+						Ext.application({
+						    name: 'YAPP',
+						    
+						    appFolder: '/static/app',
+						    
+						    autoCreateViewport: true,
+						    
+						    controllers: [
+						        'Menus',
+						        'AdministrarProyectos',
+						        'AdministrarFases',
+						        'Privilegios',
+						        'Roles',
+						        'TipoItem',
+						        'Suscripciones'
+						        
+						    ],
+						    
+						    launch: function() {
+						        win.hide();
+						        return
+						    }
+						});
 					}
 				});
 			},
