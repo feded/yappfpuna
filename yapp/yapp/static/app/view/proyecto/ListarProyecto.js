@@ -28,10 +28,10 @@ Ext.define('YAPP.view.proyecto.ListarProyecto' ,{
       
 		this.columns = [
 			{header:'Proyecto', dataIndex:'_nombre'},
-			{header:'Autor', dataIndex:'_autor'},
+			{header:'Autor', dataIndex:'autor_nombre'},
 			{header:'Prioridad', dataIndex:'_prioridad'},
 			{header:'Estado', dataIndex:'_estado'},
-			{header:'Líder de proyecto', dataIndex:'_lider'},
+			{header:'Líder de proyecto', dataIndex:'lider_nombre'},
 			{header:'Nota', dataIndex:'_nota'},
 			{header:'Fecha de creación', dataIndex:'_fecha_creacion'},
 			{header:'Fecha de modificacion', dataIndex:'_fecha_modificacion'}

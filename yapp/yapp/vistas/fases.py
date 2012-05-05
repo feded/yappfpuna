@@ -44,6 +44,12 @@ def obtener_crear_fases(request):
         nueva_fase = Fase(entidad["_nombre"],proyecto,entidad["_orden"],entidad["_comentario"],entidad["_estado"],entidad["_color"])
         dao.crear(nueva_fase)
         
+        dao_tipo_item = TipoItemDAO()
+        tipo_item = dao_tipo_item.get_by_id(1)
+        nuevo_tipo_fase = TipoFase(nueva_fase,tipo_item)
+        dao_tipo_fase = TipoFaseDAO()
+        dao_tipo_fase.crear(nuevo_tipo_fase)
+        
         lista = []
         p = Pickler()
         lista.append(p.flatten(nueva_fase))

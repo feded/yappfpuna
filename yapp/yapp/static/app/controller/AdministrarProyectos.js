@@ -9,6 +9,16 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 	stores:['Proyectos'],
 	models:['Proyecto'],
 	
+	refs : [ 	{
+                	selector : 'editarproyecto combobox[name=_autor]',
+                	ref : 'comboAutor'
+        		},
+        		{
+                	selector : 'editarproyecto combobox[name=_lider]',
+                	ref : 'comboLider'
+        		}
+        	],
+	
 	init:function(){
 		console.log('Cargado controller AdministrarProyectos');
 		this.control({
@@ -93,6 +103,10 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);
+		var cb1 = this.getComboAutor();
+		var cb2 = this.getComboLider();
+		record.set('autor_nombre',cb1.getRawValue());
+		record.set('lider_nombre',cb2.getRawValue());
 		win.close();
 	},
 	
@@ -101,7 +115,10 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
-		record.set(values);	
+		record.set(values);
+		console.log(record.data._autor);
+		record.set('autor_nombre',record.data._autor);
+		record.set('lider_nombre',record.data._lider);
 		win.close();
 		this.getProyectosStore().insert(0, record);
 	}

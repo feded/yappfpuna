@@ -4,10 +4,12 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
+from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.daos.tipo_fase_dao import TipoFaseDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models.fase.fase import Fase
 from yapp.models.proyecto.proyecto import Proyecto
+from yapp.models.roles.rol_final import RolFinal
 from yapp.models.fase.tipo_fase import TipoFase
 import json
 
@@ -22,7 +24,8 @@ def read_proyectos(request):
     lista = [];
     p = Pickler()
     for entidad in entidades:
-        lista.append(p.flatten(entidad))    
+        a = ProyectosLindos(entidad._id, entidad._nombre, entidad._autor, entidad._prioridad, entidad._estado, entidad._lider, entidad._nota,entidad._fecha_creacion, entidad._fecha_modificacion,entidad._autor._nombre,entidad._lider._nombre)        
+        lista.append(p.flatten(a))    
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'proyectos':j_string})
     
@@ -37,7 +40,10 @@ def create_proyectos(request):
     u= Unpickler()
     entidad = u.restore(request.json_body);
     dao = ProyectoDAO()
-    nuevo_proyecto = Proyecto(entidad["_nombre"],entidad["_autor"],entidad["_prioridad"],entidad["_estado"],entidad["_lider"],entidad["_nota"],entidad["_fecha_creacion"],entidad["_fecha_modificacion"])
+    rol_dao = RolFinalDAO()
+    rol = rol_dao.get_query().filter(RolFinal._id == entidad["_autor"]).first()
+    lider = rol_dao.get_query().filter(RolFinal._id == entidad["_lider"]).first()
+    nuevo_proyecto = Proyecto(entidad["_nombre"],rol,entidad["_prioridad"],entidad["_estado"],lider,entidad["_nota"],entidad["_fecha_creacion"],entidad["_fecha_modificacion"])
     dao.crear(nuevo_proyecto)
 #    for i in range(0,3):
     nombre_fase = "Fase por defecto de " + entidad["_nombre"]
@@ -58,7 +64,8 @@ def create_proyectos(request):
     
     lista = []
     p = Pickler()
-    lista.append(p.flatten(nuevo_proyecto))
+    a = ProyectosLindos(nuevo_proyecto._id,entidad["_nombre"],rol,entidad["_prioridad"],entidad["_estado"],lider,entidad["_nota"],entidad["_fecha_creacion"],entidad["_fecha_modificacion"],rol._nombre,lider._nombre)
+    lista.append(p.flatten(a))
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'proyectos':j_string})
     
@@ -74,10 +81,21 @@ def update_proyectos(request):
     entidad = u.restore(request.json_body);
     vieja = dao.get_by_id(entidad["id"])
     vieja._nombre = entidad["_nombre"]
-    vieja._autor = entidad["_autor"]
+    rol_dao = RolFinalDAO()
+    if (isinstance(entidad["_autor"], dict)):
+        rol = rol_dao.get_query().filter(RolFinal._id == entidad["_autor"]["_id"]).first()
+    else:
+        rol = rol_dao.get_query().filter(RolFinal._id == entidad["_autor"]).first()
+    vieja._autor = rol
     vieja._prioridad = entidad["_prioridad"]
     vieja._estado = entidad["_estado"]
-    vieja._lider = entidad["_lider"]
+    
+    lider_dao = RolFinalDAO()
+    if (isinstance(entidad["_lider"], dict)):
+        rol = lider_dao.get_query().filter(RolFinal._id == entidad["_lider"]["_id"]).first()
+    else:
+        rol = lider_dao.get_query().filter(RolFinal._id == entidad["_lider"]).first()
+        
     vieja._nota = entidad["_nota"]
     vieja._fecha_creacion = entidad["_fecha_creacion"]
     vieja._fecha_modificacion = entidad["_fecha_modificacion"]
@@ -102,3 +120,20 @@ def delete_proyectos(request):
          
     dao.borrar(proyecto)
     return Response(json.dumps({'sucess': 'true'}))
+
+class ProyectosLindos:
+    """
+    @summary: Unidad de transporte para proyectos.         
+    """
+    def __init__(self, _id, nombre, autor, prioridad, estado, lider, nota,fecha_creacion, fecha_modificacion,autor_nombre,lider_nombre):
+        self._id = _id;
+        self._nombre = nombre;
+        self._autor = autor;
+        self._prioridad = prioridad;
+        self._estado = estado;
+        self._lider = lider;
+        self._nota = nota;
+        self._fecha_creacion = fecha_creacion;
+        self._fecha_modificacion = fecha_modificacion;
+        self.autor_nombre = autor_nombre;
+        self.lider_nombre = lider_nombre;

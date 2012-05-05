@@ -1,7 +1,9 @@
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, Integer, String, String
+from sqlalchemy.types import Integer, Integer, String
+from sqlalchemy.orm import relation, backref
 from yapp.models import Base
 from yapp.models.entidad_padre import EntidadPadre
+from yapp.models.roles.rol_final import RolFinal
 
 class Proyecto(EntidadPadre):
     """
@@ -18,10 +20,12 @@ class Proyecto(EntidadPadre):
     _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
     __tablename__ = "proyecto"
     
-    _autor = Column(String, nullable=False)
+    _autor_id = Column(Integer, ForeignKey('rol_final._id'))
+    _autor = relation(RolFinal, backref=backref('proyecto_autor'),primaryjoin=_autor_id==RolFinal._id)
     _prioridad = Column(Integer, nullable=False)
     _estado = Column(String, nullable=False)
-    _lider = Column(String, nullable=False)
+    _lider_id = Column(Integer, ForeignKey('rol_final._id'))
+    _lider = relation(RolFinal, backref=backref('proyecto_lider'),primaryjoin=_lider_id==RolFinal._id)
     _nota = Column(String, nullable=True)
     _fecha_creacion = Column(String, nullable=False)
     _fecha_modificacion = Column(String, nullable=False)
