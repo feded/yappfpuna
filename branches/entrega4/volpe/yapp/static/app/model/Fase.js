@@ -8,8 +8,16 @@ Ext.define('YAPP.model.Fase', {
                 mapping : '_id'
         	},
         	{
-        		name : '_proyecto',
-        		type : 'string'
-        	}
+        		name : '_proyecto_id',
+        		type : 'int'
+        	},
+        	{
+        		name: '_orden',
+        		type: 'int'
+        	}, '_comentario', '_estado', '_color'
+//        	{
+//        		name: '_color',
+//        		type: 'int'
+//        	}
         	]
 });

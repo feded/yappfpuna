@@ -8,12 +8,9 @@ from sqlalchemy import (
 
 class EntidadBase:
 
-    """Crea una Tabla TipoItem con 
-        - _nombre: nombre del tipo de item
-        - _comentario: comentario del tipo de item
-        - _color: color del tipo de item
-        - _prefijo: prefijo del tipo de item
-        - _condicionado: determina si un item es condicionado
+    """Define los campos base de una Tabla con 
+        - _id: id de todas las entidades
+        TODO:- _fecha_creacion = fecha de creacion
     """
     
     _id = Column(Integer, primary_key=True)

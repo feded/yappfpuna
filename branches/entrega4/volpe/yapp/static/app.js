@@ -12,7 +12,9 @@ Ext.application({
         'Privilegios',
         'Roles',
         'TipoItem',
-        'Suscripciones'
+        'Suscripciones',
+        'Item',
+        'Recursos'
         
     ],
     
