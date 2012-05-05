@@ -8,6 +8,17 @@ Ext.define('YAPP.controller.Item', {
 	stores:['Item', 'Fases', 'TipoItems'],
 	models:['Item'],
 	
+	refs : [ {
+                selector : 'itemslist combobox[name=cbFase]',
+                ref : 'comboFase'
+        	},
+        	{
+                selector : 'itemedit combobox[name=_padre]',
+                ref : 'comboItemPadre'
+        	}
+        	 ],
+        	 
+	
 	init:function(){
 		console.log('Cargado controller Item');
 		this.control({
@@ -27,19 +38,56 @@ Ext.define('YAPP.controller.Item', {
             		itemdblclick: this.editarItem
             	},
             	
+            	'itemslist combobox[name=cbProyecto]' : {
+                    change : this.changeProyecto
+                 }
         });
 	},
 	
+	 changeProyecto : function(object, newValue, oldValue, eOpts) {
+                var combo = this.getComboFase();
+                var store = this.getFasesStore();
+                console.log(object.getValue())
+                if (object.getValue() == '') {
+                        return;
+                }
+                combo.store = store;
+                store.load({
+                        params : {
+                                id : object.getValue()
+                        }
+                });
+                // this.getEntidadesPadresStore().load();
+                // object.store = this.getEntidadesPadresStore()
+ 	},
+	
 	
 	crearItem: function(button){
-		console.log('hola');
 		var view = Ext.widget('itemedit');
         var item = new YAPP.model.Item();
+        
+        var comboFase = this.getComboFase();
 		
 		item.data._version = 1;
 		item.data._estado = 'ACTIVO';
 		item.data.accion = 'POST';
+		item.data._fase = comboFase.getValue();
 		view.down('form').loadRecord(item);
+		
+		var combo = this.getComboItemPadre();
+        var store = this.getItemStore();
+   
+   		var comboFase = this.getComboFase();
+        if (comboFase.getValue() == '') {
+               return;
+        }
+        combo.store = store;
+        store.load({
+        	params : {
+            	id : comboFase.getValue()
+          	}
+      	});
+		
          
          
 	},
@@ -58,7 +106,7 @@ Ext.define('YAPP.controller.Item', {
 //			var fecha = new Ext.Date();
 //			fecha = Ext.Date.format(fecha, 'd-m-Y');
 //			record.set('_fecha_inicio')
-			this.getTipoItemsStore().insert(0, record);
+			this.getItemStore().insert(0, record);
 	},
 	
 	editarItem : function(button){
