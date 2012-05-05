@@ -20,7 +20,7 @@ def read_proyectos(request):
     @summary: Maneja las solicitudes para recuperar los proyectos.
     """
     
-    rd = ProyectoDAO()
+    rd = ProyectoDAO(request)
     entidades = rd.get_all()
     lista = [];
     p = Pickler()
@@ -41,8 +41,8 @@ def create_proyectos(request):
     """
     u= Unpickler()
     entidad = u.restore(request.json_body);
-    dao = ProyectoDAO()
-    rol_dao = RolFinalDAO()
+    dao = ProyectoDAO(request)
+    rol_dao = RolFinalDAO(request)
     rol = rol_dao.get_query().filter(RolFinal._id == entidad["_autor"]).first()
     lider = rol_dao.get_query().filter(RolFinal._id == entidad["_lider"]).first()
     nuevo_proyecto = Proyecto(entidad["_nombre"],rol,entidad["_prioridad"],entidad["_estado"],lider,entidad["_nota"],entidad["_fecha_creacion"],entidad["_fecha_modificacion"])
@@ -54,14 +54,14 @@ def create_proyectos(request):
     estado = "Pendiente"
     color = "0"
     nueva_fase = Fase(nombre_fase, nuevo_proyecto, orden, comentario, estado,color)
-    dao_fase = FaseDAO()
+    dao_fase = FaseDAO(request)
     dao_fase.crear(nueva_fase)
     
-    dao_tipo_item = TipoItemDAO()
+    dao_tipo_item = TipoItemDAO(request)
     tipo_item = dao_tipo_item.get_by_id(1)
     
     nuevo_tipo_fase = TipoFase(nueva_fase,tipo_item)
-    dao_tipo_fase = TipoFaseDAO()
+    dao_tipo_fase = TipoFaseDAO(request)
     dao_tipo_fase.crear(nuevo_tipo_fase)
     
     lista = []
@@ -79,11 +79,11 @@ def update_proyectos(request):
     @summary: Maneja las solicitudes para actualizacion de proyectos.
     """
     u= Unpickler()
-    dao = ProyectoDAO()
+    dao = ProyectoDAO(request)
     entidad = u.restore(request.json_body);
     vieja = dao.get_by_id(entidad["id"])
     vieja._nombre = entidad["_nombre"]
-    rol_dao = RolFinalDAO()
+    rol_dao = RolFinalDAO(request)
     if (isinstance(entidad["_autor"], dict)):
         rol = rol_dao.get_query().filter(RolFinal._id == entidad["_autor"]["_id"]).first()
     else:
@@ -92,7 +92,7 @@ def update_proyectos(request):
     vieja._prioridad = entidad["_prioridad"]
     vieja._estado = entidad["_estado"]
     
-    lider_dao = RolFinalDAO()
+    lider_dao = RolFinalDAO(request)
     if (isinstance(entidad["_lider"], dict)):
         lider = lider_dao.get_query().filter(RolFinal._id == entidad["_lider"]["_id"]).first()
     else:
@@ -114,9 +114,9 @@ def delete_proyectos(request):
     """
     u= Unpickler()
     entidad = u.restore(request.json_body);
-    dao = ProyectoDAO()
+    dao = ProyectoDAO(request)
     proyecto = dao.get_by_id(entidad["id"])
-    fase_dao = FaseDAO()
+    fase_dao = FaseDAO(request)
     fases = fase_dao.get_query().filter(Fase._proyecto_id==proyecto._id).all();
     for fase in fases:
         fase_dao.borrar(fase);

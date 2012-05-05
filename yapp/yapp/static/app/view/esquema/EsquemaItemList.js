@@ -3,7 +3,7 @@ Ext.define('YAPP.view.esquema.EsquemaItemList' ,{
     alias : 'widget.esquemaItemList',
     
     
-    store : 'AtributoEsquema',
+    store : 'Item',
 	initComponent : function() {
 		this.dockedItems = [ {
 				xtype : 'toolbar',

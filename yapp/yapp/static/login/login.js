@@ -104,7 +104,10 @@ Ext.onReady(function() {
 						        'Privilegios',
 						        'Roles',
 						        'TipoItem',
-						        'Suscripciones'
+						        'Suscripciones',
+						        'Item',
+						        'Recursos',
+						        'Esquemas'
 						        
 						    ],
 						    
