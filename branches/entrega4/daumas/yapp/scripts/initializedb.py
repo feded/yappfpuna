@@ -35,6 +35,8 @@ import yapp.models.suscripcion.suscripcion
 import yapp.models.tipo_item.atributo_tipo_item
 import yapp.models.tipo_item.tipo_item
 import yapp.models.item.item
+import yapp.models.esquema.esquema
+import yapp.models.esquema.atributo_esquema
 
 
 #from yapp.models.roles import *

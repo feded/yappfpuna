@@ -14,7 +14,8 @@ Ext.application({
         'TipoItem',
         'Suscripciones',
         'Item',
-        'Recursos'
+        'Recursos',
+        'Esquemas'
         
     ],
     
