@@ -11,6 +11,7 @@ from yapp.daos.atributo_esquema_dao import AtributoEsquemaDAO
 from yapp.models.esquema.atributo_esquema import AtributoEsquema
 import json
 from yapp.models import DBSession
+from yapp.filter import Validador
 
 
 @view_config(route_name='crearListarEsquemas')
@@ -22,8 +23,10 @@ def AG_esquemas(request):
         print entidades
         lista = [];
         p = Pickler(True, None)
+        val = Validador(request);
         for entidad in entidades:
-            lista.append(p.flatten(entidad))
+            if val.es_visible(entidad):
+                lista.append(p.flatten(entidad))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
         print a_ret
