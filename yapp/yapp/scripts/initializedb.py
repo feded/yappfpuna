@@ -2,39 +2,44 @@ from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config
 from yapp.daos.entidad_dao import EntidadDAO
 from yapp.daos.recurso_dao import TipoRecursoDAO
-from yapp.daos.rol_dao import RolEstadoDAO
-from yapp.daos.rol_final_dao import RolFinalDAO
+from yapp.daos.privilegio_dao import PrivilegioDAO, EntidadDAO
+from yapp.daos.rol_dao import RolFinalDAO, RolEstadoDAO, RolDAO
+from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import Base, DBSession
+from yapp.models.historial import Historial
 from yapp.models.recurso.tipo_recurso import TipoRecurso
 from yapp.models.roles.entidad import Entidad
 from yapp.models.roles.rol_estado import RolEstado
 from yapp.models.roles.rol_final import RolFinal
+from yapp.models.recurso.tipo_recurso import TipoRecurso
 from yapp.models.tipo_item.tipo_item import TipoItem
 import os
 import sys
 import transaction
 import yapp.models.entidad_padre
-import yapp.models.fase.atributo_fase
-import yapp.models.fase.fase
-import yapp.models.fase.tipo_fase
-import yapp.models.item.item
-import yapp.models.proyecto.proyecto
 import yapp.models.recurso.recurso
+import yapp.models.recurso.recurso_persona
 import yapp.models.recurso.recurso_bien
 import yapp.models.recurso.recurso_material
-import yapp.models.recurso.recurso_persona
 import yapp.models.recurso.tipo_recurso
+import yapp.models.fase.fase
+import yapp.models.fase.atributo_fase
+import yapp.models.fase.tipo_fase
+import yapp.models.proyecto.proyecto
+import yapp.models.fase.fase
 import yapp.models.roles.entidad
 import yapp.models.roles.privilegio
 import yapp.models.roles.rol
 import yapp.models.roles.rol_estado
 import yapp.models.roles.rol_final
-import yapp.models.roles.rol_privilegio
 import yapp.models.root_factory
 import yapp.models.suscripcion.suscripcion
 import yapp.models.tipo_item.atributo_tipo_item
 import yapp.models.tipo_item.tipo_item
+import yapp.models.item.item
+import yapp.models.esquema.esquema
+import yapp.models.esquema.atributo_esquema
 
 
 #from yapp.models.roles import *
@@ -78,8 +83,7 @@ def main(argv=sys.argv):
             DBSession.add(estado);
             estado = RolEstado("Suspendido");
             DBSession.add(estado);
-
-
+            
     items = TipoRecursoDAO().get_all()
     if (len(items) == 0):
         with transaction.manager:

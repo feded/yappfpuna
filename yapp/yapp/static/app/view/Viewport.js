@@ -37,9 +37,11 @@ Ext.define('YAPP.view.Viewport', {
 		                action: 'adminFases'
 		                
 		            },
-		            {
+		            {	
+		            	xtype: 'button',
 		                text: 'Administrar esquemas',
-		                textAlign: 'left'
+		                textAlign: 'left',
+		                action: 'adminEsquemas'
 		                
 		            },
 		            {
