@@ -43,9 +43,3 @@ Ext.define('YAPP.view.recurso.ListarRecurso' ,{
                 this.down('#delete').setDisabled(selections.length === 0);
     }
 });
-function renderizador(val) {
-	if (val == null)
-		return val;
-	return val._tipo
-	// return ""
-}

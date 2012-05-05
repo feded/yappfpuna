@@ -16,21 +16,47 @@ Ext.define('YAPP.view.proyecto.EditarProyecto', {
                         name : '_nombre',
                         fieldLabel: 'Proyecto'
                     },
+//                    {
+//                        xtype: 'textfield',
+//                        name : '_autor',
+//                        fieldLabel: 'Autor'
+//                    },
+					{
+						xtype : 'combobox',
+						fieldLabel : 'Autor',
+						name : '_autor',
+						store : Ext.create('YAPP.store.RolesFinales'),
+						valueField : 'id',
+						displayField : '_nombre',
+						typeAhead : true,
+						queryMode : 'local',
+						emptyText : 'Seleccione un autor...'
+					},
                     {
-                        xtype: 'textfield',
-                        name : '_autor',
-                        fieldLabel: 'Autor'
-                    },
-                    {
-                        xtype: 'textfield',
+                        xtype: 'numberfield',
                         name : '_prioridad',
-                        fieldLabel: 'Prioridad'
+                        fieldLabel: 'Prioridad',
+                        minValue: 1,
+                        Value: 1,
+                        maxValue: 10,
+                        
                     },
                     {
-                        xtype: 'textfield',
-                        name : '_lider',
-                        fieldLabel: 'Líder de proyecto'
-                    },
+						xtype : 'combobox',
+						fieldLabel : 'Líder',
+						name : '_lider',
+						store : Ext.create('YAPP.store.RolesFinales'),
+						valueField : 'id',
+						displayField : '_nombre',
+						typeAhead : true,
+						queryMode : 'local',
+						emptyText : 'Seleccione un lider...'
+					},
+//                    {
+//                        xtype: 'textfield',
+//                        name : '_lider',
+//                        fieldLabel: 'Líder de proyecto'
+//                    },
                     {
                         xtype: 'textfield',
                         name : '_nota',

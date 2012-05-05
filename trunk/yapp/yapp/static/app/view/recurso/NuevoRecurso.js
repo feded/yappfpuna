@@ -61,25 +61,28 @@ Ext.define('YAPP.view.recurso.NuevoRecurso', {
                         		fieldLabel: 'Descripcion'
                     		},
                     		{
-                        		xtype: 'textfield',
+                        		xtype: 'numberfield',
                         		name : '_costo_hora',
                         		itemId : 'verCostoHora',
                         		hidden: true,
-                        		fieldLabel: 'Costo/hora'
+                        		fieldLabel: 'Costo/hora',
+                        		minValue: 0
                     		},
                     		{
-                        		xtype: 'textfield',
+                        		xtype: 'numberfield',
                         		name : '_costo_cantidad',
                         		itemId : 'verCostoCantidad',
                         		hidden: true,
-                        		fieldLabel: 'Costo/cantidad'
+                        		fieldLabel: 'Costo/cantidad',
+                        		minValue: 0
                     		},
                     		{
-                        		xtype: 'textfield',
+                        		xtype: 'numberfield',
                         		name : '_cantidad',
                         		itemId : 'verCantidad',
                         		hidden: true,
-                        		fieldLabel: 'Cantidad'
+                        		fieldLabel: 'Cantidad',
+                        		minValue: 0
                     		}
 							
                 		]

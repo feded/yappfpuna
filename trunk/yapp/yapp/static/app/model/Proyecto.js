@@ -1,7 +1,12 @@
 Ext.define('YAPP.model.Proyecto', {
 	extend: 'Ext.data.Model',
+	requires : [ 'YAPP.model.Rol' ],
 	fields:['_nombre',
-			'_autor',
+			{
+				name : '_autor',
+				type : 'YAPP.model.Rol'
+			},
+			'autor_nombre',
 			{
                 name : 'id',
                 type : 'int',
@@ -11,7 +16,11 @@ Ext.define('YAPP.model.Proyecto', {
         		type : 'int'
         	},
         	'_estado',
-        	'_lider',
+        	{
+				name : '_lider',
+				type : 'YAPP.model.Rol'
+			},
+			'lider_nombre',
         	'_nota',
         	'_fecha_creacion',
         	'_fecha_modificacion']
