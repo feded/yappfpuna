@@ -22,7 +22,7 @@ def obtener_crear_fases(request):
 
     if (request.method == 'GET'):
         proyecto_id = request.GET.get('id')
-        rd = FaseDAO()
+        rd = FaseDAO(request)
         entidades = rd.get_query().filter(Fase._proyecto_id == proyecto_id).all()
         lista = [];
         p = Pickler(False,None)
@@ -37,17 +37,17 @@ def obtener_crear_fases(request):
         u= Unpickler()
         entidad = u.restore(request.json_body);
         
-        dao = ProyectoDAO()
+        dao = ProyectoDAO(request)
         proyecto = dao.get_by_id(entidad["_proyecto_id"])
     
-        dao = FaseDAO()
+        dao = FaseDAO(request)
         nueva_fase = Fase(entidad["_nombre"],proyecto,entidad["_orden"],entidad["_comentario"],entidad["_estado"],entidad["_color"])
         dao.crear(nueva_fase)
         
-        dao_tipo_item = TipoItemDAO()
+        dao_tipo_item = TipoItemDAO(request)
         tipo_item = dao_tipo_item.get_by_id(1)
         nuevo_tipo_fase = TipoFase(nueva_fase,tipo_item)
-        dao_tipo_fase = TipoFaseDAO()
+        dao_tipo_fase = TipoFaseDAO(request)
         dao_tipo_fase.crear(nuevo_tipo_fase)
         
         lista = []
@@ -66,15 +66,15 @@ def actualizar_eliminar_fase(request):
     """
     u= Unpickler()
     entidad = u.restore(request.json_body);
-    dao = FaseDAO()
+    dao = FaseDAO(request)
     fase = dao.get_by_id(entidad["id"])
     
-    atributo_fase_dao = AtributoFaseDAO()
+    atributo_fase_dao = AtributoFaseDAO(request)
     atributos = atributo_fase_dao.get_query().filter(AtributoFase._fase_id == fase._id).all();
     for atributo in atributos:
         atributo_fase_dao.borrar(atributo);
         
-    tipo_fase_dao = TipoFaseDAO()
+    tipo_fase_dao = TipoFaseDAO(request)
     tipos = tipo_fase_dao.get_query().filter(TipoFase._fase_id == fase._id).all();
     for tipo in tipos:
         tipo_fase_dao.borrar(tipo);
@@ -89,7 +89,7 @@ def obtener_crear_atributofase(request):
     """
     if (request.method == 'GET'):
         id = request.GET.get('id')
-        rd = AtributoFaseDAO()
+        rd = AtributoFaseDAO(request)
         entidades = rd.get_query().filter(AtributoFase._fase_id == id).all()
         lista = [];
         p = Pickler()
@@ -103,10 +103,10 @@ def obtener_crear_atributofase(request):
         u= Unpickler()
         entidad = u.restore(request.json_body);
         
-        dao = FaseDAO()
+        dao = FaseDAO(request)
         fase = dao.get_by_id(entidad["_fase_id"])
     
-        dao = AtributoFaseDAO()
+        dao = AtributoFaseDAO(request)
         nuevo_atributo = AtributoFase(entidad["_nombre"],fase,entidad["_descripcion"],entidad["_valor"])
         dao.crear(nuevo_atributo)
         
@@ -126,14 +126,14 @@ def actualizar_eliminar_atributofase(request):
     if (request.method == 'DELETE'):
         u= Unpickler()
         entidad = u.restore(request.json_body);
-        dao = AtributoFaseDAO()
+        dao = AtributoFaseDAO(request)
         atributo = dao.get_by_id(entidad["id"])     
         dao.borrar(atributo)
         return Response(json.dumps({'sucess': 'true'}))
 
     else:
         u= Unpickler()
-        dao = AtributoFaseDAO()
+        dao = AtributoFaseDAO(request)
         entidad = u.restore(request.json_body);
         vieja = dao.get_by_id(entidad["id"])
         vieja._nombre = entidad["_nombre"]
@@ -150,7 +150,7 @@ def obtener_crear_tipofase(request):
     """
     if (request.method == 'GET'):
         id = request.GET.get('id')
-        rd = TipoFaseDAO()
+        rd = TipoFaseDAO(request)
         entidades = rd.get_query().filter(TipoFase._fase_id == id).all()
         lista = [];
         p = Pickler()
@@ -165,12 +165,12 @@ def obtener_crear_tipofase(request):
         u= Unpickler()
         entidad = u.restore(request.json_body);
         
-        dao = FaseDAO()
+        dao = FaseDAO(request)
         fase = dao.get_by_id(entidad["_fase"])
-        dao = TipoItemDAO()
+        dao = TipoItemDAO(request)
         tipo = dao.get_by_id(entidad["_tipo"])
     
-        dao = TipoFaseDAO()
+        dao = TipoFaseDAO(request)
         nuevo_tipo_fase = TipoFase(fase,tipo)
         dao.crear(nuevo_tipo_fase)
         
@@ -190,7 +190,7 @@ def eliminar_tipofase(request):
     if (request.method == 'DELETE'):
         u= Unpickler()
         entidad = u.restore(request.json_body);
-        dao = TipoFaseDAO()
+        dao = TipoFaseDAO(request)
         tipo_fase= dao.get_by_id(entidad["id"])     
         dao.borrar(tipo_fase)
         return Response(json.dumps({'sucess': 'true'}))        
