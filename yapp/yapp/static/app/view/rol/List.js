@@ -2,19 +2,20 @@ Ext.define('YAPP.view.rol.List', {
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.rollist',
 	
-	title : 'Todos los roles',
+	// title : 'Todos los roles',
 	store : 'Roles',
-	
-	requires : [ 'Ext.grid.plugin.CellEditing', 'Ext.form.field.Text', 'Ext.toolbar.TextItem' ],
+	layout : 'fit',
+	// requires : [ 'Ext.grid.plugin.CellEditing', 'Ext.form.field.Text',
+	// 'Ext.toolbar.TextItem' ],
 	
 	initComponent : function() {
 		
-		this.editing = Ext.create('Ext.grid.plugin.CellEditing');
+		// this.editing = Ext.create('Ext.grid.plugin.CellEditing');
 		
 		Ext.apply(this, {
 			iconCls : 'icon-grid',
 			frame : true,
-			plugins : [ this.editing ],
+//			plugins : [ this.editing ],
 			dockedItems : [ {
 				xtype : 'toolbar',
 				items : [ {
@@ -29,17 +30,6 @@ Ext.define('YAPP.view.rol.List', {
 					action : 'borrar',
 					disabled : true,
 					scope : this,
-				} ]
-			}, {
-				weight : 1,
-				xtype : 'toolbar',
-				dock : 'bottom',
-				ui : 'footer',
-				items : [ '->', {
-					iconCls : 'icon-save',
-					text : 'Sync',
-					scope : this,
-					handler : this.onSync
 				} ]
 			} ],
 			columns : [ {
@@ -57,7 +47,7 @@ Ext.define('YAPP.view.rol.List', {
 				flex : 1,
 				sortable : true,
 				dataIndex : '_estado',
-				renderer : renderizador,
+				renderer : renderizador_estado_rol,
 				field : {
 					type : 'textfield'
 				}
@@ -69,7 +59,7 @@ Ext.define('YAPP.view.rol.List', {
 				dataIndex : '_esFinal'
 			} ]
 		});
-		this.callParent();
+		this.callParent(arguments);
 		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
 	},
 	onSelectChange : function(selModel, selections) {
@@ -78,6 +68,11 @@ Ext.define('YAPP.view.rol.List', {
 
 });
 
-function renderizador(value) {
-	return value._tipo
+function renderizador_estado_rol(val) {
+	if (val == null)
+		return val;
+	if (val._estado == null)
+		return val
+	return val._estado
+	// return ""
 }

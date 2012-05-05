@@ -1,16 +1,15 @@
 Ext.define('YAPP.store.EntidadesPadres', {
 	extend : 'Ext.data.Store',
 	model : 'YAPP.model.EntidadPadre',
-	autoLoad : true,
 	autoSync : true,
 	proxy : {
-		type : 'ajax',
+		type : 'rest',
 		api : {
-			read : 'http://localhost:6543/entidades_padre',
+			read : 'http://localhost:6543/entidades_padre/0',
 		},
 		reader : {
 			type : 'json',
-			root : 'users',
+			root : 'entidades',
 			successProperty : 'sucess'
 		}
 	}

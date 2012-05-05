@@ -11,3 +11,10 @@ class Entidad(EntidadBase, Base):
     _nombre = Column(String, nullable=False)
     def __init__(self, nombre):
         self._nombre = nombre;
+
+class EntidadDTO:
+    def __init__(self, entidad):
+        if (entidad == None):
+            return
+        self._id = entidad._id
+        self._nombre = entidad._nombre

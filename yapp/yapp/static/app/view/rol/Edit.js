@@ -1,4 +1,4 @@
-var formulario = Ext.define('YAPP.view.rol.Edit', {
+Ext.define('YAPP.view.rol.Edit', {
 	extend : 'Ext.window.Window',
 	alias : 'widget.roledit',
 	

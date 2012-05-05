@@ -6,10 +6,6 @@ class RolDAO(BaseDAO):
     def get_clase(self):
         return Rol
 
-class RolFinalDAO(BaseDAO):
-    def get_clase(self):
-        return RolFinal
-    
 class RolEstadoDAO(BaseDAO):
     def get_clase(self):
         return RolEstado

@@ -1,9 +1,9 @@
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config
-from yapp.daos.privilegio_dao import PrivilegioDAO, EntidadDAO
-from yapp.daos.rol_dao import RolFinalDAO, RolEstadoDAO, RolDAO
-from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO
-from yapp.daos.tipo_item_dao import TipoItemDAO
+from yapp.daos.entidad_dao import EntidadDAO
+from yapp.daos.privilegio_dao import PrivilegioDAO
+from yapp.daos.rol_dao import RolEstadoDAO, RolDAO
+from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.models import Base, DBSession
 from yapp.models.historial import Historial
 from yapp.models.roles.entidad import Entidad
@@ -24,12 +24,12 @@ import yapp.models.fase.fase
 import yapp.models.fase.atributo_fase
 import yapp.models.fase.tipo_fase
 import yapp.models.proyecto.proyecto
-import yapp.models.fase.fase
 import yapp.models.roles.entidad
 import yapp.models.roles.privilegio
 import yapp.models.roles.rol
 import yapp.models.roles.rol_estado
 import yapp.models.roles.rol_final
+import yapp.models.roles.rol_privilegio
 import yapp.models.root_factory
 import yapp.models.suscripcion.suscripcion
 import yapp.models.tipo_item.atributo_tipo_item
@@ -78,7 +78,8 @@ def main(argv=sys.argv):
             DBSession.add(estado);
             estado = RolEstado("Suspendido");
             DBSession.add(estado);
-            
+
+
     items = TipoRecursoDAO().get_all()
     if (len(items) == 0):
         with transaction.manager:
@@ -98,6 +99,8 @@ def main(argv=sys.argv):
             
     items = RolFinalDAO().get_query().filter(RolFinal._email == "admin").first();
     if (items == None) :
-        estadoActivo = RolEstadoDAO().get_query().filter(RolEstado._estado == "Activo").first();
-        admin = RolFinal("admin", estadoActivo, "admin" , "admin");
-        DBSession.add(admin);
+        print "Creando ADMIN"
+        with transaction.manager:
+            estadoActivo = RolEstadoDAO().get_query().filter(RolEstado._estado == "Activo").first();
+            admin = RolFinal("admin", estadoActivo, "admin", "admin");
+            DBSession.add(admin);

@@ -2,7 +2,7 @@ Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
 	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List',
-			'rol.List', 'tipoItem.List', 'suscripciones.List', 'item.List', 'recurso.ListarRecurso' ],
+			'rol.ABM', 'rol.List', 'tipoItem.List', 'suscripciones.List' , 'item.List', 'recurso.ListarRecurso' ],
 
 	init : function() {
 		console.log('Cargado controller Menus');
@@ -24,10 +24,7 @@ Ext.define('YAPP.controller.Menus', {
 			},
 			'viewport button[action=adminSuscripciones]' : {
 				click : this.adminSuscripciones
-			},
-			'viewport button[action=adminItems]' : {
-				click : this.adminItems
-			},
+			}
 		});
 	},
 	
@@ -64,7 +61,7 @@ Ext.define('YAPP.controller.Menus', {
 		
 		var tab = tabs.add({
 			title : 'Administrar roles',
-			xtype : 'rollist',
+			xtype : 'rolabm',
 			closable : true
 		});
 		
@@ -105,25 +102,6 @@ Ext.define('YAPP.controller.Menus', {
 		var tab = tabs.add({
 			title : 'Administrar suscripcion',
 			xtype : 'suscripcioneslist',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
-		
-	},
-	
-	adminItems : function(button) {
-		var tabs = Ext.getCmp('tabPrincipal');
-		var store = this.getStore('Item');
-		store.load();
-//		{
-//			params:{
-//				id: tipoId
-//				}
-//		}
-		var tab = tabs.add({
-			title : 'Administrar Items',
-			xtype : 'itemslist',
 			closable : true
 		});
 		
