@@ -30,8 +30,8 @@ def main(global_config, **settings):
     DBSession.configure(bind=engine)
     my_session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
     config = Configurator(settings=settings,
-                          root_factory='yapp.models.root_factory.RootFactory', 
-                          session_factory = my_session_factory)
+                          root_factory='yapp.models.root_factory.RootFactory',
+                          session_factory=my_session_factory)
     config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)
     
@@ -70,12 +70,13 @@ def main(global_config, **settings):
     config.add_route('crearAtributo', '/crearAtributo')
     config.add_route('eliminarAtributo', '/eliminarAtributo')
     config.add_route('guardarAtributo', '/guardarAtributo')
-    config.add_route('entidades_padre','/entidades_padre/{id_entidad}')
-    config.add_route('suscripciones','/suscripciones/{id_suscripcion}')
+    config.add_route('entidades_padre', '/entidades_padre/{id_entidad}')
+    config.add_route('suscripciones', '/suscripciones/{id_suscripcion}')
     config.add_route('crearListarEsquemas', '/esquemas')
     config.add_route('editarEliminarEsquemas', '/esquemas/{id}')
     config.add_route('crearListarAtributosEsquemas', '/atributosEsquemas')
     config.add_route('editarEliminarAtributosEsquemas', '/atributosEsquemas/{id}')
+    config.add_route('rolPrivilegios', '/rolPrivilegios/{id}')
     config.scan()
 #    config.scan("views")
 

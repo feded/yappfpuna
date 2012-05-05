@@ -8,6 +8,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from yapp.daos.entidad_dao import EntidadDAO
 from yapp.daos.entidad_padre_dao import EntidadPadreDAO
+from yapp.daos.esquema_dao import EsquemaDAO
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
 from yapp.models.entidad_padre import EntidadPadreDTO
@@ -35,6 +36,8 @@ def get_entidades_padre(request):
             return get_proyectos();
         if (entidad._nombre == "Fase"):
             return get_fases()
+        if (entidad._nombre == "Esquema"):
+            return get_esquemas()
         return get_entidades(request);
     return {}
 
@@ -76,6 +79,18 @@ def get_fases():
     lista = [];
     for entidad in entidades:
         lista.append(p.flatten(EntidadPadreDTO(entidad)));
+    j_string = p.flatten(lista)
+    a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
+    print a_ret;
+    return Response(a_ret)
+
+def get_esquemas():
+    dao = EsquemaDAO();
+    entidades = dao.get_all();
+    p = Pickler();
+    lista = [];
+    for entidad in entidades:
+        lista.append(p.flatten(entidad));
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
     print a_ret;

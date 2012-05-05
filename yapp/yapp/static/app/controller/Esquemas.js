@@ -61,7 +61,7 @@ Ext.define('YAPP.controller.Esquemas', {
 	
 	
 	crearEsquema: function(button){
-		var view = Ext.widget('atributoesquemaedit');
+		var view = Ext.widget('esquemaedit');
         var esquema = new YAPP.model.Esquema();
         esquema.data.accion = 'POST';
 		view.down('form').loadRecord(esquema);
