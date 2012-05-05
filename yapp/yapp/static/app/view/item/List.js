@@ -6,12 +6,30 @@ Ext.define('YAPP.view.item.List' ,{
 	initComponent : function() {
 		this.dockedItems = [ {
 				xtype : 'toolbar',
-				items : [ {
-						iconCls : 'icon-add',
-						text : 'Nuevo Item',
-						scope : this,
-						action : 'crear',
-					}, '|', {
+				items : [ 
+						{
+                        	xtype: 'combobox',
+                        	name: 'cbProyecto',
+                            fieldLabel: 'Proyecto',
+    						store: Ext.create('YAPP.store.Proyectos'),
+    						displayField: '_nombre',
+    						queryMode : 'local',
+    						valueField: 'id',
+                        },
+                        {
+                        	xtype: 'combobox',
+                        	name: 'cbFase',
+                            fieldLabel: 'Fase',
+    						displayField: '_nombre',
+    						queryMode : 'local',
+    						valueField: 'id',
+                        },
+						{
+							iconCls : 'icon-add',
+							text : 'Nuevo Item',
+							scope : this,
+							action : 'crear',
+						}, '|', {
 						iconCls : 'icon-delete',
 						text : 'Eliminar Item',
 						disabled : true,
