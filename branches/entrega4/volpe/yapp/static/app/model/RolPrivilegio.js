@@ -1,6 +1,6 @@
-Ext.define('YAPP.model.Rol', {
+Ext.define('YAPP.model.RolPrivilegio', {
 	
-	requires : [ 'YAPP.model.EntidadPadre', 'YAPP.model.Privilegio' ],
+	// requires : [ 'YAPP.model.EntidadPadre', 'YAPP.model.Privilegio' ],
 	extend : 'Ext.data.Model',
 	// fields: [{name: 'name', type: 'int', }, 'email', 'estado', 'esFinal']
 	fields : [ {
@@ -13,6 +13,9 @@ Ext.define('YAPP.model.Rol', {
 	}, {
 		name : '_privilegio',
 		type : 'YAPP.model.Privilegio'
+	}, {
+		name : '_rol',
+		type : 'YAPP.model.Rol'
 	} ]
 
 });

@@ -3,7 +3,7 @@ from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import String, Integer
 from yapp.models import Base
 from yapp.models.entidad_base import EntidadBase
-from yapp.models.entidad_padre import EntidadPadre
+from yapp.models.entidad_padre import EntidadPadre, EntidadPadreDTO
 from yapp.models.roles.entidad import EntidadDTO, Entidad
 
 
@@ -28,12 +28,14 @@ class Privilegio(EntidadBase, Base):
         self._entidad = entidad;
         self._entidad_padre = entidad_padre
 
-class PrivilegiosDTO:
+class PrivilegioDTO:
     """Unidad de transporte para privilegios"""
     def __init__(self, privilegio):
         if (privilegio == None):
             return;
         self._id = privilegio._id
         self._nombre = privilegio._nombre;
-        self._entidad = EntidadDTO(privilegio._entidad);
-        self._entidad_padre = privilegio._entidad_padre
+        if (privilegio._entidad != None):
+            self._entidad = EntidadDTO(privilegio._entidad);
+        if (privilegio._entidad_padre != None):
+            self._entidad_padre = EntidadPadreDTO(privilegio._entidad_padre)

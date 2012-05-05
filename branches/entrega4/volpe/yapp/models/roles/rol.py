@@ -30,8 +30,8 @@ class Rol (Base, EntidadBase):
         
 class RolDTO(EntidadBaseDTO):
     """Unidad de transporte para roles"""
-    def __init__(self, id, nombre, estado):
-        super(RolDTO, self).__init__(id);
-        self._nombre = nombre;
+    def __init__(self, rol):
+        super(RolDTO, self).__init__(rol._id);
+        self._nombre = rol._nombre;
         self._esFinal = False;
-        self._estado = RolEstadoDTO(estado._id, estado._estado);
+        self._estado = RolEstadoDTO(rol._estado);
