@@ -1,6 +1,6 @@
-Ext.define('YAPP.view.esquema.AtributoList' ,{
+Ext.define('YAPP.view.esquema.EsquemaItemList' ,{
     extend: 'Ext.grid.Panel',
-    alias : 'widget.atributosesquemalist',
+    alias : 'widget.esquemaItemList',
     
     
     store : 'AtributoEsquema',
@@ -9,24 +9,21 @@ Ext.define('YAPP.view.esquema.AtributoList' ,{
 				xtype : 'toolbar',
 				items : [ {
 						iconCls : 'icon-add',
-						text : 'Nuevo Atributo Esquema',
+						text : 'Agregar Item',
 						scope : this,
-						action : 'crearAtributo'
+						action : 'nuevoItem'
 					}, '|', {
 						iconCls : 'icon-delete',
-						text : 'Eliminar Atributo Esquema',
+						text : 'Remover Item',
 						disabled : true,
 						itemId : 'delete',
-						action : 'borrarAtributo',
+						action : 'borrarItem',
 						scope : this,
 					} ]
 				} ];
     
 	    this.columns = [
-	        {header: 'Nombre', sortable : true, dataIndex: '_nombre', flex: 1},
-	        {header: 'Tipo', sortable : true, dataIndex: '_tipo', flex: 1},
-	        {header: 'Valor', sortable : true, dataIndex: '_valor', flex: 1},
-	        {header: 'Descripcion', sortable : true, dataIndex: '_descripcion',  flex: 1}
+	        {header: 'Item', sortable : true, dataIndex: '_nombre', flex: 1},
 		];
 		this.callParent();
 		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);

@@ -77,6 +77,8 @@ def main(global_config, **settings):
     config.add_route('crearListarAtributosEsquemas', '/atributosEsquemas')
     config.add_route('editarEliminarAtributosEsquemas', '/atributosEsquemas/{id}')
     config.add_route('rolPrivilegios', '/rolPrivilegios/{id}')
+    config.add_route('crearListarItemEsquemas', '/itemsEsquemas')
+    config.add_route('editarEliminarItemEsquemas', '/itemsEsquemas/{id}')
     config.scan()
 #    config.scan("views")
 

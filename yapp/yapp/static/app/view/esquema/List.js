@@ -45,6 +45,14 @@ Ext.define('YAPP.view.esquema.List' ,{
                     		disabled : true,
                     		scope : this
             			},
+            			{
+                    		xtype: 'button',
+                    		text : 'Items Del Esquema',
+                    		itemId : 'itemEsquema',
+                    		action : 'itemEsquema',
+                    		disabled : true,
+                    		scope : this
+            			},
 						]
 				} ];
     
@@ -63,6 +71,7 @@ Ext.define('YAPP.view.esquema.List' ,{
 	onSelectChange : function(selModel, selections) {
             this.down('#delete').setDisabled(selections.length === 0);
             this.down('#atributo').setDisabled(selections.length === 0);
+            this.down('#itemEsquema').setDisabled(selections.length === 0);
     }
 	
 });
