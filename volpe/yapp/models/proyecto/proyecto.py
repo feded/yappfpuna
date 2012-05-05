@@ -7,15 +7,16 @@ from yapp.models import Base
 from yapp.models.entidad_padre import EntidadPadre
 
 class Proyecto(EntidadPadre):
-    """Crea una Tabla Proyecto con 
-        - _nombre: nombre del proyecto
-        - _prioridad: representa la prioridad del proyecto
-        - _estado: estado actual del proyecto
-        - _lider: lider del proyecto
-        - _nota: anotacion sobre el proyecto
-        - _fecha_creacion: fecha de creacion del proyecto
-        - _fecha_modificacion: fecha de ultima modificacion del proyecto
-        - """
+    """
+    @summary: Crea una Tabla Proyecto. 
+    @param _nombre: nombre del proyecto.
+    @param _prioridad: representa la prioridad del proyecto.
+    @param _estado: estado actual del proyecto.
+    @param _lider: lider del proyecto.
+    @param _nota: anotacion sobre el proyecto.
+    @param _fecha_creacion: fecha de creacion del proyecto.
+    @param _fecha_modificacion: fecha de ultima modificacion del proyecto.
+    """
     __mapper_args__ = {'polymorphic_identity': 'proyecto'}
     _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
     __tablename__ = "proyecto"
