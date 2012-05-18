@@ -23,3 +23,19 @@ def obtener_crear_unidad_trabajo(request):
         a_ret = json.dumps({'sucess': 'true', 'unidadtrabajo':j_string})    
         
         return Response(a_ret)
+    else:
+        u= Unpickler()
+        entidad = u.restore(request.json_body);
+        
+        nueva_unidad_trabajo = UnidadTrabajo(entidad["_nombre"],entidad["_etiqueta"],entidad["_descripcion"],entidad["_color"])
+        dao = UnidadTrabajoDAO(request)
+            
+        dao.crear(nueva_unidad_trabajo)
+        
+        lista = []
+        p = Pickler()
+        lista.append(p.flatten(nueva_unidad_trabajo))
+        j_string = p.flatten(lista)
+        a_ret = json.dumps({'sucess': 'true', 'unidadtrabajo':j_string})
+    
+        return Response(a_ret)
