@@ -64,23 +64,37 @@ def actualizar_eliminar_fase(request):
     @summary: Maneja las solicitudes para actualizar y elimninar fases.
               Al eliminar la fase se eliminan sus atributos particulares y los tipos de items que soporta.                
     """
-    u= Unpickler()
-    entidad = u.restore(request.json_body);
-    dao = FaseDAO(request)
-    fase = dao.get_by_id(entidad["id"])
     
-    atributo_fase_dao = AtributoFaseDAO(request)
-    atributos = atributo_fase_dao.get_query().filter(AtributoFase._fase_id == fase._id).all();
-    for atributo in atributos:
-        atributo_fase_dao.borrar(atributo);
+    if (request.method == 'DELETE'):
+        u= Unpickler()
+        entidad = u.restore(request.json_body);
+        dao = FaseDAO(request)
+        fase = dao.get_by_id(entidad["id"])
         
-    tipo_fase_dao = TipoFaseDAO(request)
-    tipos = tipo_fase_dao.get_query().filter(TipoFase._fase_id == fase._id).all();
-    for tipo in tipos:
-        tipo_fase_dao.borrar(tipo);
-    
-    dao.borrar(fase)
-    return Response(json.dumps({'sucess': 'true'}))
+        atributo_fase_dao = AtributoFaseDAO(request)
+        atributos = atributo_fase_dao.get_query().filter(AtributoFase._fase_id == fase._id).all();
+        for atributo in atributos:
+            atributo_fase_dao.borrar(atributo);
+            
+        tipo_fase_dao = TipoFaseDAO(request)
+        tipos = tipo_fase_dao.get_query().filter(TipoFase._fase_id == fase._id).all();
+        for tipo in tipos:
+            tipo_fase_dao.borrar(tipo);
+        
+        dao.borrar(fase)
+        return Response(json.dumps({'sucess': 'true'}))
+    else:
+        u= Unpickler()
+        dao = FaseDAO(request)
+        entidad = u.restore(request.json_body);
+        vieja = dao.get_by_id(entidad["id"])
+        vieja._nombre = entidad["_nombre"]
+        vieja._orden = entidad["_orden"]
+        vieja._comentario = entidad["_comentario"]
+        vieja._color = entidad["_color"]
+        
+        dao.update(vieja)
+        return Response(json.dumps({'sucess': 'true'}))
 
 @view_config(route_name='obtenercrearatributofase')
 def obtener_crear_atributofase(request):

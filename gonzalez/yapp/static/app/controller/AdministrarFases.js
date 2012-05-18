@@ -3,7 +3,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	
 	views: [
 		'fase.ListarFase', 'fase.NuevaFase', 'fase.NuevoAtributoFase', 'fase.ListarAtributoFase',
-		'fase.NuevoAtributoFase', 'fase.EditarAtributoFase', 'fase.ListarTipoFase'
+		'fase.NuevoAtributoFase', 'fase.EditarAtributoFase', 'fase.ListarTipoFase', 'fase.EditarFase'
 		],
 	stores:['Fases', 'AtributoFase'],
 	models:['Fase', 'AtributoFase'],
@@ -63,6 +63,12 @@ Ext.define('YAPP.controller.AdministrarFases', {
             	},
             	'listarfase button[action=tipo]': {
             		click: this.Tipo
+            	},
+            	'listarfase': {
+            		itemdblclick: this.editarFase
+            	},
+            	'editarfase button[action=guardar]': {
+            		click: this.guardarEditarFase
             	}
             	
         });
@@ -235,6 +241,20 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	},
 	
 	guardarEditarAtributoFase: function(button){
+		var win = button.up('window');
+		var form = win.down('form');
+		var record = form.getRecord();
+		var values = form.getValues();
+		record.set(values);
+		win.close();
+	},
+	
+	editarFase: function(grid, record){
+		var view = Ext.widget('editarfase');
+        view.down('form').loadRecord(record);
+	},
+	
+	guardarEditarFase: function(button){
 		var win = button.up('window');
 		var form = win.down('form');
 		var record = form.getRecord();

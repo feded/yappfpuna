@@ -38,6 +38,7 @@ import yapp.models.recurso.recurso_bien
 import yapp.models.recurso.recurso_material
 import yapp.models.recurso.recurso_persona
 import yapp.models.recurso.tipo_recurso
+import yapp.models.unidad_trabajo.unidad_trabajo
 import yapp.models.roles.entidad
 import yapp.models.roles.privilegio
 import yapp.models.roles.rol

@@ -107,7 +107,8 @@ Ext.onReady(function() {
 						        'Suscripciones',
 						        'Item',
 						        'Recursos',
-						        'Esquemas'
+						        'Esquemas',
+						        'UnidadTrabajo'
 						        
 						    ],
 						    

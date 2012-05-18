@@ -12,6 +12,7 @@ import vistas.privilegios
 import vistas.roles
 import vistas.fases
 import vistas.recursos
+import vistas.unidadtrabajo
 
 
 
@@ -51,6 +52,8 @@ def main(global_config, **settings):
     config.add_route('obtenercreartipofase', '/tipofase')
     config.add_route('eliminartipofase', '/tipofase/{id}')
     config.add_route('obtenercrearrecursos', '/recursos')
+    config.add_route('actualizareliminarrecursos', '/recursos/{id}')
+    config.add_route('obtenercrearunidadtrabajo', '/unidadtrabajo')
     config.add_route('tipos_recursos', '/tipo_recurso')
     config.add_route('logout', '/logout')
     config.add_route('crearProyecto', '/crearProyecto')

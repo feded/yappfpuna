@@ -34,6 +34,9 @@ Ext.define('YAPP.controller.Menus', {
 			'viewport button[action=adminRecursos]' :{
 				click : this.adminRecursos
 			},
+			'viewport button[action=adminUnidadTrabajo]' :{
+				click : this.adminUnidadTrabajo
+			},
 			'viewport button[action=logout]' :{
 				click : this.logout
 			}
@@ -146,6 +149,19 @@ Ext.define('YAPP.controller.Menus', {
         var tab = tabs.add({
                 title : 'Administrar recursos',
                 xtype : 'listarrecurso',
+                closable : true
+        });
+
+        tabs.setActiveTab(tab);
+
+	},
+	adminUnidadTrabajo : function(button) {
+        
+        var tabs = Ext.getCmp('tabPrincipal');
+        
+        var tab = tabs.add({
+                title : 'Administrar unidad de trabajo',
+                xtype : 'listarunidadtrabajo',
                 closable : true
         });
 

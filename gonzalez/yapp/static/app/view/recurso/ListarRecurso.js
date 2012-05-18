@@ -32,7 +32,11 @@ Ext.define('YAPP.view.recurso.ListarRecurso' ,{
 //			{header:'Tipo', dataIndex:'_tipo_id'}
 //			{header:'Tipo', dataIndex:'_tipo',renderer : renderizador},
 			{header:'Tipo', dataIndex:'tipo_nombre'},
-			{header:'Descripcion', dataIndex:'_descripcion'}
+			{header:'Descripcion', dataIndex:'_descripcion'},
+			{header:'Costo/hora', dataIndex:'_costo_hora', hidden: true},
+			{header:'Costo/cantidad', dataIndex:'_costo_cantidad', hidden: true},
+			{header:'Cantidad', dataIndex:'_cantidad', 	hidden: true}
+			
         ];   
 
         this.callParent(arguments);
