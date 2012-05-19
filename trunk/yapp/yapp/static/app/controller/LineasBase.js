@@ -26,6 +26,9 @@ Ext.define('YAPP.controller.LineasBase', {
 			'lineasbaselist button[action=crear]' : {
 				click : this.botonCrearApretado
 			},
+			'lineasbaselist button[action=borrar]' : {
+				click : this.botonBorrarApretado
+			},
 			'lineasbaselist combobox[name=cbProyecto]' : {
 				change : this.changeProyecto
 			},
@@ -48,25 +51,24 @@ Ext.define('YAPP.controller.LineasBase', {
 	},
 	botonCrearApretado : function(button) {
 		nuevaLineaBase = new YAPP.model.LineaBase();
-		this.ventanaRol(nuevaLineaBase);
+		this.ventanaLineaBase(nuevaLineaBase);
 	},
-	ventanaRol : function(record) {
+	ventanaLineaBase : function(record) {
 		var view = Ext.widget('lineabaseedit');
 		if (record != null)
 			view.down('form').loadRecord(record);
 		var grid1 = this.getFirstGrid();
 		var grid2 = this.getSecondGrid();
+		grid2.store.removeAll();
+		var combo = this.getComboFase();
 		var store = grid1.store;
 		store.autoSync = false;
-		if (record.items == null) {
-			store.load({
-				params : {
-					id : 2
-				}
-			});
-		} else {
-			sotre.loadData(record.items)
-		}
+		store.load({
+			params : {
+				id : combo.getValue(),
+				linea_base : "false"
+			}
+		});
 	},
 	
 	changeProyecto : function(object, newValue, oldValue, eOpts) {
@@ -113,9 +115,30 @@ Ext.define('YAPP.controller.LineasBase', {
 		record.data._items = itemsDTO;
 		record.data._fase = fase.getValue()
 		console.log(record)
-
+		var store = this.getLineasBaseStore()
 		win.close();
-		if (record.get('id') == 0)
-			this.getLineasBaseStore().insert(0, record);
+		record.save({
+			success : function(linea_base) {
+				store.insert(0, linea_base);
+			},
+			failure : function(linea_base) {
+				alert("No se pudo crear la linea base");
+			}
+		});
+	},
+	botonBorrarApretado : function(button) {
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		var store = this.getLineasBaseStore();
+		selection.destroy({
+			success : function(linea_base) {
+				Ext.example.msg("Linea Base", "Eliminada con exito");
+				store.remove(selection);
+			},
+			failure : function(linea_base) {
+				alert("No se pudo eliminar la linea base");
+			}
+		});
 	}
 });

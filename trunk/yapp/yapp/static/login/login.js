@@ -68,13 +68,13 @@ Ext.onReady(function() {
 			}
 		
 		} ],
-		listeners: {
-		    afterRender: function(thisForm, options){
-		        this.keyNav = Ext.create('Ext.util.KeyNav', this.el, {                    
-		            enter: handle,
-		            scope: this
-		        });
-		    }
+		listeners : {
+			afterRender : function(thisForm, options) {
+				this.keyNav = Ext.create('Ext.util.KeyNav', this.el, {
+					enter : handle,
+					scope : this
+				});
+			}
 		},
 	});
 	
@@ -89,53 +89,49 @@ Ext.onReady(function() {
 	}
 	
 	var submit = {
-			method : 'POST',
-			waitMsg : 'Ingresando...',
-			
-			success : function(response, options) {
-				Ext.Msg.alert('Estado', 'Acceso correcto!', function(btn, text) {
-					if (btn == 'ok') {
-						//var redirect = 'index';
-						//window.location = redirect;
-						Ext.application({
-						    name: 'YAPP',
-						    
-						    appFolder: '/static/app',
-						    
-						    autoCreateViewport: true,
-						    
-						    controllers: [
-						        'Menus',
-						        'AdministrarProyectos',
-						        'AdministrarFases',
-						        'Privilegios',
-						        'Roles',
-						        'TipoItem',
-						        'Suscripciones',
-						        'Item',
-						        'Recursos',
-						        'Esquemas',
-						        'LineasBase'
-						        
-						    ],
-						    
-						    launch: function() {
-						        win.hide();
-						        return
-						    }
-						});
-					}
-				});
-			},
-			failure : function(form, action) {
-				if (action.failureType == 'server') {
-					Ext.Msg.alert('Error al ingresar!', 'Usuario y/o contraseña inválidos');
-				} else {
-					Ext.Msg.alert('Error!', 'No se puede conectar al servidor. ' + action.response.responseText);
+		method : 'POST',
+		waitMsg : 'Ingresando...',
+		
+		success : function(response, options) {
+			Ext.example.msg("YAPP", "Bienvenido");
+			// var redirect = 'index';
+			// window.location = redirect;
+			Ext.application({
+				name : 'YAPP',
+				
+				appFolder : '/static/app',
+				
+				autoCreateViewport : true,
+				
+				controllers : [ 'Menus', 
+				                'AdministrarProyectos', 
+				                'AdministrarFases', 
+				                'Privilegios', 
+				                'Roles', 
+				                'TipoItem', 
+				                'Suscripciones', 
+				                'Item', 
+				                'Recursos', 
+				                'Esquemas', 
+				                'LineasBase'
+				],
+				
+				launch : function() {
+					win.hide();
+					return
+
 				}
-				login.getForm().reset();
+			});
+		},
+		failure : function(form, action) {
+			if (action.failureType == 'server') {
+				Ext.Msg.alert('Error al ingresar!', 'Usuario y/o contraseña inválidos');
+			} else {
+				Ext.Msg.alert('Error!', 'No se puede conectar al servidor. ' + action.response.responseText);
 			}
-		};
+			login.getForm().reset();
+		}
+	};
 	
 	var win = new Ext.Window({
 		layout : 'fit',
