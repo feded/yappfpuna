@@ -84,7 +84,24 @@ def BM_atributo(request):
         u = Unpickler()
         entidad = u.restore(request.json_body);
         #id = request.params.matchdict['id'] 
-        item_dao = AtributoTipoItemDAO(request);
+        item_dao = ItemDAO(request);
+        dao_fase = FaseDAO(request)
+        fase = dao_fase.get_by_id(entidad["_fase"])
+        
+        dao_tipo_item = TipoItemDAO(request)
+        tipo_item = dao_tipo_item.get_by_id(entidad["_tipo_item"])
+
+        dao_item_ante = ItemDAO(request)
+        if(entidad["_antecesor"] == ""):
+            antecesor = None
+        else:
+            antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])._id
+        print antecesor
+        dao_item_padre = ItemDAO(request)
+        if(entidad["_padre"] == ""):
+            padre = None
+        else:
+            padre = dao_item_padre.get_by_id(entidad["_padre"])._id
         item =  item_dao.get_by_id(entidad["id"])
         item._nombre = entidad["_nombre"] 
         item._tipo_item = tipo_item
@@ -105,8 +122,8 @@ def BM_atributo(request):
        
         print "-----ELIMINANDO ITEM-----"
         item_dao = ItemDAO(request);
-        atributo = item_dao.get_by_id(entidad["id"])
-        item_dao.borrar(atributo)
+        item = item_dao.get_by_id(entidad["id"])
+        item_dao.borrar(item)
         return Response(json.dumps({'sucess': 'true'}))
 
 
