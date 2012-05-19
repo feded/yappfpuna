@@ -19,6 +19,8 @@ def read_proyectos(request):
     """
     @summary: Maneja las solicitudes para recuperar los proyectos.
     """
+    
+ 
     validador = Validador(request)
     
     rd = ProyectoDAO(request)
