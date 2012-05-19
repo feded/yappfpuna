@@ -1,11 +1,9 @@
 from sqlalchemy import Column, String, Integer
-from sqlalchemy.orm import relation, backref, relationship
+from sqlalchemy.orm import relation, backref
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Boolean
-from yapp.models import Base
 from yapp.models.entidad_padre import EntidadPadre
 from yapp.models.fase.fase import Fase
-from yapp.models.proyecto.proyecto import Proyecto
 from yapp.models.tipo_item.tipo_item import TipoItem
 
 class Item (EntidadPadre):
@@ -25,7 +23,8 @@ class Item (EntidadPadre):
     _antecesor_item_id = Column(Integer, ForeignKey('item._id'))
 #    _linea_base_id = Column(Integer, ForeignKey('linea_base._id'))
 
-
+    
+    _linea_base_id = Column(Integer, ForeignKey('linea_base._id'))
     
     def __init__(self, nombre, tipo_item, fase, duracion, descripcion,  condicionado, version, estado, fecha_inicio, fecha_fin, padre_item_id, antecesor_item_id):
         self._nombre = nombre
