@@ -104,7 +104,7 @@ def BM_atributo(request):
             padre = dao_item_padre.get_by_id(entidad["_padre"])._id
         item =  item_dao.get_by_id(entidad["id"])
         item._nombre = entidad["_nombre"] 
-        item._tipo_item = tipo_item
+        item._tipo_item = entidad["tipo_item"]
         item._fase = fase
         item._duracion = entidad["_duracion"]
         item._descripcion = entidad["_descripcion"]
@@ -135,11 +135,11 @@ def get_items_con_linea_base(request):
     padre_dao = PadreItemDAO(request)
     p = Pickler(True, None)
     for entidad in entidades:
-        padre_hijo = padre_dao.get_query().filter(PadreItem._hijo_id == entidad._id).first()
         rd = ItemDAO(request)
-        padre = rd.get_by_id(padre_hijo._padre_id)
-        dto = ItemDTO(entidad) 
-        lista.append(p.flatten(dto))
+        padre = rd.get_by_id(entidad._padre_item_id)
+        antecesor = rd.get_by_id(entidad._antecesor_item_id)
+        entidadLinda = ItemLindo(entidad._id, entidad._nombre, entidad._tipo_item, entidad._fase, entidad._duracion, entidad._descripcion, entidad._condicionado, entidad._version, entidad._estado, entidad._fecha_inicio, entidad._fecha_fin, padre, antecesor) 
+        lista.append(p.flatten(entidadLinda))
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': True, 'lista':j_string})
     
