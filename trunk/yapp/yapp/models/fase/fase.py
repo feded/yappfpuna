@@ -33,6 +33,7 @@ class Fase (EntidadPadre):
         
 class FaseDTO:
     def __init__(self, fase):
+        self._id = fase._id;
         self._nombre = fase._nombre;
 #        self._proyecto = fase._proyecto;
         self._orden = fase._orden;

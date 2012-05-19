@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, Sequence
 from sqlalchemy.orm import relation, backref
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Boolean
@@ -9,6 +9,7 @@ from yapp.models.tipo_item.tipo_item import TipoItem, TipoItemDTO
 class Item (EntidadPadre):
     __tablename__ = "item"
     _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
+    _item_id = Column(Integer, Sequence('item_id_seq'), nullable = False )
     _tipo_item_id = Column(Integer, ForeignKey('tipo_item._id'))
     _tipo_item = relation(TipoItem, backref=backref('item_tipo'))
     _fase_id = Column(Integer, ForeignKey('fase._id'))
@@ -20,13 +21,11 @@ class Item (EntidadPadre):
     _fecha_inicio = Column(String, nullable=True)
     _fecha_fin = Column(String, nullable=True)
     _padre_item_id = Column(Integer, ForeignKey('item._id'))
-    _antecesor_item_id = Column(Integer, ForeignKey('item._id'))
-#    _linea_base_id = Column(Integer, ForeignKey('linea_base._id'))
-
-    
+    _antecesor_item_id = Column(Integer, ForeignKey('item._id'))    
     _linea_base_id = Column(Integer, ForeignKey('linea_base._id'))
     
-    def __init__(self, nombre, tipo_item, fase, duracion, descripcion,  condicionado, version, estado, fecha_inicio, fecha_fin, padre_item_id, antecesor_item_id):
+    def __init__(self, item_id,  nombre, tipo_item, fase, duracion, descripcion,  condicionado, version, estado, fecha_inicio, fecha_fin, padre_item_id, antecesor_item_id):
+        self._item_id = item_id
         self._nombre = nombre
         self._tipo_item = tipo_item
         self._fase = fase
@@ -42,6 +41,7 @@ class Item (EntidadPadre):
 
 class ItemDTO:
     def __init__(self, item):
+        self._item_id = item._item_id
         self._id = item._id
         self._nombre = item._nombre;
         self._tipo_item = TipoItemDTO(item._tipo_item);

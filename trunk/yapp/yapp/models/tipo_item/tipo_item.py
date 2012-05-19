@@ -30,6 +30,7 @@ class TipoItem (Base, EntidadBase):
 
 class TipoItemDTO:
     def __init__(self, entidad):
+        self._id = entidad._id
         self._nombre = entidad._nombre
         self._comentario = entidad._comentario
         self._color = entidad._color

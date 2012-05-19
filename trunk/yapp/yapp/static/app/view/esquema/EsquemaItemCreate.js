@@ -17,11 +17,6 @@ var formulario = Ext.define('YAPP.view.esquema.EsquemaItemCreate', {
 					xtype : 'combobox',
 					fieldLabel : 'Item',
 					name : '_tipo_item_id',
-					store : Ext.create('YAPP.store.Item').load({
-						params : {
-                        	id : 1
-		                }
-			        }),
 					displayField : '_nombre',
 					typeAhead : true,
 					queryMode : 'local',

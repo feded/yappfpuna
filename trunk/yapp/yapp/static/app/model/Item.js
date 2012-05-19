@@ -1,7 +1,7 @@
 Ext.define('YAPP.model.Item', {
     extend: 'Ext.data.Model',
     requires : [ 'YAPP.model.TipoItem','YAPP.model.Fase' ],
-    fields: [{name : 'id', type : 'int', mapping : '_id'}, '_nombre', 
+    fields: [{name : 'id', type : 'int', mapping : '_id'}, '_item_id', '_nombre', 
     {
     	name : '_tipo_item', 
     	type : 'YAPP.model.TipoItem'

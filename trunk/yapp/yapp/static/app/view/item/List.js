@@ -8,14 +8,6 @@ Ext.define('YAPP.view.item.List', {
 			xtype : 'toolbar',
 			items : [ {
 				xtype : 'combobox',
-				name : 'cbProyecto',
-				fieldLabel : 'Proyecto',
-				store : Ext.create('YAPP.store.Proyectos'),
-				displayField : '_nombre',
-				queryMode : 'local',
-				valueField : 'id',
-			}, {
-				xtype : 'combobox',
 				name : 'cbFase',
 				fieldLabel : 'Fase',
 				displayField : '_nombre',
@@ -73,10 +65,10 @@ Ext.define('YAPP.view.item.List', {
 			dataIndex : '_estado',
 			flex : 1
 		},
-		// {header: 'Fecha de Inicio', sortable : true, dataIndex:
-		// '_fecha_inicio', flex: 1},
-		// {header: 'Fecha de Fin', sortable : true, dataIndex: '_fecha_fin',
-		// flex: 1},
+		 { xtype: 'datecolumn' ,header: 'Fecha de Inicio', sortable : true, dataIndex:
+		 '_fecha_inicio', format: 'd/m/Y', flex: 1},
+		 {xtype: 'datecolumn' , header: 'Fecha de Fin', sortable : true, format: 'd/m/Y', dataIndex: '_fecha_fin',
+		 flex: 1},
 		{
 			header : 'Padre',
 			sortable : true,
@@ -87,6 +79,14 @@ Ext.define('YAPP.view.item.List', {
 			header : 'Antecesor',
 			sortable : true,
 			dataIndex : '_antecesor',
+			flex : 1,
+			renderer : renderizador_lista_item
+		},
+		 {
+		 	hidden : true,
+			header : 'Item ID',
+			sortable : true,
+			dataIndex : '_item_id',
 			flex : 1,
 			renderer : renderizador_lista_item
 		}
@@ -102,9 +102,10 @@ Ext.define('YAPP.view.item.List', {
 });
 
 function renderizador_lista_item(val) {
-	if (val == null)
-		return ""
-	if (val._nombre != null) {
+
+	//console.log(val)
+	if (val != null && val._nombre != null) {
+
 		return val._nombre;
 	}
 	return val;
