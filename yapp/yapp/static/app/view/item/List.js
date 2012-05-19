@@ -43,12 +43,15 @@ Ext.define('YAPP.view.item.List' ,{
 	    this.columns = [
 	        {header: 'Nombre', sortable : true, dataIndex: '_nombre', flex: 1},
 	        {header: 'Duracion', sortable : true, dataIndex: '_duracion', flex: 1},
+	        {header: 'Descripcion', sortable : true, dataIndex: '_descripcion', flex: 1},
 	        {header: 'Condicionado', sortable : true, dataIndex: '_condicionado',  flex: 1},
+	        {header: 'Tipo de Item', sortable : true, dataIndex: '_tipo_item',  flex: 1, renderer: renderizador_lista_item},
 	        {header: 'Version', sortable : true, dataIndex: '_version', flex: 1},
 	        {header: 'Estado', sortable : true, dataIndex: '_estado', flex: 1},
 //	        {header: 'Fecha de Inicio', sortable : true, dataIndex: '_fecha_inicio', flex: 1},
 //	        {header: 'Fecha de Fin', sortable : true, dataIndex: '_fecha_fin', flex: 1},
-	        {header: 'Padre', sortable : true, dataIndex: '_padre', flex: 1, renderer: renderizador_lista_item}
+	        {header: 'Padre', sortable : true, dataIndex: '_padre', flex: 1, renderer: renderizador_lista_item},
+	        {header: 'Antecesor', sortable : true, dataIndex: '_antecesor', flex: 1, renderer: renderizador_lista_item}
 
 
 		];
@@ -60,13 +63,13 @@ Ext.define('YAPP.view.item.List' ,{
     }
 	
 });
-	    
+
+
+
 function renderizador_lista_item(val) {
-	if (val == null)
+	if (val == null){
 		return val;
-	if (val._estado == null)
-		return val
-	return val._nombre
-	// return ""
+	}
+	return val._nombre;
 }
 
