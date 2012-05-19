@@ -27,3 +27,11 @@ class TipoItem (Base, EntidadBase):
         self._prefijo = prefijo
         self._condicionado = condicionado
 
+
+class TipoItemDTO:
+    def __init__(self, entidad):
+        self._nombre = entidad._nombre
+        self._comentario = entidad._comentario
+        self._color = entidad._color
+        self._prefijo = entidad._prefijo
+        self._condicionado = entidad._condicionado

@@ -32,7 +32,12 @@ def AG_atributos_tipos_item(request):
             rd = ItemDAO(request)
             padre = rd.get_by_id(entidad._padre_item_id)
             antecesor = rd.get_by_id(entidad._antecesor_item_id)
-            entidadLinda = ItemLindo(entidad._id, entidad._nombre, entidad._tipo_item, entidad._fase, entidad._duracion, entidad._descripcion, entidad._condicionado, entidad._version, entidad._estado, entidad._fecha_inicio, entidad._fecha_fin, padre, antecesor) 
+            entidadLinda = ItemDTO(entidad)
+            if padre != None:
+                entidadLinda._padre = ItemDTO(padre)
+            if antecesor != None:
+                entidadLinda._antecesor = ItemDTO(antecesor)
+            
             lista.append(p.flatten(entidadLinda))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
@@ -64,9 +69,6 @@ def AG_atributos_tipos_item(request):
                                   
         nuevo_item = Item(entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"], padre, antecesor)
         itemDao = ItemDAO(request)
-        print "--------------------------"
-        print nuevo_item._antecesor_item_id
-        print "--------------------------"
         itemDao.crear(nuevo_item)
         
         lista = []
@@ -102,7 +104,7 @@ def BM_atributo(request):
             padre = None
         else:
             padre = dao_item_padre.get_by_id(entidad["_padre"])._id
-        item =  item_dao.get_by_id(entidad["id"])
+        item = item_dao.get_by_id(entidad["id"])
         item._nombre = entidad["_nombre"] 
         item._tipo_item = entidad["tipo_item"]
         item._fase = fase
@@ -114,7 +116,9 @@ def BM_atributo(request):
         item._padre_item_id = padre
         item._atencesor_item_id = antecesor
         item_dao.update(item);
-        return Response(json.dumps({'sucess': 'true'}))
+        p = Pickler()
+        aRet = p.flatten(ItemDTO(item))
+        return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
 
     elif (request.method == 'DELETE'):                            
         u = Unpickler()
