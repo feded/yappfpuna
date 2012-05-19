@@ -15,10 +15,14 @@ class Filter():
 
 class Validador():
     def __init__(self, request):
-        self.user = request.session['user']
+        self.user = None
+        if 'user' in request.session:
+            self.user = request.session['user']
         self.request = request
             
     def es_visible(self, entidad):
+        if self.user == None:
+            return True
         if (self.user._id == 1):
             return True;
         self.dao = RolPrivilegioDAO(self.request);
