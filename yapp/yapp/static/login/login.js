@@ -113,7 +113,8 @@ Ext.onReady(function() {
 				                'Item', 
 				                'Recursos', 
 				                'Esquemas', 
-				                'LineasBase'
+				                'LineasBase',
+				                'UnidadTrabajo'
 				],
 				
 				launch : function() {

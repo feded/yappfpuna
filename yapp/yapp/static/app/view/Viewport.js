@@ -10,8 +10,22 @@ Ext.define('YAPP.view.Viewport', {
 				title : 'Yet another project processor'
 				},
 				{
-				region: 'west',
-		        lbar: [{
+					region: 'east',
+					rbar:[
+						{
+							xtype: 'combobox',
+							fieldLabel: 'Proyecto',
+							displayField : '_nombre',
+							queryMode: 'local',
+							valueField: 'id',
+							name: 'proyectos'
+						}
+					]
+				},
+				{
+				region: 'west',	
+		        lbar: [
+		        	{
 		        		xtype: 'button',
 		                text: 'Administrar roles',
 		                textAlign: 'left',
@@ -77,8 +91,10 @@ Ext.define('YAPP.view.Viewport', {
 		                
 		            },
 		            {
+		            	xtype: 'button',
 		                text: 'Unidad de trabajo',
-		                textAlign: 'left'
+		                textAlign: 'left',
+		                action: 'adminUnidadTrabajo'
 		              
 		            },
 		            {

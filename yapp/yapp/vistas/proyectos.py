@@ -4,13 +4,13 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
-from yapp.models.proyecto.proyecto import Proyecto, ProyectoDTO
 from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.daos.tipo_fase_dao import TipoFaseDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
+from yapp.filter import Validador
 from yapp.models.fase.fase import Fase
 from yapp.models.fase.tipo_fase import TipoFase
-from yapp.models.proyecto.proyecto import Proyecto
+from yapp.models.proyecto.proyecto import Proyecto, Proyecto, ProyectoDTO
 from yapp.models.roles.rol_final import RolFinal
 import json
 
@@ -20,14 +20,21 @@ def read_proyectos(request):
     @summary: Maneja las solicitudes para recuperar los proyectos.
     """
     
+ 
+    validador = Validador(request)
+    
     rd = ProyectoDAO(request)
     entidades = rd.get_all()
     lista = [];
     p = Pickler()
     for entidad in entidades:
+        buleano = validador.es_visible(entidad)
+        print "--------------------"
+        print buleano
+        if buleano == True:
 #        a = ProyectosLindos(entidad._id, entidad._nombre, entidad._autor, entidad._prioridad, entidad._estado, entidad._lider, entidad._nota,entidad._fecha_creacion, entidad._fecha_modificacion,entidad._autor._nombre,entidad._lider._nombre)
-        a = ProyectoDTO(entidad)        
-        lista.append(p.flatten(a))    
+            a = ProyectoDTO(entidad)        
+            lista.append(p.flatten(a))    
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'proyectos':j_string})
     

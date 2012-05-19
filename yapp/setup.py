@@ -22,7 +22,7 @@ requires = [
     'zope.sqlalchemy',
     'waitress',
     'jsonpickle',
-    'psycopg2',
+#    'psycopg2',
     'pyramid_mailer',
     'webtest'
     ]

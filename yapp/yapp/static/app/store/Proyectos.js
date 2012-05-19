@@ -2,7 +2,7 @@ Ext.define('YAPP.store.Proyectos', {
 	extend: 'Ext.data.Store',
 	model: 'YAPP.model.Proyecto',
 	
-	autoLoad : true,
+	autoLoad : false,
     autoSync: true,
         
 	proxy : {
