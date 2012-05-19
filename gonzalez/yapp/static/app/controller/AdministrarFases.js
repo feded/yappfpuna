@@ -8,20 +8,30 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	stores:['Fases', 'AtributoFase'],
 	models:['Fase', 'AtributoFase'],
 	
-	refs: [{
-    	selector: 'listarfase gridview',
-    	ref: 'grilla'
-	}],
-	
+	refs: [	{
+    			selector: 'listarfase gridview',
+    			ref: 'grilla'
+			},
+			{
+    			selector: 'viewport combobox[name=proyectos]',
+    			ref: 'proyectos'
+			}
+	],
+		
 	init:function(){
 		console.log('Cargado controller AdministrarFases');
 		this.control({
 //				'listarfase button[action=actualizar]': {
 //                	click: this.actualizarFase
 //            	},
-            	'listarfase combobox': {
-            		change: this.traerFase
-            	},
+//            	'listarfase combobox': {
+//            		change: this.traerFase
+//            	},
+            	
+//            	'listarfase': {
+//            		render: this.traerFase
+//            	},
+            	
             	
             	'listarfase button[action=crear]':{
             		click: this.crearFase
@@ -79,15 +89,16 @@ Ext.define('YAPP.controller.AdministrarFases', {
 //		this.getFasesStore().load();
 //	},
 //	
-	traerFase: function(combobox){
-//		console.log(combobox.getValue());
-		var store = this.getStore('Fases');
-		store.load({
-			params: {
-				id : combobox.getValue()
-			}
-		});
-	},
+//	traerFase: function(){
+//		var combobox = this.getProyectos();
+//	
+//		var store = this.getStore('Fases');
+//		store.load({
+//			params: {
+//				id : combobox.getValue()
+//			}
+//		});
+//	},
 	agregarTipo: function(button){
 //        var tipofase = new YAPP.model.TipoFase();
         
@@ -128,8 +139,8 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var view = Ext.widget('nuevafase');
         var fase = new YAPP.model.Fase();
         		
-		var win = button.up('grid');
-		var cb = win.down('combobox');
+//		var win = button.up('grid');
+		var cb = this.getProyectos();
 		
 //		console.log(cb.getValue());
 		fase.data._proyecto_id = cb.getValue();

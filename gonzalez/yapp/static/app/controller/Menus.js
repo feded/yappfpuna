@@ -3,10 +3,34 @@ Ext.define('YAPP.controller.Menus', {
 	
 	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List', 'esquema.List', 'rol.ABM',
 			'rol.List', 'tipoItem.List', 'suscripcion.List', 'item.List', 'recurso.ListarRecurso' ],
+	
+	stores: ['Proyectos', 'Permisos'],
+	
+	refs: [	{
+    			selector: 'viewport combobox[name=proyectos]',
+    			ref: 'proyectos'
+			},
+			{
+    			selector: 'viewport button[action=adminRoles]',
+    			ref: 'botonRoles'
+			},
+			
+//			{
+//    			selector: 'viewport toolbar[dock=left]',
+//    			ref: 'bar'
+//			}
+		],
 
 	init : function() {
 		console.log('Cargado controller Menus');
 		this.control({
+			'viewport':{
+				render: this.traerPermiso
+			},
+			'viewport combobox[name=proyectos]': {
+                afterrender: this.onComboBoxRendered
+            },
+			
 			'viewport button[action=adminProyectos]' : {
 				click : this.adminProyectos
 			},
@@ -43,6 +67,37 @@ Ext.define('YAPP.controller.Menus', {
 		});
 	},
 	
+	traerPermiso: function() {
+        var permisos = this.getPermisosStore();
+
+        permisos.load(
+        	{
+        		scope   : this,
+        		callback: function(records, operation, success) {
+//     			   //the operation object contains all of the details of the load operation
+     			   if(permisos.find('_nombre','Roles')==-1){
+     			   		var boton = this.getBotonRoles();
+//     			   		var bar = this.getBar();
+     			   		boton.hide();
+//     			   		bar.show();
+//     			   		console.log(bar);
+
+     			   }
+    			}
+        	}
+        );
+//    
+        
+    },
+ 
+	
+	onComboBoxRendered: function() {
+//		this.onRendered();
+        var proyectos = this.getProyectosStore();
+        proyectos.load();
+        this.getProyectos().store = proyectos;
+    },
+	
 	adminProyectos : function(button) {
 		
 		var tabs = Ext.getCmp('tabPrincipal');
@@ -65,6 +120,16 @@ Ext.define('YAPP.controller.Menus', {
 			xtype : 'listarfase',
 			closable : true
 		});
+		
+		var combobox = this.getProyectos();
+	
+		var store = this.getStore('Fases');
+		store.load({
+			params: {
+				id : combobox.getValue()
+			}
+		});
+		
 		
 		tabs.setActiveTab(tab);
 		
