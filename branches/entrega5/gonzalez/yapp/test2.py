@@ -20,19 +20,19 @@ class GetRoles(unittest.TestCase):
         print "Probando lista de roles"
         self.failUnless('sucess' in res.body)
         
-#class GetProyectos(unittest.TestCase):
-#    def setUp(self):
-#        from yapp import main
-#        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
-#        app = main({}, **settings)
-#        from webtest import TestApp
-#        self.testapp = TestApp(app)
-#
-#    def test_it(self):
-#        
-#        rh = RolFinalDAO(None)
-#        rol = rh.get_by_id(1)
-#        
-#        res = self.testapp.get('/readProyectos',params={'prueba': 1} ,status=200)
-#        print "Probando lista de proyectos"
-#        self.failUnless('sucess' in res.body)
+class GetProyectos(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        
+        rh = RolFinalDAO(None)
+        rol = rh.get_by_id(1)
+        
+        res = self.testapp.get('/readProyectos',status=200)
+        print "Probando lista de proyectos"
+        self.failUnless('sucess' in res.body)
