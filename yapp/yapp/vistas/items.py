@@ -4,16 +4,19 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config
+from sqlalchemy import Sequence
 from yapp.daos.atributo_tipo_item_dao import AtributoTipoItemDAO
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.item_dao import ItemDAO
 from yapp.daos.padre_item_dao import PadreItemDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import DBSession
+from yapp.models.fase.fase import FaseDTO
 from yapp.models.item.item import Item, Item, ItemDTO
 from yapp.models.item.padre_item import PadreItem
 from yapp.models.tipo_item.tipo_item import TipoItem
 import json
+from yapp.models import DBSession
 
 
 @view_config(route_name='crearListarItems')
@@ -27,12 +30,21 @@ def AG_atributos_tipos_item(request):
         #END parte cocho
         rd = ItemDAO(request)
         fase_id = request.GET.get('id')
-        entidades = rd.get_query().filter(Item._fase_id == fase_id).all()
+        entidades = rd.get_query().filter(Item._fase_id == fase_id, Item._estado!= "ELIMINADO").all()
+        entidades_item_id = []
         print entidades
+        for entidad in entidades:
+            posible_actual =rd.get_query().filter(Item._item_id == entidad._item_id).order_by(Item._version.desc()).first();            
+            if (len(entidades_item_id)==0):
+                entidades_item_id.append(posible_actual)
+            elif (entidades_item_id.count(posible_actual)==0):
+                entidades_item_id.append(posible_actual)
+             
+        print entidades_item_id
         lista = [];
         padre_dao = PadreItemDAO(request)
         p = Pickler(True, None)
-        for entidad in entidades:
+        for entidad in entidades_item_id:
             rd = ItemDAO(request)
             padre = rd.get_by_id(entidad._padre_item_id)
             antecesor = rd.get_by_id(entidad._antecesor_item_id)
@@ -69,9 +81,11 @@ def AG_atributos_tipos_item(request):
         if(entidad["_padre"] == ""):
             padre = None
         else:
-            padre = dao_item_padre.get_by_id(entidad["_padre"])._id
-                                  
-        nuevo_item = Item(entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"], padre, antecesor)
+            padre = dao_item_padre.get_by_id(entidad["_padre"])._id                          
+        seq = Sequence('item_id_seq')
+        item_id = DBSession.execute(seq)
+        
+        nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"], padre, antecesor)
         itemDao = ItemDAO(request)
         itemDao.crear(nuevo_item)
         
@@ -88,40 +102,39 @@ def AG_atributos_tipos_item(request):
 def BM_atributo(request):
     if (request.method == 'PUT'):
         u = Unpickler()
+        
+        print "-------------JSONBODY-----------"
+        print request.json_body
+        
         entidad = u.restore(request.json_body);
         #id = request.params.matchdict['id'] 
         item_dao = ItemDAO(request);
         dao_fase = FaseDAO(request)
-        fase = dao_fase.get_by_id(entidad["_fase"])
+        print "------------------------"
+        print entidad["_fase"]
+        fase = dao_fase.get_by_id(entidad["_fase"]["_id"])
         
         dao_tipo_item = TipoItemDAO(request)
-        tipo_item = dao_tipo_item.get_by_id(entidad["_tipo_item"])
+        tipo_item = dao_tipo_item.get_by_id((entidad["_tipo_item"]["_id"]))
 
         dao_item_ante = ItemDAO(request)
         if(entidad["_antecesor"] == ""):
             antecesor = None
         else:
-            antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])._id
+            antecesor = dao_item_ante.get_by_id(entidad["_antecesor"]["_id"])._id
         print antecesor
         dao_item_padre = ItemDAO(request)
         if(entidad["_padre"] == ""):
             padre = None
         else:
-            padre = dao_item_padre.get_by_id(entidad["_padre"])._id
-        item = item_dao.get_by_id(entidad["id"])
-        item._nombre = entidad["_nombre"] 
-        item._tipo_item = entidad["tipo_item"]
-        item._fase = fase
-        item._duracion = entidad["_duracion"]
-        item._descripcion = entidad["_descripcion"]
-        item._condicionado = entidad["_condicionado"]
-        item._version = entidad["_version"]
-        item._estado = entidad["_estado"]
-        item._padre_item_id = padre
-        item._atencesor_item_id = antecesor
-        item_dao.update(item);
+            padre = dao_item_padre.get_by_id(entidad["_padre"]["_id"])._id
+        item_viejo = item_dao.get_by_id(entidad["id"])
+        
+        nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"], padre, antecesor)
+
+        item_dao.crear(nuevo_item);
         p = Pickler()
-        aRet = p.flatten(ItemDTO(item))
+        aRet = p.flatten(ItemDTO(nuevo_item))
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
 
     elif (request.method == 'DELETE'):                            
@@ -131,7 +144,9 @@ def BM_atributo(request):
         print "-----ELIMINANDO ITEM-----"
         item_dao = ItemDAO(request);
         item = item_dao.get_by_id(entidad["id"])
-        item_dao.borrar(item)
+        item._estado = "ELIMINADO"
+        item._version = entidad["_version"] + 1
+        item_dao.crear(item)
         return Response(json.dumps({'sucess': 'true'}))
 
 

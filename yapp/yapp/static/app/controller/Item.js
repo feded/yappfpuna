@@ -35,7 +35,7 @@ Ext.define('YAPP.controller.Item', {
 				itemdblclick : this.editarItem
 			},
 			
-			'itemslist combobox[name=cbProyecto]' : {
+			'viewport combobox[name=proyectos]' : {
 				change : this.changeProyecto
 			},
 			
@@ -144,15 +144,23 @@ Ext.define('YAPP.controller.Item', {
 		else
 			record.data._condicionado = 'false'
 		win.close();
-		if (record.data.accion == "POST")
+		if (record.data.accion == "POST"){
 			// var fecha = new Ext.Date();
 			// fecha = Ext.Date.format(fecha, 'd-m-Y');
 			// record.set('_fecha_inicio')
 			this.getItemStore().insert(0, record);
-		
+		}else{
+			this.getItemStore().load({
+				params : {
+					id : fase.getValue()
+				}
+				
+			});
+		}	
 	},
 	
 	editarItem : function(grid, record) {
+		console.log("Editar")
 		var view = Ext.widget('itemedit');
 		view.setTitle('Editar Item');
 		view.down('form').loadRecord(record);
@@ -203,13 +211,13 @@ Ext.define('YAPP.controller.Item', {
 				}
 			}
 		});
-		var store = this.getItemStore();
-		store.load({
-			params : {
-				id : Fase.getValue()
-			}
-		});
-		record.data._version + 1;
+//		var store = this.getItemStore();
+//		store.load({
+//			params : {
+//				id : Fase.getValue()
+//			}
+//		});
+		record.data._version =record.data._version + 1;
 		record.data.accion = 'PUT';
 		
 		this.getFasesStore().load({
@@ -227,6 +235,7 @@ Ext.define('YAPP.controller.Item', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		selection.data.accion = "DELETE"
-		this.getTipoItemsStore().remove(selection)
+		selection.data._estado = "ELIMINADO"
+		guardarItem(button)
 	}
 });

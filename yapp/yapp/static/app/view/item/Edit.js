@@ -48,6 +48,22 @@ var formulario = Ext.define('YAPP.view.item.Edit', {
 							allowBlank : false
 						},
 						{
+							name : '_fecha_inicio',
+			                xtype: 'datefield',
+			                fieldLabel: 'Fecha de Inicio',
+			                format : 'd/m/Y',        
+			                submitFormat:'Y-m-d' 
+						},
+						{
+							xtype: 'datefield',
+						    format: 'd/m/Y',
+							name : '_fecha_fin',
+							fieldLabel : 'Fecha de Fin',
+							 submitFormat:'Y-m-d' 
+							
+							
+						},
+						{
 							xtype : 'checkbox',
 							name : '_condicionado',
 							fieldLabel : 'Condicionado',
