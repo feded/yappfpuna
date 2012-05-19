@@ -79,7 +79,8 @@ Ext.define('YAPP.view.Viewport', {
 		            },
 		            {
 		                text: 'Linea base',
-		                textAlign: 'left'
+		                textAlign: 'left',
+		                action : 'adminLineasBase'
 		               
 		            },
 		            {

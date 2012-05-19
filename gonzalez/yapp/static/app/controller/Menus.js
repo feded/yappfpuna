@@ -2,7 +2,7 @@ Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
 	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List', 'esquema.List', 'rol.ABM',
-			'rol.List', 'tipoItem.List', 'suscripcion.List', 'item.List', 'recurso.ListarRecurso' ],
+			'rol.List', 'tipoItem.List', 'suscripcion.List', 'item.List', 'recurso.ListarRecurso', 'linea_base.ABM' ],
 	
 	stores: ['Proyectos', 'Permisos'],
 	
@@ -63,6 +63,9 @@ Ext.define('YAPP.controller.Menus', {
 			},
 			'viewport button[action=logout]' :{
 				click : this.logout
+			},
+			'viewport button[action=adminLineasBase]' :{
+				click : this.adminLineasBase
 			}
 		});
 	},
@@ -258,5 +261,16 @@ Ext.define('YAPP.controller.Menus', {
 				window.location = redirect;
 			},
 		});
+	},
+	adminLineasBase : function(button) {
+		var tabs = Ext.getCmp('tabPrincipal');
+		
+		var tab = tabs.add({
+			title : 'Lineas Base',
+			xtype : 'lineasbaseabm',
+			closable : true
+		});
+		
+		tabs.setActiveTab(tab);
 	}
 });
