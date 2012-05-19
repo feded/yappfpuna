@@ -13,6 +13,7 @@ import vistas.roles
 import vistas.fases
 import vistas.recursos
 import vistas.unidadtrabajo
+import vistas.permisos
 
 
 
@@ -84,6 +85,7 @@ def main(global_config, **settings):
     config.add_route('editarEliminarItemEsquemas', '/itemsEsquemas/{id}')
     config.add_route('rolesfinales', '/rolesfinales/')
     config.add_route('notificaciones', '/notificaciones/')
+    config.add_route('obtenerpermisos', '/permisos')
     config.scan()
 #    config.scan("views")
 
