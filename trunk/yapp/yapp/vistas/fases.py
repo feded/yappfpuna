@@ -24,25 +24,25 @@ def obtener_crear_fases(request):
     if (request.method == 'GET'):
         proyecto_id = request.GET.get('id')
         fase_id = request.GET.get('fase_id')
-        print "------FASEID------------" 
-        print fase_id 
-        print "----------------------------"
-        print "------PROYECTOID------------" 
-        print proyecto_id 
-        print "----------------------------"
+#        print "------FASEID------------" 
+#        print fase_id 
+#        print "----------------------------"
+#        print "------PROYECTOID------------" 
+#        print proyecto_id 
+#        print "----------------------------"
         rd = FaseDAO(request)
         lista = [];
         p = Pickler(False,None)   
         if (fase_id!= None and fase_id!= ""):
-            print "entre fase"
+#            print "entre fase"
             entidad = rd.get_query().filter(Fase._id < fase_id, Fase._proyecto_id == proyecto_id ).order_by(Fase._orden.desc()).first()
             if (entidad!=None):
-                print "Entidad es: -------- "
-                print entidad._id
+#                print "Entidad es: -------- "
+#                print entidad._id
                 entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id,entidad._orden, entidad._comentario, entidad._estado,entidad._color)
                 lista.append(p.flatten(entidadLinda))    
         elif (proyecto_id!= None and proyecto_id!= ""):
-            print "entre proyecto"
+#            print "entre proyecto"
             entidades = rd.get_query().filter(Fase._proyecto_id == proyecto_id).all()
             for entidad in entidades:
                 entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id,entidad._orden, entidad._comentario, entidad._estado,entidad._color)

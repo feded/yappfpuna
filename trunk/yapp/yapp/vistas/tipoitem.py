@@ -18,7 +18,7 @@ def get_tipos_item(request):
     """Metodo que maneja las llamadas para tipos
         - Retorna una lista si se envia GET
     """
-    print request.method
+#    print request.method
     if (request.method == 'GET'):
         #or request.method == 'OPTIONS'  
         rd = TipoItemDAO(request)
