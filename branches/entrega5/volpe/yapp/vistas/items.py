@@ -29,10 +29,10 @@ def AG_atributos_tipos_item(request):
         padre_dao = PadreItemDAO(request)
         p = Pickler(True, None)
         for entidad in entidades:
-            padre_hijo = padre_dao.get_query().filter(PadreItem._hijo_id == entidad._id).first()
             rd = ItemDAO(request)
-            padre = rd.get_by_id(padre_hijo._padre_id)
-            entidadLinda = ItemLindo(entidad._id, entidad._nombre, entidad._tipo_item, entidad._fase, entidad._duracion,entidad._condicionado, entidad._version, entidad._estado, entidad._fecha_inicio, entidad._fecha_fin, padre) 
+            padre = rd.get_by_id(entidad._padre_item_id)
+            antecesor = rd.get_by_id(entidad._antecesor_item_id)
+            entidadLinda = ItemLindo(entidad._id, entidad._nombre, entidad._tipo_item, entidad._fase, entidad._duracion, entidad._descripcion, entidad._condicionado, entidad._version, entidad._estado, entidad._fecha_inicio, entidad._fecha_fin, padre, antecesor) 
             lista.append(p.flatten(entidadLinda))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
@@ -40,6 +40,8 @@ def AG_atributos_tipos_item(request):
         return Response(a_ret)
     elif (request.method == 'POST'):
         u = Unpickler()
+        print "----------------------JSON----------------"
+        print request.json_body
         entidad = u.restore(request.json_body);
         
         dao_fase = FaseDAO(request)
@@ -48,23 +50,24 @@ def AG_atributos_tipos_item(request):
         dao_tipo_item = TipoItemDAO(request)
         tipo_item = dao_tipo_item.get_by_id(entidad["_tipo_item"])
 
-        antecesor = entidad["_antecesor_id"]
-
-        if(entidad["_antecesor_id"] == ""):
+        dao_item_ante = ItemDAO(request)
+        if(entidad["_antecesor"] == ""):
             antecesor = None
+        else:
+            antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])._id
+        print antecesor
+        dao_item_padre = ItemDAO(request)
         if(entidad["_padre"] == ""):
             padre = None
         else:
-            dao_padre = ItemDAO(request)
-            padre = dao_padre.get_by_id(entidad["_padre"])
+            padre = dao_item_padre.get_by_id(entidad["_padre"])._id
                                   
-        nuevo_item = Item(entidad["_nombre"], tipo_item, fase, entidad["_duracion"],entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"])
+        nuevo_item = Item(entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"], padre, antecesor)
         itemDao = ItemDAO(request)
+        print "--------------------------"
+        print nuevo_item._antecesor_item_id
+        print "--------------------------"
         itemDao.crear(nuevo_item)
-        
-        padre_item_dao = PadreItemDAO(request)
-        padre_item = PadreItem(padre,nuevo_item)
-        padre_item_dao.crear(padre_item)
         
         lista = []
         p = Pickler()
@@ -80,25 +83,30 @@ def BM_atributo(request):
     if (request.method == 'PUT'):
         u = Unpickler()
         entidad = u.restore(request.json_body);
-        #id = request.params.matchdict['id']
-        atributoTipoItemDAO = AtributoTipoItemDAO(request);
-        atributoItem =  atributoTipoItemDAO.get_by_id(entidad["id"])
-        atributoItem._tipo = entidad["_tipo"]
-        atributoItem._valor = entidad["_valor"]
-        atributoItem._descripcion = entidad["_descripcion"]
-        atributoItem._opcional = entidad["_opcional"]
-        atributoItem._defecto = entidad["_defecto"]
-        atributoTipoItemDAO.update(atributoItem);
+        #id = request.params.matchdict['id'] 
+        item_dao = AtributoTipoItemDAO(request);
+        item =  item_dao.get_by_id(entidad["id"])
+        item._nombre = entidad["_nombre"] 
+        item._tipo_item = tipo_item
+        item._fase = fase
+        item._duracion = entidad["_duracion"]
+        item._descripcion = entidad["_descripcion"]
+        item._condicionado = entidad["_condicionado"]
+        item._version = entidad["_version"]
+        item._estado = entidad["_estado"]
+        item._padre_item_id = padre
+        item._atencesor_item_id = antecesor
+        item_dao.update(item);
         return Response(json.dumps({'sucess': 'true'}))
 
     elif (request.method == 'DELETE'):                            
         u = Unpickler()
         entidad = u.restore(request.json_body);
        
-        print "-----ELIMINANDO ATRIBUTO-----"
-        atributoItemDao = AtributoTipoItemDAO(request);
-        atributo = atributoItemDao.get_by_id(entidad["id"])
-        atributoItemDao.borrar(atributo)
+        print "-----ELIMINANDO ITEM-----"
+        item_dao = ItemDAO(request);
+        atributo = item_dao.get_by_id(entidad["id"])
+        item_dao.borrar(atributo)
         return Response(json.dumps({'sucess': 'true'}))
 
 
@@ -124,15 +132,17 @@ class ItemLindo:
     """
     @summary: Unidad de transporte para items.         
     """
-    def __init__(self, _id, nombre, tipo_item, fase, duracion, condicionado, version, estado, fecha_inicio, fecha_fin, padre):
+    def __init__(self, _id, nombre, tipo_item, fase, duracion, descripcion, condicionado, version, estado, fecha_inicio, fecha_fin, padre, antecesor):
         self._id = _id
         self._nombre = nombre;
         self._tipo_item = tipo_item;
         self._fase = fase;
         self._duracion = duracion;
+        self._descripcion = descripcion;
         self._condicionado = condicionado;
         self._version = version;
         self._estado = estado;
         self._fecha_inicio = fecha_inicio;
         self._fecha_fin = fecha_fin;
         self._padre = padre;
+        self._antecesor = antecesor
