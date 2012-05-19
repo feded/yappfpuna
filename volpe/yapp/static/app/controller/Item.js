@@ -15,6 +15,10 @@ Ext.define('YAPP.controller.Item', {
         	{
                 selector : 'itemedit combobox[name=_padre]',
                 ref : 'comboItemPadre'
+        	},
+        	{
+                selector : 'itemedit combobox[name=_antecesor]',
+                ref : 'comboItemAntecesor'
         	}
         	 ],
         	 
@@ -54,7 +58,7 @@ Ext.define('YAPP.controller.Item', {
                 if (object.getValue() == '') {
                         return;
                 }
-                
+                proyectoId = object.getValue();
 //                combo.clearValue();
                 combo.store = store;
                 store.load({
@@ -67,12 +71,15 @@ Ext.define('YAPP.controller.Item', {
  	},
  	
  	changeFase : function(object, newValue, oldValue, eOpts) {
-          var store = this.getItemStore();
-          var Fase = this.getComboFase();
+          var itemStore = this.getItemStore();
+          var fase = this.getComboFase();
+         
           
-          store.load({
+          
+          console.log(fase.getValue());
+          itemStore.load({
         	params : {
-            	id : Fase.getValue()
+            	id : fase.getValue()
           	}
       	});
  	},
@@ -81,37 +88,78 @@ Ext.define('YAPP.controller.Item', {
 	crearItem: function(button){
 		var view = Ext.widget('itemedit');
         var item = new YAPP.model.Item();
-//        
         var Fase = this.getComboFase();
         
-        if (Fase.getValue() == '') {
+        console.log("Parametros")
+        console.log(Fase.getValue())
+        console.log(proyectoId)
+        var faseStore = this.getFasesStore().load({
+          		params :{
+          			fase_id : Fase.getValue(),
+          			id : proyectoId
+          		},
+          		callback: function(records, operation, success) {
+			        faseAntecesora = records[0]
+			        if (faseAntecesora == 'undeefined' || faseAntecesora == "" || faseAntecesora == null){
+			        	return;
+			        }
+			        comboAntecesor.store.load({
+						params :{
+							id : faseAntecesora.data.id
+						}
+					})
+					console.log("Resultado")
+        			console.log(faseStore.first().data.id)
+			    }		
+        });
+        
+        
+        
+       	var comboPadre = this.getComboItemPadre();
+		var comboAntecesor = this.getComboItemAntecesor();
+		 if (Fase.getValue() == '') {
                return;
         }
-//		
-		item.data._version = 1;
-		item.data._estado = 'ACTIVO';
-		item.data.accion = 'POST';
-		item.data._fase = Fase.getValue();
-		view.down('form').loadRecord(item);
-//		
-		var combo = this.getComboItemPadre();
-		console.log(combo);
+		
+       
+		comboPadre.store.load({
+        	params : {
+            	id : Fase.getValue()
+          	}
+      	}); 
+		
+		
+		 
+		
         var store = this.getItemStore();
-//   
-        
-//        
-        combo.store = store;
         store.load({
         	params : {
             	id : Fase.getValue()
           	}
       	});
+
+		item.data._version = 1;
+		item.data._estado = 'ACTIVO';
+		item.data.accion = 'POST';
+		item.data._fase = Fase.getValue();
+		view.down('form').loadRecord(item);
+
+		 this.getFasesStore().load({
+          		params :{
+          			id : proyectoId
+          		},
+          		callback: function(records, operation, success) {
+			       Fase.setValue(Fase.getValue())
+				}		
+        });
+        
 		
          
          
 	},
 	
 	guardarItem : function(button){
+		var fase = this.getComboFase();
 		var win = button.up('window');
 		var form = win.down('form');
 		var record = form.getRecord();
@@ -121,17 +169,85 @@ Ext.define('YAPP.controller.Item', {
 		else record.data._condicionado = 'false' 
 		win.close();
 		console.log(record.data.accion)
+		console.log(record.data._antecesor)
 		if (record.data.accion == "POST")
 //			var fecha = new Ext.Date();
 //			fecha = Ext.Date.format(fecha, 'd-m-Y');
 //			record.set('_fecha_inicio')
 			this.getItemStore().insert(0, record);
+          	
+      	
 	},
 	
-	editarItem : function(button){
+	editarItem : function(grid, record){
 		var view = Ext.widget('itemedit');
 		view.setTitle('Editar Item');
 	    view.down('form').loadRecord(record);
+	    
+	    var Fase = this.getComboFase();
+        
+        if (Fase.getValue() == '') {
+        	console.log("fase nula")
+            return;
+        }
+	    
+	    var comboAntecesor = this.getComboItemAntecesor();
+		
+		var faseStore = this.getFasesStore().load({
+          		params :{
+          			fase_id : Fase.getValue(),
+          			id : proyectoId
+          		},
+          		callback: function(records, operation, success) {
+			        faseAntecesora = records[0]
+			        if (faseAntecesora == 'undefined' || faseAntecesora == "" || faseAntecesora == null){
+			        	return;
+			        }
+			        comboAntecesor.store.load({
+						params :{
+							id : faseAntecesora.data.id
+						}
+					})
+					console.log("Resultado")
+        			console.log(faseStore.first().data.id)
+			    }		
+        });
+		
+		var comboPadre = this.getComboItemPadre();
+		var comboAntecesor = this.getComboItemAntecesor();
+		 if (Fase.getValue() == '') {
+               return;
+        }
+		comboPadre.store.
+			load({
+	        	params : {
+	            	id : Fase.getValue()
+	          	},
+	          	callback:function(records, operation, success) {
+	          		for(record in records){
+			    		this.filter([
+					   		{filterFn: function(item) {console.log((item.get("id") != records[record].data.id)); return (item.get("id") != records[record].data.id); }}
+						]);
+	          		}
+			    }		
+	      	});
+        var store = this.getItemStore();
+        store.load({
+        	params : {
+            	id : Fase.getValue()
+          	}
+      	});
+	    record.data._version + 1;
+		record.data.accion = 'PUT';
+
+		 this.getFasesStore().load({
+          		params :{
+          			id : proyectoId
+          		},
+          		callback: function(records, operation, success) {
+			       Fase.setValue(Fase.getValue())
+				}		
+        });
 	},
 	
 	borrarItem: function(button) {
