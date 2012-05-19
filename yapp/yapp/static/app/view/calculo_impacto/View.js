@@ -9,18 +9,6 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 	
 	initComponent : function() {
 		this.items = [ {
-			xtype : 'form',
-			type : 'hbox',
-			items : [ {
-				xtype : 'gridpanel',
-				name : 'bases',
-				height : 100,
-				columns : columnas,
-				// stripeRows : true,
-				title : 'Lineas bases afectadas',
-				margins : '0 2 0 0'
-			} ],
-		}, {
 			xtype : 'container',
 			width : 650,
 			height : 300,
@@ -34,9 +22,18 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 			},
 			items : [ {
 				xtype : 'gridpanel',
+				name : 'bases',
+				height : 100,
+				columns : columnas,
+				// stripeRows : true,
+				title : 'Lineas bases afectadas',
+				margins : '0 2 0 0'
+			}, {
+				xtype : 'gridpanel',
 				name : 'antecesores',
 				height : 100,
 				columns : columnas,
+				store : Ext.create('YAPP.store.Item'),
 				// stripeRows : true,
 				title : 'Antecesores',
 				margins : '0 2 0 0'
@@ -45,6 +42,7 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 				name : 'sucesores',
 				height : 100,
 				columns : columnas,
+				store : Ext.create('YAPP.store.Item'),
 				// stripeRows : true,
 				title : 'Sucesores',
 				margins : '0 0 0 3'

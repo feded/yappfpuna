@@ -8,7 +8,7 @@ Ext.define('YAPP.store.CalculoImpactos', {
 		},
 		reader : {
 			type : 'json',
-			root : 'users',
+			root : 'impacto',
 			successProperty : 'sucess'
 		}
 	}

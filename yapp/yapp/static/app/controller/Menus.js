@@ -65,6 +65,9 @@ Ext.define('YAPP.controller.Menus', {
 			},
 			'viewport button[action=adminLineasBase]' : {
 				click : this.adminLineasBase
+			},
+			'viewport button[action=calculoImpacto]' : {
+				click : this.calculoImpacto
 			}
 		});
 	},
@@ -264,6 +267,17 @@ Ext.define('YAPP.controller.Menus', {
 		var tab = tabs.add({
 			title : 'Lineas Base',
 			xtype : 'lineasbaseabm',
+			closable : true
+		});
+		
+		tabs.setActiveTab(tab);
+	},
+	calculoImpacto : function(button) {
+		var tabs = Ext.getCmp('tabPrincipal');
+		
+		var tab = tabs.add({
+			title : 'Calculo de impacto',
+			xtype : 'calculoimpactosview',
 			closable : true
 		});
 		
