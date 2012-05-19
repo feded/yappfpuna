@@ -15,12 +15,17 @@ class Filter():
 
 class Validador():
     def __init__(self, request):
-        self.user = request.session['user']
+        self.user = None
+        if 'user' in request.session:
+            self.user = request.session['user']
+        self.request = request
             
     def es_visible(self, entidad):
+        if self.user == None:
+            return True
         if (self.user._id == 1):
             return True;
-        self.dao = RolPrivilegioDAO();
+        self.dao = RolPrivilegioDAO(self.request);
         if (isinstance(entidad, Esquema)):
             return self.validar_esquema(entidad)
         if (isinstance(entidad, Fase)):
@@ -43,7 +48,11 @@ class Validador():
         return puede_esquema or puede_fase
     
     def validar_entidad(self, entidad):
+        print "--------------"
+        print "Validando " + str(self.user._id) + " con " + str(entidad._id)
+        print "--------------"
         rol = self.dao.get_query().filter(RolPrivilegio._rol_id == self.user._id, RolPrivilegio._entidad_padre_id == entidad._id).first();
+        print rol
         return rol != None
         
         

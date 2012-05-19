@@ -4,21 +4,20 @@ Ext.define('YAPP.view.fase.ListarFase' ,{
     store: 'Fases',
     
     layout: 'fit',
-    
-//    features: [{ ftype: 'grouping' }],
+
 
     initComponent: function() {
 		  this.dockedItems = [ {
                                 xtype : 'toolbar',
                                 items : [ 
-                                		 	{
-                                				xtype: 'combobox',
-                                				fieldLabel: 'Proyecto',
-    											store: Ext.create('YAPP.store.Proyectos'),
-    											displayField: '_nombre',
-    											queryMode : 'local',
-    											valueField: 'id',
-                                		   },
+//                                		 	{
+//                                				xtype: 'combobox',
+//                                				fieldLabel: 'Proyecto',
+//    											store: Ext.create('YAPP.store.Proyectos'),
+//    											displayField: '_nombre',
+//    											queryMode : 'local',
+//    											valueField: 'id',
+//                                		   },
 //                                		   {
 //                        	        		xtype: 'button',
 //                        	        		text : 'Actualizar',
@@ -78,8 +77,3 @@ Ext.define('YAPP.view.fase.ListarFase' ,{
                 this.down('#tipo').setDisabled(selections.length === 0);
     }
 });
-
-//function renderProyectoFase(val) {
-//	return val._nombre
-////	return ""
-//}

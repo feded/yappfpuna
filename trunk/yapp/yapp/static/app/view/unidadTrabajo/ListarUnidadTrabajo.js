@@ -1,11 +1,9 @@
-Ext.define('YAPP.view.recurso.ListarRecurso' ,{
+Ext.define('YAPP.view.unidadTrabajo.ListarUnidadTrabajo' ,{
     extend: 'Ext.grid.Panel',
-    alias : 'widget.listarrecurso',
-    store: 'Recursos',
+    alias : 'widget.listarunidadtrabajo',
+    store: 'UnidadTrabajo',
     
     layout: 'fit',
-    
-//    features: [{ ftype: 'grouping' }],
 
     initComponent: function() {
 		  this.dockedItems = [ {
@@ -13,12 +11,12 @@ Ext.define('YAPP.view.recurso.ListarRecurso' ,{
                                 items : [ 
                         					{
                                 	        xtype: 'button',
-                                    	    text : 'Nuevo Recurso',
+                                    	    text : 'Nueva Unidad de trabajo',
                                         	scope : this,
                                         	action : 'crear'
                                 			}, '|', {
                                         	xtype: 'button',
-                                        	text : 'Eliminar Recurso',
+                                        	text : 'Eliminar Unidad de trabajo',
                                         	itemId : 'delete',
                                         	action : 'borrar',
                                         	disabled : true,
@@ -28,15 +26,10 @@ Ext.define('YAPP.view.recurso.ListarRecurso' ,{
       
       
 		this.columns = [
-			{header:'Recurso', dataIndex:'_nombre'},
-//			{header:'Tipo', dataIndex:'_tipo_id'}
-//			{header:'Tipo', dataIndex:'_tipo',renderer : renderizador},
-			{header:'Tipo', dataIndex:'tipo_nombre'},
+			{header:'Nombre', dataIndex:'_nombre'},
+			{header:'Etiqueta', dataIndex:'_etiqueta'},
 			{header:'Descripcion', dataIndex:'_descripcion'},
-			{header:'Costo/hora', dataIndex:'_costo_hora', hidden: true},
-			{header:'Costo/cantidad', dataIndex:'_costo_cantidad', hidden: true},
-			{header:'Cantidad', dataIndex:'_cantidad', 	hidden: true}
-			
+			{header:'Color', dataIndex:'_color'},
         ];   
 
         this.callParent(arguments);
