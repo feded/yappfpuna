@@ -10,7 +10,7 @@ from yapp.daos.item_dao import ItemDAO
 from yapp.daos.padre_item_dao import PadreItemDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import DBSession
-from yapp.models.item.item import Item, Item
+from yapp.models.item.item import Item, Item, ItemDTO
 from yapp.models.item.padre_item import PadreItem
 from yapp.models.tipo_item.tipo_item import TipoItem
 import json
@@ -19,6 +19,8 @@ import json
 @view_config(route_name='crearListarItems')
 def AG_atributos_tipos_item(request): 
     if (request.method == 'GET'):        
+        if (request.GET.get('id_linea_base') != None):
+            return get_items_con_linea_base(request)
         rd = ItemDAO(request)
         fase_id = request.GET.get('id')
         entidades = rd.get_query().filter(Item._fase_id == fase_id).all()
@@ -106,6 +108,25 @@ def BM_atributo(request):
         atributo = item_dao.get_by_id(entidad["id"])
         item_dao.borrar(atributo)
         return Response(json.dumps({'sucess': 'true'}))
+
+
+def get_items_con_linea_base(request):
+    rd = ItemDAO(request)
+    linea_base_id = request.GET.get('id_linea_base')
+    entidades = rd.get_query().filter(Item._linea_base_id == linea_base_id).all()
+    lista = [];
+    padre_dao = PadreItemDAO(request)
+    p = Pickler(True, None)
+    for entidad in entidades:
+        padre_hijo = padre_dao.get_query().filter(PadreItem._hijo_id == entidad._id).first()
+        rd = ItemDAO(request)
+        padre = rd.get_by_id(padre_hijo._padre_id)
+        dto = ItemDTO(entidad) 
+        lista.append(p.flatten(dto))
+    j_string = p.flatten(lista)
+    a_ret = json.dumps({'sucess': True, 'lista':j_string})
+    
+    return Response(a_ret)
 
 class ItemLindo:
     """
