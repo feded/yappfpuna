@@ -102,7 +102,8 @@ Ext.define('YAPP.view.item.List', {
 });
 
 function renderizador_lista_item(val) {
-	console.log(val)
+	if (val == null)
+		return ""
 	if (val._nombre != null) {
 		return val._nombre;
 	}

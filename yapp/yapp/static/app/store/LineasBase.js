@@ -1,9 +1,10 @@
 Ext.define('YAPP.store.LineasBase', {
 	extend : 'Ext.data.Store',
 	model : 'YAPP.model.LineaBase',
-	autoSync : true,
-//	autoLoad : true,
+	// autoSync : true,
+	// autoLoad : true,
 	proxy : {
+		extend : 'Ext.data.proxy.Proxy',
 		type : 'rest',
 		api : {
 			read : '/lineas_base',

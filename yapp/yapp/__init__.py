@@ -81,6 +81,7 @@ def main(global_config, **settings):
     config.add_route('editarEliminarItemEsquemas', '/itemsEsquemas/{id}')
     config.add_route('rolesfinales', '/rolesfinales/')
     config.add_route('notificaciones', '/notificaciones/')
+    config.add_route('calculo_impacto', '/calculo_impacto')
     
     
     #rutas Volpe 5 iteracion

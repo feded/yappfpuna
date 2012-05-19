@@ -18,9 +18,13 @@ import json
 
 @view_config(route_name='crearListarItems')
 def AG_atributos_tipos_item(request): 
-    if (request.method == 'GET'):        
-        if (request.GET.get('id_linea_base') != None):
+    if (request.method == 'GET'):     
+        #Parte cocho
+        if request.GET.get('id_linea_base') != None:
             return get_items_con_linea_base(request)
+        if request.GET.get('linea_base') == "false" and request.GET.get('id') != None:
+            return get_items_sin_linea_base_con_fase(request);
+        #END parte cocho
         rd = ItemDAO(request)
         fase_id = request.GET.get('id')
         entidades = rd.get_query().filter(Item._fase_id == fase_id).all()
@@ -132,6 +136,7 @@ def BM_atributo(request):
 
 
 def get_items_con_linea_base(request):
+    print "Pide items de linea base"
     rd = ItemDAO(request)
     linea_base_id = request.GET.get('id_linea_base')
     entidades = rd.get_query().filter(Item._linea_base_id == linea_base_id).all()
@@ -146,7 +151,24 @@ def get_items_con_linea_base(request):
         lista.append(p.flatten(entidadLinda))
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': True, 'lista':j_string})
-    
+    return Response(a_ret)
+
+def get_items_sin_linea_base_con_fase(request):
+    rd = ItemDAO(request)
+    linea_base_id = request.GET.get('id_linea_base')
+    fase_id = request.GET.get('id')
+    entidades = rd.get_query().filter(Item._linea_base_id == None, Item._fase_id == fase_id).all()
+    lista = [];
+    padre_dao = PadreItemDAO(request)
+    p = Pickler(True, None)
+    for entidad in entidades:
+        rd = ItemDAO(request)
+        padre = rd.get_by_id(entidad._padre_item_id)
+        antecesor = rd.get_by_id(entidad._antecesor_item_id)
+        entidadLinda = ItemLindo(entidad._id, entidad._nombre, entidad._tipo_item, entidad._fase, entidad._duracion, entidad._descripcion, entidad._condicionado, entidad._version, entidad._estado, entidad._fecha_inicio, entidad._fecha_fin, padre, antecesor) 
+        lista.append(p.flatten(entidadLinda))
+    j_string = p.flatten(lista)
+    a_ret = json.dumps({'sucess': True, 'lista':j_string})
     return Response(a_ret)
 
 class ItemLindo:

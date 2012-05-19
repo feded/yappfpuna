@@ -42,7 +42,6 @@ def get_con_fase(request):
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
     return Response(a_ret)
-    return True;
 
 
 ###########################
@@ -74,6 +73,18 @@ def rest(request):
         except FaseNoEncontradaException , e :
             print e
             return Response(json.dumps({'sucess': 'false'}))
+        return Response(json.dumps({'sucess': 'false'}))
+    if (request.method == "DELETE"):
+        try:
+            id_linea_base = request.matchdict['id']
+            dao = LineaBaseDAO(request)
+            entidad = dao.get_by_id(id_linea_base);
+            dao.borrar(entidad)
+            return Response(json.dumps({'sucess': 'true'}))
+        except FaseNoEncontradaException , e :
+            print e
+            return Response(json.dumps({'sucess': 'false'}))
+        return Response(json.dumps({'sucess': 'false'}))
     
 
 
