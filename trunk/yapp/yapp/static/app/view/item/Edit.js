@@ -18,7 +18,15 @@ var formulario = Ext.define('YAPP.view.item.Edit', {
 							xtype : 'textfield',
 							name : '_nombre',
 							fieldLabel : 'Nombre',
+							typeAhead : true,
 							allowBlank : false
+						},
+						{
+							xtype : 'textfield',
+							name : '_descripcion',
+							fieldLabel : 'Descripcion',
+							typeAhead : true,
+							
 						},
 						{
 							xtype : 'combobox',
@@ -36,31 +44,38 @@ var formulario = Ext.define('YAPP.view.item.Edit', {
 							xtype : 'textfield',
 							name : '_duracion',
 							fieldLabel : 'Duracion en dias',
+							typeAhead : true,
 							allowBlank : false
 						},
 						{
 							xtype : 'checkbox',
 							name : '_condicionado',
 							fieldLabel : 'Condicionado',
+							typeAhead : true,
 							allowBlank : false
 						},
-//						{
-//							xtype : 'combobox',
-//							fieldLabel : 'Antecesor',
-//							displayField : '_nombre',
-//							typeAhead : true,
-//							queryMode : 'local',
-//							emptyText : 'Seleccione un Item...'
-//						},
 						{
 							xtype : 'combobox',
 							name: '_padre',
+							store : Ext.create('YAPP.store.Item'),
 							fieldLabel : 'Padre',
 							displayField : '_nombre',
 							valueField: 'id',
 							queryMode : 'local',
+							emptyText : 'Seleccione un Item...',
+							typeAhead : true,
+						},
+						{
+							xtype : 'combobox',
+							fieldLabel : 'Antecesor',
+							name: '_antecesor',
+							displayField : '_nombre',
+							store : Ext.create('YAPP.store.Item'),
 							valueField: 'id',
-						}
+							typeAhead : true,
+							queryMode : 'local',
+							emptyText : 'Seleccione un Item...',
+						},
 			]
 		} ];
 		
@@ -75,5 +90,8 @@ var formulario = Ext.define('YAPP.view.item.Edit', {
 		
 		this.callParent(arguments);
 	}
+	
+	
 
 });
+

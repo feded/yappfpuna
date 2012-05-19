@@ -68,10 +68,14 @@ Ext.onReady(function() {
 			}
 		
 		} ],
-		keys : [ {
-			key : [ Ext.EventObject.ENTER ],
-			handler : handle
-		} ]
+		listeners: {
+		    afterRender: function(thisForm, options){
+		        this.keyNav = Ext.create('Ext.util.KeyNav', this.el, {                    
+		            enter: handle,
+		            scope: this
+		        });
+		    }
+		},
 	});
 	
 	function handle() {
@@ -81,7 +85,10 @@ Ext.onReady(function() {
 			value : 'login'
 		});
 		Ext.getCmp("login").doLayout();
-		login.getForm().submit({
+		login.getForm().submit(submit);
+	}
+	
+	var submit = {
 			method : 'POST',
 			waitMsg : 'Ingresando...',
 			
@@ -127,8 +134,7 @@ Ext.onReady(function() {
 				}
 				login.getForm().reset();
 			}
-		});
-	}
+		};
 	
 	var win = new Ext.Window({
 		layout : 'fit',
