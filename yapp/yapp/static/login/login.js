@@ -114,7 +114,8 @@ Ext.onReady(function() {
 				                'Recursos', 
 				                'Esquemas', 
 				                'LineasBase',
-				                'UnidadTrabajo'
+				                'UnidadTrabajo',
+				                'CalculoImpactos'
 				],
 				
 				launch : function() {
