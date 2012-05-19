@@ -44,7 +44,7 @@ class Item (EntidadPadre):
         self._antecesor_item_id = antecesor_item_id
 
 class ItemDTO:
-   def _init_(self, item):
+   def __init__(self, item):
        self._nombre = item._nombre
 #        self._tipo_item = item._tipo_item
 #        self._fase = item._fase
