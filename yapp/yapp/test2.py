@@ -83,7 +83,7 @@ class GetEsquemaItem(unittest.TestCase):
         print "Probando esquema item"
         self.failUnless('sucess' in res.body)
 
-class GetRoles(unittest.TestCase):
+class GetEsquema(unittest.TestCase):
     def setUp(self):
         from yapp import main
         settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
@@ -92,22 +92,8 @@ class GetRoles(unittest.TestCase):
         self.testapp = TestApp(app)
 
     def test_it(self):
-        res = self.testapp.get('/roles/0', status=200)
-#        print str(res)
-        print "Probando roles"
-        self.failUnless('sucess' in res.body)
-        
-class GetProyectos(unittest.TestCase):
-    def setUp(self):
-        from yapp import main
-        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
-        app = main({}, **settings)
-        from webtest import TestApp
-        self.testapp = TestApp(app)
-
-    def test_it(self):
-        res = self.testapp.get('/readProyectos',status=200)
-        print "Probando proyectos"
+        res = self.testapp.get('/esquemas', params={'id': 1},status=200)
+        print "Probando esquema"
         self.failUnless('sucess' in res.body)
 
 class GetFases(unittest.TestCase):
@@ -122,8 +108,8 @@ class GetFases(unittest.TestCase):
         res = self.testapp.get('/fases', params={'id': 1},status=200)
         print "Probando fases"
         self.failUnless('sucess' in res.body)
-        
-class GetTipoFase(unittest.TestCase):
+
+class GetHistoriales(unittest.TestCase):
     def setUp(self):
         from yapp import main
         settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
@@ -132,8 +118,75 @@ class GetTipoFase(unittest.TestCase):
         self.testapp = TestApp(app)
 
     def test_it(self):
-        res = self.testapp.get('/tipofase', params={'id': 1},status=200)
-        print "Probando tipo fase"
+        res = self.testapp.get('/notificaciones/', params={'id': 1},status=200)
+        print "Probando historiales"
+        self.failUnless('sucess' in res.body)
+
+
+#class GetItem(unittest.TestCase):
+#    def setUp(self):
+#        from yapp import main
+#        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+#        app = main({}, **settings)
+#        from webtest import TestApp
+#        self.testapp = TestApp(app)
+#
+#    def test_it(self):
+#        res = self.testapp.get('/item', params={'id': 1},status=200)
+#        print "Probando item"
+#        self.failUnless('sucess' in res.body)
+
+class GetLinesasBase(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        res = self.testapp.get('/lineas_base', params={'id': 1},status=200)
+        print "Probando lineas_base"
+        self.failUnless('sucess' in res.body)
+        
+#class GetPermisos(unittest.TestCase):
+#    def setUp(self):
+#        from yapp import main
+#        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+#        app = main({}, **settings)
+#        from webtest import TestApp
+#        self.testapp = TestApp(app)
+#
+#    def test_it(self):
+#        res = self.testapp.get('/permisos',params={'user': 1},status=200)
+#        print "Probando permisos"
+#        self.failUnless('sucess' in res.body)
+#        
+
+class GetPrivilegios(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        res = self.testapp.get('/privilegios/0',status=200)
+        print "Probando privilegios"
+        self.failUnless('sucess' in res.body)
+
+class GetProyectos(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        res = self.testapp.get('/readProyectos',status=200)
+        print "Probando proyectos"
         self.failUnless('sucess' in res.body)
 
 class GetRecursos(unittest.TestCase):
@@ -148,6 +201,116 @@ class GetRecursos(unittest.TestCase):
         res = self.testapp.get('/recursos',status=200)
         print "Probando recursos"
         self.failUnless('sucess' in res.body)
+
+class GetRoles(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        res = self.testapp.get('/roles/0', status=200)
+#        print str(res)
+        print "Probando roles"
+        self.failUnless('sucess' in res.body)
+
+class GetRolesFinales(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        res = self.testapp.get('/rolesfinales/', status=200)
+#        print str(res)
+        print "Probando roles finales"
+        self.failUnless('sucess' in res.body)
+
+class GetRolesEstados(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        res = self.testapp.get('/roles_estados', status=200)
+#        print str(res)
+        print "Probando roles estados"
+        self.failUnless('sucess' in res.body)
+
+class GetRolPrivilegios(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        res = self.testapp.get('/rolPrivilegios/0', status=200)
+#        print str(res)
+        print "Probando roles privilegios"
+        self.failUnless('sucess' in res.body)
+
+#class GetSuscripciones(unittest.TestCase):
+#    def setUp(self):
+#        from yapp import main
+#        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+#        app = main({}, **settings)
+#        from webtest import TestApp
+#        self.testapp = TestApp(app)
+#
+#    def test_it(self):
+#        res = self.testapp.get('/suscripciones/0', status=200)
+##        print str(res)
+#        print "Probando suscripciones"
+#        self.failUnless('sucess' in res.body)
+                
+class GetTipoFase(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        res = self.testapp.get('/tipofase', params={'id': 1},status=200)
+        print "Probando tipo fase"
+        self.failUnless('sucess' in res.body)
+        
+class GetTipoItem(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        res = self.testapp.get('/obtenerTipos',status=200)
+        print "Probando tipo item"
+        self.failUnless('sucess' in res.body)
+
+class GetTipoRecurso(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        res = self.testapp.get('/tipo_recurso',status=200)
+        print "Probando tipo recurso"
+        self.failUnless('sucess' in res.body)
+
 
 class GetUnidadTrabajo(unittest.TestCase):
     def setUp(self):
