@@ -29,8 +29,8 @@ def read_proyectos(request):
     p = Pickler()
     for entidad in entidades:
         buleano = validador.es_visible(entidad)
-        print "--------------------"
-        print buleano
+#        print "--------------------"
+#        print buleano
         if buleano == True:
 #        a = ProyectosLindos(entidad._id, entidad._nombre, entidad._autor, entidad._prioridad, entidad._estado, entidad._lider, entidad._nota,entidad._fecha_creacion, entidad._fecha_modificacion,entidad._autor._nombre,entidad._lider._nombre)
             a = ProyectoDTO(entidad)        
