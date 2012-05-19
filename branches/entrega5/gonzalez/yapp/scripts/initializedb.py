@@ -56,6 +56,7 @@ import yapp.models.suscripcion.suscripcion
 import yapp.models.suscripcion.notificacion
 import yapp.models.tipo_item.atributo_tipo_item
 import yapp.models.tipo_item.tipo_item
+import yapp.models.linea_base.linea_base
 
 
 

@@ -23,7 +23,8 @@ requires = [
     'waitress',
     'jsonpickle',
 #    'psycopg2',
-    'pyramid_mailer'
+    'pyramid_mailer',
+    'webtest'
     ]
 
 setup(name='yapp',

@@ -86,6 +86,12 @@ def main(global_config, **settings):
     config.add_route('rolesfinales', '/rolesfinales/')
     config.add_route('notificaciones', '/notificaciones/')
     config.add_route('obtenerpermisos', '/permisos')
+    config.add_route('calculo_impacto', '/calculo_impacto')
+    
+    
+    #rutas Volpe 5 iteracion
+    config.add_route('lineas_base', '/lineas_base')
+    config.add_route('lineas_base_rest', '/lineas_base/{id}')
     config.scan()
 #    config.scan("views")
 
