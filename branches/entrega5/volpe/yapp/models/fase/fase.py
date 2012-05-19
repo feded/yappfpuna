@@ -30,3 +30,12 @@ class Fase (EntidadPadre):
         self._comentario = comentario;
         self._estado = estado;
         self._color = color;
+        
+class FaseDTO:
+    def __init__(self, fase):
+        self._nombre = fase._nombre;
+#        self._proyecto = fase._proyecto;
+        self._orden = fase._orden;
+        self._comentario = fase._comentario;
+        self._estado = fase._estado;
+        self._color = fase._color;
