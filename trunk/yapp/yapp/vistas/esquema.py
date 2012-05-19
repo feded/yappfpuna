@@ -22,7 +22,7 @@ def AG_esquemas(request):
         rd = EsquemaDAO(request)
         fase_id = request.GET.get('id')
         entidades = rd.get_query().filter(Esquema._fase_id == fase_id).all()
-        print entidades
+#        print entidades
         lista = [];
         p = Pickler(True, None)
 #        val = Validador(request);
@@ -31,7 +31,7 @@ def AG_esquemas(request):
             lista.append(p.flatten(entidad))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
-        print a_ret
+#        print a_ret
         return Response(a_ret)
     elif (request.method == 'POST'):
         print "-----CREANDO Entidad-----"
@@ -87,14 +87,14 @@ def AG_atributos(request):
         rd = AtributoEsquemaDAO(request)
         esquema_id = request.GET.get('id')
         entidades = rd.get_query().filter(AtributoEsquema._esquema_id == esquema_id).all()
-        print entidades
+#        print entidades
         lista = [];
         p = Pickler(True, None)
         for entidad in entidades:
             lista.append(p.flatten(entidad))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
-        print a_ret
+#        print a_ret
         return Response(a_ret)
     elif (request.method == 'POST'):
         print "-----CREANDO Entidad-----"
@@ -149,14 +149,14 @@ def AG_item_esquema(request):
         rd = EsquemaItemDAO(request)
         esquema_id = request.GET.get('id')
         entidades = rd.get_query().filter(EsquemaItem._esquema_id == esquema_id).all()
-        print entidades
+#        print entidades
         lista = [];
         p = Pickler(True, None)
         for entidad in entidades:
             lista.append(p.flatten(entidad))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
-        print a_ret
+#        print a_ret
         return Response(a_ret)
     elif (request.method == 'POST'):
         print "-----CREANDO Entidad-----"

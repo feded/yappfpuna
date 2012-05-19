@@ -29,7 +29,7 @@ def get_tipos_item(request):
             lista.append(p.flatten(entidad))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
-        print a_ret
+#        print a_ret
         return Response(a_ret)
     
 @view_config(route_name='crearTipo')
