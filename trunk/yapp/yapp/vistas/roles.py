@@ -43,7 +43,6 @@ def get_roles(request):
         - Modifica si se envia PUT
         - Elimina si se envia DELETE
     """
-    print request.method;
 #    print request.json_body;
     if (request.method == 'GET'):
         rd = RolDAO(request)
