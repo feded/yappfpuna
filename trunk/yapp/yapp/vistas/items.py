@@ -30,15 +30,29 @@ def AG_atributos_tipos_item(request):
         #END parte cocho
         rd = ItemDAO(request)
         fase_id = request.GET.get('id')
-        entidades = rd.get_query().filter(Item._fase_id == fase_id, Item._estado!= "ELIMINADO").all()
+        entidades = rd.get_query().filter(Item._fase_id == fase_id).distinct(Item._item_id).all()
         entidades_item_id = []
-        print entidades
+        print "------------------"
+        print "------------------"
+        print "------------------"
+        print len(entidades)
+        print "------------------"
+        print "------------------"
         for entidad in entidades:
-            posible_actual =rd.get_query().filter(Item._item_id == entidad._item_id).order_by(Item._version.desc()).first();            
-            if (len(entidades_item_id)==0):
-                entidades_item_id.append(posible_actual)
-            elif (entidades_item_id.count(posible_actual)==0):
-                entidades_item_id.append(posible_actual)
+            posible_actual = rd.get_query().filter(Item._item_id == entidad._item_id).order_by(Item._version.desc()).first();
+            print "------------------"
+            print "------------------"
+            print "------------------"
+            print posible_actual._item_id
+            print posible_actual._estado
+            
+            print "------------------"
+            print "------------------"
+            if (posible_actual._estado != "ELIMINADO"):            
+                if (len(entidades_item_id) == 0):
+                    entidades_item_id.append(posible_actual)
+                elif (entidades_item_id.count(posible_actual) == 0):
+                    entidades_item_id.append(posible_actual)
              
         print entidades_item_id
         lista = [];
@@ -100,7 +114,7 @@ def AG_atributos_tipos_item(request):
         
 @view_config(route_name='editarEliminarItems')
 def BM_atributo(request):
-    if (request.method == 'PUT'):
+    if (request.method == 'PUT' or request.method == 'DELETE'):
         u = Unpickler()
         
         print "-------------JSONBODY-----------"
@@ -132,22 +146,25 @@ def BM_atributo(request):
         
         nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"], padre, antecesor)
 
+        if request.method == "DELETE":
+            nuevo_item._estado = "ELIMINADO"
+            nuevo_item._version += 1
         item_dao.crear(nuevo_item);
         p = Pickler()
         aRet = p.flatten(ItemDTO(nuevo_item))
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
 
-    elif (request.method == 'DELETE'):                            
-        u = Unpickler()
-        entidad = u.restore(request.json_body);
-       
-        print "-----ELIMINANDO ITEM-----"
-        item_dao = ItemDAO(request);
-        item = item_dao.get_by_id(entidad["id"])
-        item._estado = "ELIMINADO"
-        item._version = entidad["_version"] + 1
-        item_dao.crear(item)
-        return Response(json.dumps({'sucess': 'true'}))
+#    elif (request.method == 'DELETE'):                            
+#        u = Unpickler()
+#        entidad = u.restore(request.json_body);
+#       
+#        print "-----ELIMINANDO ITEM-----"
+#        item_dao = ItemDAO(request);
+#        item = item_dao.get_by_id(entidad["id"])
+#        item._estado = "ELIMINADO"
+#        item._version = entidad["_version"] + 1
+#        item_dao.crear(item)
+#        return Response(json.dumps({'sucess': 'true'}))
 
 
 def get_items_con_linea_base(request):

@@ -144,19 +144,19 @@ Ext.define('YAPP.controller.Item', {
 		else
 			record.data._condicionado = 'false'
 		win.close();
-		if (record.data.accion == "POST"){
+		if (record.data.accion == "POST") {
 			// var fecha = new Ext.Date();
 			// fecha = Ext.Date.format(fecha, 'd-m-Y');
 			// record.set('_fecha_inicio')
 			this.getItemStore().insert(0, record);
-		}else{
+		} else {
 			this.getItemStore().load({
 				params : {
 					id : fase.getValue()
 				}
-				
+			
 			});
-		}	
+		}
 	},
 	
 	editarItem : function(grid, record) {
@@ -211,13 +211,12 @@ Ext.define('YAPP.controller.Item', {
 				}
 			}
 		});
-//		var store = this.getItemStore();
-//		store.load({
-//			params : {
-//				id : Fase.getValue()
-//			}
-//		});
-		record.data._version =record.data._version + 1;
+		// var store = this.getItemStore();
+		// store.load({
+		// params : {
+		// id : Fase.getValue()
+		// }
+		// });
 		record.data.accion = 'PUT';
 		
 		this.getFasesStore().load({
@@ -234,8 +233,7 @@ Ext.define('YAPP.controller.Item', {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
-		selection.data.accion = "DELETE"
-		selection.data._estado = "ELIMINADO"
-		guardarItem(button)
+		var store = grilla.store;
+		store.remove(selection);
 	}
 });

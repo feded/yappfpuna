@@ -13,15 +13,16 @@ Ext.define('YAPP.controller.LineasBase', {
 		selector : 'lineasbaselist combobox[name=cbFase]',
 		ref : 'comboFase'
 	}, {
-		selector : 'lineasbaselist combobox[name=_padre]',
-		ref : 'comboItemPadre'
+		selector : 'viewport combobox[name=proyectos]',
+		ref : 'proyectos'
 	} ],
 	
 	init : function() {
 		this.control({
 			'lineasbaselist' : {
 				// itemdblclick : this.editUser,
-				itemclick : this.lineaBaseClick
+				itemclick : this.lineaBaseClick,
+				render : this.onRender
 			},
 			'lineasbaselist button[action=crear]' : {
 				click : this.botonCrearApretado
@@ -29,7 +30,7 @@ Ext.define('YAPP.controller.LineasBase', {
 			'lineasbaselist button[action=borrar]' : {
 				click : this.botonBorrarApretado
 			},
-			'lineasbaselist combobox[name=cbProyecto]' : {
+			'viewport combobox[name=proyectos]' : {
 				change : this.changeProyecto
 			},
 			
@@ -70,10 +71,27 @@ Ext.define('YAPP.controller.LineasBase', {
 			}
 		});
 	},
-	
-	changeProyecto : function(object, newValue, oldValue, eOpts) {
+	onRender : function() {
 		var combo = this.getComboFase();
 		var store = this.getFasesStore();
+		var object = this.getProyectos().getValue();
+		if (object == '') {
+			return;
+		}
+		combo.store = store;
+		store.load({
+			params : {
+				id : object
+			}
+		});
+	},
+	changeProyecto : function(object, newValue, oldValue, eOpts) {
+		var combo = this.getComboFase();
+		if (combo == null)
+			return;
+		var store = this.getFasesStore();
+		if (store == null)
+			return;
 		if (object.getValue() == '') {
 			return;
 		}

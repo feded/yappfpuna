@@ -14,14 +14,6 @@ Ext.define('YAPP.view.linea_base.List', {
 				xtype : 'toolbar',
 				items : [ {
 					xtype : 'combobox',
-					name : 'cbProyecto',
-					fieldLabel : 'Proyecto',
-					store : Ext.create('YAPP.store.Proyectos'),
-					displayField : '_nombre',
-					queryMode : 'local',
-					valueField : 'id',
-				}, {
-					xtype : 'combobox',
 					name : 'cbFase',
 					fieldLabel : 'Fase',
 					displayField : '_nombre',

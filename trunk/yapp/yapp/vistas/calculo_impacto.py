@@ -52,6 +52,8 @@ class CalculoImpacto:
         return bases
     
     def verificar_linea_base_item(self, item, bases):
+        if item._linea_base_id == None:
+            return bases;
         linea = self.linea_base_dao.get_by_id(item._linea_base_id)
         if linea != None and linea not in bases:
             bases.append(linea)
