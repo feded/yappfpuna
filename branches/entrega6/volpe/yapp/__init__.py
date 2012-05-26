@@ -92,6 +92,9 @@ def main(global_config, **settings):
     #rutas Volpe 5 iteracion
     config.add_route('lineas_base', '/lineas_base')
     config.add_route('lineas_base_rest', '/lineas_base/{id}')
+    #rutas Volpe 6 iteracion
+    config.add_route('gantt', '/gantt')
+    
     config.scan()
 #    config.scan("views")
 

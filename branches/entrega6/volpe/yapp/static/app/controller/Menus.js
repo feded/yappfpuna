@@ -2,7 +2,7 @@ Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
 	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List', 'esquema.List', 'rol.ABM', 'rol.List', 'tipoItem.List', 'suscripcion.List', 'item.List', 'recurso.ListarRecurso',
-			'linea_base.ABM', 'calculo_impacto.View' ],
+			'linea_base.ABM', 'calculo_impacto.View', 'gantt.View' ],
 	
 	stores : [ 'Proyectos', 'Permisos' ],
 	
@@ -65,6 +65,9 @@ Ext.define('YAPP.controller.Menus', {
 			},
 			'viewport button[action=adminLineasBase]' : {
 				click : this.adminLineasBase
+			},
+			'viewport button[action=verDiagramaGantt]' : {
+				click : this.verDiagramaGantt
 			},
 			'viewport button[action=calculoImpacto]' : {
 				click : this.calculoImpacto
@@ -278,6 +281,17 @@ Ext.define('YAPP.controller.Menus', {
 		var tab = tabs.add({
 			title : 'Calculo de impacto',
 			xtype : 'calculoimpactosview',
+			closable : true
+		});
+		
+		tabs.setActiveTab(tab);
+	},
+	verDiagramaGantt : function(button) {
+		var tabs = Ext.getCmp('tabPrincipal');
+		
+		var tab = tabs.add({
+			title : 'Gantt',
+			xtype : 'ganttview',
 			closable : true
 		});
 		

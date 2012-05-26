@@ -81,8 +81,10 @@ Ext.define('YAPP.view.Viewport', {
 				action : 'adminUnidadTrabajo'
 			
 			}, {
-				text : 'Suscripciones',
-				textAlign : 'left'
+				xtype : 'button',
+				text : 'Diagrama de Gantt',
+				textAlign : 'left',
+				action : 'verDiagramaGantt'
 			
 			}, {
 				xtype : 'button',
