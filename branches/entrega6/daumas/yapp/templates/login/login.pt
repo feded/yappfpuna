@@ -1,0 +1,15 @@
+<html>
+<head>
+	<title>YAPP </title>
+	<link rel="stylesheet" type="text/css" href="/static/extjs/resources/css/ext-all.css">
+	<link rel="stylesheet" type="text/css" href="/static/extjs/examples/shared/example.css"	>
+    <script type="text/javascript" src="/static/extjs/ext-debug.js"></script>
+    <script type="text/javascript" src="/static/extjs/examples/shared/examples.js"></script>
+    <script type="text/javascript" src="/static/login/login.js"></script>
+      <!-- DIAGRAMA DE GANTT -->
+    <script type="text/javascript" src="/static/jsgantt.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/jsgantt.css">
+</head>
+<body>
+</body>
+</html>
