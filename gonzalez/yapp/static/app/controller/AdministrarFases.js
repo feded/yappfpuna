@@ -121,8 +121,14 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		
 //		console.log (tipoFase);
 		var storeTipoFase = win.getStore();
-		storeTipoFase.insert(0, tipoFase);
-		Ext.example.msg("YAPP", "La fase " + fase.data._nombre +" soporta el tipo de ítem " + tipo.data._nombre);
+		var existe = storeTipoFase.findExact('_tipo', tipo.data.id);
+		if(existe == -1){
+			storeTipoFase.insert(0, tipoFase);
+			Ext.example.msg("YAPP", "La fase " + fase.data._nombre +" soporta el tipo de ítem " + tipo.data._nombre);	
+		}else{
+			Ext.example.msg("YAPP", "La fase ya soporta ese tipo de ítem");
+		}
+		
 		
 	},
 	
@@ -131,7 +137,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		var storeTipoFase = win.getStore()
-		Ext.example.msg("YAPP", "La fase no soporta mas el tipo de ítem " + selection.data._nombre);
+		Ext.example.msg("YAPP", "Operación exitosa");
 		storeTipoFase.remove(selection)
 //		Ext.example.msg("YAPP", "La fase no soporta mas el tipo de ítem " + selection.data._nombre);
 	},

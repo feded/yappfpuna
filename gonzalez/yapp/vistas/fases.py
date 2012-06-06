@@ -188,7 +188,7 @@ def obtener_crear_tipofase(request):
         lista = [];
         p = Pickler()
         for entidad in entidades:
-            a = TipoFaseLindos(entidad._id, entidad._fase, entidad._tipo,entidad._tipo._nombre)
+            a = TipoFaseLindos(entidad._id, entidad._fase._id, entidad._tipo._id,entidad._tipo._nombre)
             lista.append(p.flatten(a))    
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'tipofase':j_string})
