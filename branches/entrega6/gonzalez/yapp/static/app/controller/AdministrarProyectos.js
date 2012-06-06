@@ -110,6 +110,7 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		record.data.autor_nombre = cb1.getRawValue();
 		record.data.lider_nombre = cb2.getRawValue();
 		win.close();
+		Ext.example.msg("YAPP", "Cambios guardados correctamente");
 	},
 	
 	guardarNuevoProyecto: function(button){
@@ -123,6 +124,7 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		record.set('lider_nombre',record.data._lider);
 		win.close();
 		this.getProyectosStore().insert(0, record);
+		Ext.example.msg("YAPP", "Proyecto creado con éxito");
 	}
 	
 });
