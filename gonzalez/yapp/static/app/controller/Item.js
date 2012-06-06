@@ -46,19 +46,20 @@ Ext.define('YAPP.controller.Item', {
 	},
 	
 	changeProyecto : function(object, newValue, oldValue, eOpts) {
-		var combo = this.getComboFase();
-		var store = this.getFasesStore();
-		if (object.getValue() == '') {
-			return;
-		}
-		proyectoId = object.getValue();
-		// combo.clearValue();
-		combo.store = store;
-		store.load({
-			params : {
-				id : object.getValue()
-			}
-		});
+//		esta mal, el ComboFase no necesariamente esta visible
+//		var combo = this.getComboFase();
+//		var store = this.getFasesStore();
+//		if (object.getValue() == '') {
+//			return;
+//		}
+//		proyectoId = object.getValue();
+//		// combo.clearValue();
+//		combo.store = store;
+//		store.load({
+//			params : {
+//				id : object.getValue()
+//			}
+//		});
 		// this.getEntidadesPadresStore().load();
 		// object.store = this.getEntidadesPadresStore()
 	},

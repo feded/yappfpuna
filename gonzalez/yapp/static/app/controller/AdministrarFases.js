@@ -5,7 +5,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		'fase.ListarFase', 'fase.NuevaFase', 'fase.NuevoAtributoFase', 'fase.ListarAtributoFase',
 		'fase.NuevoAtributoFase', 'fase.EditarAtributoFase', 'fase.ListarTipoFase', 'fase.EditarFase'
 		],
-	stores:['Fases', 'AtributoFase'],
+	stores:['Fases', 'AtributoFase', 'TipoFase'],
 	models:['Fase', 'AtributoFase'],
 	
 	refs: [	{
@@ -41,9 +41,9 @@ Ext.define('YAPP.controller.AdministrarFases', {
             		click: this.guardarNuevaFase
             	},
             	
-            	'listarfase button[action=atributo]': {
-            		click: this.Atributo
-            	},
+//            	'listarfase button[action=atributo]': {
+//            		click: this.Atributo
+//            	},
             	
             	'listarfase button[action=borrar]': {
             		click: this.borrarFase
@@ -71,11 +71,12 @@ Ext.define('YAPP.controller.AdministrarFases', {
             	'editaratributofase button[action=guardar]': {
             		click: this.guardarEditarAtributoFase
             	},
-            	'listarfase button[action=tipo]': {
-            		click: this.Tipo
-            	},
+//            	'listarfase button[action=tipo]': {
+//            		click: this.Tipo
+//            	},
             	'listarfase': {
-            		itemdblclick: this.editarFase
+            		itemdblclick: this.editarFase,
+            		itemclick : this.faseListSelectChange
             	},
             	'editarfase button[action=guardar]': {
             		click: this.guardarEditarFase
@@ -121,7 +122,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 //		console.log (tipoFase);
 		var storeTipoFase = win.getStore();
 		storeTipoFase.insert(0, tipoFase);
-		
+		Ext.example.msg("YAPP", "La fase " + fase.data._nombre +" soporta el tipo de ítem " + tipo.data._nombre);
 		
 	},
 	
@@ -130,10 +131,34 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		var storeTipoFase = win.getStore()
-		storeTipoFase.remove(selection)	
+		Ext.example.msg("YAPP", "La fase no soporta mas el tipo de ítem " + selection.data._nombre);
+		storeTipoFase.remove(selection)
+//		Ext.example.msg("YAPP", "La fase no soporta mas el tipo de ítem " + selection.data._nombre);
 	},
 	
-	
+	faseListSelectChange : function(grid, record) {
+//		var store = this.getRolPrivilegiosStore();
+//		store.load({
+//			params : {
+//				id : record.get('id')
+//			}
+//		});
+		
+		var store = this.getStore('AtributoFase');
+		store.load({
+			params: {
+				id : record.get('id')
+			}
+		});
+		
+		var store2 = this.getStore('TipoFase');
+		store2.load({
+			params: {
+				id : record.get('id')
+			}
+		});
+		
+	},
 	
 	crearFase: function(button){
 		var view = Ext.widget('nuevafase');
@@ -166,51 +191,51 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		view.down('form').loadRecord(atributofase);
 	},
 	
-	Atributo: function(button){
-		var win = button.up('grid');
-		var grilla = win.down('gridview')
-		var selection = grilla.getSelectionModel().getSelection()[0];
-		
-		
-		var store = this.getStore('AtributoFase');
-		store.load({
-			params: {
-				id : selection.data.id
-			}
-		});
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar atributos fases',
-			xtype : 'listaratributofase',
-			closable : true
-		});
-
-		tabs.setActiveTab(tab);
-	},
+//	Atributo: function(button){
+//		var win = button.up('grid');
+//		var grilla = win.down('gridview')
+//		var selection = grilla.getSelectionModel().getSelection()[0];
+//		
+//		
+//		var store = this.getStore('AtributoFase');
+//		store.load({
+//			params: {
+//				id : selection.data.id
+//			}
+//		});
+//		var tabs = Ext.getCmp('tabPrincipal');
+//		
+//		var tab = tabs.add({
+//			title : 'Administrar atributos fases',
+//			xtype : 'listaratributofase',
+//			closable : true
+//		});
+//
+//		tabs.setActiveTab(tab);
+//	},
 	
-	Tipo: function(button){
-		var win = button.up('grid');
-		var grilla = win.down('gridview')
-		var selection = grilla.getSelectionModel().getSelection()[0];
-		
-		
-		var store = this.getStore('TipoFase');
-		store.load({
-			params: {
-				id : selection.data.id
-			}
-		});
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar tipos fase',
-			xtype : 'listartipofase',
-			closable : true
-		});
-
-		tabs.setActiveTab(tab);
-	},
+//	Tipo: function(button){
+//		var win = button.up('grid');
+//		var grilla = win.down('gridview')
+//		var selection = grilla.getSelectionModel().getSelection()[0];
+//		
+//		
+//		var store = this.getStore('TipoFase');
+//		store.load({
+//			params: {
+//				id : selection.data.id
+//			}
+//		});
+//		var tabs = Ext.getCmp('tabPrincipal');
+//		
+//		var tab = tabs.add({
+//			title : 'Administrar tipos fase',
+//			xtype : 'listartipofase',
+//			closable : true
+//		});
+//
+//		tabs.setActiveTab(tab);
+//	},
 	
 	guardarNuevaFase: function(button){
 		var win = button.up('window');
@@ -219,7 +244,11 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var values = form.getValues();
 		record.set(values);	
 		win.close();
+//		fases = this.getFasesStore();
 		this.getFasesStore().insert(0, record);
+//		fases.insert(fases.getTotalCount(), record);
+		this.getStore('Fases').sort('_orden', 'ASC');
+		Ext.example.msg("YAPP", "Fase creada con éxito");
 //		this.getAtributoFaseStore().sync();
 	},
 	
@@ -231,6 +260,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		record.set(values);	
 		win.close();
 		this.getAtributoFaseStore().insert(0, record);
+		Ext.example.msg("YAPP", "Atributo de fase creado con éxito");
 	},
 	
 	borrarFase: function(button) {
@@ -245,6 +275,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		this.getAtributoFaseStore().remove(selection)
+		Ext.example.msg("YAPP", "Atributo de fase eliminado con éxito");
 	},
 	editarAtributoFase: function(grid, record){
 		var view = Ext.widget('editaratributofase');
@@ -272,6 +303,8 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var values = form.getValues();
 		record.set(values);
 		win.close();
+		this.getStore('Fases').sort('_orden', 'ASC');
+		Ext.example.msg("YAPP", "Cambios guardados correctamente");
 	},
 	
 });

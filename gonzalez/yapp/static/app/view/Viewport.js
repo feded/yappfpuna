@@ -10,13 +10,22 @@ Ext.define('YAPP.view.Viewport', {
 		}, {
 			region : 'east',
 			rbar : [ {
-				xtype : 'combobox',
-				fieldLabel : 'Proyecto',
-				displayField : '_nombre',
-				queryMode : 'local',
-				valueField : 'id',
-				name : 'proyectos'
-			} ]
+						xtype : 'combobox',
+						fieldLabel : 'Proyecto',
+						displayField : '_nombre',
+						queryMode : 'local',
+						valueField : 'id',
+						name : 'proyectos'
+					},
+					{
+						xtype : 'combobox',
+						fieldLabel : 'Fase',
+						displayField : '_nombre',
+						queryMode : 'local',
+						valueField : 'id',
+						name : 'fases'
+					}
+					]
 		}, {
 			region : 'west',
 			lbar : [ {
@@ -39,7 +48,8 @@ Ext.define('YAPP.view.Viewport', {
 				xtype : 'button',
 				text : 'Administrar fases',
 				textAlign : 'left',
-				action : 'adminFases'
+				action : 'adminFases',
+				disabled: true
 			
 			}, {
 				xtype : 'button',

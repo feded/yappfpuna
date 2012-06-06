@@ -2,22 +2,27 @@ Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
 	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List', 'esquema.List', 'rol.ABM', 'rol.List', 'tipoItem.List', 'suscripcion.List', 'item.List', 'recurso.ListarRecurso',
-			'linea_base.ABM', 'calculo_impacto.View' ],
+			'linea_base.ABM', 'calculo_impacto.View', 'fase.ABM' ],
 	
 	stores : [ 'Proyectos', 'Permisos' ],
 	
-	refs : [ {
-		selector : 'viewport combobox[name=proyectos]',
-		ref : 'proyectos'
-	}, {
-		selector : 'viewport button[action=adminRoles]',
-		ref : 'botonRoles'
-	},
-
-	// {
-	// selector: 'viewport toolbar[dock=left]',
-	// ref: 'bar'
-	// }
+	refs : [
+			{
+				selector : 'viewport combobox[name=proyectos]',
+				ref : 'proyectos'
+			},
+			{
+				selector : 'viewport combobox[name=fases]',
+				ref : 'fases'
+			},
+			{
+				selector : 'viewport button[action=adminRoles]',
+				ref : 'botonRoles'
+			},
+			{
+				selector : 'viewport button[action=adminFases]',
+				ref : 'botonFases'
+			}
 	],
 	
 	init : function() {
@@ -27,7 +32,8 @@ Ext.define('YAPP.controller.Menus', {
 				render : this.traerPermiso
 			},
 			'viewport combobox[name=proyectos]' : {
-				afterrender : this.onComboBoxRendered
+				afterrender : this.onComboBoxRendered,
+				select: this.activarFase
 			},
 			
 			'viewport button[action=adminProyectos]' : {
@@ -72,6 +78,24 @@ Ext.define('YAPP.controller.Menus', {
 		});
 	},
 	
+	activarFase: function(combo){
+		this.getBotonFases().setDisabled(false);
+		
+		var store = this.getStore('Fases');
+		store.load({
+			params : {
+				id : combo.getValue()
+			},
+			scope : this,
+			callback : function(records, operation, success) {
+				fases = this.getStore('Fases');
+				this.getFases().store = fases;
+				this.getStore('Fases').sort('_orden', 'ASC');
+			}
+		});
+		
+	},
+	
 	traerPermiso : function() {
 		var permisos = this.getPermisosStore();
 		
@@ -105,8 +129,11 @@ Ext.define('YAPP.controller.Menus', {
 		
 		var tabs = Ext.getCmp('tabPrincipal');
 		
+		
+		
 		var tab = tabs.add({
 			title : 'Administrar proyectos',
+
 			xtype : 'listarproyecto',
 			closable : true
 		});
@@ -120,18 +147,19 @@ Ext.define('YAPP.controller.Menus', {
 		
 		var tab = tabs.add({
 			title : 'Administrar fases',
-			xtype : 'listarfase',
+//			xtype : 'listarfase',
+			xtype : 'faseabm',
 			closable : true
 		});
 		
-		var combobox = this.getProyectos();
-		
-		var store = this.getStore('Fases');
-		store.load({
-			params : {
-				id : combobox.getValue()
-			}
-		});
+//		var combobox = this.getProyectos();
+//		
+//		var store = this.getStore('Fases');
+//		store.load({
+//			params : {
+//				id : combobox.getValue()
+//			}
+//		});
 		
 		tabs.setActiveTab(tab);
 		
