@@ -16,7 +16,7 @@ class TipoItem (Base, EntidadBase):
     __tablename__ = "tipo_item"
     _nombre = Column(String, nullable=True)
     _comentario = Column(String, nullable=True)
-    _color = Column(Integer, nullable=False)
+    _color = Column(String, nullable=False)
     _prefijo = Column(String, nullable=False)
     _condicionado = Column(Boolean)
     

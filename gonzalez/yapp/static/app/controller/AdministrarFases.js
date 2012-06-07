@@ -3,7 +3,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	
 	views: [
 		'fase.ListarFase', 'fase.NuevaFase', 'fase.NuevoAtributoFase', 'fase.ListarAtributoFase',
-		'fase.NuevoAtributoFase', 'fase.EditarAtributoFase', 'fase.ListarTipoFase', 'fase.EditarFase'
+		'fase.NuevoAtributoFase', 'fase.EditarAtributoFase', 'fase.ListarTipoFase', 'fase.EditarFase', 'tipoItem.Edit'
 		],
 	stores:['Fases', 'AtributoFase', 'TipoFase'],
 	models:['Fase', 'AtributoFase'],
@@ -23,7 +23,11 @@ Ext.define('YAPP.controller.AdministrarFases', {
 			{
     			selector: 'nuevafase textfield[name=_color]',
     			ref: 'colorTextoNuevo'
-			}
+			},
+			{
+    			selector: 'listartipofase combobox',
+    			ref: 'comboTipoItem'
+			},
 	],
 		
 	init:function(){
@@ -94,10 +98,18 @@ Ext.define('YAPP.controller.AdministrarFases', {
             	},
             	'nuevafase colorpicker': {
             		select: this.seleccionoColorNuevo
-            	}
+            	},
+            	'tipoItemedit button[action=guardar]': {
+                	click: this.cambioTipoItem
+            },
+            	
             	
         });
-	},	
+	},
+	
+	cambioTipoItem: function(){
+		
+	},
 	
 	seleccionoColorEditar: function(picker, selColor){
 		var texto = selColor;
