@@ -12,10 +12,11 @@ Ext.define('YAPP.view.fase.ListarTipoFase' ,{
                                 			{
                                 				xtype: 'combobox',
                                 				fieldLabel: 'Tipo items',
-    											store: Ext.create('YAPP.store.TipoItems'),
+//    											store: Ext.create('YAPP.store.TipoItems'),
     											displayField: '_nombre',
     											queryMode : 'local',
     											valueField: 'id',
+    											name: 'tipoItems'
                                 		   },
                         					{
                                 	        	xtype: 'button',

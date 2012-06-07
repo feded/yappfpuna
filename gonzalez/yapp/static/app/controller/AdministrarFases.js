@@ -28,6 +28,9 @@ Ext.define('YAPP.controller.AdministrarFases', {
     			selector: 'listartipofase combobox',
     			ref: 'comboTipoItem'
 			},
+
+			
+
 	],
 		
 	init:function(){
@@ -99,16 +102,21 @@ Ext.define('YAPP.controller.AdministrarFases', {
             	'nuevafase colorpicker': {
             		select: this.seleccionoColorNuevo
             	},
-            	'tipoItemedit button[action=guardar]': {
-                	click: this.cambioTipoItem
-            },
+//            	'tipoItemedit button[action=guardar]': {
+//                	click: this.cambioTipoItem
+//            	},
+
+				'listartipofase combobox[name=tipoItems]' : {
+					afterrender : this.actualizarTipoItems
+				},
             	
             	
         });
 	},
 	
-	cambioTipoItem: function(){
-		
+	actualizarTipoItems: function(){
+		var tipos = this.getStore('TipoItems');
+		this.getComboTipoItem().store = tipos;
 	},
 	
 	seleccionoColorEditar: function(picker, selColor){
