@@ -16,7 +16,15 @@ Ext.define('YAPP.view.Viewport', {
 				queryMode : 'local',
 				valueField : 'id',
 				name : 'proyectos'
-			} ]
+			},
+			{
+                xtype : 'combobox',
+               	fieldLabel : 'Fase',
+                displayField : '_nombre',
+                queryMode : 'local',
+                valueField : 'id',
+                name : 'fases'
+            } ]
 		}, {
 			region : 'west',
 			lbar : [ {
@@ -57,7 +65,8 @@ Ext.define('YAPP.view.Viewport', {
 				text : 'Administrar items',
 				textAlign : 'left',
 				xtype : 'button',
-				action : 'adminItems'
+				action : 'adminItems',
+				disabled: true
 			
 			}, {
 				text : 'Administrar suscripciones',
