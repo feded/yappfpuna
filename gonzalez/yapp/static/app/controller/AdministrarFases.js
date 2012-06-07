@@ -15,6 +15,14 @@ Ext.define('YAPP.controller.AdministrarFases', {
 			{
     			selector: 'viewport combobox[name=proyectos]',
     			ref: 'proyectos'
+			},
+			{
+    			selector: 'editarfase textfield[name=_color]',
+    			ref: 'colorTextoEditar'
+			},
+			{
+    			selector: 'nuevafase textfield[name=_color]',
+    			ref: 'colorTextoNuevo'
 			}
 	],
 		
@@ -80,10 +88,27 @@ Ext.define('YAPP.controller.AdministrarFases', {
             	},
             	'editarfase button[action=guardar]': {
             		click: this.guardarEditarFase
+            	},
+            	'editarfase colorpicker': {
+            		select: this.seleccionoColorEditar
+            	},
+            	'nuevafase colorpicker': {
+            		select: this.seleccionoColorNuevo
             	}
             	
         });
 	},	
+	
+	seleccionoColorEditar: function(picker, selColor){
+		var texto = selColor;
+		this.getColorTextoEditar().setValue(texto);
+	},
+	
+	seleccionoColorNuevo: function(picker, selColor){
+		var texto = selColor;
+		this.getColorTextoNuevo().setValue(texto);
+	},
+	
 	
 //	actualizarFase: function(){
 //		console.log('Actualizando Fase');
@@ -248,14 +273,21 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
-		record.set(values);	
-		win.close();
+		record.set(values);
 //		fases = this.getFasesStore();
-		this.getFasesStore().insert(0, record);
+		var storeFases = this.getFasesStore();
+		var existe = storeFases.findExact('_orden', values._orden);
+		if(existe == -1){
+			this.getFasesStore().insert(0, record);
+			this.getStore('Fases').sort('_orden', 'ASC');
+			Ext.example.msg("YAPP", "Fase creada con éxito");
+			win.close();
+		}
+		else{
+			Ext.example.msg("YAPP", "Existe ya una fase con ese orden");
+		}
+		
 //		fases.insert(fases.getTotalCount(), record);
-		this.getStore('Fases').sort('_orden', 'ASC');
-		Ext.example.msg("YAPP", "Fase creada con éxito");
-//		this.getAtributoFaseStore().sync();
 	},
 	
 	guardarNuevoAtributoFase: function(button){
@@ -307,10 +339,29 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
-		record.set(values);
-		win.close();
-		this.getStore('Fases').sort('_orden', 'ASC');
-		Ext.example.msg("YAPP", "Cambios guardados correctamente");
+		
+		var storeFases = this.getFasesStore();
+		var existe = storeFases.findExact('_orden', values._orden);
+		if(existe == -1){
+			record.set(values);
+			this.getStore('Fases').sort('_orden', 'ASC');
+			Ext.example.msg("YAPP", "Cambios guardados correctamente");
+			win.close();
+		}else{
+			var fase = storeFases.getAt(existe);
+			if(fase.data.id == record.data.id)
+			{
+				record.set(values);
+				this.getStore('Fases').sort('_orden', 'ASC');
+				Ext.example.msg("YAPP", "Cambios guardados correctamente");
+				win.close();
+			}
+			else{
+				Ext.example.msg("YAPP", "Existe ya una fase con ese orden");	
+			}
+		}
+		
+		
 	},
 	
 });
