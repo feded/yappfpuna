@@ -11,6 +11,14 @@ Ext.define('YAPP.controller.TipoItem', {
 	stores:['TipoItems' , 'AtributoTipoItem' ],
 	models:['TipoItem' , 'AtributoTipoItem' ],
 	
+	refs: 	[
+				{
+    				selector: 'tipoItemedit textfield[name=_color]',
+    				ref: 'colorTexto'
+				}
+			],
+	
+	
 	init:function(){
 		console.log('Cargado controller tipoItem');
 		this.control({
@@ -43,9 +51,18 @@ Ext.define('YAPP.controller.TipoItem', {
 			},
 			'atributosList button[action=borrar]':{
 				click: this.borrarAtributo
-			}
+			},
+			
+			'tipoItemedit colorpicker': {
+        		select: this.seleccionoColor
+            }
 
         });
+	},
+	
+	seleccionoColor: function(picker, selColor){
+		var texto = selColor;
+		this.getColorTexto().setValue(texto);
 	},
 	
 	verAtributos : function(grid, view, recordIndex, cellIndex, item, e){
