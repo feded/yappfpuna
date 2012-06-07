@@ -1,11 +1,11 @@
-Ext.define('YAPP.store.Item', {
+Ext.define('YAPP.store.ItemUnidad', {
 	extend : 'Ext.data.Store',
-	model : 'YAPP.model.Item',
+	model : 'YAPP.model.ItemUnidad',
 	//autoLoad: true,
 	//autoSync: true,
 	proxy : {	
 		type: 'rest',
-		url: '/item',
+		url: '/unidadItem',
 		reader : ({
 			type : 'json',
 			root : 'lista',

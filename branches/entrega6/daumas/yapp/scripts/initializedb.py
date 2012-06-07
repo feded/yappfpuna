@@ -35,7 +35,7 @@ import yapp.models.fase.fase
 import yapp.models.fase.fase
 import yapp.models.fase.tipo_fase
 import yapp.models.item.item
-import yapp.models.item.padre_item
+import yapp.models.item.item_unidad_trabajo
 import yapp.models.proyecto.proyecto
 import yapp.models.recurso.recurso
 import yapp.models.recurso.recurso_bien
