@@ -1,9 +1,8 @@
 Ext.define('YAPP.controller.Roles', {
 	extend : 'Ext.app.Controller',
-	views : [ 'rol.ABM', 'rol.List', 'rol.Edit', 'rol_privilegio.List', 'rol_privilegio.Edit' ],
+	views : [ 'rol.ABM', 'rol.List', 'rol.Edit', 'rol_privilegio.List', 'rol_privilegio.Edit', 'rol_permiso.List' ],
 	models : [ 'Rol' ],
-	stores : [ 'Roles', 'RolPrivilegios', 'EntidadesPadres' ],
-	requires : [ 'YAPP.model.Rol', 'YAPP.store.Roles' ],
+	stores : [ 'Roles', 'RolEstados', 'RolPrivilegios', 'EntidadesPadres', 'RolPermisos', 'Permisos' ],
 	refs : [ {
 		selector : 'rolprivilegioedit combobox[name=_entidad_padre]',
 		ref : 'comboEntidadPadre'
@@ -13,12 +12,34 @@ Ext.define('YAPP.controller.Roles', {
 	}, {
 		selector : 'rollist',
 		ref : 'grillaRol'
+	}, {
+		selector : 'rolpermisolist combobox[name=_permiso]',
+		ref : 'comboPermiso'
+	}, {
+		selector : 'rolpermisolist',
+		ref : 'grillaPermiso'
+	}, {
+		selector : 'roledit combobox[name=_estado]',
+		ref : 'comboEstadoRol'
+	}, {
+		selector : 'roledit container[name=gridDragAndDrop]',
+		ref : 'containerGrids'
+	}, {
+		selector : 'roledit grid[name=aHeredar]',
+		ref : 'gridAHeredar'
+	}, {
+		selector : 'roledit grid[name=heredados]',
+		ref : 'gridHeredados'
+	}, {
+		selector : 'roledit fieldset[name=form_final]',
+		ref : 'formFinal'
 	} ],
 	init : function() {
 		this.control({
 			'rollist' : {
 				itemdblclick : this.editUser,
-				itemclick : this.rolListSelectChange
+				itemclick : this.rolListSelectChange,
+				render : this.onRender,
 			},
 			'rollist button[action=crear]' : {
 				click : this.botonCrearApretado
@@ -44,10 +65,79 @@ Ext.define('YAPP.controller.Roles', {
 			},
 			'rolprivilegioedit button[action=guardar]' : {
 				click : this.botonPrivilegioRolGuardarClick
+			},
+			// PERMISOS
+			'rolpermisolist button[action=crear]' : {
+				click : this.agregarPermiso
+			},
+			'rolpermisolist button[action=borrar]' : {
+				click : this.borrarPermiso
+			},
+			'rolpermisoslist' : {
+				afterrender : this.afterRenderRolPermiso
 			}
 		});
 	},
-	// SECCION DE PRIVILEGIOS
+	// /////////////////// //
+	// SECCION DE PERMISOS //
+	// /////////////////// //
+	borrarPermiso : function(butto) {
+		var permiso = this.getGrillaPermiso().getSelectionModel().getSelection()[0];
+		var store = this.getRolPermisosStore();
+		permiso.destroy({
+			success : function(permiso_eliminado) {
+				Ext.example.msg("Rol", "Privilegio eliminado con exito");
+				store.remove(permiso);
+			},
+			failure : function(permiso_eliminado) {
+				alert("No se pudo eliminar el privilegio");
+			}
+		});
+	},
+	agregarPermiso : function(button) {
+		var rol = this.getGrillaRol().getSelectionModel().getSelection()[0];
+		if (rol == null) {
+			Ext.example.msg("Roles", "Seleccione un rol primero");
+			return;
+		}
+		var combo = this.getComboPermiso();
+		var permiso = combo.getValue();
+		
+		var permisos_store = this.getRolPermisosStore();
+		var permiso_existente = permisos_store.findBy(function f(record, id) {
+			if (record.data._permiso._id == permiso) {
+				return true;
+			}
+			return false;
+		});
+		if (permiso_existente != -1) {
+			Ext.example.msg("Roles", "El rol ya tiene ese permiso");
+			return;
+		}
+		var rol_permiso = new YAPP.model.RolPermiso();
+		rol_permiso.data._rol = rol.data.id;
+		rol_permiso.data._permiso = permiso;
+		
+		rol_permiso.save({
+			success : function(rol_permiso) {
+				console.log(rol_permiso);
+				permisos_store.insert(0, rol_permiso);
+				Ext.example.msg("Roles", "Permiso agregado con exito");
+			},
+			failure : function(rol_permiso) {
+				alert("No se pudo asignar el permiso al rol");
+			}
+		});
+	},
+	
+	afterRenderRolPermiso : function(button) {
+		// var combo = this.getComboPermiso();
+		// combo.store = this.getPermisosStore();
+		
+	},
+	// ////////////////////// //
+	// SECCION DE PRIVILEGIOS //
+	// ////////////////////// //
 	botonAgregarPrivilegioClick : function(button) {
 		var rol_privilegio = new YAPP.model.RolPrivilegio();
 		var grilla = this.getGrillaRol();
@@ -91,7 +181,6 @@ Ext.define('YAPP.controller.Roles', {
 	},
 	
 	comboRolPrivilegioEntidadCambiado : function(combo, newValue, oldValue, eOpts) {
-		console.log("ME LLAMARON");
 		var store = combo.getStore();
 		var record = store.findRecord('id', combo.getValue());
 		if (record != null) {
@@ -121,7 +210,17 @@ Ext.define('YAPP.controller.Roles', {
 		if (entidad_padre == '' && entidad != '') {
 			this.cargarStoreEntidadPadre(entidad._id);
 		}
-	},
+	},ontainer : {
+		xtype : 'container',
+		width : 650,
+		name : 'gridDragAndDrop',
+		height : 300,
+		layout : {
+			type : 'hbox',
+			align : 'stretch',
+			padding : 5
+		},
+		defaults : {
 	
 	resetearCombo : function(combo) {
 		combo.reset();
@@ -144,7 +243,13 @@ Ext.define('YAPP.controller.Roles', {
 		});
 	},
 	
-	// SECCION DE ROLES
+	// //////////////// //
+	// SECCION DE ROLES //
+	// //////////////// //
+	onRender : function() {
+		this.getRolesStore().load();
+	},
+	
 	rolListSelectChange : function(grid, record) {
 		var store = this.getRolPrivilegiosStore();
 		store.load({
@@ -152,9 +257,15 @@ Ext.define('YAPP.controller.Roles', {
 				id : record.get('id')
 			}
 		});
+		
+		var permisosStore = this.getRolPermisosStore();
+		permisosStore.load({
+			params : {
+				id : record.get('id')
+			}
+		})
 	},
 	editUser : function(grid, record) {
-		// console.log('Double clicked on ' + record.get('_nombre'));
 		record.data.accion = 'PUT'
 		this.ventanaRol(record);
 	},
@@ -165,10 +276,32 @@ Ext.define('YAPP.controller.Roles', {
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);
-		console.log(record)
-		win.close();
-		if (record.data.accion == "POST")
-			this.getRolesStore().insert(0, record);
+		
+		var accion = record.data.accion;
+		
+		var items = this.getGridHeredados().getStore().getRange();
+		console.log(items)
+		var itemsDTO = new Array();
+		for ( var i in items) {
+			itemsDTO[i] = items[i].data.id;
+		}
+		record.data._padres = itemsDTO;
+		
+		var store = this.getRolesStore()
+		record.save({
+			success : function(rol) {
+				if (accion == 'POST') {
+					store.insert(0, rol);
+				}
+				Ext.example.msg("Rol", "Guardado con exito");
+				win.close();
+			},
+			failure : function(rol) {
+				alert("No se pudo guardar el rol");
+			}
+		});
+		// if (record.data.accion == "POST")
+		// this.getRolesStore().insert(0, record);
 	},
 	botonCrearApretado : function(button) {
 		var rol = new YAPP.model.Rol();
@@ -183,13 +316,133 @@ Ext.define('YAPP.controller.Roles', {
 			alert("No se puede eliminar el administrador")
 			return;
 		}
-		console.log(selection)
-		this.getRolesStore().remove(selection)
+		
+		store = this.getRolesStore();
+		selection.destroy({
+			success : function(rol) {
+				store.remove(selection);
+				Ext.example.msg("Rol", "Eliminado con exito");
+			},
+			failure : function(rol) {
+				alert("No se pudo guardar el rol");
+			}
+		});
 	},
 	
 	ventanaRol : function(record) {
+		fieldSetRolFinalColapsado = true;
+		if (record.get('_esFinal') == true && record.get('id') != 0)
+			fieldSetRolFinalColapsado = false
+
 		var view = Ext.widget('roledit');
-		if (record != null)
+		
+		var combo = this.getComboEstadoRol()
+		combo.store = this.getRolEstadosStore();
+		
+		var container = this.getContainerGrids();
+		container.add({
+			xtype : 'gridpanel',
+			name : 'aHeredar',
+			store : Ext.create("YAPP.store.Roles"),
+			height : 100,
+			viewConfig : {
+				plugins : {
+					ptype : 'gridviewdragdrop',
+					dragGroup : 'rolesHereadosGrupo',
+					dropGroup : 'rolesAHeredarGrupo'
+				}
+			},
+			columns : columnasDeRol,
+			// stripeRows : true,
+			title : 'Roles disponibles',
+			margins : '0 0 0 3'
+		});
+		
+		container.add({
+			xtype : 'gridpanel',
+			name : 'heredados',
+			height : 100,
+			viewConfig : {
+				plugins : {
+					ptype : 'gridviewdragdrop',
+					dragGroup : 'rolesAHeredarGrupo',
+					dropGroup : 'rolesHereadosGrupo'
+				}
+			},
+			columns : columnasDeRol,
+			// stripeRows : true,
+			title : 'Heredados',
+			margins : '0 0 0 3'
+		});
+		var firstGrid = this.getGridAHeredar();
+		var secondGrid = this.getGridHeredados();
+		firstGrid.getStore().autoSync = false;
+		firstGrid.getStore().load({
+			params : {
+				id : record.get('id'),
+				disponibles : "SI"
+			}
+		})
+
+		this.getRolesStore().each(function f(record) {
+			firstGrid.getStore().add(record);
+		})
+		secondGrid.getStore().removeAll();
+		if (record.get('id') != 0) {
+			record.data._padres.forEach(function f(dato) {
+				secondGrid.getStore().add(deDataAModelRol(dato))
+			})
+		}
+		
+		if (record != null) {
 			view.down('form').loadRecord(record);
+			var form = this.getFormFinal();
+			form.setExpanded(!fieldSetRolFinalColapsado);
+		}
 	}
 });
+
+function deDataAModelRol(dato) {
+	console.log(dato)
+	var rol = new YAPP.model.Rol();
+	rol.data.id = dato._id;
+	rol.data._nombre = dato._nombre;
+	rol.data._estado = dato._estado;
+	rol.data._esFinal = dato._esFinal;
+	console.log(rol)
+	return rol;
+}
+
+var fieldSetRolFinalColapsado;
+
+var columnasDeRol = [ {
+	text : 'Nombre',
+	flex : 1,
+	sortable : true,
+	dataIndex : '_nombre'
+}, {
+	header : 'Estado',
+	flex : 1,
+	sortable : true,
+	dataIndex : '_estado',
+	renderer : renderizador_estado_rol,
+	field : {
+		type : 'textfield'
+	}
+}, {
+	header : 'Final',
+	width : 40,
+	flex : 0,
+	sortable : true,
+	dataIndex : '_esFinal'
+} ];
+
+function renderizador_estado_rol(val) {
+	if (val == null)
+		return val;
+	if (val._estado == null)
+		return val
+	return val._estado
+	// return ""
+};
+

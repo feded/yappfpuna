@@ -15,5 +15,5 @@ class RolEstado (Base, EntidadBase):
         
 class RolEstadoDTO ():
     def __init__(self, estado):
-        self._id = estado._id,
+        self._id = estado._id
         self._estado = estado._estado;

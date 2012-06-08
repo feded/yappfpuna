@@ -3,8 +3,8 @@ from sqlalchemy.orm import relation, backref
 from sqlalchemy.schema import ForeignKey
 from yapp.models import Base
 from yapp.models.entidad_base import EntidadBase
-from yapp.models.roles.permisos import Permisos
-from yapp.models.roles.rol import Rol
+from yapp.models.roles.permisos import Permisos, PermisoDTO
+from yapp.models.roles.rol import Rol, RolDTO
 
 class PermisosRoles (Base, EntidadBase):
     __tablename__ = "permisos_roles"
@@ -16,3 +16,9 @@ class PermisosRoles (Base, EntidadBase):
     def __init__(self, permiso,rol):
         self._permiso = permiso;
         self._rol = rol;
+        
+class PermisoRolDTO:
+    def __init__(self, permiso_rol):
+        self._permiso = PermisoDTO(permiso_rol._permiso);
+        self._rol = RolDTO(permiso_rol._rol);
+        self._id = permiso_rol._id;

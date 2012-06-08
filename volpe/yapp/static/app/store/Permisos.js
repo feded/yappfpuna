@@ -3,7 +3,6 @@ Ext.define('YAPP.store.Permisos', {
 	model: 'YAPP.model.Permiso',
 	
 	autoLoad : false,
-    autoSync: true,
 
         
 	proxy : {

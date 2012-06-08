@@ -38,7 +38,7 @@ Ext.define('YAPP.view.privilegio.Edit', {
 					typeAhead : true,
 					queryMode : 'local',
 					emptyText : 'Seleccione una entidad...',
-//					store : Ext.create('YAPP.store.EntidadesPadres')
+				// store : Ext.create('YAPP.store.EntidadesPadres')
 				} ]
 			} ]
 		} ];
