@@ -11,7 +11,8 @@ from pyramid.security import forget
 from pyramid.view import view_config
 from yapp.daos.rol_dao import RolEstadoDAO, RolDAO
 from yapp.daos.rol_final_dao import RolFinalDAO
-from yapp.models.roles.rol import Rol, RolDTO
+from yapp.daos.rol_rol_dao import RolRolDAO
+from yapp.models.roles.rol import Rol, RolDTO, RolRol
 from yapp.models.roles.rol_estado import RolEstado, RolEstadoDTO
 from yapp.models.roles.rol_final import RolFinal
 import json
@@ -45,6 +46,8 @@ def get_roles(request):
     """
 #    print request.json_body;
     if (request.method == 'GET'):
+        if (request.GET.get('disponibles')):
+            return getPadresDisponibles(request)
         rd = RolDAO(request)
         entidades = rd.get_all()
         lista = [];
@@ -78,9 +81,21 @@ def get_roles(request):
             else:
                 nueva_entidad = Rol(entidad["_nombre"], estado)
                 dao = RolDAO(request)
+                
+            
             dao.crear(nueva_entidad);
-            p = Pickler()
-            aRet = p.flatten(nueva_entidad)
+            
+            rr_dao = RolRolDAO(request)
+            padres = []
+            for padre_id in entidad["_padres"]:
+                rolrol = RolRol(nueva_entidad._id, padre_id)
+                rr_dao.crear(rolrol)
+                padres.append(rolrol)
+            nueva_entidad._padres = padres;    
+            
+            p = Pickler(False, None)
+            rolDTO = RolDTO(nueva_entidad)
+            aRet = p.flatten(rolDTO)
             p.flatten(entidad)
             return Response(json.dumps({'sucess': 'true', 'users':aRet}))
     if (request.method == 'DELETE'):
@@ -106,6 +121,15 @@ def get_roles(request):
         rolFinalDAO = RolFinalDAO(request);
         vieja = rolDAO.get_by_id(entidad["id"]);
         p = Pickler()
+        
+        rr_dao = RolRolDAO(request)
+        padres = []
+        for padre_id in entidad["_padres"]:
+            rolrol = RolRol(nueva_entidad._id, padre_id)
+            rr_dao.crear(rolrol)
+            padres.append(rolrol)
+        nueva_entidad._padres = padres;
+            
         
         if (isinstance(vieja, RolFinal)):
             if (entidad["_esFinal"] == True):
@@ -160,4 +184,78 @@ def get_estado_roles(request):
 #    print a_ret
     return Response(a_ret)
         
+def getPadresDisponibles(request):
+    
+    rol_id = request.GET.get('id')
+    #LO SIGUIENTE ES UNA ABERRACION
+    rol_dao = RolDAO(request)
+    rol_rol_dao = RolRolDAO(request)
+    roles = rol_dao.get_all()
+    baneados = []
+    bandera = True
+    base = None
+    for rol in roles :
+        print rol._id
+        if str(rol._id) == str(rol_id):
+            base = rol
+            baneados.append(base._id)
+            break
+    if base == None:
+        return retornador_de_roles(request, roles)
+    
+    roles.remove(base)
+    relacionados = rol._padres
+    for relacionado in relacionados:
+        baneados.append(relacionado._padre_id)
+    relacionados = rol_rol_dao.get_query().filter(RolRol._padre_id == base._id).all();
+    for relacionado in relacionados:
+        print "--------------"
+        print relacionado._rol_id
+        print "--------------"
+        baneados.append(relacionado._rol_id)
+    baneado = False
+    aBorrar = []
+    
+    while bandera == True:
+        bandera = False
+        for rol in roles:
+            baneado = False
+            for ban in baneados:
+                if rol._id == ban:
+                    baneado = True
+                    break
+            if baneado == True:
+                baneados.append(rol._id)
+#                relacionados = rol._padres
+#                for relacionado in relacionados:
+#                    baneados.append(relacionado._padre_id);
+                relacionados = rol_rol_dao.get_query().filter(RolRol._padre_id == rol._id).all()
+                for relacionado in relacionados:
+                    baneados.append(relacionado._rol_id);
+                aBorrar.append(rol)
+                break
+        for borrado in aBorrar:
+            print "--------------"
+            print "BORRANDO--------------"
+            print borrado._id
+            print "--------------"
+            bandera = True
+            roles.remove(borrado)
+        aBorrar = []
+    return retornador_de_roles(request, roles)
+
+def retornador_de_roles(request, entidades):
+    lista = []
+    p = Pickler(False, None)
+    for entidad in entidades:
+        rol = RolDTO(entidad)
+        if (isinstance(entidad, RolFinal)):
+            rol._esFinal = True;
+            rol._password = entidad._password;
+            rol._email = entidad._email
+        lista.append(p.flatten(rol))
         
+    j_string = p.flatten(lista)
+    a_ret = json.dumps({'sucess': 'true', 'users':j_string})
+    print a_ret
+    return Response(a_ret)   
