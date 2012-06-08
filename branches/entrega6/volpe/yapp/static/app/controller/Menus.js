@@ -4,7 +4,7 @@ Ext.define('YAPP.controller.Menus', {
 	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List', 'esquema.List', 'rol.ABM', 'rol.List', 'tipoItem.List', 'suscripcion.List', 'item.List', 'recurso.ListarRecurso',
 			'linea_base.ABM', 'calculo_impacto.View', 'gantt.View' ],
 	
-	stores : [ 'Proyectos', 'Permisos' ],
+	stores : [ 'Proyectos', 'RolPermisos' ],
 	
 	refs : [ {
 		selector : 'viewport combobox[name=proyectos]',
@@ -12,8 +12,10 @@ Ext.define('YAPP.controller.Menus', {
 	}, {
 		selector : 'viewport button[action=adminRoles]',
 		ref : 'botonRoles'
-	},
-
+	}, {
+		selector : 'viewport',
+		ref : 'viewPort'
+	}
 	// {
 	// selector: 'viewport toolbar[dock=left]',
 	// ref: 'bar'
@@ -76,25 +78,89 @@ Ext.define('YAPP.controller.Menus', {
 	},
 	
 	traerPermiso : function() {
-		var permisos = this.getPermisosStore();
+		var permisos = this.getRolPermisosStore();
 		
 		permisos.load({
 			scope : this,
 			callback : function(records, operation, success) {
-				// //the operation object contains all of the details of the
-				// load operation
-				if (permisos.find('_nombre', 'Roles') == -1) {
-					var boton = this.getBotonRoles();
-					// var bar = this.getBar();
-					boton.hide();
-					// bar.show();
-					// console.log(bar);
-					
-				}
+				this.setearMenuIzquierda(records);
 			}
 		});
 		//    
 		
+	},
+	setearMenuIzquierda : function(records) {
+		var panelDerecha = Ext.getCmp('east');
+		panelDerecha.setVisible(false)
+		// arreglar esto
+		var panel = Ext.getCmp('west');
+		var store = this.getRolPermisosStore();
+		// if (this.tienePermiso(store, "Roles")) {
+		// panel.addDocked({
+		// xtype : 'button',
+		// text : 'Administrar roles',
+		// textAlign : 'left',
+		// action : 'adminRoles'
+		// });
+		// }
+		// if (this.tienePermiso(store, "Privilegios")) {
+		// panel.addDocked({
+		// text : 'Administrar privilegios',
+		// textAlign : 'left',
+		// xtype : 'button',
+		// action : 'adminPrivilegios'
+		// });
+		// }
+		// pruebas genericas
+		var controller = this;
+		store.each(function f(record) {
+			if (!controller.casosEspeciales(record)) {
+				var sNombre = record.data._permiso._nombre;
+				var sAccion = "admin" + sNombre;
+				panel.addDocked({
+					text : sNombre,
+					textAlign : 'left',
+					xtype : 'button',
+					action : sAccion
+				})
+			}
+		})
+
+		panel.addDocked({
+			xtype : 'button',
+			text : 'SALIR',
+			width : '100%',
+			flex : 1,
+			textAlign : 'left',
+			action : 'logout'
+		});
+		
+		panel.add({
+			xtype : 'label',
+			text : '',
+		});
+	},
+	
+	casosEspeciales : function(permiso) {
+		if (permiso.data._permiso._nombre == "Ver costado derecho") {
+			var panel = Ext.getCmp('east');
+			panel.add({
+				xtype : 'label',
+				text : ' '
+			});
+			panel.add({
+				xtype : 'combobox',
+				fieldLabel : 'Proyecto',
+				displayField : '_nombre',
+				queryMode : 'local',
+				valueField : 'id',
+				name : 'proyectos'
+			})
+			panel.setVisible(true);
+			return true;
+		}
+		//falta permiso para abilitar
+		return false;
 	},
 	
 	onComboBoxRendered : function() {

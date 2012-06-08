@@ -1,8 +1,7 @@
 Ext.define('YAPP.store.Roles', {
 	extend : 'Ext.data.Store',
 	model : 'YAPP.model.Rol',
-	autoLoad : true,
-	autoSync : true,
+//	autoSync : true,
 	proxy : {
 		type : 'rest',
 		api : {
