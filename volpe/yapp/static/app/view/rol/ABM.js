@@ -13,6 +13,8 @@ Ext.define('YAPP.view.rol.ABM', {
 			xtype : 'rollist',
 		}, {
 			xtype : 'rolprivilegiolist'
+		}, {
+			xtype : 'rolpermisolist'
 		} ];
 		
 		this.callParent(arguments);
