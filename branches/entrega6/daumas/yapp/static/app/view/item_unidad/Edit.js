@@ -1,7 +1,7 @@
 Ext.define('YAPP.view.item_unidad.Edit', {
     extend: 'Ext.window.Window',
     alias : 'widget.asignarUnidad',
-
+	store : 'ItemUnidad',
     title : 'Asinar Unidad de Trabajo',
     layout: 'fit',
     autoShow: true,
@@ -15,7 +15,7 @@ Ext.define('YAPP.view.item_unidad.Edit', {
             		{
                 		xtype : 'combobox',
 						fieldLabel : 'Unidad de Trbajo',
-						name : '_unidad',
+						name : '_unidad_id',
 						store : Ext.create('YAPP.store.UnidadTrabajo'),
 						displayField : '_nombre',
 						valueField: 'id',
@@ -26,6 +26,8 @@ Ext.define('YAPP.view.item_unidad.Edit', {
             		},
             		{
             			xtype: 'numberfield',
+            			value : 1,
+            			minValue : 1,
             			name: '_cantidad',
     					fieldLabel: 'Cantidad'
             		}	

@@ -20,6 +20,7 @@ Ext.define('YAPP.model.Item', {
     	name : '_antecesor', 
     	type : 'YAPP.model.Item'
     }, 'antecesor_nombre', 'padre_nombre',
+    	'_antecesor_item_id', '_padre_item_id',
     {
     	name : '_padre', 
     	type : 'YAPP.model.Item'

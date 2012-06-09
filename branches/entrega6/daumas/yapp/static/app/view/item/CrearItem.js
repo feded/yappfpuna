@@ -14,6 +14,9 @@ Ext.define('YAPP.view.item.CrearItem', {
 				columns : 2,
 				padding: 5
 			},
+			defaults: {
+	       		 bodyStyle: 'padding:20px'
+    		},
 			width:650,
 			height : 250,
 			type : 'hbox',

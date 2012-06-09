@@ -1,18 +1,15 @@
 Ext.define('YAPP.controller.Item', {
 	extend : 'Ext.app.Controller',
 	
-	views : [ 'item.Edit', 'item.CrearItem', 'item_unidad.List' ],
+	views : [ 'item.Edit', 'item.List',  'item.CrearItem', 'item_unidad.List', 'item_unidad.Edit' ],
 	stores : [ 'Item', 'Fases', 'TipoItems', 'ItemUnidad' ],
-	models : [ 'Item' ],
+	models : [ 'Item' , 'ItemUnidad' ],
 	
 	refs : [ 
 	{
-            selector : 'viewport combobox[name=fases]',
-            ref : 'comboFase'
-    },
-	
-	
-	{
+        selector : 'viewport combobox[name=fases]',
+        ref : 'comboFase'
+    },{
 		selector : 'crearitem gridpanel[name=gridLB]',
 		ref : 'gridLB'
 	}, {
@@ -36,11 +33,23 @@ Ext.define('YAPP.controller.Item', {
 	} , {
 		selector : 'itemunidadlist button[name=btnAsignar]',
 		ref : 'btnAsignar'
+	} ,  {
+		selector : 'itemslist button[name=aprobar]',
+		ref : 'aprove'
 	} , {
-		selector : 'asignarUnidad combobox[name=_unidad]',
+		selector : 'itemslist button[name=desaprobar]',
+		ref : 'deaprove'
+	} , {
+		selector : 'itemslist button[name=atributos]',
+		ref : 'atributos'
+	} ,  {
+		selector : 'itemslist button[name=borrar]',
+		ref : 'delete'
+	} , {
+		selector : 'asignarUnidad combobox[name=_unidad_id]',
 		ref : 'unidad'
 	} , {
-		selector : 'itemslist button[action=crear]',
+		selector : 'itemslist button[name=crear]',
 		ref : 'botonList'
 	}
 	],
@@ -56,7 +65,6 @@ Ext.define('YAPP.controller.Item', {
 				render : this.onRender,
 				itemdblclick : this.editarItem,
 				itemclick : this.mostrarRecursos
-				//itemclick : this.mostrarAtributos
 			},
 			'itemedit button[action=guardar]' : {
 				click : this.guardarItem
@@ -65,11 +73,21 @@ Ext.define('YAPP.controller.Item', {
 			'itemslist button[action=borrar]' : {
 				click : this.borrarItem
 			},
+			
 			'itemslist button[action=aprobar]' : {
 				click : this.aprobarItem
 			},
+			'itemslist button[action=desaprobar]' : {
+				click : this.activarItem
+			},
 			'itemunidadlist button[action=asignar]' : {
 				click : this.asignarRecursoItem
+			},
+			'itemunidadlist button[action=desasignar]' : {
+				click : this.desAsignarRecursoItem
+			},
+			'asignarUnidad button[action=guardar]' : {
+				click : this.guardarAsignacion
 			},
 			'crearitem gridpanel[name=gridTipo]' :{
 				itemclick : this.cargarTipo
@@ -86,11 +104,6 @@ Ext.define('YAPP.controller.Item', {
 			'crearitem button[action=guardar]' : {
 				click : this.guardarItem
 			},
-			
-			'viewport combobox[name=proyectos]' : {
-				change : this.changeProyecto
-			},
-			
 			'viewport combobox[name=fases]' : {
 				change : this.changeFase
 			}
@@ -111,27 +124,11 @@ Ext.define('YAPP.controller.Item', {
 				id : fase
 			}
 		});
+		var storeUnidadItems = this.getItemUnidadStore();
+		storeUnidadItems.load();
 	},
 	
-	changeProyecto : function(object, newValue, oldValue, eOpts) {
-		var fase = this.getComboFase().getValue();
-		var itemStore = this.getItemStore();
-		if (fase == null)
-			return;
-		var store = this.getFasesStore();
-		if (store == null)
-			return;
-		if (object.getValue() == '') {
-			return;
-		}
-		itemStore.load({
-			params : {
-				id : fase
-			}
-		});
-		// this.getEntidadesPadresStore().load();
-		// object.store = this.getEntidadesPadresStore()
-	},
+
 	
 	changeFase : function(object, newValue, oldValue, eOpts) {
 		var itemStore = this.getItemStore();
@@ -156,7 +153,6 @@ Ext.define('YAPP.controller.Item', {
 		
 		var item = new YAPP.model.Item();
 		var win = grid.up('window');
-		//win.down('form').loadRecord(item);
 		var form = win.down('form');
 	
 		var formRecord = form.getRecord();
@@ -173,7 +169,6 @@ Ext.define('YAPP.controller.Item', {
 		
 		var item = new YAPP.model.Item();
 		var win = grid.up('window');
-		//win.down('form').loadRecord(item);
 		var form = win.down('form');
 		
 		var formRecord = form.getRecord();
@@ -187,10 +182,8 @@ Ext.define('YAPP.controller.Item', {
 	},
 	
 	cargarPadre : function(grid, record){
-		
 		var item = new YAPP.model.Item();
 		var win = grid.up('window');
-		//win.down('form').loadRecord(item);
 		var form = win.down('form');
 		
 		var formRecord = form.getRecord();
@@ -199,6 +192,7 @@ Ext.define('YAPP.controller.Item', {
 		
 		var itemSelected = this.getGridPD().getStore().getById(record.data.id);
 		formRecord.data._padre = itemSelected
+		console.log(itemSelected.data._nombre)
 		formRecord.data.padre_nombre = itemSelected.data._nombre
 		win.down('form').loadRecord(formRecord); 
 	},
@@ -211,15 +205,25 @@ Ext.define('YAPP.controller.Item', {
 		var gridLB = this.getGridLB();
 		var griditemLB = this.getGriditemLB();
 		var gridPD = this.getGridPD();
-//		griditemLB.store.removeAll();
-//		gridPD.store.removeAll();
 		var store = gridLB.store;
 
 
-		store.load({
+		var faseStore = new YAPP.store.Fases().load({
 			params : {
-				id : fase.getValue(),
-				linea_base : "false"
+				fase_id : fase.getValue(),
+				id : this.getProyectos().getValue()
+			},
+			callback : function(records, operation, success) {
+				faseAntecesora = records[0]
+				if (faseAntecesora == 'undefined' || faseAntecesora == "" || faseAntecesora == null) {
+					return;
+				}
+				store.load({
+					params : {
+						id : faseAntecesora.data.id,
+						linea_base : "false"
+					}
+				})
 			}
 		});
 		
@@ -249,176 +253,116 @@ Ext.define('YAPP.controller.Item', {
 			record.data._condicionado = 'true'
 		else
 			record.data._condicionado = 'false'
-		win.close();
 		
-		// var fecha = new Ext.Date();
-		// fecha = Ext.Date.format(fecha, 'd-m-Y');
-		// record.set('_fecha_inicio')
-		
-		if (typeof record.data._padre != "undefined" && typeof record.data._padre.data != "undefined" ){
+		if (typeof record.data._padre != "undefined" && 
+				record.data._padre.data != null &&
+				typeof record.data._padre.data != "undefined" ){
 			record.data._padre = record.data._padre.data.id;
 		}
-		if (typeof record.data._antecesor != "undefined" && typeof record.data._antecesor.data != "undefined" ){
+		if (typeof record.data._antecesor != "undefined" && 
+				record.data._antecesor.data != null && 
+				typeof record.data._antecesor.data != "undefined" ){
 			record.data._antecesor = record.data._antecesor.data.id;
 		}
 		if (typeof record.data._tipo_item.data != "undefined" ){
 			record.data._tipo_item = record.data._tipo_item.data.id;
 		}
+		var accion = record.data.accion;
+		var store = this.getItemStore();
 		record.save(
 		{	
-			success : function(record) {
-				if (record.data.accion == "POST") {
-					this.getItemStore().insert(0, record);
-				}
+			success : function(registro) {
+//				console.log(record);
+//				if (accion == "POST") {
+//					store.insert(0, registro);
+//				}
+//				else {
+//					store.remove(record);
+//					store.insert(0, registro);
+//				}
+				store.load({
+					params : {
+						id : fase.getValue()
+					}
+				});
+				win.close();
 			},
 			failure : function(record) {
 				alert("No se pudo guardar el Item");
 			}
 			
 		});
-		this.getItemStore().load({
-			params : {
-				id : fase.getValue()
-			}
-		
-		});
 		
 	},
 	
 	editarItem : function(grid, record) {
 		
-//		
-//		filtro para el edit
-//		comboPadre.filterBy(function filtro(record, id){
-//			
-//		});
-		var fase = this.getComboFase();
-		console.log("Editar")
-		var view = Ext.widget('crearitem');
-		view.setTitle('Editar Item');
-		view.down('form').loadRecord(record);
-		
-		var gridLB = this.getGridLB();
-		var griditemLB = this.getGriditemLB();
-		var gridPD = this.getGridPD();
-//		griditemLB.store.removeAll();
-//		gridPD.store.removeAll();
+		if (record.data._estado == "ACTIVO" || record.data._estado == "REVISION"){
+			var fase = this.getComboFase();
+			console.log("Editar")
+			var view = Ext.widget('crearitem');
+			view.setTitle('Editar Item');
+			view.down('form').loadRecord(record);
+			
+			var gridLB = this.getGridLB();
+			var griditemLB = this.getGriditemLB();
+			var gridPD = this.getGridPD();
 		var store = gridLB.store;
-//		store.load({
-//			params : {
-//				id : fase.getValue(),
-//				linea_base : "false"
-//			}
-//		});
 		
-		var faseStore = new YAPP.store.Fases().load({
-			params : {
-				fase_id : fase.getValue(),
-				id : this.getProyectos().getValue()
-			},
-			callback : function(records, operation, success) {
-				faseAntecesora = records[0]
-				if (faseAntecesora == 'undefined' || faseAntecesora == "" || faseAntecesora == null) {
-					return;
+			var faseStore = new YAPP.store.Fases().load({
+				params : {
+					fase_id : fase.getValue(),
+					id : this.getProyectos().getValue()
+				},
+				callback : function(records, operation, success) {
+					faseAntecesora = records[0]
+					if (faseAntecesora == 'undefined' || faseAntecesora == "" || faseAntecesora == null) {
+						return;
+					}
+					store.load({
+						params : {
+							id : faseAntecesora.data.id,
+							linea_base : "false"
+						}
+					})
 				}
-				store.load({
-					params : {
-						id : faseAntecesora.data.id,
-						linea_base : "false"
-					}
-				})
+			});
+			
+			
+			
+			var storePadre = gridPD.getStore();
+			console.log(storePadre);
+			console.log(fase.getValue());
+			storePadre.load({
+				params : {
+					id : fase.getValue()
+				},
+				callback : function(records, operation, success) {
+					storePadre.filterBy(function filtro(rec, id){
+						if (record.get('id') == rec.get('id')){
+							return false
+						}
+						return true
+					});
+				}
+			});
+			
+			
+			if (record.data._padre != null && typeof record.data._padre != "undefined" ){
+				record.data.padre_nombre = record.data._padre._nombre;
 			}
-		});
-		
-		
-		
-		var storePadre = gridPD.getStore();
-		console.log(storePadre);
-		console.log(fase.getValue());
-		storePadre.load({
-			params : {
-				id : fase.getValue()
-			},
-			callback : function(records, operation, success) {
-				storePadre.filterBy(function filtro(rec, id){
-					if (record.get('id') == rec.get('id')){
-						return false
-					}
-					return true
-				});
+			if (record.data._antecesor != null && typeof record.data._antecesor != "undefined"){
+				record.data.antecesor_nombre = record.data._antecesor._nombre;
 			}
-		});
-		record.data._version = record.data._version + 1;
-		record.data.accion = 'PUT';
-		record.data.antecesor_nombre = record.data._antecesor._nombre;
-		record.data._antecesor = record.data._antecesor.id;
-		record.data.padre_nombre = record.data._padre._nombre;
-		record.data._padre = record.data._padre.id;
-		record.data._tipo_item_prefijo = record.data._tipo_item._prefijo;
-		view.down('form').loadRecord(record);
-	
-//		var comboAntecesor = this.getComboItemAntecesor();
-//		
-//		var faseStore = this.getFasesStore().load({
-//			params : {
-//				fase_id : fase.getValue(),
-//				id : this.getProyectos().getValue()
-//			},
-//			callback : function(records, operation, success) {
-//				faseAntecesora = records[0]
-//				if (faseAntecesora == 'undefined' || faseAntecesora == "" || faseAntecesora == null) {
-//					return;
-//				}
-//				comboAntecesor.store.load({
-//					params : {
-//						id : faseAntecesora.data.id
-//					}
-//				})
-//			}
-//		});
-//		
-//		var comboPadre = this.getComboItemPadre();
-//		var comboAntecesor = this.getComboItemAntecesor();
-//		if (fase.getValue() == '') {
-//			return;
-//		}
-//		comboPadre.store.load({
-//			params : {
-//				id : fase.getValue()
-//			},
-//			callback : function(records, operation, success) {
-//				for (record in records) {
-//					this.filter([ {
-//						filterFn : function(item) {
-//							console.log((item.get("id") != records[record].data.id));
-//							return (item.get("id") != records[record].data.id);
-//						}
-//					} ]);
-//				}
-//			}
-//		});
-// 		var store = this.getItemStore();
-// 		store.load({
-// 		params : {
-//		 id : fase.getValue()
-//		 }
-//		 });	
-//		this.getFasesStore().load({
-//			params : {
-//				id : this.getProyectos().getValue()
-//			},
-//			callback : function(records, operation, success) {
-//				fase.setValue(fase.getValue())
-//			}
-//		});
-
-//		this.getItemStore().load({
-//					params : {
-//						id : fase.getValue()
-//					}
-//				
-//				});
-//		},
+			
+			
+			record.data._version = record.data._version + 1;
+			record.data.accion = 'PUT';
+			record.data._tipo_item_prefijo = record.data._tipo_item._prefijo;
+			view.down('form').loadRecord(record);
+		}else{
+			alert("El item se encuentra en estado: " + record.data._estado) + ".\n Debe estar ACTIVO para modificarlo";
+		}
 	},
 
 	
@@ -443,8 +387,24 @@ Ext.define('YAPP.controller.Item', {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var record = grilla.getSelectionModel().getSelection()[0];
-		if (record.data._estado == "ACTIVO" || record.data._estado == "REVISION")
+		if (record.data._estado == "ACTIVO" || record.data._estado == "REVISION"){
 			record.data._estado = "APROBADO"
+			record.data._version = record.data._version + 1;
+			
+		}else{
+			alert("El item se encuentra en estado: " + record.data._estado);
+		}
+		console.log(record)
+		if (typeof record.data._padre != "undefined" && typeof record.data._padre.data != "undefined" ){
+			record.data._padre = record.data._padre.data.id;
+		}
+		if (typeof record.data._antecesor != "undefined" && typeof record.data._antecesor.data != "undefined" ){
+			record.data._antecesor = record.data._antecesor.data.id;
+		}
+		if (typeof record.data._tipo_item.data != "undefined" ){
+			record.data._tipo_item = record.data._tipo_item.data.id;
+		}
+		
 		record.save(
 		{	
 			success : function(record) {
@@ -457,12 +417,139 @@ Ext.define('YAPP.controller.Item', {
 		});
 	},
 	
+	habilitarBotones : function(estado){
+		if (estado == "ACTIVO" || estado == "REVISION" ){
+			this.getBtnAsignar().setDisabled(false);
+			this.getDelete().setDisabled(false);
+			this.getAprove().setDisabled(false);
+			this.getDeaprove().setDisabled(true);
+		}else if (estado == "APROBADO"){
+			this.getBtnAsignar().setDisabled(true);
+			this.getDelete().setDisabled(true);
+			this.getAprove().setDisabled(true);
+			this.getDeaprove().setDisabled(false);
+		}else if (estado == "BLOQUEADO"){
+			this.getBtnAsignar().setDisabled(true);
+			this.getDelete().setDisabled(true);
+			this.getAprove().setDisabled(true);
+			this.getDeaprove().setDisabled(true);
+		}
+	},
+	
+	mostrarRecursos: function(grid, record){
+		this.habilitarBotones(record.data._estado)
+		
+		
+		var storeUnidadItems = this.getItemUnidadStore();
+		storeUnidadItems.load({
+			params : {
+				_item_id : record.data._item_id
+			}
+		});
+	},
 	asignarRecursoItem : function(button){
-		botonlist = this.getBotonList();
+		var view = Ext.widget('asignarUnidad');
+		var itemUnidad = new YAPP.model.ItemUnidad();
+		view.down('form').loadRecord(itemUnidad);
+		var botonlist = this.getBotonList();
 		var win = botonlist.up('grid');
 		var grilla = win.down('gridview')
 		var itemRecord = grilla.getSelectionModel().getSelection()[0];
-		var unidadID = this.getUnidad().getValue();
+		var unidadCombo = this.getUnidad()
+		var itemUnidadStore = this.getItemUnidadStore()
+		unidadCombo.store.load({
+			params : {
+				_item_id : itemRecord.data.id
+			}
+		});
+	},
+	
+	desAsignarRecursoItem  : function(button){
 		
-	}
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var record = grilla.getSelectionModel().getSelection()[0];
+		var store = this.getItemUnidadStore();
+		record.destroy({
+			success : function(record) {
+				Ext.example.msg("Unidad de Trabajo", "Desasiganda");
+				store.remove(selection);
+			},
+			failure : function(record) {
+				alert("No se pudo eliminar el Item");
+			}
+		});
+	},
+	
+	activarItem : function(button) {
+		if (confirm("El item pasara a estado \"ACTIVO\" \n¿Está seguro que quiere Desaprobar el Ítem?")){
+			var win = button.up('grid');
+			var grilla = win.down('gridview')
+			var record = grilla.getSelectionModel().getSelection()[0];
+			if (record.data._estado == "APROBADO" || record.data._estado == "REVISION"){
+				record.data._estado = "ACTIVO"
+				record.data._version = record.data._version + 1;
+				
+			}else{
+				alert("El item se encuentra en estado: " + record.data._estado);
+			}
+			console.log(record)
+			if (typeof record.data._padre != "undefined" && typeof record.data._padre.data != "undefined" ){
+				record.data._padre = record.data._padre.data.id;
+			}
+			if (typeof record.data._antecesor != "undefined" && typeof record.data._antecesor.data != "undefined" ){
+				record.data._antecesor = record.data._antecesor.data.id;
+			}
+			if (typeof record.data._tipo_item.data != "undefined" ){
+				record.data._tipo_item = record.data._tipo_item.data.id;
+			}
+			
+			record.save(
+			{	
+				success : function(record) {
+					Ext.example.msg("Item", "Activado con exito");
+					habilitarBotones("ACTIVO");
+				},
+				failure : function(record) {
+					alert("No se pudo activar el Item");
+				}
+				
+			});
+		}
+	},
+	
+	guardarAsignacion : function(button){
+		var botonlist = this.getBotonList();
+		var win = botonlist.up('grid');
+		var grilla = win.down('gridview')
+		var itemRecord = grilla.getSelectionModel().getSelection()[0];
+		var fase = this.getComboFase();
+		var win = button.up('window');
+		var form = win.down('form');
+		win.close();
+		var record = form.getRecord();
+		var values = form.getValues();
+		console.log(form)
+		record.set(values);
+		record.data._item_id= itemRecord.data._item_id
+		record.save(
+		{	
+			success : function(record) {
+				if (record.data.accion == "POST") {
+					this.getItemUnidadStore().insert(0, record);
+				}
+			},
+			failure : function(record) {
+				alert("No se pudo guardar la Unidad de Trabajo");
+			}
+			
+		});
+		var storeUnidadItems = this.getItemUnidadStore();
+		storeUnidadItems.load({
+			params : {
+				_item_id : itemRecord.data._item_id
+			}
+		});
+		
+	},
 });

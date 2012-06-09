@@ -2,7 +2,7 @@ Ext.define('YAPP.store.UnidadTrabajo', {
 	extend: 'Ext.data.Store',
 	model: 'YAPP.model.UnidadTrabajo',
 	
-	autoLoad : true,
+	//autoLoad : true,
     autoSync: true,
     
         
