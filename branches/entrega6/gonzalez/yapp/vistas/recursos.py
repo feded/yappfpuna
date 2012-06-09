@@ -2,17 +2,21 @@ from jsonpickle.pickler import Pickler
 from jsonpickle.unpickler import Unpickler
 from pyramid.response import Response
 from pyramid.view import view_config
-from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO
-from yapp.daos.recurso_persona_dao import RecursoPersonaDAO
 from yapp.daos.recurso_bien_dao import RecursoBienDAO
+from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO
 from yapp.daos.recurso_material_dao import RecursoMaterialDAO
+from yapp.daos.recurso_persona_dao import RecursoPersonaDAO
+from yapp.daos.unidad_trabajo_dao import UnidadTrabajoDAO
+from yapp.daos.unidad_trabajo_recurso import UnidadTrabajoRecursoDAO
 from yapp.models.recurso.recurso import Recurso
-from yapp.models.recurso.recurso_persona import RecursoPersona
 from yapp.models.recurso.recurso_bien import RecursoBien
 from yapp.models.recurso.recurso_material import RecursoMaterial
+from yapp.models.recurso.recurso_persona import RecursoPersona
 from yapp.models.recurso.tipo_recurso import TipoRecurso
-
+from yapp.models.unidad_trabajo.unidad_trabajo_recurso import \
+    UnidadTrabajo_Recurso
 import json
+
 
 @view_config(route_name='obtenercrearrecursos')
 def obtener_crear_recursos(request):
@@ -20,29 +24,59 @@ def obtener_crear_recursos(request):
     @summary: Maneja las solicitudes para obtener y crear recursos.
     """
     if (request.method == 'GET'):
-        rd = RecursoDAO(request)
-        entidades = rd.get_all()
-        lista = [];
-        p = Pickler()
-        for entidad in entidades:
-            if(entidad._tipo._tipo == "Persona"):
-                rd = RecursoPersonaDAO(request)
-                e = rd.get_by_id(entidad._id)
-                a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, e._costo_hora, 0, 0)
-            elif(entidad._tipo._tipo == "Bien"):
-                rd = RecursoBienDAO(request)
-                e = rd.get_by_id(entidad._id)
-                a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
-            elif(entidad._tipo._tipo == "Material"):
-                rd = RecursoMaterialDAO(request)
-                entidad = rd.get_by_id(entidad._id)
-                a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
+        operacion = request.GET.get('operacion')
+        if(operacion == 'TODOS'):
+            rd = RecursoDAO(request)
+            entidades = rd.get_all()
+            lista = [];
+            p = Pickler()
+            for entidad in entidades:
+                if(entidad._tipo._tipo == "Persona"):
+                    rd = RecursoPersonaDAO(request)
+                    e = rd.get_by_id(entidad._id)
+                    a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, e._costo_hora, 0, 0)
+                elif(entidad._tipo._tipo == "Bien"):
+                    rd = RecursoBienDAO(request)
+                    e = rd.get_by_id(entidad._id)
+                    a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
+                elif(entidad._tipo._tipo == "Material"):
+                    rd = RecursoMaterialDAO(request)
+                    entidad = rd.get_by_id(entidad._id)
+                    a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
 #            a = RecursosLindos(entidad._id, entidad._nombre, entidad._tipo,entidad._descripcion,entidad._tipo._tipo)
-            lista.append(p.flatten(a))    
-        j_string = p.flatten(lista)
-        a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})    
-        
-        return Response(a_ret)
+                lista.append(p.flatten(a))    
+            j_string = p.flatten(lista)
+            a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})    
+            
+            return Response(a_ret)
+        elif(operacion == 'DISPONIBLES'):
+            id_unidad_trabajo = request.GET.get('id_unidad')
+            dao = UnidadTrabajoRecursoDAO(request);
+            entidades = dao.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==id_unidad_trabajo).all();
+            dao_recurso = RecursoDAO(request);
+            todas = dao_recurso.get_all()
+            recursos = []
+            for recurso in todas:
+                bandera = False
+                for unidad_trabajo in entidades:
+                    if unidad_trabajo._recurso_id == recurso._id:
+                        bandera = True
+                        break
+                if bandera == False:
+                    recursos.append(recurso)
+            return format_recursos(request, recursos)
+        elif operacion == 'NODISPONIBLES':
+            id_unidad_trabajo = request.GET.get('id_unidad')
+            print "----------"
+            print id_unidad_trabajo
+            print "----------"
+            dao = UnidadTrabajoRecursoDAO(request);
+            entidades = dao.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==id_unidad_trabajo).all();
+            recursos = []
+            for entidad in entidades:
+                recursos.append(entidad._recurso);
+                print entidad._id
+            return format_recursos(request, recursos)
     
     else:    
         u= Unpickler()
@@ -67,7 +101,7 @@ def obtener_crear_recursos(request):
         p = Pickler()
         lista.append(p.flatten(nuevo_recurso))
         j_string = p.flatten(lista)
-        a_ret = json.dumps({'sucess': 'true', 'recurso':j_string})
+        a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})
     
         return Response(a_ret)
 
@@ -109,6 +143,7 @@ def actualizar_eliminar_recurso(request):
                 vieja._nombre = entidad["_nombre"]
                 vieja._descripcion = entidad["_descripcion"]
                 vieja._costo_hora = entidad["_costo_hora"]
+                a = RecursosLindos(vieja._id, vieja._nombre, vieja._tipo,vieja._descripcion,vieja._tipo._tipo, vieja._costo_hora, 0, 0)
             elif (entidad["_tipo"] == "Bien"):
                 dao = RecursoBienDAO(request)
                 vieja = dao.get_by_id(entidad["id"])
@@ -116,6 +151,7 @@ def actualizar_eliminar_recurso(request):
                 vieja._descripcion = entidad["_descripcion"]
                 vieja._costo_cantidad = entidad["_costo_cantidad"]
                 vieja._cantidad = entidad["_cantidad"]
+                a = RecursosLindos(vieja._id, vieja._nombre, vieja._tipo,vieja._descripcion,vieja._tipo._tipo, 0, vieja._costo_cantidad, vieja._cantidad)
             elif (entidad["_tipo"] == "Material"):
                 dao = RecursoMaterialDAO(request)
                 vieja = dao.get_by_id(entidad["id"])
@@ -123,9 +159,18 @@ def actualizar_eliminar_recurso(request):
                 vieja._descripcion = entidad["_descripcion"]
                 vieja._costo_cantidad = entidad["_costo_cantidad"]
                 vieja._cantidad = entidad["_cantidad"]
+                a = RecursosLindos(vieja._id, vieja._nombre, vieja._tipo,vieja._descripcion,vieja._tipo._tipo, 0, vieja._costo_cantidad, vieja._cantidad)
                 
         dao.update(vieja)
-        return Response(json.dumps({'sucess': 'true'}))
+#        return Response(json.dumps({'sucess': 'true'}))
+        lista = []
+        p = Pickler()
+#        vieja = dao.get_by_id(entidad["id"])
+        lista.append(p.flatten(a))
+        j_string = p.flatten(lista)
+        a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})
+        return Response(a_ret)
+    
 
 @view_config(route_name='tipos_recursos')
 def get_tipos_recurso(request):
@@ -156,3 +201,25 @@ class RecursosLindos:
         self._costo_hora = costo_hora;
         self._costo_cantidad = costo_cantidad;
         self._cantidad = cantidad
+        
+def format_recursos(request, entidades):
+    p = Pickler()
+    rd = RecursoPersonaDAO(request)
+    lista = []
+    for entidad in entidades:
+        if(entidad._tipo._tipo == "Persona"):
+            e = rd.get_by_id(entidad._id)
+            a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, e._costo_hora, 0, 0)
+        elif(entidad._tipo._tipo == "Bien"):
+            rd = RecursoBienDAO(request)
+            e = rd.get_by_id(entidad._id)
+            a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
+        elif(entidad._tipo._tipo == "Material"):
+            rd = RecursoMaterialDAO(request)
+            entidad = rd.get_by_id(entidad._id)
+            a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
+#            a = RecursosLindos(entidad._id, entidad._nombre, entidad._tipo,entidad._descripcion,entidad._tipo._tipo)
+        lista.append(p.flatten(a))    
+    j_string = p.flatten(lista)
+    a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})
+    return Response(a_ret);

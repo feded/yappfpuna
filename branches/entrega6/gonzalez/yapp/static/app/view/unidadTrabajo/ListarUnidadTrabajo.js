@@ -10,18 +10,31 @@ Ext.define('YAPP.view.unidadTrabajo.ListarUnidadTrabajo' ,{
                                 xtype : 'toolbar',
                                 items : [ 
                         					{
-                                	        xtype: 'button',
-                                    	    text : 'Nueva Unidad de trabajo',
-                                        	scope : this,
-                                        	action : 'crear'
-                                			}, '|', {
-                                        	xtype: 'button',
-                                        	text : 'Eliminar Unidad de trabajo',
-                                        	itemId : 'delete',
-                                        	action : 'borrar',
-                                        	disabled : true,
-                                        	scope : this
-                                		} ]
+	                                	        xtype: 'button',
+	                                    	    text : 'Nueva Unidad de trabajo',
+	                                        	scope : this,
+	                                        	action : 'crear'
+                                			}, 
+                                			'|', 
+                                			{
+	                                        	xtype: 'button',
+	                                        	text : 'Eliminar Unidad de trabajo',
+	                                        	itemId : 'delete',
+	                                        	action : 'borrar',
+	                                        	disabled : true,
+	                                        	scope : this
+                                			},
+                                			'|',
+                                			{
+	                                        	xtype: 'button',
+	                                        	text : 'Asignar recursos',
+	                                        	itemId : 'asignarRecursos',
+	                                        	action : 'asignarRecursos',
+	                                        	disabled : true,
+	                                        	scope : this
+                                			}
+                                			
+                                		]
                                 }];
       
       
@@ -38,5 +51,6 @@ Ext.define('YAPP.view.unidadTrabajo.ListarUnidadTrabajo' ,{
     //la funcion de abajo se va a pasar a view
     onSelectChange : function(selModel, selections) {
                 this.down('#delete').setDisabled(selections.length === 0);
+                this.down('#asignarRecursos').setDisabled(selections.length === 0)
     }
 });
