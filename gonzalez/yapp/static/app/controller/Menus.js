@@ -238,7 +238,12 @@ Ext.define('YAPP.controller.Menus', {
 		
 	},
 	adminRecursos : function(button) {
-		
+		var store = this.getStore('Recursos');
+		store.load({
+			params : {
+					operacion : 'TODOS' 
+			}
+		});
 		var tabs = Ext.getCmp('tabPrincipal');
 		
 		var tab = tabs.add({
@@ -252,6 +257,8 @@ Ext.define('YAPP.controller.Menus', {
 	},
 	adminUnidadTrabajo : function(button) {
 		
+		var store = this.getStore('UnidadTrabajo');
+		store.load();
 		var tabs = Ext.getCmp('tabPrincipal');
 		
 		var tab = tabs.add({

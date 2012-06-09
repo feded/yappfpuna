@@ -8,5 +8,5 @@ Ext.define('YAPP.model.UnidadTrabajo', {
         	},
         	'_etiqueta', '_descripcion', '_color'
 			
-        	]
+        	],
 });
