@@ -377,6 +377,7 @@ function popularHashMap() {
 	// "Items"
 	// alias["Suscripciones"] = "adminLineasBase";
 	alias["Linea base"] = "adminLineasBase";
+	
 	// "Linea base"
 	// "Recursos"
 	alias["Calculo de impacto"] = "calculoImpacto";
