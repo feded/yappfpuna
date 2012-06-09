@@ -23,7 +23,7 @@ class Rol (Base, EntidadBase):
     __mapper_args__ = {'polymorphic_on': discriminator}
     _esFinal = False
     _estado = relation(RolEstado, backref=backref('rol'))
-    _padres = relationship("RolRol", primaryjoin="Rol._id == RolRol._rol_id")
+    _padres = relationship("RolRol", primaryjoin="Rol._id == RolRol._rol_id", cascade="delete")
     
     def __init__(self, nombre, estado):
         self._nombre = nombre;

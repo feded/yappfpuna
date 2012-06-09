@@ -95,28 +95,19 @@ Ext.define('YAPP.controller.Menus', {
 		// arreglar esto
 		var panel = Ext.getCmp('west');
 		var store = this.getRolPermisosStore();
-		// if (this.tienePermiso(store, "Roles")) {
-		// panel.addDocked({
-		// xtype : 'button',
-		// text : 'Administrar roles',
-		// textAlign : 'left',
-		// action : 'adminRoles'
-		// });
-		// }
-		// if (this.tienePermiso(store, "Privilegios")) {
-		// panel.addDocked({
-		// text : 'Administrar privilegios',
-		// textAlign : 'left',
-		// xtype : 'button',
-		// action : 'adminPrivilegios'
-		// });
-		// }
-		// pruebas genericas
 		var controller = this;
 		store.each(function f(record) {
 			if (!controller.casosEspeciales(record)) {
 				var sNombre = record.data._permiso._nombre;
-				var sAccion = "admin" + sNombre;
+				var sAccion = "";
+				console.log(sNombre)
+				console.log(typeof getAliasFuncion(sNombre))
+				if (typeof getAliasFuncion(sNombre) == "undefined") {
+					sAccion = "admin" + sNombre;
+				} else {
+					sAccion = getAliasFuncion(sNombre);
+				}
+				
 				panel.addDocked({
 					text : sNombre,
 					textAlign : 'left',
@@ -159,7 +150,7 @@ Ext.define('YAPP.controller.Menus', {
 			panel.setVisible(true);
 			return true;
 		}
-		//falta permiso para abilitar
+		// falta permiso para abilitar
 		return false;
 	},
 	
@@ -364,3 +355,31 @@ Ext.define('YAPP.controller.Menus', {
 		tabs.setActiveTab(tab);
 	}
 });
+
+function getAliasFuncion(permiso) {
+	if (diccionarioPopulado == false) {
+		diccionarioPopulado = true;
+		popularHashMap();
+	}
+	return alias[permiso];
+}
+
+var alias = new Array();
+var diccionarioPopulado = false;
+function popularHashMap() {
+	diccionarioPopulado = true;
+	alias["Tipo de items"] = "adminTipoItems";
+	// "Roles"
+	// "Privilegios"
+	// "Proyectos"
+	// "Fases"
+	// "Esquemas"
+	// "Items"
+	// alias["Suscripciones"] = "adminLineasBase";
+	alias["Linea base"] = "adminLineasBase";
+	// "Linea base"
+	// "Recursos"
+	alias["Calculo de impacto"] = "calculoImpacto";
+	// "Ver costado derecho"
+	
+}
