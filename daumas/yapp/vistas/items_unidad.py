@@ -32,13 +32,13 @@ def asignar_unidad_intem(request):
         asignacion = ItemUnidadTrabajo(entidad["_item_id"], entidad["_unidad_id"], entidad["_cantidad"])
         dao = ItemUnidadDAO(request)
         dao.crear(asignacion);
-        
+        asignacion = ItemUnidadTrabajoDTO(asignacion)
         p = Pickler()
         aRet = p.flatten(asignacion)
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
     elif (request.method == 'GET'):
-        item_id = request.GET.get('id_item');
-        unidad_id = request.GET.get('unidad_id')
+        item_id = request.GET.get('_item_id');
+        unidad_id = request.GET.get('_unidad_id')
         if (unidad_id == "" or unidad_id == None):
             unidad_id = None
             unidad = None
@@ -48,11 +48,18 @@ def asignar_unidad_intem(request):
         itemDAO = ItemDAO(request)
         item = itemDAO.get_by_id(item_id);
         dao = ItemUnidadDAO(request) 
-        entidad = dao.get_query().filter(ItemUnidadTrabajo._item_id == item_id , ItemUnidadTrabajo._unidad_id == unidad_id).all()
-        itemUnidadDTO = ItemUnidadTrabajoDTO(entidad);
-        itemUnidadDTO._item = item
-        itemUnidadDTO._unidad = unidad
-        j_string = p.flatten(itemUnidadDTO)
+        entidades = dao.get_query().filter(ItemUnidadTrabajo._item_id == item_id).all()
+        entidadesDTO = [];
+        for entidad in entidades:
+            itemUnidadDTO = ItemUnidadTrabajoDTO(entidad);
+            itemUnidadDTO._item = item
+            if (unidad == None):
+                unidadDAO = UnidadTrabajoDAO(request)
+                unidad = unidadDAO.get_by_id(entidad._unidad_id)
+            itemUnidadDTO._unidad = unidad
+            entidadesDTO.append(itemUnidadDTO)
+        p = Pickler()
+        j_string = p.flatten(entidadesDTO)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
         
         return Response(a_ret)

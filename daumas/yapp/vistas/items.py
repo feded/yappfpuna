@@ -43,7 +43,6 @@ def ag_atributos_tipos_item(request):
                 entidadLinda._padre = ItemDTO(padre)
             if antecesor != None:
                 entidadLinda._antecesor = ItemDTO(antecesor)
-            
             lista.append(p.flatten(entidadLinda))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
@@ -71,12 +70,14 @@ def ag_atributos_tipos_item(request):
         dao_item_ante = ItemDAO(request)
         if(entidad["_antecesor"] == "" or  entidad["_antecesor"] == None):
             antecesor = None
+            antecesor_id = None
         else:
             antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])._id
         print antecesor
         dao_item_padre = ItemDAO(request)
         if(entidad["_padre"] == "" or  entidad["_padre"] == None):
             padre = None
+            padre_id = None
         else:
             padre = dao_item_padre.get_by_id(entidad["_padre"])._id                          
         seq = Sequence('item_id_seq')
@@ -85,7 +86,7 @@ def ag_atributos_tipos_item(request):
         nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"], padre, antecesor)
         itemDao = ItemDAO(request)
         itemDao.crear(nuevo_item)
-        
+        nuevo_item = ItemDTO(nuevo_item)
         lista = []
         p = Pickler()
         lista.append(p.flatten(nuevo_item))
@@ -118,29 +119,52 @@ def bm_atributo(request):
         if(entidad["_antecesor"] == "" or  entidad["_antecesor"] == None):
             antecesor = None
         else:
-            antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])._id
+            antecesor = dao_item_ante.get_by_id(entidad["_antecesor"]["_id"])._id
         print antecesor
         dao_item_padre = ItemDAO(request)
         if(entidad["_padre"] == "" or  entidad["_padre"] == None):
             padre = None
         else:
-            padre = dao_item_padre.get_by_id(entidad["_padre"])._id
+            padre = dao_item_padre.get_by_id(entidad["_padre"]["_id"])._id
         item_viejo = item_dao.get_by_id(entidad["id"])
-        
+        id_viejo = item_viejo._id;
         nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"], padre, antecesor)
 
         if request.method == "DELETE":
             nuevo_item._estado = "ELIMINADO"
             nuevo_item._version += 1
+            
+        
         item_dao.crear(nuevo_item);
-        p = Pickler()
-        aRet = p.flatten(ItemDTO(nuevo_item))
+        padre = item_dao.get_by_id(nuevo_item._padre_item_id)
+        antecesor = item_dao.get_by_id(nuevo_item._antecesor_item_id)
+        actualizar_referencias_item(nuevo_item, item_dao, id_viejo)
+        nuevo_item = ItemDTO(nuevo_item)
+        if padre != None:
+            nuevo_item._padre = ItemDTO(padre)
+        if antecesor != None:
+            nuevo_item._antecesor = ItemDTO(antecesor)
+        p = Pickler(False, None)
+        aRet = p.flatten(nuevo_item)
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
 
 
 
-        
-
+def actualizar_referencias_item(item, item_dao, anterior_id):
+    #Este item es padre.. vamos a actualizar las refeencias de sus hijos
+    hijos = item_dao.get_query().filter(Item._padre_item_id==anterior_id).all()
+    for hijo in hijos:
+        hijo._padre_item_id = item._id;
+        #VERIFICAR ESTADO DE SUS HIJOS
+        hijo._estado = "REVISION"
+        item_dao.update(hijo)
+    #este item es antecesor, vamos a actualizar las referencias de sus descendendientes
+    sucesores = item_dao.get_query().filter(Item._antecesor_item_id==anterior_id).all();
+    for sucesor in sucesores:
+        sucesor._antecesor_item_id = item._id;
+        #VERIFICAR ESTADO DE SUS HIJOS
+        sucesor._estado = "REVISION"
+        item_dao.update(sucesor)
 
 def get_items_con_linea_base(request):
     print "Pide items de linea base"
@@ -151,9 +175,10 @@ def get_items_con_linea_base(request):
     p = Pickler(True, None)
     for entidad in entidades:
         rd = ItemDAO(request)
-        padre = rd.get_by_id(entidad._padre_item_id)
-        antecesor = rd.get_by_id(entidad._antecesor_item_id)
-        entidadLinda = ItemLindo(entidad._id, entidad._nombre, entidad._tipo_item, entidad._fase, entidad._duracion, entidad._descripcion, entidad._condicionado, entidad._version, entidad._estado, entidad._fecha_inicio, entidad._fecha_fin, padre, antecesor) 
+#        padre = rd.get_by_id(entidad._padre_item_id)
+#        antecesor = rd.get_by_id(entidad._antecesor_item_id)
+        entidadLinda = ItemDTO(entidad) 
+#        entidadLinda = ItemLindo(entidad._id, entidad._nombre, entidad._tipo_item, entidad._fase, entidad._duracion, entidad._descripcion, entidad._condicionado, entidad._version, entidad._estado, entidad._fecha_inicio, entidad._fecha_fin, padre, antecesor) 
         lista.append(p.flatten(entidadLinda))
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': True, 'lista':j_string})
@@ -168,29 +193,31 @@ def get_items_sin_linea_base_con_fase(request):
     p = Pickler(True, None)
     for entidad in entidades:
         rd = ItemDAO(request)
-        padre = rd.get_by_id(entidad._padre_item_id)
-        antecesor = rd.get_by_id(entidad._antecesor_item_id)
-        entidadLinda = ItemLindo(entidad._id, entidad._nombre, entidad._tipo_item, entidad._fase, entidad._duracion, entidad._descripcion, entidad._condicionado, entidad._version, entidad._estado, entidad._fecha_inicio, entidad._fecha_fin, padre, antecesor) 
+#        padre = rd.get_by_id(entidad._padre_item_id)
+#        antecesor = rd.get_by_id(entidad._antecesor_item_id)
+        
+        
+        entidadLinda = ItemDTO(entidad) 
         lista.append(p.flatten(entidadLinda))
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': True, 'lista':j_string})
     return Response(a_ret)
 
-class ItemLindo:
-    """
-    @summary: Unidad de transporte para items.         
-    """
-    def __init__(self, _id, nombre, tipo_item, fase, duracion, descripcion, condicionado, version, estado, fecha_inicio, fecha_fin, padre, antecesor):
-        self._id = _id
-        self._nombre = nombre;
-        self._tipo_item = tipo_item;
-        self._fase = fase;
-        self._duracion = duracion;
-        self._descripcion = descripcion;
-        self._condicionado = condicionado;
-        self._version = version;
-        self._estado = estado;
-        self._fecha_inicio = fecha_inicio;
-        self._fecha_fin = fecha_fin;
-        self._padre = padre;
-        self._antecesor = antecesor
+#class ItemLindo:
+#    """
+#    @summary: Unidad de transporte para items.         
+#    """
+#    def __init__(self, _id, nombre, tipo_item, fase, duracion, descripcion, condicionado, version, estado, fecha_inicio, fecha_fin, padre, antecesor):
+#        self._id = _id
+#        self._nombre = nombre;
+#        self._tipo_item = tipo_item;
+#        self._fase = fase;
+#        self._duracion = duracion;
+#        self._descripcion = descripcion;
+#        self._condicionado = condicionado;
+#        self._version = version;
+#        self._estado = estado;
+#        self._fecha_inicio = fecha_inicio;
+#        self._fecha_fin = fecha_fin;
+#        self._padre = padre;
+#        self._antecesor = antecesor

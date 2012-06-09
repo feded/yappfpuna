@@ -13,15 +13,15 @@ Ext.define('YAPP.view.item.List', {
 				{
 					iconCls : 'icon-add',
 					text : 'Nuevo Item',
-					scope : this,
+					name : 'crear',
 					action : 'crear',
 				}, '|', {
 					iconCls : 'icon-delete',
 					text : 'Eliminar Item',
 					disabled : true,
 					itemId : 'delete',
+					name : 'borrar',
 					action : 'borrar',
-					scope : this,
 				} ]
 			},{
                 weight: 2,
@@ -31,14 +31,21 @@ Ext.define('YAPP.view.item.List', {
                     xtype: 'button',
                     text: 'Aprobar Item',
                     action : 'aprobar',
-                    itemId : 'aprove',
+                    name : 'aprobar',
+                    scope : this,
+                    disabled : true,
+                },'|',{
+                    xtype: 'button',
+                    text: 'Desaprobar Item',
+                    name : 'desaprobar',
+                    action : 'desaprobar',
                     scope : this,
                     disabled : true,
                 }, '|',{
                     xtype: 'button',
-                    text: 'Administar Recursos del Item',
-                    action : 'asignar',
-                    itemId : 'asignar',
+                    text: 'Administar Atributos del Item',
+                    name : 'atributos',
+                    action : 'atributos',
                     scope : this,
                     disabled : true,
                 }, ]}],
@@ -110,20 +117,15 @@ Ext.define('YAPP.view.item.List', {
 			]
 		});
 		this.callParent();
-		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
 	},
-	onSelectChange : function(selModel, selections) {
-		this.down('#delete').setDisabled(selections.length === 0);
-		this.down('#aprove').setDisabled(selections.length === 0);
-		this.down('#asignar').setDisabled(selections.length === 0);
-	}
 
 });
 
 function renderizador_lista_item(val) {
-	console.log(val);
 	if (val != null && val._nombre != null) {
 		return val._nombre;
+	}else if (val != null && val.data != null && val.data._nombre != null){
+		return val.data._nombre;
 	}
 	return val;
 }

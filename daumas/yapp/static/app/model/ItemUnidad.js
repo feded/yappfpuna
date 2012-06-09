@@ -7,7 +7,7 @@ Ext.define('YAPP.model.ItemUnidad', {
                 mapping : '_id'
         	},
         	{
-        		name : 'unidad_id',
+        		name : '_unidad_id',
         		type : 'int'
         	},
     	    {
@@ -26,5 +26,14 @@ Ext.define('YAPP.model.ItemUnidad', {
         		name: '_cantidad',
         		type: 'int'
         	} 
-        	]
+        	],
+    proxy : {	
+		type: 'rest',
+		url: '/unidadItem',
+		reader : ({
+			type : 'json',
+			root : 'lista',
+			successProperty : 'sucess'
+		})
+	}
 });
