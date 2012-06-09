@@ -12,7 +12,7 @@ from pyramid.view import view_config
 from yapp.daos.rol_dao import RolEstadoDAO, RolDAO
 from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.daos.rol_rol_dao import RolRolDAO
-from yapp.models.roles.rol import Rol, RolDTO, RolRol
+from yapp.models.roles.rol import Rol, RolDTO, RolRol, RolDTOP
 from yapp.models.roles.rol_estado import RolEstado, RolEstadoDTO
 from yapp.models.roles.rol_final import RolFinal
 import json
@@ -53,11 +53,7 @@ def get_roles(request):
         lista = [];
         p = Pickler(False, None)
         for entidad in entidades:
-            rol = RolDTO(entidad)
-            if (isinstance(entidad, RolFinal)):
-                rol._esFinal = True;
-                rol._password = entidad._password;
-                rol._email = entidad._email
+            rol = crear_rol_dto(entidad)
             lista.append(p.flatten(rol))
             
         j_string = p.flatten(lista)
@@ -94,7 +90,7 @@ def get_roles(request):
             nueva_entidad._padres = padres;    
             
             p = Pickler(False, None)
-            rolDTO = RolDTO(nueva_entidad)
+            rolDTO = crear_rol_dto(nueva_entidad)
             aRet = p.flatten(rolDTO)
             p.flatten(entidad)
             return Response(json.dumps({'sucess': 'true', 'users':aRet}))
@@ -120,16 +116,35 @@ def get_roles(request):
         rolDAO = RolDAO(request);
         rolFinalDAO = RolFinalDAO(request);
         vieja = rolDAO.get_by_id(entidad["id"]);
-        p = Pickler()
+        p = Pickler(False, None)
+        
+        print "======================"
+        print "======================"
+        print request.json_body
+        print "======================"
+        print "======================"
         
         rr_dao = RolRolDAO(request)
+        for padre in vieja._padres:
+            print "Borrando relacion " + str(padre._rol_id) + " ==>" + str(padre._padre_id)
+            rr_dao.borrar(padre);
+            
         padres = []
+#        print "-------------"
+#        print entidad["_padres"]
+#        print "-------------"
         for padre_id in entidad["_padres"]:
-            rolrol = RolRol(nueva_entidad._id, padre_id)
+            print "Creando relacion " + str(vieja._id) + " ==>" + str(padre_id)
+            rolrol = RolRol(vieja._id, padre_id)
             rr_dao.crear(rolrol)
             padres.append(rolrol)
-        nueva_entidad._padres = padres;
-            
+#        vieja._padres = padres;
+#            
+#        for padre in vieja._padres:
+#            print "-------------"
+#            print padre._padre_id
+#            print padre._rol_id
+#            print "-------------"
         
         if (isinstance(vieja, RolFinal)):
             if (entidad["_esFinal"] == True):
@@ -139,31 +154,27 @@ def get_roles(request):
                 vieja._email = entidad["_email"]
                 vieja._estado = estado;
                 rolFinalDAO.update(vieja);
-                aRet = p.flatten(vieja)
-                p.flatten(entidad)
-                return Response(json.dumps({'sucess': 'true'}))
+                aRet = p.flatten(setear_padres_rol_y_obtener_dto(vieja, padres))
+                return Response(json.dumps({'sucess': 'true', 'users':aRet}))
             else:
                 nueva = Rol(vieja._nombre, estado);
                 rolFinalDAO.borrar(vieja)
                 rolDAO.crear(nueva);
-                aRet = p.flatten(nueva)
-                p.flatten(entidad)
-                return Response(json.dumps({'sucess': 'true'}))
+                aRet = p.flatten(setear_padres_rol_y_obtener_dto(nueva, padres))
+                return Response(json.dumps({'sucess': 'true', 'users':aRet}))
         else:
             if (entidad["_esFinal"] == True):
                 nueva = RolFinal(entidad["_nombre"], estado, entidad["_email"], entidad["_password"])
                 rolDAO.borrar(vieja);
                 rolFinalDAO.crear(nueva)
-                aRet = p.flatten(nueva)
-                p.flatten(entidad)
-                return Response(json.dumps({'sucess': 'true'}))
+                aRet = p.flatten(setear_padres_rol_y_obtener_dto(nueva, padres))
+                return Response(json.dumps({'sucess': 'true', 'users':aRet}))
             else:
                 vieja._nombre = entidad["_nombre"]
                 vieja._estado = estado;
                 rolDAO.update(vieja);
-                aRet = p.flatten(vieja)
-                p.flatten(entidad)
-                return Response(json.dumps({'sucess': 'true'}))
+                aRet = p.flatten(setear_padres_rol_y_obtener_dto(vieja, padres))
+                return Response(json.dumps({'sucess': 'true', 'users':aRet}))
         
 
 @view_config(route_name='estados_roles')
@@ -259,3 +270,19 @@ def retornador_de_roles(request, entidades):
     a_ret = json.dumps({'sucess': 'true', 'users':j_string})
     print a_ret
     return Response(a_ret)   
+
+def crear_rol_dto(entidad):
+    aRet = RolDTO(entidad)
+    if (isinstance(entidad, RolFinal)):
+        aRet._esFinal = True;
+        aRet._password = entidad._password;
+        aRet._email = entidad._email
+    return aRet;
+
+def setear_padres_rol_y_obtener_dto(entidad, padres):
+    aRet = crear_rol_dto(entidad)
+    aRet._padres = []
+    for rol_padre in padres:
+        aRet._padres.append(RolDTOP(rol_padre._padre))
+#    entidad._padres = padres;
+    return aRet;

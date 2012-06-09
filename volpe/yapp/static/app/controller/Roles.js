@@ -81,7 +81,7 @@ Ext.define('YAPP.controller.Roles', {
 	// /////////////////// //
 	// SECCION DE PERMISOS //
 	// /////////////////// //
-	borrarPermiso : function(butto) {
+	borrarPermiso : function(button) {
 		var permiso = this.getGrillaPermiso().getSelectionModel().getSelection()[0];
 		var store = this.getRolPermisosStore();
 		permiso.destroy({
@@ -210,17 +210,7 @@ Ext.define('YAPP.controller.Roles', {
 		if (entidad_padre == '' && entidad != '') {
 			this.cargarStoreEntidadPadre(entidad._id);
 		}
-	},ontainer : {
-		xtype : 'container',
-		width : 650,
-		name : 'gridDragAndDrop',
-		height : 300,
-		layout : {
-			type : 'hbox',
-			align : 'stretch',
-			padding : 5
-		},
-		defaults : {
+	},
 	
 	resetearCombo : function(combo) {
 		combo.reset();
@@ -266,7 +256,7 @@ Ext.define('YAPP.controller.Roles', {
 		})
 	},
 	editUser : function(grid, record) {
-		record.data.accion = 'PUT'
+		record.data.accion = 'PUT';
 		this.ventanaRol(record);
 	},
 	botonEditGuardarApretado : function(button) {
@@ -280,20 +270,26 @@ Ext.define('YAPP.controller.Roles', {
 		var accion = record.data.accion;
 		
 		var items = this.getGridHeredados().getStore().getRange();
-		console.log(items)
 		var itemsDTO = new Array();
 		for ( var i in items) {
 			itemsDTO[i] = items[i].data.id;
 		}
 		record.data._padres = itemsDTO;
 		
+		console.log(record)
 		var store = this.getRolesStore()
 		record.save({
 			success : function(rol) {
 				if (accion == 'POST') {
 					store.insert(0, rol);
+				} else {
+					store.remove(record);
+					store.insert(0, rol);
+					console.log(rol)
 				}
+				
 				Ext.example.msg("Rol", "Guardado con exito");
+				console.log("asdfasdf")
 				win.close();
 			},
 			failure : function(rol) {
