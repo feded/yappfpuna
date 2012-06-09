@@ -8,4 +8,8 @@ class Permisos (Base, EntidadBase):
     
     def __init__(self, nombre):
         self._nombre = nombre;
-    
+
+class PermisoDTO:
+    def __init__(self, permiso):
+        self._nombre = permiso._nombre;
+        self._id = permiso._id;

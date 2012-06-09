@@ -1061,7 +1061,7 @@ Complete-Displays task percent complete</p>
 
             // DRAW the date format selector at bottom left.  Another potential GanttChart parameter to hide/show this selector
             vLeftTable += '</TD></TR>' +
-              '<TR><TD border=1 colspan=5 align=left style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 11px; BORDER-LEFT: #efefef 1px solid; height=18px">&nbsp;&nbsp;Powered by <a href=http://www.jsgantt.com>jsGantt</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Format:';
+              '<TR><TD border=1 colspan=5 align=left style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 11px; BORDER-LEFT: #efefef 1px solid; height=18px">&nbsp;&nbsp;YAPP</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Format:';
 		
 			if (vFormatArr.join().indexOf("minute")!=-1) { 
             if (vFormat=='minute') vLeftTable += '<INPUT TYPE=RADIO NAME="radFormat" VALUE="minute" checked>Minute';

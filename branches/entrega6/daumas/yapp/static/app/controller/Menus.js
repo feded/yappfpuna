@@ -5,7 +5,7 @@ Ext.define('YAPP.controller.Menus', {
 			'rol.List', 'tipoItem.List', 'suscripcion.List', 'item.ABM', 'recurso.ListarRecurso',
 			'linea_base.ABM', 'calculo_impacto.View', 'gantt.View' ],
 	
-	stores : [ 'Proyectos', 'Permisos' ],
+	stores : [ 'Proyectos', 'RolPermisos' ],
 	
 	refs : [ {
 		selector : 'viewport combobox[name=proyectos]',
@@ -91,25 +91,59 @@ Ext.define('YAPP.controller.Menus', {
 	},
 	
 	traerPermiso : function() {
-		var permisos = this.getPermisosStore();
+		var permisos = this.getRolPermisosStore();
 		
 		permisos.load({
 			scope : this,
 			callback : function(records, operation, success) {
-				// //the operation object contains all of the details of the
-				// load operation
-				if (permisos.find('_nombre', 'Roles') == -1) {
-					var boton = this.getBotonRoles();
-					// var bar = this.getBar();
-					boton.hide();
-					// bar.show();
-					// console.log(bar);
-					
-				}
+				this.setearMenuIzquierda(records);
 			}
 		});
 		//    
 		
+	},
+	setearMenuIzquierda : function(records) {
+		var panelDerecha = Ext.getCmp('east');
+		panelDerecha.setVisible(false)
+		// arreglar esto
+		var panel = Ext.getCmp('west');
+		var store = this.getRolPermisosStore();
+		var controller = this;
+		store.each(function f(record) {
+			if (!controller.casosEspeciales(record)) {
+				var sNombre = record.data._permiso._nombre;
+				var sAccion = "";
+				console.log(sNombre)
+				console.log(typeof getAliasFuncion(sNombre))
+				if (typeof getAliasFuncion(sNombre) == "undefined") {
+					sAccion = "admin" + sNombre;
+				} else {
+					sAccion = getAliasFuncion(sNombre);
+				}
+				
+				panel.addDocked({
+					text : sNombre,
+					textAlign : 'left',
+					xtype : 'button',
+					action : sAccion,
+					disabled : isDisabled(sNombre)
+				})
+			}
+		})
+
+		panel.addDocked({
+			xtype : 'button',
+			text : 'SALIR',
+			width : '100%',
+			flex : 1,
+			textAlign : 'left',
+			action : 'logout'
+		});
+		
+		panel.add({
+			xtype : 'label',
+			text : '',
+		});
 	},
 	
 	activarFase: function(combo){
@@ -130,9 +164,36 @@ Ext.define('YAPP.controller.Menus', {
 	
 	activarItem: function(combo){
 		this.getBotonItems().setDisabled(false);
-		
 	},
-	
+	casosEspeciales : function(permiso) {
+		if (permiso.data._permiso._nombre == "Ver costado derecho") {
+			var panel = Ext.getCmp('east');
+			panel.add({
+				xtype : 'label',
+				text : ' '
+			});
+			panel.add({
+				xtype : 'combobox',
+				fieldLabel : 'Proyecto',
+				displayField : '_nombre',
+				queryMode : 'local',
+				valueField : 'id',
+				name : 'proyectos'
+			});
+			panel.add({
+                xtype : 'combobox',
+               	fieldLabel : 'Fase',
+                displayField : '_nombre',
+                queryMode : 'local',
+                valueField : 'id',
+                name : 'fases'
+            })
+			panel.setVisible(true);
+			return true;
+		}
+		// falta permiso para abilitar
+		return false;
+	},
 	onComboBoxRendered : function() {
 		// this.onRendered();
 		var proyectos = this.getProyectosStore();
@@ -327,3 +388,41 @@ Ext.define('YAPP.controller.Menus', {
 		tabs.setActiveTab(tab);
 	}
 });
+
+function getAliasFuncion(permiso) {
+	if (diccionarioPopulado == false) {
+		diccionarioPopulado = true;
+		popularHashMap();
+	}
+	return alias[permiso];
+}
+
+var alias = new Array();
+var diccionarioPopulado = false;
+function popularHashMap() {
+	diccionarioPopulado = true;
+	alias["Tipo de items"] = "adminTipoItems";
+	// "Roles"
+	// "Privilegios"
+	// "Proyectos"
+	// "Fases"
+	// "Esquemas"
+	// "Items"
+	// alias["Suscripciones"] = "adminLineasBase";
+	alias["Linea base"] = "adminLineasBase";
+	
+	// "Linea base"
+	// "Recursos"
+	alias["Calculo de impacto"] = "calculoImpacto";
+	// "Ver costado derecho"
+	
+}
+
+function isDisabled(nombre){
+	if (nombre == "Items")
+	{
+		return true;
+	}
+	
+	return false;
+}
