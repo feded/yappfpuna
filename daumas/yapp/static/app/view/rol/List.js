@@ -15,6 +15,7 @@ Ext.define('YAPP.view.rol.List', {
 		Ext.apply(this, {
 			iconCls : 'icon-grid',
 			frame : true,
+			height : 200,
 //			plugins : [ this.editing ],
 			dockedItems : [ {
 				xtype : 'toolbar',
@@ -32,32 +33,7 @@ Ext.define('YAPP.view.rol.List', {
 					scope : this,
 				} ]
 			} ],
-			columns : [ {
-				text : 'ID',
-				width : 40,
-				sortable : true,
-				dataIndex : 'id'
-			}, {
-				text : 'Nombre',
-				flex : 1,
-				sortable : true,
-				dataIndex : '_nombre'
-			}, {
-				header : 'Estado',
-				flex : 1,
-				sortable : true,
-				dataIndex : '_estado',
-				renderer : renderizador_estado_rol,
-				field : {
-					type : 'textfield'
-				}
-			}, {
-				header : 'Final',
-				width : 40,
-				flex : 0,
-				sortable : true,
-				dataIndex : '_esFinal'
-			} ]
+			columns : columnasDeRol
 		});
 		this.callParent(arguments);
 		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
@@ -68,11 +44,3 @@ Ext.define('YAPP.view.rol.List', {
 
 });
 
-function renderizador_estado_rol(val) {
-	if (val == null)
-		return val;
-	if (val._estado == null)
-		return val
-	return val._estado
-	// return ""
-}

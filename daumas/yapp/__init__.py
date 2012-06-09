@@ -85,7 +85,6 @@ def main(global_config, **settings):
     config.add_route('editarEliminarItemEsquemas', '/itemsEsquemas/{id}')
     config.add_route('rolesfinales', '/rolesfinales/')
     config.add_route('notificaciones', '/notificaciones/')
-    config.add_route('obtenerpermisos', '/permisos')
     config.add_route('calculo_impacto', '/calculo_impacto')
     config.add_route('asignarUnidadItem' , '/unidadItem')
     config.add_route('editarUnidadItem' , '/unidadItem/{id}')
@@ -96,6 +95,9 @@ def main(global_config, **settings):
     config.add_route('lineas_base_rest', '/lineas_base/{id}')
     #rutas Volpe 6 iteracion
     config.add_route('gantt', '/gantt')
+    config.add_route('permisos', '/permisos')
+    config.add_route('rol_permisos', '/rol_permisos')
+    config.add_route('rol_permisos_rest', '/rol_permisos/{id}')
     
     config.scan()
 #    config.scan("views")
