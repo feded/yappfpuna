@@ -1,9 +1,9 @@
 '''
 Created on May 5, 2012
-
-@author: arturo
 '''
 import unittest
+from jsonpickle.pickler import Pickler
+import json
 
 class GetAtributoEsquema(unittest.TestCase):
     def setUp(self):
@@ -189,6 +189,21 @@ class GetProyectos(unittest.TestCase):
         print "Probando proyectos"
         self.failUnless('sucess' in res.body)
 
+class PostProyectos(unittest.TestCase):
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def test_it(self):
+        proyecto = {"_nombre":"Prueba","_autor":1,"autor_nombre":1,"id":0,"_prioridad":1,"_estado":"Prueba","_lider":1,"lider_nombre":1,"_nota":"Prueba","_fecha_creacion":"2012-06-18, 3:46 pm","_fecha_modificacion":"2012-06-18, 3:46 pm"}
+        res = self.testapp.post('/createProyectos',params=json.dumps(proyecto));
+        print "Testeando crear proyectos"
+        self.failUnless('sucess' in res.body)
+        
+        
 #class GetRecursos(unittest.TestCase):
 #    def setUp(self):
 #        from yapp import main

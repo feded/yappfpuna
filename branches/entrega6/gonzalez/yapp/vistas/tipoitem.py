@@ -78,7 +78,6 @@ def save_tipo(request):
     entidad = u.restore(request.json_body);    
     tipoItemDao = TipoItemDAO(request);
     tipoItem = tipoItemDao.get_by_id(entidad["id"])
-    print tipoItem
     if (isinstance(tipoItem, TipoItem)):
             tipoItem._nombre = entidad["_nombre"]
             tipoItem._comentario = entidad["_comentario"]
@@ -94,15 +93,12 @@ def AG_atributos_tipos_item(request):
     if (request.method == 'GET'):        
         rd = AtributoTipoItemDAO(request)
         entidades = rd.get_query().filter(AtributoTipoItem._tipo_item_id == request.GET.get('id')).all()
-
-        print entidades
         lista = [];
         p = Pickler(True, None)
         for entidad in entidades:
             lista.append(p.flatten(entidad))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
-        print a_ret
         return Response(a_ret)
     elif (request.method == 'POST'):
         print "-----CREANDO ATRIBUTO-----"
