@@ -30,6 +30,7 @@ class Proyecto(EntidadPadre):
     _nota = Column(String, nullable=True)
     _fecha_creacion = Column(String, nullable=False)
     _fecha_modificacion = Column(String, nullable=False)
+    
     def __init__(self, nombre, autor, prioridad, estado, lider, nota, fecha_creacion, fecha_modificacion):
         self._nombre = nombre;
         self._autor = autor;
@@ -46,9 +47,9 @@ class ProyectoDTO():
             return
         self._id = proyecto._id;
         self._nombre = proyecto._nombre;
-        self._descripcion = proyecto._descripcion;
-        self._lider = RolDTO(proyecto._lider)
-        self._autor = RolDTO(proyecto._autor)
+        self._nota = proyecto._nota;
+        self._lider_id = proyecto._lider.id
+        self._autor_id = proyecto._autor.id
         self._prioridad = proyecto._prioridad;
         self._estado = proyecto._estado;
         self._nota = proyecto._nota;

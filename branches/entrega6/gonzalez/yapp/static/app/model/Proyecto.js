@@ -3,8 +3,8 @@ Ext.define('YAPP.model.Proyecto', {
 	requires : [ 'YAPP.model.Rol' ],
 	fields:['_nombre',
 			{
-				name : '_autor',
-				type : 'YAPP.model.Rol'
+				name : '_autor_id',
+				type : 'int'
 			},
 			'autor_nombre',
 			{
@@ -17,11 +17,26 @@ Ext.define('YAPP.model.Proyecto', {
         	},
         	'_estado',
         	{
-				name : '_lider',
-				type : 'YAPP.model.Rol'
+				name : '_lider_id',
+				type : 'int'
 			},
 			'lider_nombre',
         	'_nota',
         	'_fecha_creacion',
-        	'_fecha_modificacion']
+        	'_fecha_modificacion'],
+ 	
+	proxy : {
+    	type : 'ajax',
+        api : {
+        	read : '/readProyectos',
+        	update : '/updateProyectos',
+        	create : '/createProyectos',
+        	destroy : '/deleteProyectos'
+        },
+        reader : {
+        	type : 'json',
+            root : 'proyectos',
+            successProperty : 'sucess'
+            }
+        }
 });
