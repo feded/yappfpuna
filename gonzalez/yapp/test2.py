@@ -189,18 +189,18 @@ class GetProyectos(unittest.TestCase):
         print "Probando proyectos"
         self.failUnless('sucess' in res.body)
 
-class GetRecursos(unittest.TestCase):
-    def setUp(self):
-        from yapp import main
-        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
-        app = main({}, **settings)
-        from webtest import TestApp
-        self.testapp = TestApp(app)
-
-    def test_it(self):
-        res = self.testapp.get('/recursos',status=200)
-        print "Probando recursos"
-        self.failUnless('sucess' in res.body)
+#class GetRecursos(unittest.TestCase):
+#    def setUp(self):
+#        from yapp import main
+#        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+#        app = main({}, **settings)
+#        from webtest import TestApp
+#        self.testapp = TestApp(app)
+#
+#    def test_it(self):
+#        res = self.testapp.get('/recursos',status=200)
+#        print "Probando recursos"
+#        self.failUnless('sucess' in res.body)
 
 class GetRoles(unittest.TestCase):
     def setUp(self):
