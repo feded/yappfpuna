@@ -72,7 +72,12 @@ def actualizar_eliminar_unidad_trabajo(request):
         vieja._color = entidad["_color"]
         
         dao.update(vieja)
-        return Response(json.dumps({'sucess': 'true'}))
+        lista = []
+        p = Pickler()
+        lista.append(p.flatten(vieja))
+        j_string = p.flatten(lista)
+        a_ret = json.dumps({'sucess': 'true', 'unidadtrabajo':j_string})
+        return Response(a_ret)
 
     
     

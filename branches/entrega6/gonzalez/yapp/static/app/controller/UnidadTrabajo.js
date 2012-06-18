@@ -70,7 +70,17 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
-		this.getUnidadTrabajoStore().remove(selection)
+		var me = this;
+		selection.destroy({
+			success : function(unidad){
+				me.getUnidadTrabajoStore().remove(selection)
+				Ext.example.msg("YAPP", "Se elimino la unidad de trabajo con éxito");
+			},
+			failure : function(unidad){
+				alert("No se pudo eliminar la unidad de trabajo");
+			}
+			
+		});
 	},
     
     editarUnidadTrabajo: function(grid, record){
@@ -99,7 +109,7 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
                         Ext.example.msg("Yapp", "Asignacion correcta");
                         win.close();
                 },
-                failure : function(rol) {
+                failure : function(recursos) {
                         Ext.example.msg("Yapp", "Asignacion no correcta");
                 }
         });
@@ -151,8 +161,19 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);
-		win.close();
-		this.getUnidadTrabajoStore().insert(0, record);
+		var store = this.getUnidadTrabajoStore();
+		record.save({
+			success: function(unidad){
+				store.insert(0, unidad);
+				Ext.example.msg("Yapp", "Se creo con éxito la unidad de trabajo");
+				win.close();		
+			},
+			failure: function(unidad){
+				alert("No se pudo crear la unidad de trabajo");
+			}
+		});
+		
+		
 	},
 	
 	guardarEditarUnidadTrabajo: function(button){
@@ -160,9 +181,18 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
+		//console.log(values);
 		record.set(values);
-		win.close();
+		//console.log(record);
+		record.save({
+			success: function(unidad){
+				Ext.example.msg("YAPP", "Se modifico la unidad de trabajo con éxito");
+				win.close();
+			},
+			failure: function(unidad){
+				alert("No se pudo modificar la unidad de trabajo");
+			}
+		});
 	}
-	
     	
 });
