@@ -52,16 +52,15 @@ Ext.define('YAPP.controller.Recursos', {
 		var values = form.getValues();
 		record.set(values);
 		record.set('tipo_nombre',record.data._tipo);
-		console.log(record);
-		win.close();
 		var store = this.getRecursosStore();
 		record.save({
 			success : function(recurso) {
 				store.insert(0, recurso);
 				Ext.example.msg("YAPP", "Se creo el recurso con éxito");
+				win.close();
 			},
 			failure : function(recurso) {
-				Ext.example.msg("YAPP", "No se pudo crear el recurso");
+				alert("No se pudo crear el recurso");
 			}
 		});
 		
@@ -102,12 +101,12 @@ Ext.define('YAPP.controller.Recursos', {
 		record.save({
 			success : function(recurso) {
 				Ext.example.msg("YAPP", "Se modifico el recurso con éxito");
+				win.close();
 			},
 			failure : function(recurso) {
-				Ext.example.msg("YAPP", "No se pudo modificar el recurso");
+				alert("No se pudo modificar el recurso");
 			}
 		});
-		win.close();
 	},
 	
 	borrarRecurso: function(button) {
@@ -121,7 +120,7 @@ Ext.define('YAPP.controller.Recursos', {
 				Ext.example.msg("YAPP", "Se elimino recurso con éxito");
 			},
 			failure : function(recurso) {
-				Ext.example.msg("YAPP", "No se pudo eliminar el recurso");
+				alert("YAPP", "No se pudo eliminar el recurso");
 			}
 		});
 	},
