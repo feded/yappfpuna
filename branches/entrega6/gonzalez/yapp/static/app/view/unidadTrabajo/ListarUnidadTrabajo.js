@@ -43,6 +43,7 @@ Ext.define('YAPP.view.unidadTrabajo.ListarUnidadTrabajo' ,{
 			{header:'Etiqueta', dataIndex:'_etiqueta'},
 			{header:'Descripcion', dataIndex:'_descripcion'},
 			{header:'Color', dataIndex:'_color'},
+			//{header:'Costo', renderer: renderizador_listar_unidad_trabajo}
         ];   
 
         this.callParent(arguments);
@@ -54,3 +55,26 @@ Ext.define('YAPP.view.unidadTrabajo.ListarUnidadTrabajo' ,{
                 this.down('#asignarRecursos').setDisabled(selections.length === 0)
     }
 });
+
+function renderizador_listar_unidad_trabajo(value, metaData, record) {
+	
+	var store = Ext.create('YAPP.store.Recursos');
+	
+	store.load({
+			params : {
+					operacion : 'NODISPONIBLES',
+					id_unidad: record.data.id  
+			},
+			callback: function(records){
+				var costo = 0;
+				for ( var i in records) {
+					costo = costo + records[i].data._costo_hora + records[i].data._costo_cantidad;
+					console.log(records[i].data._costo_hora);
+					console.log(records[i].data._costo_cantidad);
+				}
+				console.log("el costo es " + costo);
+				//retorna antes
+				return costo;
+			}
+		});
+}
