@@ -4,6 +4,7 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 	views: [
 		'unidadTrabajo.ListarUnidadTrabajo', 
 		'unidadTrabajo.NuevaUnidadTrabajo',
+		'unidadTrabajo.EditarUnidadTrabajo',
 		'unidadTrabajo.Asignar'
 		],
 	stores:['UnidadTrabajo'],
@@ -13,6 +14,10 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 	       	{
 	       		selector: 'nuevaunidadtrabajo textfield[name=_color]',
 	       		ref: 'colorTextoNuevo'
+	       	},
+	       	{
+	       		selector: 'editarunidadtrabajo textfield[name=_color]',
+	       		ref: 'colorTextoEditar'
 	       	},
 	       	{
 	       		selector: 'asignarrecursos grid[name=firstGrid]',
@@ -34,19 +39,43 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
             	'listarunidadtrabajo button[action=crear]':{
             		click: this.crearUnidadTrabajo
             	},
+            	'listarunidadtrabajo' :{
+            		itemdblclick : this.editarUnidadTrabajo
+            	},
             	'nuevaunidadtrabajo button[action=guardar]':{
             		click: this.guardarNuevaUnidadTrabajo
             	},
             	'nuevaunidadtrabajo colorpicker': {
             		select: this.seleccionoColorNuevo
             	},
+            	'editarunidadtrabajo colorpicker': {
+            		select: this.seleccionoColorEditar
+            	},
+            	'editarunidadtrabajo button[action=guardar]':{
+            		click: this.guardarEditarUnidadTrabajo
+            	},
             	'listarunidadtrabajo button[action=asignarRecursos]':{
             		click: this.asignarRecursos
             	},
             	'asignarrecursos button[action=guardar]':{
             		click: this.guardarAsignacion
-            	}
+            	},
+            	'listarunidadtrabajo button[action=borrar]': {
+            		click: this.borrarUnidadTrabajo
+            	},
         });
+    },
+    
+   	borrarUnidadTrabajo: function(button) {
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		this.getUnidadTrabajoStore().remove(selection)
+	},
+    
+    editarUnidadTrabajo: function(grid, record){
+    	var view = Ext.widget('editarunidadtrabajo');
+        view.down('form').loadRecord(record);
     },
     
     guardarAsignacion: function(button){
@@ -102,6 +131,11 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 		this.getColorTextoNuevo().setValue(texto);
 	},
     
+    seleccionoColorEditar: function(picker, selColor){
+		var texto = selColor;
+		this.getColorTextoEditar().setValue(texto);
+	},
+    
     
     crearUnidadTrabajo: function(button){
 		var view = Ext.widget('nuevaunidadtrabajo');
@@ -120,6 +154,15 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 		win.close();
 		this.getUnidadTrabajoStore().insert(0, record);
 	},
+	
+	guardarEditarUnidadTrabajo: function(button){
+		var win = button.up('window');
+		var form = win.down('form');
+		var record = form.getRecord();
+		var values = form.getValues();
+		record.set(values);
+		win.close();
+	}
 	
     	
 });

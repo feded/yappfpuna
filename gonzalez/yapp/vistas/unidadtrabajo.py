@@ -43,6 +43,40 @@ def obtener_crear_unidad_trabajo(request):
         a_ret = json.dumps({'sucess': 'true', 'unidadtrabajo':j_string})
     
         return Response(a_ret)
+
+@view_config(route_name='actualizareliminarunidadtrabajo')
+def actualizar_eliminar_unidad_trabajo(request):
+    
+    if (request.method == 'DELETE'):
+        u= Unpickler()
+        entidad = u.restore(request.json_body);
+        dao = UnidadTrabajoDAO(request)
+        unidad = dao.get_by_id(entidad["id"])
+        
+        id_unidad = entidad['id']
+        dao_unidad_recurso = UnidadTrabajoRecursoDAO(request)
+        entidades = dao_unidad_recurso.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==id_unidad).all();
+        for unidad_recurso in entidades:
+            dao_unidad_recurso.borrar(unidad_recurso)
+        
+        dao.borrar(unidad)
+        return Response(json.dumps({'sucess': 'true'}))
+    else:
+        u= Unpickler()
+        dao = UnidadTrabajoDAO(request)
+        entidad = u.restore(request.json_body);
+        vieja = dao.get_by_id(entidad["id"])
+        vieja._nombre = entidad["_nombre"]
+        vieja._etiqueta = entidad["_etiqueta"]
+        vieja._descripcion = entidad["_descripcion"]
+        vieja._color = entidad["_color"]
+        
+        dao.update(vieja)
+        return Response(json.dumps({'sucess': 'true'}))
+
+    
+    
+    
 @view_config(route_name='asignarrecursos')
 def asignar_recursos(request):
     u= Unpickler()
