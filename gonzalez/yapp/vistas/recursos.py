@@ -67,9 +67,6 @@ def obtener_crear_recursos(request):
             return format_recursos(request, recursos)
         elif operacion == 'NODISPONIBLES':
             id_unidad_trabajo = request.GET.get('id_unidad')
-            print "----------"
-            print id_unidad_trabajo
-            print "----------"
             dao = UnidadTrabajoRecursoDAO(request);
             entidades = dao.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==id_unidad_trabajo).all();
             recursos = []
@@ -87,19 +84,25 @@ def obtener_crear_recursos(request):
         
         if (entidad["_tipo"] == "Persona"):
             nuevo_recurso = RecursoPersona(entidad["_nombre"],tipo,entidad["_descripcion"],entidad["_costo_hora"])
+            a = RecursosLindos(nuevo_recurso._id, nuevo_recurso._nombre, nuevo_recurso._tipo,nuevo_recurso._descripcion,nuevo_recurso._tipo._tipo, nuevo_recurso._costo_hora, 0, 0)
             dao = RecursoPersonaDAO(request)
         elif (entidad["_tipo"] == "Bien"):
             nuevo_recurso = RecursoBien(entidad["_nombre"],tipo,entidad["_descripcion"],entidad["_costo_cantidad"],entidad["_cantidad"])
+            a = RecursosLindos(nuevo_recurso._id, nuevo_recurso._nombre, nuevo_recurso._tipo,nuevo_recurso._descripcion,nuevo_recurso._tipo._tipo, 0, nuevo_recurso._costo_cantidad, nuevo_recurso._cantidad)
             dao = RecursoBienDAO(request)
         elif (entidad["_tipo"] == "Material"):
             nuevo_recurso = RecursoMaterial(entidad["_nombre"],tipo,entidad["_descripcion"],entidad["_costo_cantidad"],entidad["_cantidad"])
+            a = RecursosLindos(nuevo_recurso._id, nuevo_recurso._nombre, nuevo_recurso._tipo,nuevo_recurso._descripcion,nuevo_recurso._tipo._tipo, 0, nuevo_recurso._costo_cantidad, nuevo_recurso._cantidad)
             dao = RecursoMaterialDAO(request)
             
         dao.crear(nuevo_recurso)
         
+        a._id = nuevo_recurso.id
+        
         lista = []
         p = Pickler()
-        lista.append(p.flatten(nuevo_recurso))
+#        lista.append(p.flatten(nuevo_recurso))
+        lista.append(p.flatten(a))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})
     
