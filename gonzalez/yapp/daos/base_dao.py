@@ -62,9 +62,11 @@ class BaseDAO :
         lista = self.get_query().all();
         entidad = lista[len(lista) - 1];
         if (self._request!= None):
-            historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
-            DBSession.add(historia)
-            self.notificar(entidad, historia)
+            #no va a tener user en caso de que venga del pyunit
+            if ('user' in self._request.session):
+                historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
+                DBSession.add(historia)
+                self.notificar(entidad, historia)
         return entidad;
          
     def borrar(self, entidad):
