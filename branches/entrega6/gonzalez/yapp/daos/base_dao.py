@@ -58,6 +58,7 @@ class BaseDAO :
             - B{entidad:} entidad persistida
         """
         DBSession.add(entidad)
+        DBSession.flush()
         lista = self.get_query().all();
         entidad = lista[len(lista) - 1];
         if (self._request!= None):
