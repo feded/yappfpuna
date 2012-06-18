@@ -20,11 +20,7 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
         	],
 	
 	init:function(){
-		console.log('Cargado controller AdministrarProyectos');
-		this.control({
-//            'listarproyecto': {
-//                selectionchange: this.habilitarEliminar
-//            },
+		this.control({			
         
 				'listarproyecto button[action=crear]': {
                 	click: this.crearProyecto
@@ -38,10 +34,6 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
             		itemdblclick: this.editarProyecto
             	},
             	
-//            	'listarproyecto': {
-//            		datachanged: this.actualizarFase
-//            	},
-            	
             	'nuevoproyecto button[action=guardar]': {
             		click: this.guardarNuevoProyecto
             	},
@@ -53,16 +45,8 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
         });
 	},
 	
-	//habilitarEliminar: function(){
-		//var tool = grid.down('toolbar');
-		//console.log('habilitando eliminar');
-		//grid.down('#delete').setDisabled(false);
-		
-	//},
-	
 	crearProyecto: function(){
 		var view = Ext.widget('nuevoproyecto');
-		//view.setTitle('Nuevo proyecto');
         var proyecto = new YAPP.model.Proyecto();
 		
 		proyecto.data._estado = "Elaboración";
@@ -71,23 +55,17 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		proyecto.data._fecha_creacion = hoy;
 		proyecto.data._fecha_modificacion = hoy;
 		
-		view.down('form').loadRecord(proyecto);
-         
-         
-         
+		view.down('form').loadRecord(proyecto);  
 	},
 	
 	editarProyecto: function(grid, record){
 		var view = Ext.widget('editarproyecto');
-		view.setTitle('Editar proyecto');
-		//record.data.accion = "editar";
 		var fecha = new Date();
 		var hoy = Ext.Date.format(fecha,'Y-m-d, g:i a');
 		record.data._fecha_modificacion = hoy;
-		
-		console.log(record);
-		
         view.down('form').loadRecord(record);
+        var cb1 = this.getComboAutor().setValue(record.data._autor_id);
+        var cb2 = this.getComboLider().setValue(record.data._lider_id);
 	},
 	
 	
@@ -95,7 +73,15 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
-		selection.data.accion = "eliminar"
+		selection.destroy({
+			success: function(proyecto){
+				Ext.example.msg("YAPP", "Proyecto eliminado exitosamente");
+			},
+			
+			failure: function(proyecto){
+				alert("No se elimino el proyecto");
+			}
+		});
 		this.getProyectosStore().remove(selection)
 	},	
 	
@@ -107,10 +93,20 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		record.set(values);
 		var cb1 = this.getComboAutor();
 		var cb2 = this.getComboLider();
-		record.data.autor_nombre = cb1.getRawValue();
-		record.data.lider_nombre = cb2.getRawValue();
-		win.close();
-		Ext.example.msg("YAPP", "Cambios guardados correctamente");
+		record.data._autor_id = cb1.getValue();
+		record.data._lider_id = cb2.getValue();
+		record.save({
+			success: function(proyecto){
+				Ext.example.msg("YAPP", "Cambios guardados correctamente");
+				win.close();				
+			},
+			
+			failure: function(proyector){
+				alert("No se modifico el proyecto");
+			}
+		});
+		
+		
 	},
 	
 	guardarNuevoProyecto: function(button){
@@ -119,12 +115,24 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);
-		console.log(record.data._autor);
-		record.set('autor_nombre',record.data._autor);
-		record.set('lider_nombre',record.data._lider);
-		win.close();
-		this.getProyectosStore().insert(0, record);
-		Ext.example.msg("YAPP", "Proyecto creado con éxito");
+		record.set('_autor_id',record.data._autor);
+		record.set('_lider_id',record.data._lider);
+		var me = this;
+	
+		record.save({
+			success: function(proyecto){
+				me.getProyectosStore().insert(me.getProyectosStore().getCount(),proyecto);
+				win.close();
+				Ext.example.msg("YAPP", "Proyecto creado con éxito");
+			},
+			
+			failure: function(proyecto){
+				alert("No se pudo crear el proyecto");
+			}
+		});	
+		
+		
+		
 	}
 	
 });
