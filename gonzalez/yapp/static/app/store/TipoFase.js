@@ -2,7 +2,7 @@ Ext.define('YAPP.store.TipoFase', {
 	extend: 'Ext.data.Store',
 	model: 'YAPP.model.TipoFase',
 	
-    autoSync: true,
+    autoSync: false,
 
 	proxy : {
     	type : 'rest',

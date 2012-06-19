@@ -73,8 +73,10 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
+		var me = this;
 		selection.destroy({
 			success: function(proyecto){
+				me.getProyectosStore().remove(selection)
 				Ext.example.msg("YAPP", "Proyecto eliminado exitosamente");
 			},
 			
@@ -82,7 +84,6 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 				alert("No se elimino el proyecto");
 			}
 		});
-		this.getProyectosStore().remove(selection)
 	},	
 	
 	guardarEditarProyecto: function(button){

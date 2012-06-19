@@ -15,9 +15,14 @@ Ext.define('YAPP.model.Fase', {
         		name: '_orden',
         		type: 'int'
         	}, '_comentario', '_estado', '_color'
-//        	{
-//        		name: '_color',
-//        		type: 'int'
-//        	}
-        	]
+        	],
+	proxy : {
+    	type : 'rest',
+    	url: '/fases',
+        reader : {
+        	type : 'json',
+            root : 'fases',
+            successProperty : 'sucess'
+            }
+        }
 });
