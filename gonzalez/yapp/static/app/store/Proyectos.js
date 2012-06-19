@@ -6,7 +6,7 @@ Ext.define('YAPP.store.Proyectos', {
     autoSync: false,
         
 	proxy : {
-    	type : 'ajax',
+    	type : 'rest',
         api : {
         	read : '/readProyectos',
         	update : '/updateProyectos',

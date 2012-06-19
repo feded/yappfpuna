@@ -26,7 +26,7 @@ Ext.define('YAPP.model.Proyecto', {
         	'_fecha_modificacion'],
  	
 	proxy : {
-    	type : 'ajax',
+    	type : 'rest',
         api : {
         	read : '/readProyectos',
         	update : '/updateProyectos',

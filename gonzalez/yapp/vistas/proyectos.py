@@ -18,8 +18,9 @@ import json
 def read_proyectos(request):
     """
     @summary: Maneja las solicitudes para recuperar los proyectos.
+    @param request: Solicitud de recuperacion.
+    @return: Retorna todos los proyectos.
     """
-    
  
     validador = Validador(request)
     
@@ -41,7 +42,9 @@ def read_proyectos(request):
 def create_proyectos(request):
     """
     @summary: Maneja las solicitudes para crear los proyectos. El proyecto nuevo se crea
-            con una fase por defecto
+            con una fase por defecto, a la cual se le asocia un tipo de item por defecto
+    @param request: Solicitud de creacion.
+    @return: Retorna el proyecto creado.
     """
     u= Unpickler()
     entidad = u.restore(request.json_body);
@@ -72,7 +75,6 @@ def create_proyectos(request):
     lista = []
     p = Pickler()
     a = ProyectoDTO(nuevo_proyecto);
-#    a = ProyectosLindos(nuevo_proyecto._id,entidad["_nombre"],rol,entidad["_prioridad"],entidad["_estado"],lider,entidad["_nota"],entidad["_fecha_creacion"],entidad["_fecha_modificacion"],rol._nombre,lider._nombre)
     lista.append(p.flatten(a))
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'proyectos':j_string})
@@ -83,6 +85,8 @@ def create_proyectos(request):
 def update_proyectos(request):
     """
     @summary: Maneja las solicitudes para actualizacion de proyectos.
+    @param request: Solicitud de modificacion.
+    @return: Retorna el proyecto modificado.
     """
     u= Unpickler()
     dao = ProyectoDAO(request)
@@ -113,7 +117,6 @@ def update_proyectos(request):
     lista = []
     p = Pickler()
     a = ProyectoDTO(vieja)
-#    a = ProyectosLindos(vieja._id,vieja._nombre,rol,vieja._prioridad,vieja._estado,lider,vieja._nota,vieja._fecha_creacion,vieja._fecha_modificacion,rol._nombre,lider._nombre)
     lista.append(p.flatten(a))
     j_string = p.flatten(lista)
     return Response(json.dumps({'sucess': 'true','proyectos':j_string}))
@@ -121,8 +124,9 @@ def update_proyectos(request):
 @view_config(route_name='deleteproyectos')
 def delete_proyectos(request):
     """
-    @summary: Maneja las solicitudes para eliminar proyectos. Al eliminar el proyecto
-        se elimanan sus fases e items.
+    @summary: Maneja las solicitudes para eliminar proyectos.
+    @param request: Solicitud de eliminacion.
+    @return: Retorna true en caso de exito.
     """
     u= Unpickler()
     entidad = u.restore(request.json_body);
@@ -135,20 +139,3 @@ def delete_proyectos(request):
          
     dao.borrar(proyecto)
     return Response(json.dumps({'sucess': 'true'}))
-
-#class ProyectosLindos:
-#    """
-#    @summary: Unidad de transporte para proyectos.         
-#    """
-#    def __init__(self, _id, nombre, autor, prioridad, estado, lider, nota,fecha_creacion, fecha_modificacion,autor_nombre,lider_nombre):
-#        self._id = _id;
-#        self._nombre = nombre;
-#        self._autor = autor;
-#        self._prioridad = prioridad;
-#        self._estado = estado;
-#        self._lider = lider;
-#        self._nota = nota;
-#        self._fecha_creacion = fecha_creacion;
-#        self._fecha_modificacion = fecha_modificacion;
-#        self.autor_nombre = autor_nombre;
-#        self.lider_nombre = lider_nombre;
