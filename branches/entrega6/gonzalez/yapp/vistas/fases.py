@@ -113,7 +113,11 @@ def actualizar_eliminar_fase(request):
         vieja._color = entidad["_color"]
         
         dao.update(vieja)
-        return Response(json.dumps({'sucess': 'true'}))
+        lista = []
+        p = Pickler()
+        lista.append(p.flatten(vieja))
+        j_string = p.flatten(lista)
+        return Response(json.dumps({'sucess': 'true', 'fases':j_string}))
 
 @view_config(route_name='obtenercrearatributofase')
 def obtener_crear_atributofase(request):
@@ -147,7 +151,7 @@ def obtener_crear_atributofase(request):
         p = Pickler()
         lista.append(p.flatten(nuevo_atributo))
         j_string = p.flatten(lista)
-        a_ret = json.dumps({'sucess': 'true', 'atributofases':j_string})
+        a_ret = json.dumps({'sucess': 'true', 'atributofase':j_string})
     
         return Response(a_ret)
 
@@ -170,11 +174,16 @@ def actualizar_eliminar_atributofase(request):
         entidad = u.restore(request.json_body);
         vieja = dao.get_by_id(entidad["id"])
         vieja._nombre = entidad["_nombre"]
-        vieja._autor = entidad["_descripcion"]
-        vieja._prioridad = entidad["_valor"]
+        vieja._descripcion = entidad["_descripcion"]
+        vieja._valor = entidad["_valor"]
         
         dao.update(vieja)
-        return Response(json.dumps({'sucess': 'true'}))
+        
+        lista = []
+        p = Pickler()
+        lista.append(p.flatten(vieja))
+        j_string = p.flatten(lista)
+        return Response(json.dumps({'sucess': 'true', 'atributofase':j_string}))
    
 @view_config(route_name='obtenercreartipofase')
 def obtener_crear_tipofase(request):
@@ -209,9 +218,10 @@ def obtener_crear_tipofase(request):
         
         lista = []
         p = Pickler()
-        lista.append(p.flatten(nuevo_tipo_fase))
+        a = TipoFaseLindos(nuevo_tipo_fase._id, nuevo_tipo_fase._fase._id, nuevo_tipo_fase._tipo._id,nuevo_tipo_fase._tipo._nombre)
+        lista.append(p.flatten(a))
         j_string = p.flatten(lista)
-        a_ret = json.dumps({'sucess': 'true', 'atributofases':j_string})
+        a_ret = json.dumps({'sucess': 'true', 'tipofase' : j_string})
     
         return Response(a_ret)
 
