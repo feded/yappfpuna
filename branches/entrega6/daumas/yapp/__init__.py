@@ -86,8 +86,11 @@ def main(global_config, **settings):
     config.add_route('rolesfinales', '/rolesfinales/')
     config.add_route('notificaciones', '/notificaciones/')
     config.add_route('calculo_impacto', '/calculo_impacto')
+    
     config.add_route('asignarUnidadItem' , '/unidadItem')
     config.add_route('editarUnidadItem' , '/unidadItem/{id}')
+    config.add_route('asignarAtributoItem' , '/itemAtributo')
+    config.add_route('editarAtributoItem' , '/itemAtributo/{id}')
     
     
     #rutas Volpe 5 iteracion

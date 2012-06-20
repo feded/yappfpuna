@@ -31,13 +31,13 @@ var form_atributo = {
 	title : 'Atributo Tipo de Item',
 	items : [ {
 		xtype : 'textfield',
+		name : '_valor',
+		fieldLabel : 'Nombre',
+	},{
+		xtype : 'textfield',
 		name : '_tipo',
 		fieldLabel : 'Tipo',
 		allowBlank : false
-	},{
-		xtype : 'textfield',
-		name : '_valor',
-		fieldLabel : 'Valor',
 	},{
 		xtype : 'textfield',
 		name : '_descripcion',

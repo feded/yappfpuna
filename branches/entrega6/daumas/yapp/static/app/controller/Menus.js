@@ -156,6 +156,7 @@ Ext.define('YAPP.controller.Menus', {
                 callback : function(records, operation, success) {
                         fases = this.getStore('Fases');
                         this.getFases().store = fases;
+                        this.getFases().setDisabled(false);
                         this.getStore('Fases').sort('_orden', 'ASC');
                 }
         });
@@ -186,6 +187,7 @@ Ext.define('YAPP.controller.Menus', {
                 displayField : '_nombre',
                 queryMode : 'local',
                 valueField : 'id',
+                disabled:true,
                 name : 'fases'
             })
 			panel.setVisible(true);
