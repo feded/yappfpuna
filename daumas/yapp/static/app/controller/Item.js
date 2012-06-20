@@ -1,9 +1,10 @@
 Ext.define('YAPP.controller.Item', {
 	extend : 'Ext.app.Controller',
 	
-	views : [ 'item.Edit', 'item.List',  'item.CrearItem', 'item_unidad.List', 'item_unidad.Edit' ],
-	stores : [ 'Item', 'Fases', 'TipoItems', 'ItemUnidad' ],
-	models : [ 'Item' , 'ItemUnidad' ],
+	views : [ 'item.Edit', 'item.List',  'item.CrearItem', 'item.RevertirItem', 'item_atributo.Edit',
+	 'item_unidad.List', 'item_unidad.Edit', 'item.RevivirItem', 'item_atributo.List', 'item_atributo.Agregar' ],
+	stores : [ 'Item', 'Fases', 'TipoItems', 'ItemUnidad', 'ItemAtributo', 'AtributoTipoItem' ],
+	models : [ 'Item' , 'ItemUnidad', 'ItemAtributo' ],
 	
 	refs : [ 
 	{
@@ -21,7 +22,24 @@ Ext.define('YAPP.controller.Item', {
 	}, {
 		selector : 'crearitem gridpanel[name=gridTipo]',
 		ref : 'gridTipo'
-	}, {
+	},{
+		selector : 'revivirItems gridpanel[name=gridEliminados]',
+		ref : 'gridEliminados'
+	},{
+		selector : 'revivirItems gridpanel[name=gridARevivir]',
+		ref : 'gridARevivir'
+	},
+	
+	{
+		selector : 'revivirItems gridpanel[name=gridItem]',
+		ref : 'gridDetalleItem'
+	},
+	{
+		selector : 'revertirItems gridpanel[name=gridVersionesItem]',
+		ref : 'gridVersionesItem'
+	},
+	
+	 {
 		selector : 'itemedit combobox[name=_padre]',
 		ref : 'comboItemPadre'
 	}, {
@@ -51,6 +69,15 @@ Ext.define('YAPP.controller.Item', {
 	} , {
 		selector : 'itemslist button[name=crear]',
 		ref : 'botonList'
+	} , {
+		selector : 'itemslist button[name=revivir]',
+		ref : 'revivir'
+	} , {
+		selector : 'itemslist button[name=versiones]',
+		ref : 'versiones'
+	}, {
+		selector : 'agregaratributo combobox[name=_atributo_id]',
+		ref : 'atributoCombo'
 	}
 	],
 	
@@ -64,7 +91,11 @@ Ext.define('YAPP.controller.Item', {
 			'itemslist' :{
 				render : this.onRender,
 				itemdblclick : this.editarItem,
-				itemclick : this.mostrarRecursos
+				itemclick : this.mostrarDatos
+			},
+			
+			'atributositemlist' : {
+				itemdblclick : this.editarAtributo,
 			},
 			'itemedit button[action=guardar]' : {
 				click : this.guardarItem
@@ -80,6 +111,27 @@ Ext.define('YAPP.controller.Item', {
 			'itemslist button[action=desaprobar]' : {
 				click : this.activarItem
 			},
+			'itemslist button[action=revivir]' : {
+				click : this.revivirItemView
+			},
+			
+			'revivirItems button[action=revivirItems]' : {
+				click : this.botonRevivirApretado
+			},
+			'revivirItems gridpanel[name=gridEliminados]' : {
+				select : this.agregarDetalle,
+				deselect : this.sacarDetalle,
+			},
+			'revivirItems gridpanel[name=gridARevivir]': {
+				drop : this.sacarDetalle,
+			},
+			'revertirItems button[action=revertirItems]' : {
+				click : this.revertirItem
+			},
+			
+			'itemslist button[action=versiones]' : {
+				click : this.verVersiones
+			},
 			'itemunidadlist button[action=asignar]' : {
 				click : this.asignarRecursoItem
 			},
@@ -89,6 +141,21 @@ Ext.define('YAPP.controller.Item', {
 			'asignarUnidad button[action=guardar]' : {
 				click : this.guardarAsignacion
 			},
+			'revertirItems gridpanel[name=gridVersionesItem]' :{
+				itemclick : this.habilitarBoton
+			},
+			'atributositemlist button[action=atributos]' :{
+				click : this.asignarAtributos
+			
+			},
+			'agregaratributo button[action=guardar]' : {
+				click : this.guardarValorAtributo
+			},
+			
+			'asignarAtributo button[action=guardar]' : {
+				click : this.guardarValorAtributo
+			},
+			
 			'crearitem gridpanel[name=gridTipo]' :{
 				itemclick : this.cargarTipo
 			},
@@ -160,6 +227,7 @@ Ext.define('YAPP.controller.Item', {
 		formRecord.set(values);
 		
 		var tipo = this.getTipoItemsStore().getById(record.data.id);
+		console.log(tipo)
 		formRecord.data._tipo_item = tipo
 		formRecord.data._tipo_item_prefijo = tipo.data._prefijo
 		win.down('form').loadRecord(formRecord); 
@@ -265,7 +333,9 @@ Ext.define('YAPP.controller.Item', {
 			record.data._antecesor = record.data._antecesor.data.id;
 		}
 		if (typeof record.data._tipo_item.data != "undefined" ){
-			record.data._tipo_item = record.data._tipo_item.data.id;
+			var id = record.data._tipo_item.data.id;
+			record.data._tipo_item = record.data._tipo_item.data;
+			record.data._tipo_item._id = id; 
 		}
 		var accion = record.data.accion;
 		var store = this.getItemStore();
@@ -374,7 +444,7 @@ Ext.define('YAPP.controller.Item', {
 		record.destroy({
 			success : function(linea_base) {
 				Ext.example.msg("Item", "Eliminado con exito");
-				store.remove(selection);
+				store.remove(record);
 			},
 			failure : function(linea_base) {
 				alert("No se pudo eliminar el Item");
@@ -384,6 +454,7 @@ Ext.define('YAPP.controller.Item', {
 	},
 	
 	aprobarItem : function(button) {
+		var fase = this.getComboFase();
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var record = grilla.getSelectionModel().getSelection()[0];
@@ -404,17 +475,24 @@ Ext.define('YAPP.controller.Item', {
 		if (typeof record.data._tipo_item.data != "undefined" ){
 			record.data._tipo_item = record.data._tipo_item.data.id;
 		}
-		
+		var store = this.getItemStore();
 		record.save(
 		{	
 			success : function(record) {
+				store.load({
+					params : {
+						id : fase.getValue()
+					}
+				});
 				Ext.example.msg("Item", "Aprobado con exito");
+				//habilitarBotones("APROBADO");
 			},
 			failure : function(record) {
 				alert("No se pudo aprobar el Item");
 			}
 			
 		});
+		this.habilitarBotones("");
 	},
 	
 	habilitarBotones : function(estado){
@@ -423,23 +501,44 @@ Ext.define('YAPP.controller.Item', {
 			this.getDelete().setDisabled(false);
 			this.getAprove().setDisabled(false);
 			this.getDeaprove().setDisabled(true);
+			this.getVersiones().setDisabled(false);
 		}else if (estado == "APROBADO"){
 			this.getBtnAsignar().setDisabled(true);
 			this.getDelete().setDisabled(true);
 			this.getAprove().setDisabled(true);
 			this.getDeaprove().setDisabled(false);
+			this.getVersiones().setDisabled(false);
 		}else if (estado == "BLOQUEADO"){
 			this.getBtnAsignar().setDisabled(true);
 			this.getDelete().setDisabled(true);
 			this.getAprove().setDisabled(true);
 			this.getDeaprove().setDisabled(true);
+			this.getVersiones().setDisabled(true);
+		}else{
+			this.getBtnAsignar().setDisabled(true);
+			this.getDelete().setDisabled(true);
+			this.getAprove().setDisabled(true);
+			this.getDeaprove().setDisabled(true);
+			this.getVersiones().setDisabled(true);
 		}
 	},
 	
+	mostrarDatos: function(grid,record){
+		this.mostrarRecursos(grid, record);
+		this.mostrarAtributos(grid, record);
+		this.habilitarBotones(record.data._estado);
+	},
+	
+	mostrarAtributos: function(grid, record){
+		var storeAtributoItems = this.getItemAtributoStore();
+		storeAtributoItems.load({
+			params : {
+				_item_id : record.data._item_id
+			}
+		});
+	},
+	
 	mostrarRecursos: function(grid, record){
-		this.habilitarBotones(record.data._estado)
-		
-		
 		var storeUnidadItems = this.getItemUnidadStore();
 		storeUnidadItems.load({
 			params : {
@@ -503,18 +602,26 @@ Ext.define('YAPP.controller.Item', {
 			if (typeof record.data._tipo_item.data != "undefined" ){
 				record.data._tipo_item = record.data._tipo_item.data.id;
 			}
-			
+			var store = this.getItemStore();
+			var fase = this.getComboFase();
 			record.save(
 			{	
 				success : function(record) {
+					
+					store.load({
+						params : {
+							id : fase.getValue()
+						}
+					});
 					Ext.example.msg("Item", "Activado con exito");
-					habilitarBotones("ACTIVO");
+					//habilitarBotones("ACTIVO");
 				},
 				failure : function(record) {
 					alert("No se pudo activar el Item");
 				}
 				
 			});
+			this.habilitarBotones("");
 		}
 	},
 	
@@ -552,4 +659,213 @@ Ext.define('YAPP.controller.Item', {
 		});
 		
 	},
+	
+	guardarValorAtributo : function(button){
+		var botonlist = this.getBotonList();
+		var win = botonlist.up('grid');
+		var grilla = win.down('gridview')
+		var itemRecord = grilla.getSelectionModel().getSelection()[0];
+		var fase = this.getComboFase();
+		var win = button.up('window');
+		var form = win.down('form');
+		win.close();
+		var record = form.getRecord();
+		var values = form.getValues();
+		console.log(form)
+		record.set(values);
+		record.data._item_id= itemRecord.data.id
+		record.save(
+		{	
+			success : function(record) {
+				if (record.data.accion == "POST") {
+					this.getItemAtributoStore().insert(0, record);
+				}
+			},
+			failure : function(record) {
+				alert("No se pudo guardar el Atributo");
+			}
+			
+		});
+		var storeAtributosItems = this.getItemAtributoStore();
+		storeAtributosItems.load({
+			params : {
+				_item_id : itemRecord.data._item_id
+			}
+		});
+		
+	},
+	
+	revivirItemView : function(button){
+	
+		var fase = this.getComboFase();
+		console.log("Revivir Items")
+		var view = Ext.widget('revivirItems');
+		view.setTitle('Revivir Items');
+		var store = this.getGridEliminados().getStore();
+		store.load({
+			params : {
+				id : fase.getValue(),
+				tipo : "ELIMINADO"
+			}
+		});
+		
+	},
+	
+	botonRevivirApretado : function(button) {
+		var win = button.up('window');
+		var grid2 = this.getGridARevivir();
+		if (grid2.store.count() == 0) {
+			alert("Seleccione al menos un item para revivir");
+			return;
+		}
+		var fase = this.getComboFase();
+		var items = grid2.store.getRange();
+		
+		var store = this.getItemStore();
+		for (record in items){
+			record = items[record]
+			console.log(record)
+			record.data._estado = "REVISION";
+			record.data._version = record.data._version + 1 
+			record.save(
+			{	
+				success : function(registro) {
+					store.load({
+						params : {
+							id : fase.getValue()
+						}
+					});
+					
+				},
+				failure : function(record) {
+					alert("No se pudo revivir el Item: " + record.data._nombre);
+				}
+				
+			});
+		}
+		
+		win.close();
+		
+	},
+	
+ 	agregarDetalle : function(grid, record){
+ 		console.log("entro aca?")
+		var gridDetallesItems = this.getGridDetalleItem();
+		var store = gridDetallesItems.store;
+		store.add(record);
+ 	},
+ 	
+ 	sacarDetalle : function(grid, record){
+		var gridDetallesItems = this.getGridDetalleItem();
+		var store = gridDetallesItems.store;
+		store.remove(record);
+ 	},
+	
+	verVersiones : function(button){
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var record = grilla.getSelectionModel().getSelection()[0];
+		var fase = this.getComboFase();
+		console.log("Revertir Items")
+		var view = Ext.widget('revertirItems');
+		view.setTitle('Revertir Item');
+		var store = this.getGridVersionesItem().getStore();
+		store.load({
+			params : {
+				id : fase.getValue(),
+				tipo : "VERSIONES",
+				item_id : record.data._item_id
+			}
+		});
+		
+	}, 
+	habilitarBoton : function(grid, record){
+		var win = grid.up('window');
+		win.down('#revertirItems').setDisabled(false);
+ 	},
+ 	
+ 	revertirItem : function(button){
+ 		var fase = this.getComboFase();
+		var win = button.up('window');
+		var grilla = win.down('gridview')
+		var record = grilla.getSelectionModel().getSelection()[0];
+		var fase = this.getComboFase();
+		var store = this.getItemStore();
+		var recordActual = store.getAt(
+			store.findBy(
+				function(rec, id){
+					if (rec.data._item_id == record.data._item_id){
+						return rec
+					}		
+				}
+			)
+		);
+		var versionActual = recordActual.data._version;
+		recordActual = record;
+		recordActual.data._version = versionActual +1;
+		recordActual.data._estado = "REVISION";
+		recordActual.save(
+		{	
+			success : function(registro) {
+				store.load({
+					params : {
+						id : fase.getValue()
+					}
+				});
+				win.close();
+				Ext.example.msg("Item", "Revertido con exito");
+			},
+			failure : function(record) {
+				alert("No se pudo guardar el Item");
+			}
+			
+		});
+		
+	},
+	
+	asignarAtributos : function (button){
+		var view = Ext.widget('agregaratributo');
+		var itemAtributo = new YAPP.model.ItemAtributo();
+		view.down('form').loadRecord(itemAtributo);
+		var botonlist = this.getBotonList();
+		var win = botonlist.up('grid');
+		var grilla = win.down('gridview')
+		var itemRecord = grilla.getSelectionModel().getSelection()[0];
+		var atributosCombo = this.getAtributoCombo();
+		//var itemAtributoStore = this.getAtributoTipoItemStore();
+		console.log(itemRecord.data._item_id)
+		atributosCombo.store.load({
+			params : {
+				
+				_item_id : itemRecord.data._item_id,
+				_no_definidos : true
+			}
+		});
+	}, 
+	
+	editarAtributo :  function(grid, record) {
+		var view = Ext.widget('asignarAtributo');
+		var itemAtributo = new YAPP.model.ItemAtributo();
+		view.down('form').loadRecord(itemAtributo);
+		var botonlist = this.getBotonList();
+		var win = botonlist.up('grid');
+		var grilla = win.down('gridview')
+		var itemRecord = grilla.getSelectionModel().getSelection()[0];
+		var atributosCombo = this.getAtributoCombo();
+		//var itemAtributoStore = this.getAtributoTipoItemStore();
+		console.log(itemRecord.data._item_id)
+//		atributosCombo.store.load({
+//			params : {
+//				
+//				_item_id : itemRecord.data._item_id,
+//				_no_definidos : true
+//			}
+//		});
+		
+	}
+	
+	
+	
+	
+	
 });

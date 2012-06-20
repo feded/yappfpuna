@@ -22,6 +22,11 @@ Ext.define('YAPP.view.item.List', {
 					itemId : 'delete',
 					name : 'borrar',
 					action : 'borrar',
+				}, '|', {
+					text : 'Revivir Item',
+					disabled : false,
+					name : 'revivir',
+					action : 'revivir',
 				} ]
 			},{
                 weight: 2,
@@ -43,12 +48,12 @@ Ext.define('YAPP.view.item.List', {
                     disabled : true,
                 }, '|',{
                     xtype: 'button',
-                    text: 'Administar Atributos del Item',
-                    name : 'atributos',
-                    action : 'atributos',
+                    text: 'Versiones Anteriores del Item',
+                    name : 'versiones',
+                    action : 'versiones',
                     scope : this,
                     disabled : true,
-                }, ]}],
+                }]}],
 			
 			columns : [ {
 				header : 'Nombre',
