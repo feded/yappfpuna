@@ -16,11 +16,6 @@ Ext.define('YAPP.view.proyecto.EditarProyecto', {
                         name : '_nombre',
                         fieldLabel: 'Proyecto'
                     },
-//                    {
-//                        xtype: 'textfield',
-//                        name : '_autor',
-//                        fieldLabel: 'Autor'
-//                    },
 					{
 						xtype : 'combobox',
 						fieldLabel : 'Autor',
@@ -52,11 +47,6 @@ Ext.define('YAPP.view.proyecto.EditarProyecto', {
 						queryMode : 'local',
 						emptyText : 'Seleccione un lider...'
 					},
-//                    {
-//                        xtype: 'textfield',
-//                        name : '_lider',
-//                        fieldLabel: 'Líder de proyecto'
-//                    },
                     {
                         xtype: 'textfield',
                         name : '_nota',

@@ -18,7 +18,11 @@ Ext.define('YAPP.view.tipoItem.List' ,{
 					itemId : 'delete',
 					action : 'borrar',
 					scope : this,
-				} ]
+				}, {
+					text : 'Importar',
+					action : 'importar',
+					scope : this,
+				}]
 			} ];
     
 	    this.columns = [

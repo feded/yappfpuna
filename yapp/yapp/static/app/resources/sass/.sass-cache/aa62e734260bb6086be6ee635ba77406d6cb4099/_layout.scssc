@@ -1,0 +1,393 @@
+3.1.1 (Brainy Betty)
+2de75d096f40c6ff39460f56402d1f57e1deed59
+o:Sass::Tree::RootNode
+:@template"Ç@mixin extjs-layout {
+    .#{$prefix}docked {
+        position: absolute;
+        z-index: 1;
+    }
+    
+    /**
+      * Dock Layouts
+      * @todo move this somewhere else?
+      */
+    .#{$prefix}docked-top {
+        border-bottom-width: 0 !important;
+    }
+
+    .#{$prefix}docked-bottom {
+        border-top-width: 0 !important;
+    }
+
+    .#{$prefix}docked-left {
+        border-right-width: 0 !important;
+    }
+
+    .#{$prefix}docked-right {
+        border-left-width: 0 !important;
+    }
+    
+    .#{$prefix}docked-noborder-top {
+        border-top-width: 0 !important;
+    }
+
+    .#{$prefix}docked-noborder-right {
+        border-right-width: 0 !important;
+    }
+    
+    .#{$prefix}docked-noborder-bottom {
+        border-bottom-width: 0 !important;
+    }
+    
+    .#{$prefix}docked-noborder-left {
+        border-left-width: 0 !important;
+    }
+    
+    .#{$prefix}box-inner {
+        overflow:hidden;
+
+        zoom:1;
+
+        position:relative;
+        left:0;
+        top:0;
+    }
+
+    .#{$prefix}box-item {
+        position:absolute !important;
+        left:0;
+        top:0;
+    }
+
+    .#{$prefix}box-layout-ct,
+    .#{$prefix}border-layout-ct {
+        overflow: hidden;
+        zoom: 1;
+    }
+
+    .#{$prefix}overflow-hidden {
+        overflow:hidden !important;
+    }
+
+    .#{$prefix}inline-children > * {
+        display: inline-block !important;
+    }
+
+    .#{$prefix}abs-layout-item {
+        position: absolute;
+    }
+
+    .#{$prefix}fit-item {
+        position: relative;
+    }
+
+    .#{$prefix}border-layout-ct {
+        background-color: $border-layout-ct-background;
+    }
+
+    .#{$prefix}border-region-slide-in {
+        z-index: 5;
+    }
+
+    .#{$prefix}region-collapsed-placeholder {
+        z-index: 4;
+    }
+
+    .#{$prefix}accordion-hd .#{$prefix}panel-header-text {
+        color: $accordion-header-color;
+        font-weight: normal;
+    }
+
+    .#{$prefix}accordion-hd {
+        .#{$prefix}tool-collapse-top,
+        .#{$prefix}tool-collapse-right,
+        .#{$prefix}tool-collapse-bottom,
+        .#{$prefix}tool-collapse-left {
+            background-position: 0 -255px;
+        }
+
+        .#{$prefix}tool-expand-top,
+        .#{$prefix}tool-expand-right,
+        .#{$prefix}tool-expand-bottom,
+        .#{$prefix}tool-expand-left {
+            background-position: 0 -240px;
+        }
+
+        .#{$prefix}tool-over {
+            .#{$prefix}tool-collapse-top,
+            .#{$prefix}tool-collapse-right,
+            .#{$prefix}tool-collapse-bottom,
+            .#{$prefix}tool-collapse-left {
+                background-position: -15px -255px;
+            }
+        }
+
+        .#{$prefix}tool-over {
+            .#{$prefix}tool-expand-top,
+            .#{$prefix}tool-expand-right,
+            .#{$prefix}tool-expand-bottom,
+            .#{$prefix}tool-expand-left {
+                background-position: -15px -240px;
+            }
+        }
+
+        background: $accordion-header-background-color !important;
+        @include single-box-shadow($accordion-header-background-color, 0, 0, 0, 0, true);
+    }
+
+    .#{$prefix}accordion-hd {
+        border-width: 1px 0 1px 0 !important;
+        padding: 4px 5px 5px 5px;
+        border-top-color: $panel-header-inner-border-color !important;
+    }
+    
+    .#{$prefix}accordion-body {
+        border-width: 0 !important;
+    }
+    
+    .#{$prefix}accordion-hd-sibling-expanded {
+        border-top-color: $panel-border-color !important;
+        @include single-box-shadow($panel-header-inner-border-color, 0, 1px, 0, 0, true);
+    }
+
+    .#{$prefix}accordion-hd-last-collapsed {
+        border-bottom-color: $accordion-header-background-color !important;
+    }
+
+    .#{$prefix}frame-tl,
+    .#{$prefix}frame-tr,
+    .#{$prefix}frame-tc,
+    .#{$prefix}frame-bl,
+    .#{$prefix}frame-br,
+    .#{$prefix}frame-bc {
+        overflow: hidden;
+        background-repeat: no-repeat;
+    }
+
+    .#{$prefix}frame-tc,
+    .#{$prefix}frame-bc {
+        background-repeat: repeat-x;
+    }
+
+    .#{$prefix}frame-mc {
+        position: relative;
+        background-repeat: repeat-x;
+        overflow: hidden;
+    }
+
+    // Classes for horizontal Box layout scroller.
+    // Uses the *TAB* scroller image because it's all we have.
+    // This will not work well in other cases
+    .#{$prefix}box-scroller-left {
+        float: left;
+        height: 100%;
+
+        z-index: 5;
+
+        .#{$prefix}toolbar-scroll-left,
+        .#{$prefix}tabbar-scroll-left {
+            width: 18px;
+            position: relative;
+            cursor: pointer;
+            height: $tab-height;
+            background: transparent no-repeat -18px 0;
+            background-image: theme-background-image($theme-name, 'tab-bar/scroll-left.gif');
+        }
+        .#{$prefix}toolbar-scroll-left-hover {
+            background-position: 0 0;
+        }
+        .#{$prefix}toolbar-scroll-left-disabled,
+        .#{$prefix}tabbar-scroll-left-disabled {
+            background-position: -18px 0;
+            @include opacity(.5);
+            
+            cursor:default;
+        }
+
+        .#{$prefix}toolbar-scroll-left {
+            background-image: theme-background-image($theme-name, 'toolbar/scroll-left.gif');
+            background-position: -14px 0;
+        }
+        .#{$prefix}toolbar-scroll-left-hover {
+            background-position: 0 0;
+        }
+        .#{$prefix}toolbar-scroll-left-disabled {
+            background-position: -14px 0;
+        }
+
+        .#{$prefix}toolbar-scroll-left {
+            width: 14px;
+            height: 22px;
+
+            border-bottom: 1px solid #8db2e3;
+        }
+    }
+
+    .#{$prefix}horizontal-box-overflow-body {
+        float: left;
+    }
+    .#{$prefix}box-scroller-right {
+        float: right;
+        height: 100%;
+
+        z-index: 5;
+
+        .#{$prefix}toolbar-scroll-right,
+        .#{$prefix}tabbar-scroll-right {
+            width: 18px;
+            position: relative;
+            cursor: pointer;
+            height: $tab-height;
+            background: transparent no-repeat 0 0;
+            background-image: theme-background-image($theme-name, 'tab-bar/scroll-right.gif');
+        }
+        .#{$prefix}toolbar-scroll-right-hover {
+            background-position: -18px 0;
+        }
+        .#{$prefix}toolbar-scroll-right-disabled,
+        .#{$prefix}tabbar-scroll-right-disabled {
+            background-position: 0 0;
+            @include opacity(.5);
+            
+            cursor:default;
+        }
+
+        .#{$prefix}toolbar-scroll-right {
+            background-image: theme-background-image($theme-name, 'toolbar/scroll-right.gif');
+        }
+        .#{$prefix}toolbar-scroll-right-hover {
+            background-position: -14px 0;
+        }
+        .#{$prefix}toolbar-scroll-right-disabled {
+            background-position: 0 0;
+        }
+
+        .#{$prefix}toolbar-scroll-right {
+            width: 14px;
+            height: 22px;
+
+            border-bottom: 1px solid #8db2e3;
+        }
+    }
+
+// Classes for vertical Box layout scroller
+    .#{$prefix}box-scroller-top {
+        .#{$prefix}box-scroller {
+            line-height: 0;
+            font-size: 0;
+        }
+        .#{$prefix}menu-scroll-top {
+            background: transparent no-repeat center center;
+            background-image: theme-background-image($theme-name, 'layout/mini-top.gif');
+            height: 8px;
+            cursor: pointer;
+        }
+    }
+    .#{$prefix}box-scroller-bottom {
+        .#{$prefix}box-scroller {
+            line-height: 0;
+            font-size: 0;
+        }
+        .#{$prefix}menu-scroll-bottom {
+            background: transparent no-repeat center center;
+            background-image: theme-background-image($theme-name, 'layout/mini-bottom.gif');
+            height: 8px;
+            cursor: pointer;
+        }
+    }
+
+    .#{$prefix}box-menu-right {
+        float: right;
+        padding-right: $toolbar-horizontal-spacing;
+    }
+
+    .#{$prefix}column {
+        float: left;
+    }
+    @if $include-ie {
+        .#{$prefix}ie6 .#{$prefix}column {
+            display: inline; /*prevent IE6 double-margin bug*/
+        }
+    }
+}:@options{:importero: Sass::Importers::Filesystem:
+@root"u/home/fede/Documentos/yapp/env/daumas/yapp/static/app/resources/sass/../../../extjs/resources/themes/stylesheets:@has_childrenT:@children[o:Sass::Tree::MixinDefNode:
+@name"extjs-layout;@;T;[,o:Sass::Tree::RuleNode;@;T;[o:Sass::Tree::PropNode:@prop_syntax:new;["position;@;[ :
+@tabsi :@valueo:Sass::Script::String;"absolute:
+@type:identifier:
+@lineio;;;;["z-index;@;[ ;i ;o;;"1;;;i	;i ;i:
+@rule[".o:Sass::Script::Variable	;"prefix;{ :@underscored_name"prefix;i"dockedo:Sass::Tree::CommentNode:@silent0;@:@lines[ ;[ :
+@loud0;"B/**
+  * Dock Layouts
+  * @todo move this somewhere else?
+  */;io;;@;T;[o;;;;["border-bottom-width;@;[ ;i ;o;;"0 !important;;;i;i ;i;[".o;	;"prefix;{ ;"prefix;i"docked-topo;;@;T;[o;;;;["border-top-width;@;[ ;i ;o;;"0 !important;;;i;i ;i;[".o;	;"prefix;{ ;"prefix;i"docked-bottomo;;@;T;[o;;;;["border-right-width;@;[ ;i ;o;;"0 !important;;;i;i ;i;[".o;	;"prefix;{ ;"prefix;i"docked-lefto;;@;T;[o;;;;["border-left-width;@;[ ;i ;o;;"0 !important;;;i;i ;i;[".o;	;"prefix;{ ;"prefix;i"docked-righto;;@;T;[o;;;;["border-top-width;@;[ ;i ;o;;"0 !important;;;i!;i ;i ;[".o;	;"prefix;{ ;"prefix;i "docked-noborder-topo;;@;T;[o;;;;["border-right-width;@;[ ;i ;o;;"0 !important;;;i%;i ;i$;[".o;	;"prefix;{ ;"prefix;i$"docked-noborder-righto;;@;T;[o;;;;["border-bottom-width;@;[ ;i ;o;;"0 !important;;;i);i ;i(;[".o;	;"prefix;{ ;"prefix;i("docked-noborder-bottomo;;@;T;[o;;;;["border-left-width;@;[ ;i ;o;;"0 !important;;;i-;i ;i,;[".o;	;"prefix;{ ;"prefix;i,"docked-noborder-lefto;;@;T;[
+o;;;;["overflow;@;[ ;i ;o;;"hidden;;;i1o;;;;["	zoom;@;[ ;i ;o;;"1;;;i3o;;;;["position;@;[ ;i ;o;;"relative;;;i5o;;;;["	left;@;[ ;i ;o;;"0;;;i6o;;;;["top;@;[ ;i ;o;;"0;;;i7;i ;i0;[".o;	;"prefix;{ ;"prefix;i0"box-innero;;@;T;[o;;;;["position;@;[ ;i ;o;;"absolute !important;;;i;o;;;;["	left;@;[ ;i ;o;;"0;;;i<o;;;;["top;@;[ ;i ;o;;"0;;;i=;i ;i:;[".o;	;"prefix;{ ;"prefix;i:"box-itemo;;@;T;[o;;;;["overflow;@;[ ;i ;o;;"hidden;;;iBo;;;;["	zoom;@;[ ;i ;o;;"1;;;iC;i ;iA;[
+".o;	;"prefix;{ ;"prefix;i@"box-layout-ct,
+    .o;	;"prefix;{ ;"prefix;iA"border-layout-cto;;@;T;[o;;;;["overflow;@;[ ;i ;o;;"hidden !important;;;iG;i ;iF;[".o;	;"prefix;{ ;"prefix;iF"overflow-hiddeno;;@;T;[o;;;;["display;@;[ ;i ;o;;"inline-block !important;;;iK;i ;iJ;[".o;	;"prefix;{ ;"prefix;iJ"inline-children > *o;;@;T;[o;;;;["position;@;[ ;i ;o;;"absolute;;;iO;i ;iN;[".o;	;"prefix;{ ;"prefix;iN"abs-layout-itemo;;@;T;[o;;;;["position;@;[ ;i ;o;;"relative;;;iS;i ;iR;[".o;	;"prefix;{ ;"prefix;iR"fit-itemo;;@;T;[o;;;;["background-color;@;[ ;i ;o;	;" border-layout-ct-background;{ ;" border_layout_ct_background;iW;iW;i ;iV;[".o;	;"prefix;{ ;"prefix;iV"border-layout-cto;;@;T;[o;;;;["z-index;@;[ ;i ;o;;"5;;;i[;i ;iZ;[".o;	;"prefix;{ ;"prefix;iZ"border-region-slide-ino;;@;T;[o;;;;["z-index;@;[ ;i ;o;;"4;;;i_;i ;i^;[".o;	;"prefix;{ ;"prefix;i^"!region-collapsed-placeholdero;;@;T;[o;;;;["
+color;@;[ ;i ;o;	;"accordion-header-color;{ ;"accordion_header_color;ic;ico;;;;["font-weight;@;[ ;i ;o;;"normal;;;id;i ;ib;[
+".o;	;"prefix;{ ;"prefix;ib"accordion-hd .o;	;"prefix;{ ;"prefix;ib"panel-header-texto;;@;T;[o;;@;T;[o;;;;["background-position;@;[ ;i ;o:Sass::Script::List	:@separator:
+space;{ ;[o:Sass::Script::Number:@denominator_units[ :@numerator_units[ ;@Ü:@original"0;i ;ilo;#;$[ ;%["px;@Ü;&"-255px;iˇ;il;il;il;i ;ik;[".o;	;"prefix;{ ;"prefix;ih"!tool-collapse-top,
+        .o;	;"prefix;{ ;"prefix;ii"#tool-collapse-right,
+        .o;	;"prefix;{ ;"prefix;ij"$tool-collapse-bottom,
+        .o;	;"prefix;{ ;"prefix;ik"tool-collapse-lefto;;@;T;[o;;;;["background-position;@;[ ;i ;o; 	;!;";{ ;[o;#;$@â;%[ ;@Æ;&"0;i ;iso;#;$[ ;%["px;@Æ;&"-240px;iˇ;is;is;is;i ;ir;[".o;	;"prefix;{ ;"prefix;io"tool-expand-top,
+        .o;	;"prefix;{ ;"prefix;ip"!tool-expand-right,
+        .o;	;"prefix;{ ;"prefix;iq""tool-expand-bottom,
+        .o;	;"prefix;{ ;"prefix;ir"tool-expand-lefto;;@;T;[o;;@;T;[o;;;;["background-position;@;[ ;i ;o; 	;!;";{ ;[o;#;$[ ;%["px;@◊;&"
+-15px;iÏ;i{o;#;$[ ;%["px;@◊;&"-255px;iˇ;i{;i{;i{;i ;iz;[".o;	;"prefix;{ ;"prefix;iw"%tool-collapse-top,
+            .o;	;"prefix;{ ;"prefix;ix"'tool-collapse-right,
+            .o;	;"prefix;{ ;"prefix;iy"(tool-collapse-bottom,
+            .o;	;"prefix;{ ;"prefix;iz"tool-collapse-left;i ;iv;[".o;	;"prefix;{ ;"prefix;iv"tool-overo;;@;T;[o;;@;T;[o;;;;["background-position;@;[ ;i ;o; 	;!;";{ ;[o;#;$[ ;%["px;@	;&"
+-15px;iÏ;io;#;$[ ;%["px;@	;&"-240px;iˇ;i;i;i;i ;i~;[".o;	;"prefix;{ ;"prefix;i{"#tool-expand-top,
+            .o;	;"prefix;{ ;"prefix;i|"%tool-expand-right,
+            .o;	;"prefix;{ ;"prefix;i}"&tool-expand-bottom,
+            .o;	;"prefix;{ ;"prefix;i~"tool-expand-left;i ;i;[".o;	;"prefix;{ ;"prefix;i"tool-overo;;;;["background;@;[ ;i ;o; 	;!;";{ ;[o;	;"&accordion-header-background-color;@7;"&accordion_header_background_color;iÉo;	;@7;"!important;iÉ;;;iÉ;iÉo:Sass::Tree::MixinNode;"single-box-shadow;@:@keywords{ ;[ ;iÑ:
+@args[o;	;"&accordion-header-background-color;{ ;"&accordion_header_background_color;iÑo;#;$@â;%[ ;@E;&"0;i ;iÑo;#;$@â;%[ ;@E;&"0;i ;iÑo;#;$@â;%[ ;@E;&"0;i ;iÑo;#;$@â;%[ ;@E;&"0;i ;iÑo:Sass::Script::Bool;@E;T;iÑ;i ;ig;[".o;	;"prefix;{ ;"prefix;ig"accordion-hdo;;@;T;[o;;;;["border-width;@;[ ;i ;o;;"1px 0 1px 0 !important;;;iào;;;;["padding;@;[ ;i ;o;;"4px 5px 5px 5px;;;iâo;;;;["border-top-color;@;[ ;i ;o; 	;!;";{ ;[o;	;"$panel-header-inner-border-color;@n;"$panel_header_inner_border_color;iäo;	;@n;"!important;iä;;;iä;iä;i ;iá;[".o;	;"prefix;{ ;"prefix;iá"accordion-hdo;;@;T;[o;;;;["border-width;@;[ ;i ;o;;"0 !important;;;ié;i ;iç;[".o;	;"prefix;{ ;"prefix;iç"accordion-bodyo;;@;T;[o;;;;["border-top-color;@;[ ;i ;o; 	;!;";{ ;[o;	;"panel-border-color;@í;"panel_border_color;iío;	;@í;"!important;ií;;;ií;iío;';"single-box-shadow;@;({ ;[ ;iì;)[o;	;"$panel-header-inner-border-color;{ ;"$panel_header_inner_border_color;iìo;#;$@â;%[ ;@†;&"0;i ;iìo;#;$[ ;%["px;@†;&"1px;i;iìo;#;$@â;%[ ;@†;&"0;i ;iìo;#;$@â;%[ ;@†;&"0;i ;iìo;*;@†;T;iì;i ;ië;[".o;	;"prefix;{ ;"prefix;ië""accordion-hd-sibling-expandedo;;@;T;[o;;;;["border-bottom-color;@;[ ;i ;o; 	;!;";{ ;[o;	;"&accordion-header-background-color;@ø;"&accordion_header_background_color;ióo;	;@ø;"!important;ió;;;ió;ió;i ;iñ;[".o;	;"prefix;{ ;"prefix;iñ" accordion-hd-last-collapsedo;;@;T;[o;;;;["overflow;@;[ ;i ;o;;"hidden;;;i†o;;;;["background-repeat;@;[ ;i ;o;;"no-repeat;;;i°;i ;iü;[".o;	;"prefix;{ ;"prefix;iö"frame-tl,
+    .o;	;"prefix;{ ;"prefix;iõ"frame-tr,
+    .o;	;"prefix;{ ;"prefix;iú"frame-tc,
+    .o;	;"prefix;{ ;"prefix;iù"frame-bl,
+    .o;	;"prefix;{ ;"prefix;iû"frame-br,
+    .o;	;"prefix;{ ;"prefix;iü"frame-bco;;@;T;[o;;;;["background-repeat;@;[ ;i ;o;;"repeat-x;;;i¶;i ;i•;[
+".o;	;"prefix;{ ;"prefix;i§"frame-tc,
+    .o;	;"prefix;{ ;"prefix;i•"frame-bco;;@;T;[o;;;;["position;@;[ ;i ;o;;"relative;;;i™o;;;;["background-repeat;@;[ ;i ;o;;"repeat-x;;;i´o;;;;["overflow;@;[ ;i ;o;;"hidden;;;i¨;i ;i©;[".o;	;"prefix;{ ;"prefix;i©"frame-mco;;i ;@;[ ;[ ;0;"ñ/* Classes for horizontal Box layout scroller.
+ * Uses the *TAB* scroller image because it's all we have.
+ * This will not work well in other cases */;iØo;;@;T;[o;;;;["
+float;@;[ ;i ;o;;"	left;;;i≥o;;;;["height;@;[ ;i ;o;;"	100%;;;i¥o;;;;["z-index;@;[ ;i ;o;;"5;;;i∂o;;@;T;[o;;;;["
+width;@;[ ;i ;o;;"	18px;;;i∫o;;;;["position;@;[ ;i ;o;;"relative;;;iªo;;;;["cursor;@;[ ;i ;o;;"pointer;;;iºo;;;;["height;@;[ ;i ;o;	;"tab-height;{ ;"tab_height;iΩ;iΩo;;;;["background;@;[ ;i ;o; 	;!;";{ ;[	o;	;@c;"transparent;iæ;;o;	;@c;"no-repeat;iæ;;o;#;$[ ;%["px;@c;&"
+-18px;iÈ;iæo;#;$@â;%[ ;@c;&"0;i ;iæ;iæ;iæo;;;;["background-image;@;[ ;i ;o:Sass::Script::Funcall
+;"theme-background-image;{ ;({ ;iø;)[o;	;"theme-name;@w;"theme_name;iøo;	;@w;"tab-bar/scroll-left.gif;iø;:string;iø;i ;iπ;[
+".o;	;"prefix;{ ;"prefix;i∏"#toolbar-scroll-left,
+        .o;	;"prefix;{ ;"prefix;iπ"tabbar-scroll-lefto;;@;T;[o;;;;["background-position;@;[ ;i ;o;;"0 0;;;i¬;i ;i¡;[".o;	;"prefix;{ ;"prefix;i¡"toolbar-scroll-left-hovero;;@;T;[o;;;;["background-position;@;[ ;i ;o; 	;!;";{ ;[o;#;$[ ;%["px;@°;&"
+-18px;iÈ;i∆o;#;$@â;%[ ;@°;&"0;i ;i∆;i∆;i∆o;';"opacity;@;({ ;[ ;i«;)[o;#;$@â;%[ ;{ ;&"0.5;f0.5;i«o;;;;["cursor;@;[ ;i ;o;;"default;;;i…;i ;i≈;[
+".o;	;"prefix;{ ;"prefix;iƒ",toolbar-scroll-left-disabled,
+        .o;	;"prefix;{ ;"prefix;i≈" tabbar-scroll-left-disabledo;;@;T;[o;;;;["background-image;@;[ ;i ;o;+
+;"theme-background-image;{ ;({ ;iÕ;)[o;	;"theme-name;@œ;"theme_name;iÕo;	;@œ;"toolbar/scroll-left.gif;iÕ;;,;iÕo;;;;["background-position;@;[ ;i ;o; 	;!;";{ ;[o;#;$[ ;%["px;@‹;&"
+-14px;iÌ;iŒo;#;$@â;%[ ;@‹;&"0;i ;iŒ;iŒ;iŒ;i ;iÃ;[".o;	;"prefix;{ ;"prefix;iÃ"toolbar-scroll-lefto;;@;T;[o;;;;["background-position;@;[ ;i ;o;;"0 0;;;i—;i ;i–;[".o;	;"prefix;{ ;"prefix;i–"toolbar-scroll-left-hovero;;@;T;[o;;;;["background-position;@;[ ;i ;o; 	;!;";{ ;[o;#;$[ ;%["px;@;&"
+-14px;iÌ;i‘o;#;$@â;%[ ;@;&"0;i ;i‘;i‘;i‘;i ;i”;[".o;	;"prefix;{ ;"prefix;i”"!toolbar-scroll-left-disabledo;;@;T;[o;;;;["
+width;@;[ ;i ;o;;"	14px;;;iÿo;;;;["height;@;[ ;i ;o;;"	22px;;;iŸo;;;;["border-bottom;@;[ ;i ;o;;"1px solid #8db2e3;;;i€;i ;i◊;[".o;	;"prefix;{ ;"prefix;i◊"toolbar-scroll-left;i ;i≤;[".o;	;"prefix;{ ;"prefix;i≤"box-scroller-lefto;;@;T;[o;;;;["
+float;@;[ ;i ;o;;"	left;;;i‡;i ;iﬂ;[".o;	;"prefix;{ ;"prefix;iﬂ"!horizontal-box-overflow-bodyo;;@;T;[o;;;;["
+float;@;[ ;i ;o;;"
+right;;;i„o;;;;["height;@;[ ;i ;o;;"	100%;;;i‰o;;;;["z-index;@;[ ;i ;o;;"5;;;iÊo;;@;T;[o;;;;["
+width;@;[ ;i ;o;;"	18px;;;iÍo;;;;["position;@;[ ;i ;o;;"relative;;;iÎo;;;;["cursor;@;[ ;i ;o;;"pointer;;;iÏo;;;;["height;@;[ ;i ;o;	;"tab-height;{ ;"tab_height;iÌ;iÌo;;;;["background;@;[ ;i ;o;;"transparent no-repeat 0 0;;;iÓo;;;;["background-image;@;[ ;i ;o;+
+;"theme-background-image;{ ;({ ;iÔ;)[o;	;"theme-name;@Å;"theme_name;iÔo;	;@Å;"tab-bar/scroll-right.gif;iÔ;;,;iÔ;i ;iÈ;[
+".o;	;"prefix;{ ;"prefix;iË"$toolbar-scroll-right,
+        .o;	;"prefix;{ ;"prefix;iÈ"tabbar-scroll-righto;;@;T;[o;;;;["background-position;@;[ ;i ;o; 	;!;";{ ;[o;#;$[ ;%["px;@ú;&"
+-18px;iÈ;iÚo;#;$@â;%[ ;@ú;&"0;i ;iÚ;iÚ;iÚ;i ;iÒ;[".o;	;"prefix;{ ;"prefix;iÒ"toolbar-scroll-right-hovero;;@;T;[o;;;;["background-position;@;[ ;i ;o;;"0 0;;;iˆo;';"opacity;@;({ ;[ ;i˜;)[o;#;$@â;%[ ;{ ;&"0.5;f0.5;i˜o;;;;["cursor;@;[ ;i ;o;;"default;;;i˘;i ;iı;[
+".o;	;"prefix;{ ;"prefix;iÙ"-toolbar-scroll-right-disabled,
+        .o;	;"prefix;{ ;"prefix;iı"!tabbar-scroll-right-disabledo;;@;T;[o;;;;["background-image;@;[ ;i ;o;+
+;"theme-background-image;{ ;({ ;i˝;)[o;	;"theme-name;@Ÿ;"theme_name;i˝o;	;@Ÿ;"toolbar/scroll-right.gif;i˝;;,;i˝;i ;i¸;[".o;	;"prefix;{ ;"prefix;i¸"toolbar-scroll-righto;;@;T;[o;;;;["background-position;@;[ ;i ;o; 	;!;";{ ;[o;#;$[ ;%["px;@Ô;&"
+-14px;iÌ;i o;#;$@â;%[ ;@Ô;&"0;i ;i ;i ;i ;i ;iˇ;[".o;	;"prefix;{ ;"prefix;iˇ"toolbar-scroll-right-hovero;;@;T;[o;;;;["background-position;@;[ ;i ;o;;"0 0;;;i;i ;i;[".o;	;"prefix;{ ;"prefix;i""toolbar-scroll-right-disabledo;;@;T;[o;;;;["
+width;@;[ ;i ;o;;"	14px;;;io;;;;["height;@;[ ;i ;o;;"	22px;;;io;;;;["border-bottom;@;[ ;i ;o;;"1px solid #8db2e3;;;i
+;i ;i;[".o;	;"prefix;{ ;"prefix;i"toolbar-scroll-right;i ;i‚;[".o;	;"prefix;{ ;"prefix;i‚"box-scroller-righto;;i ;@;[ ;[ ;0;"3/* Classes for vertical Box layout scroller */;io;;@;T;[o;;@;T;[o;;;;["line-height;@;[ ;i ;o;;"0;;;io;;;;["font-size;@;[ ;i ;o;;"0;;;i;i ;i;[".o;	;"prefix;{ ;"prefix;i"box-scrollero;;@;T;[	o;;;;["background;@;[ ;i ;o;;"(transparent no-repeat center center;;;io;;;;["background-image;@;[ ;i ;o;+
+;"theme-background-image;{ ;({ ;i;)[o;	;"theme-name;@Z;"theme_name;io;	;@Z;"layout/mini-top.gif;i;;,;io;;;;["height;@;[ ;i ;o;;"8px;;;io;;;;["cursor;@;[ ;i ;o;;"pointer;;;i;i ;i;[".o;	;"prefix;{ ;"prefix;i"menu-scroll-top;i ;i;[".o;	;"prefix;{ ;"prefix;i"box-scroller-topo;;@;T;[o;;@;T;[o;;;;["line-height;@;[ ;i ;o;;"0;;;io;;;;["font-size;@;[ ;i ;o;;"0;;;i;i ;i;[".o;	;"prefix;{ ;"prefix;i"box-scrollero;;@;T;[	o;;;;["background;@;[ ;i ;o;;"(transparent no-repeat center center;;;i!o;;;;["background-image;@;[ ;i ;o;+
+;"theme-background-image;{ ;({ ;i";)[o;	;"theme-name;@°;"theme_name;i"o;	;@°;"layout/mini-bottom.gif;i";;,;i"o;;;;["height;@;[ ;i ;o;;"8px;;;i#o;;;;["cursor;@;[ ;i ;o;;"pointer;;;i$;i ;i ;[".o;	;"prefix;{ ;"prefix;i "menu-scroll-bottom;i ;i;[".o;	;"prefix;{ ;"prefix;i"box-scroller-bottomo;;@;T;[o;;;;["
+float;@;[ ;i ;o;;"
+right;;;i)o;;;;["padding-right;@;[ ;i ;o;	;"toolbar-horizontal-spacing;{ ;"toolbar_horizontal_spacing;i*;i*;i ;i(;[".o;	;"prefix;{ ;"prefix;i("box-menu-righto;;@;T;[o;;;;["
+float;@;[ ;i ;o;;"	left;;;i.;i ;i-;[".o;	;"prefix;{ ;"prefix;i-"columnu:Sass::Tree::IfNode§[o:Sass::Script::Variable	:
+@name"include-ie:@options{ :@underscored_name"include_ie:
+@linei00[o:Sass::Tree::RuleNode;{:importero: Sass::Importers::Filesystem:
+@root"u/home/fede/Documentos/yapp/env/daumas/yapp/static/app/resources/sass/../../../extjs/resources/themes/stylesheets:@has_childrenT:@children[o:Sass::Tree::PropNode:@prop_syntax:new;["display;@;[ :
+@tabsi :@valueo:Sass::Script::String;"inline:
+@type:identifier;	i2o:Sass::Tree::CommentNode:@silent0;@:@lines[ ;[ :
+@loud0;"&/*prevent IE6 double-margin bug*/;	i2;i ;	i1:
+@rule[
+".o; 	;"prefix;{ ;"prefix;	i1"
+ie6 .o; 	;"prefix;{ ;"prefix;	i1"column;i;)[ ;i

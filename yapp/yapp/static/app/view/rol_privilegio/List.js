@@ -10,6 +10,7 @@ Ext.define('YAPP.view.rol_privilegio.List', {
 		Ext.apply(this, {
 			iconCls : 'icon-grid',
 			frame : true,
+			height : 200,
 			dockedItems : [ {
 				xtype : 'toolbar',
 				items : [ {

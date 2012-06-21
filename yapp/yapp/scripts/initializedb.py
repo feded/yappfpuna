@@ -17,6 +17,7 @@ from yapp.models.roles.permisos import Permisos
 from yapp.models.roles.permisos_roles import PermisosRoles
 from yapp.models.roles.rol import Rol
 from yapp.models.tipo_item.tipo_item import TipoItem
+from yapp.models.item.item_atributo import ItemAtributo
 import os
 import sys
 import transaction
@@ -35,7 +36,8 @@ import yapp.models.fase.fase
 import yapp.models.fase.fase
 import yapp.models.fase.tipo_fase
 import yapp.models.item.item
-import yapp.models.item.padre_item
+import yapp.models.item.item_unidad_trabajo
+import yapp.models.item.item_atributo
 import yapp.models.proyecto.proyecto
 import yapp.models.recurso.recurso
 import yapp.models.recurso.recurso_bien
@@ -57,6 +59,7 @@ import yapp.models.suscripcion.notificacion
 import yapp.models.tipo_item.atributo_tipo_item
 import yapp.models.tipo_item.tipo_item
 import yapp.models.linea_base.linea_base
+import yapp.models.unidad_trabajo.unidad_trabajo_recurso
 
 
 
@@ -112,11 +115,11 @@ def main(argv=sys.argv):
             tipo = TipoRecurso("Material");
             DBSession.add(tipo);
             
-    items = TipoItemDAO(None).get_all()
-    if (len(items) == 0):
-        with transaction.manager:
-            tipoItem = TipoItem("Tipo item por defecto", "Tipo po defecto", 0, "TD", False)
-            DBSession.add(tipoItem);
+#    items = TipoItemDAO(None).get_all()
+#    if (len(items) == 0):
+#        with transaction.manager:
+#            tipoItem = TipoItem("Tipo item por defecto", "Tipo po defecto", 0, "TD", False)
+#            DBSession.add(tipoItem);
 
             
     items = RolFinalDAO(None).get_query().filter(RolFinal._email == "admin").first();
@@ -158,6 +161,9 @@ def main(argv=sys.argv):
         admin = Permisos("Calculo de impacto");
         DBSession.add(admin);
         admin = Permisos("Ver costado derecho");
+
+        DBSession.add(admin);
+        admin = Permisos("Unidad de trabajo");
         DBSession.add(admin);
     
     print 'Creando permisos y roles'

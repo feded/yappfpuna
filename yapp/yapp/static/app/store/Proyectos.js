@@ -3,10 +3,10 @@ Ext.define('YAPP.store.Proyectos', {
 	model: 'YAPP.model.Proyecto',
 	
 	autoLoad : false,
-    autoSync: true,
+    autoSync: false,
         
 	proxy : {
-    	type : 'ajax',
+    	type : 'rest',
         api : {
         	read : '/readProyectos',
         	update : '/updateProyectos',
