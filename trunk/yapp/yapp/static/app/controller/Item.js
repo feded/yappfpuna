@@ -266,6 +266,8 @@ Ext.define('YAPP.controller.Item', {
 	},
 	
 	crearItem : function(button) {
+		
+		
 		var view = Ext.widget('crearitem');
 		var item = new YAPP.model.Item();
 		var fase = this.getComboFase();
@@ -273,9 +275,15 @@ Ext.define('YAPP.controller.Item', {
 		var gridLB = this.getGridLB();
 		var griditemLB = this.getGriditemLB();
 		var gridPD = this.getGridPD();
+		var gridTipo = this.getGridTipo();
+		
+		gridTipo.store.load({
+			params : {
+				id_proyecto : this.getProyectos().getValue()
+			},
+		});
+		
 		var store = gridLB.store;
-
-
 		var faseStore = new YAPP.store.Fases().load({
 			params : {
 				fase_id : fase.getValue(),
@@ -377,8 +385,14 @@ Ext.define('YAPP.controller.Item', {
 			var gridLB = this.getGridLB();
 			var griditemLB = this.getGriditemLB();
 			var gridPD = this.getGridPD();
-		var store = gridLB.store;
+			var store = gridLB.store;
+			var gridTipo = this.getGridTipo();
 		
+			gridTipo.store.load({
+				params : {
+					id_proyecto : this.getProyectos().getValue()
+				},
+			});
 			var faseStore = new YAPP.store.Fases().load({
 				params : {
 					fase_id : fase.getValue(),

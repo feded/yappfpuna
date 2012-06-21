@@ -11,7 +11,7 @@ from yapp.daos.item_dao import ItemDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import DBSession
 from yapp.models.fase.fase import FaseDTO
-from yapp.models.item.item import Item, Item, ItemDTO
+from yapp.models.item.item import  Item, ItemDTO
 from yapp.models.tipo_item.tipo_item import TipoItem
 import json
 from yapp.models import DBSession
@@ -127,13 +127,13 @@ def bm_atributo(request):
         if(entidad["_antecesor"] == "" or  entidad["_antecesor"] == None):
             antecesor = None
         else:
-            antecesor = dao_item_ante.get_by_id(entidad["_antecesor"]["_id"])._id
+            antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])._id
         print antecesor
         dao_item_padre = ItemDAO(request)
         if(entidad["_padre"] == "" or  entidad["_padre"] == None):
             padre = None
         else:
-            padre = dao_item_padre.get_by_id(entidad["_padre"]["_id"])._id
+            padre = dao_item_padre.get_by_id(entidad["_padre"])._id
         item_viejo = item_dao.get_by_id(entidad["id"])
         id_viejo = item_viejo._id;
         nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"], padre, antecesor)
