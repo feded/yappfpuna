@@ -2,10 +2,17 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	extend: 'Ext.app.Controller',
 	
 	views: [
-		'fase.ListarFase', 'fase.NuevaFase', 'fase.NuevoAtributoFase', 'fase.ListarAtributoFase',
-		'fase.NuevoAtributoFase', 'fase.EditarAtributoFase', 'fase.ListarTipoFase', 'fase.EditarFase'
+		'fase.ListarFase',
+		'fase.NuevaFase', 
+		'fase.NuevoAtributoFase',
+		'fase.ListarAtributoFase',
+		'fase.NuevoAtributoFase',
+		'fase.EditarAtributoFase',
+		'fase.ListarTipoFase',
+		'fase.EditarFase',
+		'tipoItem.Edit'
 		],
-	stores:['Fases', 'AtributoFase'],
+	stores:['Fases', 'AtributoFase', 'TipoFase'],
 	models:['Fase', 'AtributoFase'],
 	
 	refs: [	{
@@ -15,25 +22,28 @@ Ext.define('YAPP.controller.AdministrarFases', {
 			{
     			selector: 'viewport combobox[name=proyectos]',
     			ref: 'proyectos'
-			}
+			},
+			{
+    			selector: 'editarfase textfield[name=_color]',
+    			ref: 'colorTextoEditar'
+			},
+			{
+    			selector: 'nuevafase textfield[name=_color]',
+    			ref: 'colorTextoNuevo'
+			},
+			{
+    			selector: 'listartipofase combobox',
+    			ref: 'comboTipoItem'
+			},
+
+			
+
 	],
 		
 	init:function(){
 		console.log('Cargado controller AdministrarFases');
 		this.control({
-//				'listarfase button[action=actualizar]': {
-//                	click: this.actualizarFase
-//            	},
-//            	'listarfase combobox': {
-//            		change: this.traerFase
-//            	},
-            	
-//            	'listarfase': {
-//            		render: this.traerFase
-//            	},
-            	
-            	
-            	'listarfase button[action=crear]':{
+				'listarfase button[action=crear]':{
             		click: this.crearFase
             	},
             	
@@ -41,68 +51,286 @@ Ext.define('YAPP.controller.AdministrarFases', {
             		click: this.guardarNuevaFase
             	},
             	
-            	'listarfase button[action=atributo]': {
-            		click: this.Atributo
+            	'listarfase': {
+            		itemdblclick: this.editarFase,
+            		itemclick : this.faseListSelectChange
             	},
             	
-            	'listarfase button[action=borrar]': {
+            	'editarfase button[action=guardar]': {
+            		click: this.guardarEditarFase
+            	},
+				
+				'listarfase button[action=borrar]': {
             		click: this.borrarFase
             	},
             	
-            	'listaratributofase button[action=crear]': {
+            	//Atributos particulares
+            	
+        		'listaratributofase button[action=crear]': {
             		click: this.crearAtributo
             	},
+            	
+            	'nuevoatributofase button[action=guardar]': {
+            		click: this.guardarNuevoAtributoFase
+            	},
+            	
+				'listaratributofase': {
+            		itemdblclick: this.editarAtributoFase
+            	},
+				
+				
+            	'editaratributofase button[action=guardar]': {
+            		click: this.guardarEditarAtributoFase
+            	},
+            	
             	
             	'listaratributofase button[action=borrar]': {
             		click: this.borrarAtributoFase
             	},
+			
+            	//Tipos de items
+            	
             	'listartipofase button[action=agregar]': {
             		click: this.agregarTipo
             	},
             	'listartipofase button[action=quitar]': {
             		click: this.quitarTipo
             	},
-            	'nuevoatributofase button[action=guardar]': {
-            		click: this.guardarNuevoAtributoFase
+            	
+            	'editarfase colorpicker': {
+            		select: this.seleccionoColorEditar
             	},
-            	'listaratributofase': {
-            		itemdblclick: this.editarAtributoFase
+            	'nuevafase colorpicker': {
+            		select: this.seleccionoColorNuevo
             	},
-            	'editaratributofase button[action=guardar]': {
-            		click: this.guardarEditarAtributoFase
-            	},
-            	'listarfase button[action=tipo]': {
-            		click: this.Tipo
-            	},
-            	'listarfase': {
-            		itemdblclick: this.editarFase
-            	},
-            	'editarfase button[action=guardar]': {
-            		click: this.guardarEditarFase
-            	}
+
+				'listartipofase combobox[name=tipoItems]' : {
+					afterrender : this.actualizarTipoItems
+				},
+            	
             	
         });
-	},	
+	},
 	
-//	actualizarFase: function(){
-//		console.log('Actualizando Fase');
-//		this.getFasesStore().load();
-//	},
-//	
-//	traerFase: function(){
-//		var combobox = this.getProyectos();
-//	
-//		var store = this.getStore('Fases');
-//		store.load({
-//			params: {
-//				id : combobox.getValue()
-//			}
-//		});
-//	},
-	agregarTipo: function(button){
-//        var tipofase = new YAPP.model.TipoFase();
-        
+	crearFase: function(button){
+		var view = Ext.widget('nuevafase');
+        var fase = new YAPP.model.Fase();
         		
+		var cb = this.getProyectos();
+		
+		fase.data._proyecto_id = cb.getValue();
+		fase.data._estado = "Pendiente";
+
+		view.down('form').loadRecord(fase);
+	},
+	
+	guardarNuevaFase: function(button){
+		var win = button.up('window');
+		var form = win.down('form');
+		var record = form.getRecord();
+		var values = form.getValues();
+		record.set(values);
+		var storeFases = this.getFasesStore();
+		//verificamos si ya existe una fase con ese nro de orden
+		var existe = storeFases.findExact('_orden', values._orden);
+		var me = this;
+		if(existe == -1){
+			record.save({
+				success: function(fase){
+					me.getFasesStore().insert(me.getFasesStore().getTotalCount(),fase);
+					me.getStore('Fases').sort('_orden', 'ASC');
+					Ext.example.msg("YAPP", "Fase creada con éxito");
+					win.close();
+				},
+				
+				failure: function(fase){
+					alert('No se pudo crear la fase');
+				}
+			});
+			
+			
+		}
+		else{
+			alert("Existe ya una fase con ese orden");
+		}		
+	},
+	
+	editarFase: function(grid, record){
+		var view = Ext.widget('editarfase');
+        view.down('form').loadRecord(record);
+	},
+	
+	guardarEditarFase: function(button){
+		var win = button.up('window');
+		var form = win.down('form');
+		var record = form.getRecord();
+		var values = form.getValues();
+		
+		var storeFases = this.getFasesStore();
+		var existe = storeFases.findExact('_orden', values._orden);
+		var me = this;
+		if(existe == -1){
+			//No existe el nro de orden
+			record.set(values);
+			record.save({
+				success: function(fase){
+					me.getStore('Fases').sort('_orden', 'ASC');
+					Ext.example.msg("YAPP", "Cambios guardados correctamente");
+					win.close();
+				},
+				
+				failure : function(fase){
+					alert("No se modifico la fase");
+				}	
+			});
+			
+			
+		}else{
+			var fase = storeFases.getAt(existe);
+			if(fase.data.id == record.data.id)
+			{
+				//en caso que sea la misma fase
+				record.set(values);
+				record.save({
+					success: function(fase){
+						me.getStore('Fases').sort('_orden', 'ASC');
+						Ext.example.msg("YAPP", "Cambios guardados correctamente");
+						win.close();		
+					},
+					
+					failure : function(fase){
+						alert("No se modifico la fase");
+					}
+					
+				});
+				
+			}
+			else{
+				alert("Existe ya una fase con ese orden");	
+			}
+		}
+	},
+	
+	borrarFase: function(button) {
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		var me = this;
+		selection.destroy({
+			success: function(fase){
+				me.getFasesStore().remove(selection);
+				Ext.example.msg("YAPP", "Se elimino con éxito la fase");
+			},
+			
+			failure: function(fase){
+				alert("No se elimino la fase");
+			}
+		});
+	},
+	
+	
+	faseListSelectChange : function(grid, record) {
+		//actualizamos los atributos particulares de la fase
+		//y los tipos de items que soporta
+		
+		var store = this.getStore('AtributoFase');
+		store.load({
+			params: {
+				id : record.get('id')
+			}
+		});
+		
+		var store2 = this.getStore('TipoFase');
+		store2.load({
+			params: {
+				id : record.get('id')
+			}
+		});
+		
+	},
+//////////////////////////////////////////////////////////////////////	
+//Atributos
+//////////////////////////////////////////////////////////////////////
+	crearAtributo: function(button){
+		//Para crear los atributos particulares de la fase
+		var view = Ext.widget('nuevoatributofase');
+        var atributofase = new YAPP.model.AtributoFase();
+        
+       	var g = this.getGrilla();
+       	var selection = g.getSelectionModel().getSelection()[0];
+       	
+       	atributofase.data._fase_id = selection.data.id;
+	
+        
+		view.down('form').loadRecord(atributofase);
+	},
+	
+	
+	guardarNuevoAtributoFase: function(button){
+		var win = button.up('window');
+		var form = win.down('form');
+		var record = form.getRecord();
+		var values = form.getValues();
+		record.set(values);
+		var me = this;
+		record.save({
+			success: function(atributo){
+				me.getAtributoFaseStore().insert(0, atributo);
+				Ext.example.msg("YAPP", "Atributo de fase creado con éxito");
+				win.close();
+			},
+			
+			failure: function(atributo){
+				alert("No se pudo crear el atributo particular");
+			}
+		});
+		
+
+	},
+	
+	editarAtributoFase: function(grid, record){
+		var view = Ext.widget('editaratributofase');
+        view.down('form').loadRecord(record);
+	},
+	
+	guardarEditarAtributoFase: function(button){
+		var win = button.up('window');
+		var form = win.down('form');
+		var record = form.getRecord();
+		var values = form.getValues();
+		record.set(values);
+		record.save({
+			success: function(atributo){
+				Ext.example.msg("YAPP", "Se modifico con éxito el atributo")
+				win.close();
+			},
+			
+			failure: function(atributo){
+				alert("No se pudo modificar el atributo");
+			}
+		});
+	},
+	
+	borrarAtributoFase: function(button) {
+		var win = button.up('grid');
+		var grilla = win.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		var me = this;
+		selection.destroy({
+			success: function(atributo){
+				me.getAtributoFaseStore().remove(selection)
+				Ext.example.msg("YAPP", "Atributo de fase eliminado con éxito");
+			},
+			failure: function(atributo){
+				alert("No se pudo eliminar el atributo");
+			}
+		});
+	},
+	
+//////////////////////////////////////////////////////////////////////	
+//Tipos de items
+//////////////////////////////////////////////////////////////////////
+	agregarTipo: function(button){
 		var win = button.up('grid');
 		var cb = win.down('combobox');
 		
@@ -118,10 +346,22 @@ Ext.define('YAPP.controller.AdministrarFases', {
     		_fase  : fase.data.id
 		});
 		
-//		console.log (tipoFase);
 		var storeTipoFase = win.getStore();
-		storeTipoFase.insert(0, tipoFase);
-		
+		var existe = storeTipoFase.findExact('_tipo', tipo.data.id);
+		if(existe == -1){
+			tipoFase.save({
+				success: function(tipo){
+					storeTipoFase.insert(0, tipo);
+					Ext.example.msg("YAPP", "Operación exitosa");					
+				},
+				
+				failure: function(tipo){
+					alert('No se pudo agregar el tipo de item');
+				}
+			});
+		}else{
+			Ext.example.msg("YAPP", "La fase ya soporta ese tipo de ítem");
+		}
 		
 	},
 	
@@ -130,148 +370,34 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		var storeTipoFase = win.getStore()
-		storeTipoFase.remove(selection)	
-	},
-	
-	
-	
-	crearFase: function(button){
-		var view = Ext.widget('nuevafase');
-        var fase = new YAPP.model.Fase();
-        		
-//		var win = button.up('grid');
-		var cb = this.getProyectos();
-		
-//		console.log(cb.getValue());
-		fase.data._proyecto_id = cb.getValue();
-		fase.data._estado = "Pendiente";
-//		var fecha = new Date();
-//		var hoy = Ext.Date.format(fecha,'Y-m-d, g:i a');
-//		proyecto.data._fecha_creacion = hoy;
-//		proyecto.data._fecha_modificacion = hoy;
-//		
-		view.down('form').loadRecord(fase);
-	},
-	
-	crearAtributo: function(button){
-		var view = Ext.widget('nuevoatributofase');
-        var atributofase = new YAPP.model.AtributoFase();
-        
-       	var g = this.getGrilla();
-       	var selection = g.getSelectionModel().getSelection()[0];
-       	
-       	atributofase.data._fase_id = selection.data.id;
-	
-        
-		view.down('form').loadRecord(atributofase);
-	},
-	
-	Atributo: function(button){
-		var win = button.up('grid');
-		var grilla = win.down('gridview')
-		var selection = grilla.getSelectionModel().getSelection()[0];
-		
-		
-		var store = this.getStore('AtributoFase');
-		store.load({
-			params: {
-				id : selection.data.id
+		selection.destroy({
+			success: function(tipo){
+				storeTipoFase.remove(selection);
+				Ext.example.msg("YAPP", "Operación exitosa");	
+			},
+			
+			failure: function(tipo){
+				alert('No se pudo realizar la operacion');
 			}
+			
 		});
-		var tabs = Ext.getCmp('tabPrincipal');
 		
-		var tab = tabs.add({
-			title : 'Administrar atributos fases',
-			xtype : 'listaratributofase',
-			closable : true
-		});
-
-		tabs.setActiveTab(tab);
 	},
 	
-	Tipo: function(button){
-		var win = button.up('grid');
-		var grilla = win.down('gridview')
-		var selection = grilla.getSelectionModel().getSelection()[0];
-		
-		
-		var store = this.getStore('TipoFase');
-		store.load({
-			params: {
-				id : selection.data.id
-			}
-		});
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar tipos fase',
-			xtype : 'listartipofase',
-			closable : true
-		});
-
-		tabs.setActiveTab(tab);
+	actualizarTipoItems: function(){
+		//se actualizan los tipos de items despues de visualizar el combo
+		var tipos = this.getStore('TipoItems');
+		this.getComboTipoItem().store = tipos;
 	},
 	
-	guardarNuevaFase: function(button){
-		var win = button.up('window');
-		var form = win.down('form');
-		var record = form.getRecord();
-		var values = form.getValues();
-		record.set(values);	
-		win.close();
-		this.getFasesStore().insert(0, record);
-//		this.getAtributoFaseStore().sync();
+	seleccionoColorEditar: function(picker, selColor){
+		var texto = selColor;
+		this.getColorTextoEditar().setValue(texto);
 	},
 	
-	guardarNuevoAtributoFase: function(button){
-		var win = button.up('window');
-		var form = win.down('form');
-		var record = form.getRecord();
-		var values = form.getValues();
-		record.set(values);	
-		win.close();
-		this.getAtributoFaseStore().insert(0, record);
-	},
-	
-	borrarFase: function(button) {
-		var win = button.up('grid');
-		var grilla = win.down('gridview')
-		var selection = grilla.getSelectionModel().getSelection()[0];
-		this.getFasesStore().remove(selection)
-	},
-	
-	borrarAtributoFase: function(button) {
-		var win = button.up('grid');
-		var grilla = win.down('gridview')
-		var selection = grilla.getSelectionModel().getSelection()[0];
-		this.getAtributoFaseStore().remove(selection)
-	},
-	editarAtributoFase: function(grid, record){
-		var view = Ext.widget('editaratributofase');
-        view.down('form').loadRecord(record);
-	},
-	
-	guardarEditarAtributoFase: function(button){
-		var win = button.up('window');
-		var form = win.down('form');
-		var record = form.getRecord();
-		var values = form.getValues();
-		record.set(values);
-		win.close();
-	},
-	
-	editarFase: function(grid, record){
-		var view = Ext.widget('editarfase');
-        view.down('form').loadRecord(record);
-	},
-	
-	guardarEditarFase: function(button){
-		var win = button.up('window');
-		var form = win.down('form');
-		var record = form.getRecord();
-		var values = form.getValues();
-		record.set(values);
-		win.close();
-	},
+	seleccionoColorNuevo: function(picker, selColor){
+		var texto = selColor;
+		this.getColorTextoNuevo().setValue(texto);
+	}
 	
 });

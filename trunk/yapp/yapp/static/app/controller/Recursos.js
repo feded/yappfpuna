@@ -52,9 +52,18 @@ Ext.define('YAPP.controller.Recursos', {
 		var values = form.getValues();
 		record.set(values);
 		record.set('tipo_nombre',record.data._tipo);
-		console.log(record);
-		win.close();
-		this.getRecursosStore().insert(0, record);
+		var store = this.getRecursosStore();
+		record.save({
+			success : function(recurso) {
+				store.insert(0, recurso);
+				Ext.example.msg("YAPP", "Se creo el recurso con éxito");
+				win.close();
+			},
+			failure : function(recurso) {
+				alert("No se pudo crear el recurso");
+			}
+		});
+		
 	},
 	
 	crearRecurso: function(button){
@@ -87,14 +96,33 @@ Ext.define('YAPP.controller.Recursos', {
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);
-		win.close();
+		record.data._tipo = record.data._tipo._tipo;
+		var store = this.getRecursosStore();
+		record.save({
+			success : function(recurso) {
+				Ext.example.msg("YAPP", "Se modifico el recurso con éxito");
+				win.close();
+			},
+			failure : function(recurso) {
+				alert("No se pudo modificar el recurso");
+			}
+		});
 	},
 	
 	borrarRecurso: function(button) {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
-		this.getRecursosStore().remove(selection)
+		var me = this;
+		selection.destroy({
+			success : function(recurso) {
+				me.getRecursosStore().remove(selection)
+				Ext.example.msg("YAPP", "Se elimino recurso con éxito");
+			},
+			failure : function(recurso) {
+				alert("YAPP", "No se pudo eliminar el recurso");
+			}
+		});
 	},
 	
 	

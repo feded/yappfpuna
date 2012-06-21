@@ -132,12 +132,13 @@ Ext.define('YAPP.controller.LineasBase', {
 		}
 		record.data._items = itemsDTO;
 		record.data._fase = fase.getValue()
-		console.log(record)
+//		console.log(record)
 		var store = this.getLineasBaseStore()
 		win.close();
 		record.save({
 			success : function(linea_base) {
 				store.insert(0, linea_base);
+				Ext.example.msg("Linea Base", "Creada con exito");
 			},
 			failure : function(linea_base) {
 				alert("No se pudo crear la linea base");

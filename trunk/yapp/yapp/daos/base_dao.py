@@ -58,12 +58,15 @@ class BaseDAO :
             - B{entidad:} entidad persistida
         """
         DBSession.add(entidad)
+        DBSession.flush()
         lista = self.get_query().all();
         entidad = lista[len(lista) - 1];
         if (self._request!= None):
-            historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
-            DBSession.add(historia)
-            self.notificar(entidad, historia)
+            #no va a tener user en caso de que venga del pyunit
+            if ('user' in self._request.session):
+                historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
+                DBSession.add(historia)
+                self.notificar(entidad, historia)
         return entidad;
          
     def borrar(self, entidad):
@@ -73,10 +76,12 @@ class BaseDAO :
         """
         DBSession.delete(entidad);
         if (self._request!= None):
-            historia = Historial(entidad.__tablename__, entidad._id, "ELIMINACION", self._request.session['user']._id);
-            DBSession.add(historia)
-           
-            self.notificar(entidad, historia)
+            #no va a tener user en caso de que venga del pyunit
+            if ('user' in self._request.session):
+                historia = Historial(entidad.__tablename__, entidad._id, "ELIMINACION", self._request.session['user']._id);
+                DBSession.add(historia)
+               
+                self.notificar(entidad, historia)
         
     def update(self, entidad):
         """B{Metodo que actualiza una entidad en la base de datos, y almacena su modificacion en el historial}
@@ -85,10 +90,12 @@ class BaseDAO :
         """
         DBSession.merge(entidad)
         if (self._request!= None):
-            historia = Historial(entidad.__tablename__, entidad._id, "MODIFICACION", self._request.session['user']._id);
-            DBSession.add(historia)
-            
-            self.notificar(entidad, historia)
+            #no va a tener user en caso de que venga del pyunit
+            if ('user' in self._request.session):
+                historia = Historial(entidad.__tablename__, entidad._id, "MODIFICACION", self._request.session['user']._id);
+                DBSession.add(historia)
+                
+                self.notificar(entidad, historia)
     
     def notificar(self, entidad, historia):
         if (isinstance(entidad, EntidadPadre)):

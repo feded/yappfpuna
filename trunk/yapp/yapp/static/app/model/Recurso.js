@@ -28,5 +28,16 @@ Ext.define('YAPP.model.Recurso', {
                 type : 'int'
 			}
 			
-        	]
+	],
+	
+	proxy : {
+    	type : 'rest',
+    	url: '/recursos',
+    	
+        reader : {
+        	type : 'json',
+            root : 'recursos',
+            successProperty : 'sucess'
+            }
+        }
 });

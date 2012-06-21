@@ -10,5 +10,14 @@ Ext.define('YAPP.model.AtributoFase', {
         		name : '_fase_id',
         		type : 'int'
         	},'_descripcion', '_valor'
-        	]
+        	],
+	proxy : {
+    	type : 'rest',
+    	url: '/atributofase',
+        reader : {
+        	type : 'json',
+            root : 'atributofase',
+            successProperty : 'sucess'
+            }
+        }
 });

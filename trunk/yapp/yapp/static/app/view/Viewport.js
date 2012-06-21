@@ -9,17 +9,32 @@ Ext.define('YAPP.view.Viewport', {
 			title : 'Yet another project processor'
 		}, {
 			region : 'east',
-			rbar : [ {
+			id : 'east',
+			width : '20%',
+			flex : 1,
+			visible : false
+			/*rbar : [ {
 				xtype : 'combobox',
 				fieldLabel : 'Proyecto',
 				displayField : '_nombre',
 				queryMode : 'local',
 				valueField : 'id',
 				name : 'proyectos'
-			} ]
+			},
+			{
+                xtype : 'combobox',
+               	fieldLabel : 'Fase',
+                displayField : '_nombre',
+                queryMode : 'local',
+                valueField : 'id',
+                name : 'fases'
+            } ]*/
 		}, {
 			region : 'west',
-			lbar : [ {
+			id : 'west',
+			width : '11%',
+			flex : 1
+			/*lbar : [ {
 				xtype : 'button',
 				text : 'Administrar roles',
 				textAlign : 'left',
@@ -57,7 +72,8 @@ Ext.define('YAPP.view.Viewport', {
 				text : 'Administrar items',
 				textAlign : 'left',
 				xtype : 'button',
-				action : 'adminItems'
+				action : 'adminItems',
+				disabled: true
 			
 			}, {
 				text : 'Administrar suscripciones',
@@ -81,8 +97,10 @@ Ext.define('YAPP.view.Viewport', {
 				action : 'adminUnidadTrabajo'
 			
 			}, {
-				text : 'Suscripciones',
-				textAlign : 'left'
+				xtype : 'button',
+				text : 'Diagrama de Gantt',
+				textAlign : 'left',
+				action : 'verDiagramaGantt'
 			
 			}, {
 				xtype : 'button',
@@ -94,7 +112,7 @@ Ext.define('YAPP.view.Viewport', {
 				text : 'SALIR',
 				textAlign : 'left',
 				action : 'logout'
-			} ]
+			} ]*/
 		}, {
 			region : 'center',
 			xtype : 'tabpanel',

@@ -19,30 +19,28 @@ def obtener_crear_fases(request):
     """
     @summary: Maneja las solicitudes para obtener y crear fases.
               Las fases nuevas soportan por defecto un tipo de item.
+    @param request: Get para recuperar y Post para crear.
+    @return: En caso de recibir un Get retorna todas las fases de un proyecto en especifico.
+        En caso de recibir un Post retorna la fase creada.
     """
+    
 
     if (request.method == 'GET'):
         proyecto_id = request.GET.get('id')
         fase_id = request.GET.get('fase_id')
-#        print "------FASEID------------" 
-#        print fase_id 
-#        print "----------------------------"
-#        print "------PROYECTOID------------" 
-#        print proyecto_id 
-#        print "----------------------------"
+        
         rd = FaseDAO(request)
         lista = [];
-        p = Pickler(False,None)   
+        p = Pickler(False,None)
+        #Codigo de fede
         if (fase_id!= None and fase_id!= ""):
-#            print "entre fase"
             entidad = rd.get_query().filter(Fase._id < fase_id, Fase._proyecto_id == proyecto_id ).order_by(Fase._orden.desc()).first()
             if (entidad!=None):
-#                print "Entidad es: -------- "
-#                print entidad._id
                 entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id,entidad._orden, entidad._comentario, entidad._estado,entidad._color)
                 lista.append(p.flatten(entidadLinda))    
         elif (proyecto_id!= None and proyecto_id!= ""):
-#            print "entre proyecto"
+            #Codigo de leo
+            #recuperamos todas las fases del proyecto
             entidades = rd.get_query().filter(Fase._proyecto_id == proyecto_id).all()
             for entidad in entidades:
                 entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id,entidad._orden, entidad._comentario, entidad._estado,entidad._color)
@@ -52,7 +50,8 @@ def obtener_crear_fases(request):
         a_ret = json.dumps({'sucess': 'true', 'fases':j_string})    
         
         return Response(a_ret)
-    else:    
+    else:
+        #Recibimos un POST
         u= Unpickler()
         entidad = u.restore(request.json_body);
         
@@ -63,11 +62,12 @@ def obtener_crear_fases(request):
         nueva_fase = Fase(entidad["_nombre"],proyecto,entidad["_orden"],entidad["_comentario"],entidad["_estado"],entidad["_color"])
         dao.crear(nueva_fase)
         
-        dao_tipo_item = TipoItemDAO(request)
-        tipo_item = dao_tipo_item.get_by_id(1)
-        nuevo_tipo_fase = TipoFase(nueva_fase,tipo_item)
-        dao_tipo_fase = TipoFaseDAO(request)
-        dao_tipo_fase.crear(nuevo_tipo_fase)
+        #le asociamos el tipo de item
+#        dao_tipo_item = TipoItemDAO(request)
+#        tipo_item = dao_tipo_item.get_by_id(1)
+#        nuevo_tipo_fase = TipoFase(nueva_fase,tipo_item)
+#        dao_tipo_fase = TipoFaseDAO(request)
+#        dao_tipo_fase.crear(nuevo_tipo_fase)
         
         lista = []
         p = Pickler()
@@ -81,20 +81,24 @@ def obtener_crear_fases(request):
 def actualizar_eliminar_fase(request):
     """
     @summary: Maneja las solicitudes para actualizar y elimninar fases.
-              Al eliminar la fase se eliminan sus atributos particulares y los tipos de items que soporta.                
+              Al eliminar la fase se eliminan sus atributos particulares y los tipos de items que soporta.
+    @param request: Delete para eliminar y Put para modificar.
+    @return: En caso de recibir un Put retorna la fase creada.
+        En caso de recibir un Delete retorna true en caso de exito .                   
     """
-    
     if (request.method == 'DELETE'):
         u= Unpickler()
         entidad = u.restore(request.json_body);
         dao = FaseDAO(request)
         fase = dao.get_by_id(entidad["id"])
         
+        #eliminamos los atributos particulares de la fase
         atributo_fase_dao = AtributoFaseDAO(request)
         atributos = atributo_fase_dao.get_query().filter(AtributoFase._fase_id == fase._id).all();
         for atributo in atributos:
             atributo_fase_dao.borrar(atributo);
             
+        #eliminamos las asociaciones que puede tener con los tipos de items
         tipo_fase_dao = TipoFaseDAO(request)
         tipos = tipo_fase_dao.get_query().filter(TipoFase._fase_id == fase._id).all();
         for tipo in tipos:
@@ -103,6 +107,7 @@ def actualizar_eliminar_fase(request):
         dao.borrar(fase)
         return Response(json.dumps({'sucess': 'true'}))
     else:
+        #Recibimos un PUT
         u= Unpickler()
         dao = FaseDAO(request)
         entidad = u.restore(request.json_body);
@@ -113,12 +118,19 @@ def actualizar_eliminar_fase(request):
         vieja._color = entidad["_color"]
         
         dao.update(vieja)
-        return Response(json.dumps({'sucess': 'true'}))
+        lista = []
+        p = Pickler()
+        lista.append(p.flatten(vieja))
+        j_string = p.flatten(lista)
+        return Response(json.dumps({'sucess': 'true', 'fases':j_string}))
 
 @view_config(route_name='obtenercrearatributofase')
 def obtener_crear_atributofase(request):
     """
-    @summary: Maneja las solicitudes para obtener y crear atributos particulares de una fase.                  
+    @summary: Maneja las solicitudes para obtener y crear atributos particulares de una fase.
+    @param request: Get para recuperar y Post para crear.
+    @return: En caso de recibir un Get retorna todos los atributos particulares de una fase en especifico.
+        En caso de recibir un Post retorna el atributo particular creado.                 
     """
     if (request.method == 'GET'):
         id = request.GET.get('id')
@@ -133,6 +145,7 @@ def obtener_crear_atributofase(request):
 
         return Response(a_ret)
     else:    
+        #recibio un Post
         u= Unpickler()
         entidad = u.restore(request.json_body);
         
@@ -147,14 +160,17 @@ def obtener_crear_atributofase(request):
         p = Pickler()
         lista.append(p.flatten(nuevo_atributo))
         j_string = p.flatten(lista)
-        a_ret = json.dumps({'sucess': 'true', 'atributofases':j_string})
+        a_ret = json.dumps({'sucess': 'true', 'atributofase':j_string})
     
         return Response(a_ret)
 
 @view_config(route_name='actualizareliminaratributofase')
 def actualizar_eliminar_atributofase(request):
     """
-    @summary: Maneja las solicitudes para actualizar y elimninar atributos particulares de una fase.                        
+    @summary: Maneja las solicitudes para actualizar y elimninar atributos particulares de una fase.
+    @param request: Delete para eliminar y Put para modificar.
+    @return: En caso de recibir un Put retorna el atributo particular modificado.
+        En caso de recibir un Delete retorna true en caso de exito.                         
     """
     if (request.method == 'DELETE'):
         u= Unpickler()
@@ -165,21 +181,30 @@ def actualizar_eliminar_atributofase(request):
         return Response(json.dumps({'sucess': 'true'}))
 
     else:
+        #recibio un put
         u= Unpickler()
         dao = AtributoFaseDAO(request)
         entidad = u.restore(request.json_body);
         vieja = dao.get_by_id(entidad["id"])
         vieja._nombre = entidad["_nombre"]
-        vieja._autor = entidad["_descripcion"]
-        vieja._prioridad = entidad["_valor"]
+        vieja._descripcion = entidad["_descripcion"]
+        vieja._valor = entidad["_valor"]
         
         dao.update(vieja)
-        return Response(json.dumps({'sucess': 'true'}))
+        
+        lista = []
+        p = Pickler()
+        lista.append(p.flatten(vieja))
+        j_string = p.flatten(lista)
+        return Response(json.dumps({'sucess': 'true', 'atributofase':j_string}))
    
 @view_config(route_name='obtenercreartipofase')
 def obtener_crear_tipofase(request):
     """
-    @summary: Maneja las solicitudes para obtener y asociar tipos de items a una fase en particular.                
+    @summary: Maneja las solicitudes para obtener y asociar tipos de items a una fase en particular.
+    @param request: Get para recuperar y Post para crear.
+    @return: En caso de recibir un Get retorna todos los tipos de items que soporta una fase en especifico.
+        En caso de recibir un Post asocia un tipo de item a una fase.                
     """
     if (request.method == 'GET'):
         id = request.GET.get('id')
@@ -188,7 +213,7 @@ def obtener_crear_tipofase(request):
         lista = [];
         p = Pickler()
         for entidad in entidades:
-            a = TipoFaseLindos(entidad._id, entidad._fase, entidad._tipo,entidad._tipo._nombre)
+            a = TipoFaseLindos(entidad._id, entidad._fase._id, entidad._tipo._id,entidad._tipo._nombre)
             lista.append(p.flatten(a))    
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'tipofase':j_string})
@@ -209,9 +234,10 @@ def obtener_crear_tipofase(request):
         
         lista = []
         p = Pickler()
-        lista.append(p.flatten(nuevo_tipo_fase))
+        a = TipoFaseLindos(nuevo_tipo_fase._id, nuevo_tipo_fase._fase._id, nuevo_tipo_fase._tipo._id,nuevo_tipo_fase._tipo._nombre)
+        lista.append(p.flatten(a))
         j_string = p.flatten(lista)
-        a_ret = json.dumps({'sucess': 'true', 'atributofases':j_string})
+        a_ret = json.dumps({'sucess': 'true', 'tipofase' : j_string})
     
         return Response(a_ret)
 
@@ -219,6 +245,8 @@ def obtener_crear_tipofase(request):
 def eliminar_tipofase(request):
     """
     @summary: Maneja las solicitudes elimninar soporte de tipos de item de una fase.
+    @param request: Delete para eliminar.
+    @return: Retorna true en caso de exito.
     """
     if (request.method == 'DELETE'):
         u= Unpickler()

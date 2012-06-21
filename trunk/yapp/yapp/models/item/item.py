@@ -38,6 +38,9 @@ class Item (EntidadPadre):
         self._fecha_fin = fecha_fin
         self._padre_item_id = padre_item_id
         self._antecesor_item_id = antecesor_item_id
+#        self._linea_base_id = linea_base_id
+
+
 
 class ItemDTO:
     def __init__(self, item):
@@ -53,4 +56,7 @@ class ItemDTO:
         self._estado = item._estado;
         self._fecha_inicio = item._fecha_inicio;
         self._fecha_fin = item._fecha_fin;
+        self._padre_item_id = item._padre_item_id
+        self._antecesor_item_id = item._antecesor_item_id
+#        self._linea_base_id = item._linea_base_id
 

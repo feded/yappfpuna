@@ -10,6 +10,21 @@ Ext.define('YAPP.model.Rol', {
 	}, '_nombre', '_email', {
 		name : '_estado',
 		type : 'YAPP.model.RolEstado'
-	}, '_esFinal', '_password', 'accion' ]
+	}, '_esFinal', '_password', 'accion', '_padres' ],
+	
+	proxy : {
+		type : 'rest',
+		api : {
+			read : '/roles/0',
+			update : '/roles',
+			create : '/roles/0',
+			destroy : '/roles'
+		},
+		reader : {
+			type : 'json',
+			root : 'users',
+			successProperty : 'sucess'
+		}
+	}
 
 });
