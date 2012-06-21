@@ -13,8 +13,7 @@ from yapp.models.recurso.recurso_bien import RecursoBien
 from yapp.models.recurso.recurso_material import RecursoMaterial
 from yapp.models.recurso.recurso_persona import RecursoPersona
 from yapp.models.recurso.tipo_recurso import TipoRecurso
-from yapp.models.unidad_trabajo.unidad_trabajo_recurso import \
-    UnidadTrabajo_Recurso
+from yapp.models.unidad_trabajo.unidad_trabajo_recurso import UnidadTrabajo_Recurso
 import json
 
 
@@ -22,10 +21,15 @@ import json
 def obtener_crear_recursos(request):
     """
     @summary: Maneja las solicitudes para obtener y crear recursos.
+    @param request: Get para recuperar y Post para crear.
+    @return: En caso de que la operacion sea TODOS retorna todos los recursos.
+        En caso de que la operacion sea DISPONIBLES retorna los recursos aun no asignados a esa unidad de trabajo.
+        En caso de que la operacion se NODISPONIBLES retorn los recursos asignados a esa unidad de trabajo.
     """
     if (request.method == 'GET'):
         operacion = request.GET.get('operacion')
         if(operacion == 'TODOS'):
+            #Retornamos todos los recursos
             rd = RecursoDAO(request)
             entidades = rd.get_all()
             lista = [];
@@ -43,13 +47,13 @@ def obtener_crear_recursos(request):
                     rd = RecursoMaterialDAO(request)
                     entidad = rd.get_by_id(entidad._id)
                     a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
-#            a = RecursosLindos(entidad._id, entidad._nombre, entidad._tipo,entidad._descripcion,entidad._tipo._tipo)
                 lista.append(p.flatten(a))    
             j_string = p.flatten(lista)
             a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})    
             
             return Response(a_ret)
         elif(operacion == 'DISPONIBLES'):
+            #Los recursos que no estan aun en la unidad de trabajo
             id_unidad_trabajo = request.GET.get('id_unidad')
             dao = UnidadTrabajoRecursoDAO(request);
             entidades = dao.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==id_unidad_trabajo).all();
@@ -66,6 +70,7 @@ def obtener_crear_recursos(request):
                     recursos.append(recurso)
             return format_recursos(request, recursos)
         elif operacion == 'NODISPONIBLES':
+            #Los recursos que estan en la unidad de trabajo
             id_unidad_trabajo = request.GET.get('id_unidad')
             dao = UnidadTrabajoRecursoDAO(request);
             entidades = dao.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==id_unidad_trabajo).all();
@@ -75,7 +80,8 @@ def obtener_crear_recursos(request):
                 print entidad._id
             return format_recursos(request, recursos)
     
-    else:    
+    else:  
+        #Recibimos un Post  
         u= Unpickler()
         entidad = u.restore(request.json_body);
         
@@ -101,7 +107,6 @@ def obtener_crear_recursos(request):
         
         lista = []
         p = Pickler()
-#        lista.append(p.flatten(nuevo_recurso))
         lista.append(p.flatten(a))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})
@@ -112,6 +117,9 @@ def obtener_crear_recursos(request):
 def actualizar_eliminar_recurso(request):
     """
     @summary: Maneja las solicitudes para actualizar y elimninar recursos.
+    @param request: Delete para eliminar y Put para modificar.
+    @return: En caso de recibir un Delete retorna true en caso de exito.
+        En caso de recibir un Put retorna el recurso modificado.
     """
     
     if (request.method == 'DELETE'):
@@ -119,7 +127,6 @@ def actualizar_eliminar_recurso(request):
         entidad = u.restore(request.json_body);
         dao = RecursoDAO(request)
         recurso = dao.get_by_id(entidad["id"])
-        
         
         if (recurso._tipo._tipo == "Persona"):
                 dao = RecursoPersonaDAO(request)
@@ -134,6 +141,7 @@ def actualizar_eliminar_recurso(request):
         dao.borrar(recurso)
         return Response(json.dumps({'sucess': 'true'}))
     else:
+        #Recibio un Put
         u= Unpickler()
         dao = RecursoDAO(request)
         entidad = u.restore(request.json_body);
@@ -165,10 +173,8 @@ def actualizar_eliminar_recurso(request):
                 a = RecursosLindos(vieja._id, vieja._nombre, vieja._tipo,vieja._descripcion,vieja._tipo._tipo, 0, vieja._costo_cantidad, vieja._cantidad)
                 
         dao.update(vieja)
-#        return Response(json.dumps({'sucess': 'true'}))
         lista = []
         p = Pickler()
-#        vieja = dao.get_by_id(entidad["id"])
         lista.append(p.flatten(a))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})
@@ -206,6 +212,9 @@ class RecursosLindos:
         self._cantidad = cantidad
         
 def format_recursos(request, entidades):
+    """
+    @summary: Para dar formato a los recursos.        
+    """
     p = Pickler()
     rd = RecursoPersonaDAO(request)
     lista = []
@@ -221,7 +230,6 @@ def format_recursos(request, entidades):
             rd = RecursoMaterialDAO(request)
             entidad = rd.get_by_id(entidad._id)
             a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
-#            a = RecursosLindos(entidad._id, entidad._nombre, entidad._tipo,entidad._descripcion,entidad._tipo._tipo)
         lista.append(p.flatten(a))    
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})
