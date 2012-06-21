@@ -1,7 +1,11 @@
 <html>
 <head>
 	<title>YAPP </title>
+<<<<<<< .working
 	<link rel="stylesheet" type="text/css" href="/static/app/resources/css/ext-all-slate.css">
+=======
+	<link rel="stylesheet" type="text/css" href="static/app/resources/css/ext-all-slate.css">
+>>>>>>> .merge-right.r286
 	<link rel="stylesheet" type="text/css" href="/static/extjs/examples/shared/example.css"	>
     <script type="text/javascript" src="/static/extjs/ext-debug.js"></script>
     <script type="text/javascript" src="/static/extjs/examples/shared/examples.js"></script>

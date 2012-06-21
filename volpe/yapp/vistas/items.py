@@ -22,16 +22,22 @@ from yapp.daos.item_unidad_dao import ItemUnidadDAO
 
 @view_config(route_name='crearListarItems')
 def ag_atributos_tipos_item(request): 
-    if (request.method == 'GET'):     
+    if (request.method == 'GET'):
+        item_dao = ItemDAO(request)
+        fase_id = request.GET.get('id')     
         #Parte cocho
         if request.GET.get('id_linea_base') != None:
             return get_items_con_linea_base(request)
         if request.GET.get('linea_base') == "false" and request.GET.get('id') != None:
             return get_items_sin_linea_base_con_fase(request);
-        #END parte cocho
-        item_dao = ItemDAO(request)
-        fase_id = request.GET.get('id')
-        entidades_item_id = item_dao.get_items_fase(fase_id);
+         #END parte cocho
+         
+        if request.GET.get('tipo') == "ELIMINADO":
+            entidades_item_id = item_dao.get_items_eliminados(fase_id)
+        elif request.GET.get('tipo') == "VERSIONES":
+            entidades_item_id = item_dao.get_items_por_version(request.GET.get("item_id"))
+        else: 
+            entidades_item_id = item_dao.get_items_fase(fase_id);
         lista = [];
         p = Pickler(True, None)
         for entidad in entidades_item_id:
@@ -65,7 +71,7 @@ def ag_atributos_tipos_item(request):
         fase = dao_fase.get_by_id(entidad["_fase"])
         
         dao_tipo_item = TipoItemDAO(request)
-        tipo_item = dao_tipo_item.get_by_id(entidad["_tipo_item"])
+        tipo_item = dao_tipo_item.get_by_id(entidad["_tipo_item"]["_id"])
 
         dao_item_ante = ItemDAO(request)
         if(entidad["_antecesor"] == "" or  entidad["_antecesor"] == None):
@@ -113,6 +119,8 @@ def bm_atributo(request):
         fase = dao_fase.get_by_id(entidad["_fase"]["_id"])
         
         dao_tipo_item = TipoItemDAO(request)
+        print "--------------------------"
+        print (entidad["_tipo_item"]["_id"])
         tipo_item = dao_tipo_item.get_by_id((entidad["_tipo_item"]["_id"]))
 
         dao_item_ante = ItemDAO(request)
@@ -152,19 +160,29 @@ def bm_atributo(request):
 
 def actualizar_referencias_item(item, item_dao, anterior_id):
     #Este item es padre.. vamos a actualizar las refeencias de sus hijos
-    hijos = item_dao.get_query().filter(Item._padre_item_id==anterior_id).all()
+    hijos = item_dao.get_query().filter(Item._padre_item_id==anterior_id)
+    updated = []
     for hijo in hijos:
-        hijo._padre_item_id = item._id;
-        #VERIFICAR ESTADO DE SUS HIJOS
-        hijo._estado = "REVISION"
-        item_dao.update(hijo)
+        if (updated.count(hijo._item_id) == 0):
+            posible_hijo = item_dao.get_query().filter(Item._item_id == hijo._item_id).order_by(Item._version.desc()).first();
+            posible_hijo._padre_item_id = item._id;
+            if (posible_hijo._estado != "ELIMINADO"):
+                #VERIFICAR ESTADO DE SUS HIJOS
+                posible_hijo._estado = "REVISION"
+            item_dao.update(posible_hijo)
+            updated.append(hijo._item_id)
     #este item es antecesor, vamos a actualizar las referencias de sus descendendientes
-    sucesores = item_dao.get_query().filter(Item._antecesor_item_id==anterior_id).all();
+    sucesores = item_dao.get_query().filter(Item._antecesor_item_id==anterior_id)
+    updated = []
     for sucesor in sucesores:
-        sucesor._antecesor_item_id = item._id;
-        #VERIFICAR ESTADO DE SUS HIJOS
-        sucesor._estado = "REVISION"
-        item_dao.update(sucesor)
+        if (updated.count(sucesor._item_id) == 0):
+            posible_sucesor = item_dao.get_query().filter(Item._item_id == sucesor._item_id).order_by(Item._version.desc()).first();
+            posible_sucesor._antecesor_item_id = item._id;
+            if (posible_sucesor._estado != "ELIMINADO"):    
+                #VERIFICAR ESTADO DE SUS HIJOS
+                posible_sucesor._estado = "REVISION"
+            item_dao.update(posible_sucesor)
+            updated.append(sucesor._item_id)
 
 def get_items_con_linea_base(request):
     print "Pide items de linea base"

@@ -26,6 +26,9 @@ class ItemDAO(BaseDAO):
             if (it._item_id == item._item_id):
                 return it
     
+    def get_ultima_version_item_by_id(self, item_id):
+        return self.get_query().filter(Item._item_id == item_id).order_by(Item._version.asc()).first();
+    
     def get_items_fase(self, fase_id):
         
         """
@@ -71,5 +74,25 @@ class ItemDAO(BaseDAO):
                 lista_return.append(entidad)
         
         return lista_return
+    
+    def get_items_eliminados(self, fase_id):
         
+        entidades = self.get_query().filter(Item._fase_id == fase_id).distinct(Item._item_id).all()
+        entidades_item_id = []
+        print len(entidades)
         
+        for entidad in entidades:
+            posible_actual = self.get_query().filter(Item._item_id == entidad._item_id).order_by(Item._version.desc()).first();
+            print posible_actual._item_id
+            print posible_actual._estado
+            if (posible_actual._estado == "ELIMINADO"):            
+                if (entidades_item_id.count(posible_actual) == 0):
+                    entidades_item_id.append(posible_actual)
+             
+        return entidades_item_id
+
+    def get_items_por_version(self, item_id):
+        versiones = self.get_query().filter(Item._item_id == item_id).order_by(Item._version.asc()).all()
+        versiones.pop()
+        return versiones
+            
