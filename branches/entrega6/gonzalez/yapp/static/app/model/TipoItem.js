@@ -11,6 +11,24 @@ Ext.define('YAPP.model.TipoItem', {
 		    	'_color',
 		    	'_prefijo',
 		    	'_condicionado',
-		    	'accion'
-    		]
+		    	'accion',
+		    	{
+		    		name : '_proyecto_id', 
+		    		type : 'int', 		    	}
+		    	
+    		],
+   	proxy : {
+		type : 'rest',
+		api : {
+			read : '/obtenerTipos',
+	        update : '/guardarTipo',
+	        create : '/crearTipo',
+	        destroy : '/eliminarTipo'
+		},
+		reader : ({
+			type : 'json',
+			root : 'lista',
+			successProperty : 'sucess'
+		})
+	}
 });
