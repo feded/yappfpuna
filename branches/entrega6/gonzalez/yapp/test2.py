@@ -10,6 +10,11 @@ from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.daos.tipo_fase_dao import TipoFaseDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models.fase.tipo_fase import TipoFase
+from yapp.daos.recurso_persona_dao import RecursoPersonaDAO
+from yapp.models.recurso.recurso_persona import RecursoPersona
+from yapp.daos.recurso_dao import TipoRecursoDAO
+from yapp.daos.unidad_trabajo_dao import UnidadTrabajoDAO
+from yapp.models.unidad_trabajo.unidad_trabajo import UnidadTrabajo
 
 class GetAtributoEsquema(unittest.TestCase):
     def setUp(self):
@@ -533,6 +538,7 @@ class PutProyectos(unittest.TestCase):
         self.failUnless('sucess' in res.body)
 
 class DeleteProyectos(unittest.TestCase):
+
     """
     @summary: Testea eliminacion de proyectos.                         
     """
@@ -561,20 +567,111 @@ class DeleteProyectos(unittest.TestCase):
         print "Testeando eliminar proyectos"
         self.failUnless('sucess' in res.body)
         
-#class GetRecursos(unittest.TestCase):
-#    def setUp(self):
-#        from yapp import main
-#        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
-#        app = main({}, **settings)
-#        from webtest import TestApp
-#        self.testapp = TestApp(app)
-#
-#    def test_it(self):
-#        res = self.testapp.get('/recursos',status=200)
-#        print "Probando recursos"
-#        self.failUnless('sucess' in res.body)
+##################################################################################
+#                                Recursos
+##################################################################################
+class GetRecursos(unittest.TestCase):
+    """
+    @summary: Testea la recuperacion de proyectos.                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        res = self.testapp.get('/recursos',params={'operacion': 'TODOS'},status=200)
+        print "Testeando recuperar recursos"
+        self.failUnless('sucess' in res.body)
+
+class PostRecursos(unittest.TestCase):
+    """
+    @summary: Testea la creacion de recursos.                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        recurso = {"_nombre":"Uriel","id":0,"_tipo":"Persona","_descripcion":"Desarrollador","tipo_nombre":"Persona","_costo_hora":100,"_costo_cantidad":0,"_cantidad":0}
+        res = self.testapp.post('/recursos',params=json.dumps(recurso));
+        print "Testeando crear recursos"
+        self.failUnless('sucess' in res.body)
+
+class PutRecursos(unittest.TestCase):
+    """
+    @summary: Testea la modificacion de recursos                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        dao = RecursoPersonaDAO(None)
+        tipo_dao = TipoRecursoDAO(None)
+        tipo = tipo_dao.get_by_id(1)
+        nuevo_recurso = RecursoPersona("Prueba",tipo,"Prueba",0)
+        dao.crear(nuevo_recurso)
+        direccion = '/recursos/' + str(nuevo_recurso.id)
+        recurso = {"_nombre":"Prueba 2","id":nuevo_recurso.id,"_tipo":"Persona","_descripcion":"Prueba","tipo_nombre":"Persona","_costo_hora":10,"_costo_cantidad":0,"_cantidad":1}
+        res = self.testapp.put(direccion,params=json.dumps(recurso));
+        print "Testeando modificar recursos"
+        self.failUnless('sucess' in res.body)
+
+class DeleteRecursos(unittest.TestCase):
+    """
+    @summary: Testea eliminacion de recursos.                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        dao = RecursoPersonaDAO(None)
+        tipo_dao = TipoRecursoDAO(None)
+        tipo = tipo_dao.get_by_id(1)
+        nuevo_recurso = RecursoPersona("Prueba",tipo,"Prueba",0)
+        dao.crear(nuevo_recurso)
+        direccion = '/recursos/' + str(nuevo_recurso.id)
+        recurso = {"_nombre":"Prueba 2","id":nuevo_recurso.id,"_tipo":"Persona","_descripcion":"Prueba","tipo_nombre":"Persona","_costo_hora":10,"_costo_cantidad":0,"_cantidad":1}
+        res = self.testapp.delete(direccion,params=json.dumps(recurso));
+        print "Testeando eliminar recursos"
+        self.failUnless('sucess' in res.body)
+        
 
 class GetRoles(unittest.TestCase):
+    
     def setUp(self):
         from yapp import main
         settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
@@ -802,8 +899,14 @@ class GetTipoRecurso(unittest.TestCase):
         print "Probando tipo recurso"
         self.failUnless('sucess' in res.body)
 
+##################################################################################
+#                       Unidad de trabajo
+##################################################################################
 
 class GetUnidadTrabajo(unittest.TestCase):
+    """
+    @summary: Testea la recuperacion de unidades de trabajo.                         
+    """
     def setUp(self):
         from yapp import main
         settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
@@ -818,5 +921,114 @@ class GetUnidadTrabajo(unittest.TestCase):
 
     def test_it(self):
         res = self.testapp.get('/unidadtrabajo',status=200)
-        print "Probando unidad de trabajo"
+        print "Testea recuperar unidades de trabajo"
+        self.failUnless('sucess' in res.body)
+
+class PostUnidadTrabajo(unittest.TestCase):
+    """
+    @summary: Testea la creacion de unidad de trabajo.                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        unidad = {"_nombre":"Prueba","id":0,"_etiqueta":"U","_descripcion":"Prueba","_color":"003300"}
+        res = self.testapp.post('/unidadtrabajo',params=json.dumps(unidad));
+        print "Testeando crear unidad de trabajo"
+        self.failUnless('sucess' in res.body)
+
+class PutUnidadTrabajo(unittest.TestCase):
+    """
+    @summary: Testea la modificacion de unidad de trabajo.                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        dao = UnidadTrabajoDAO(None)
+        nueva_unidad_trabajo = UnidadTrabajo("Prueba","P","Prueba","0")
+        dao.crear(nueva_unidad_trabajo)
+        
+        unidad = {"_nombre":"Prueba 1","id":nueva_unidad_trabajo.id,"_etiqueta":"P","_descripcion":"Prueba","_color":"008000"}
+        
+        direccion = '/unidadtrabajo/' + str(nueva_unidad_trabajo.id)
+        res = self.testapp.put(direccion,params=json.dumps(unidad));
+        print "Testeando modificar unidad de trabajo"
+        self.failUnless('sucess' in res.body)
+
+class DeleteUnidadTrabajo(unittest.TestCase):
+    """
+    @summary: Testea eliminacion de unidades de trabajo.                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        dao = UnidadTrabajoDAO(None)
+        nueva_unidad_trabajo = UnidadTrabajo("Prueba","P","Prueba","0")
+        dao.crear(nueva_unidad_trabajo)
+        
+        unidad = {"_nombre":"Prueba 1","id":nueva_unidad_trabajo.id,"_etiqueta":"P","_descripcion":"Prueba","_color":"008000"}
+        direccion = '/unidadtrabajo/' + str(nueva_unidad_trabajo.id)
+        res = self.testapp.delete(direccion,params=json.dumps(unidad));
+        print "Testeando eliminar recursos"
+        self.failUnless('sucess' in res.body)
+
+class AsignarRecursos(unittest.TestCase):
+    """
+    @summary: Testea la asignacion de recursos a unidad de trabajo.                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        dao = UnidadTrabajoDAO(None)
+        nueva_unidad_trabajo = UnidadTrabajo("Prueba","P","Prueba","0")
+        dao.crear(nueva_unidad_trabajo)
+        
+        dao = RecursoPersonaDAO(None)
+        tipo_dao = TipoRecursoDAO(None)
+        tipo = tipo_dao.get_by_id(1)
+        nuevo_recurso = RecursoPersona("Prueba",tipo,"Prueba",0)
+        
+        asignacion = {"id_unidad_trabajo":nueva_unidad_trabajo.id,"_recursos":[nuevo_recurso.id]}
+        
+        res = self.testapp.post('/asignarRecursos',params=json.dumps(asignacion));
+        print "Testeando asignar recursos a unidad de trabajo"
         self.failUnless('sucess' in res.body)

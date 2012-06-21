@@ -4,8 +4,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from yapp.daos.unidad_trabajo_dao import UnidadTrabajoDAO
 from yapp.models.unidad_trabajo.unidad_trabajo import UnidadTrabajo
-from yapp.models.unidad_trabajo.unidad_trabajo_recurso import \
-    UnidadTrabajo_Recurso
+from yapp.models.unidad_trabajo.unidad_trabajo_recurso import UnidadTrabajo_Recurso
 import json
 from yapp.daos.recurso_dao import RecursoDAO
 from yapp.daos.unidad_trabajo_recurso import UnidadTrabajoRecursoDAO
@@ -15,6 +14,9 @@ from yapp.daos.unidad_trabajo_recurso import UnidadTrabajoRecursoDAO
 def obtener_crear_unidad_trabajo(request):
     """
     @summary: Maneja las solicitudes para obtener y crear unidad de trabajo.
+    @param request: Get para recuperar y Post para crear.
+    @return: Retorna todos las unidades de trabajo en caso de recibir un Get.
+        Retorna la unidad creada en caso de recibir una unidad de trabajo
     """
     if (request.method == 'GET'):
         rd = UnidadTrabajoDAO(request)
@@ -28,6 +30,7 @@ def obtener_crear_unidad_trabajo(request):
         
         return Response(a_ret)
     else:
+        #Recibio un Post
         u= Unpickler()
         entidad = u.restore(request.json_body);
         
@@ -46,7 +49,12 @@ def obtener_crear_unidad_trabajo(request):
 
 @view_config(route_name='actualizareliminarunidadtrabajo')
 def actualizar_eliminar_unidad_trabajo(request):
-    
+    """
+    @summary: Maneja las solicitudes para eliminar y actualizar unidades de trabajo.
+    @param request: Delete para eliminar y Put para modificar.
+    @return: Retorna la unidad de trabajo modificada en caso de recibir un Put.
+        En caso de recibir un Delete retorna true en caso de exito.
+    """    
     if (request.method == 'DELETE'):
         u= Unpickler()
         entidad = u.restore(request.json_body);
@@ -62,6 +70,7 @@ def actualizar_eliminar_unidad_trabajo(request):
         dao.borrar(unidad)
         return Response(json.dumps({'sucess': 'true'}))
     else:
+        #Recibio un Put
         u= Unpickler()
         dao = UnidadTrabajoDAO(request)
         entidad = u.restore(request.json_body);
@@ -79,11 +88,12 @@ def actualizar_eliminar_unidad_trabajo(request):
         a_ret = json.dumps({'sucess': 'true', 'unidadtrabajo':j_string})
         return Response(a_ret)
 
-    
-    
-    
 @view_config(route_name='asignarrecursos')
 def asignar_recursos(request):
+    """
+    @summary: Se encarga de asignar recursos a la unidad de trabajo.
+    @param request: La unidad de trabajo y los recursos.
+    """  
     u= Unpickler()
     entidad = u.restore(request.json_body);
     id_unidad = entidad['id_unidad_trabajo']
@@ -93,8 +103,8 @@ def asignar_recursos(request):
         dao_unidad_recurso.borrar(unidad_recurso)
     
     for id_recurso in entidad['_recursos']:
-        print str(id_unidad) + '==>' + str(id_recurso)
-        
+#        print str(id_unidad) + '==>' + str(id_recurso)
+
         a_guardar = UnidadTrabajo_Recurso(id_unidad, id_recurso)
         dao_unidad_recurso.crear(a_guardar)
         
