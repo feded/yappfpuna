@@ -5,7 +5,8 @@ Ext.define('YAPP.controller.TipoItem', {
 		'tipoItem.List',
 		'tipoItem.Edit',
 		'tipoItem.AtributosList',
-		'tipoItem.AtributoEdit'
+		'tipoItem.AtributoEdit',
+		'tipoItem.Importar'
 		
 		],
 	stores:['TipoItems' , 'AtributoTipoItem' ],
@@ -19,6 +20,10 @@ Ext.define('YAPP.controller.TipoItem', {
 				{
     				selector: 'viewport combobox[name=proyectos]',
     				ref: 'proyectos'
+				},
+				{
+    				selector: 'importar combobox',
+    				ref: 'proyectoImportar'
 				}
 			],
 	
@@ -28,6 +33,9 @@ Ext.define('YAPP.controller.TipoItem', {
 		this.control({
             'tipolist button[action=crear]': {
                 click: this.crearTipoItem
+            },
+            'tipolist button[action=importar]': {
+                click: this.importar
             },
             'tipoItemedit button[action=guardar]': {
                 click: this.guardarTipoItem
@@ -63,6 +71,13 @@ Ext.define('YAPP.controller.TipoItem', {
 
         });
 	},
+	
+	importar : function(button){
+		var view = Ext.widget('importar');
+		
+		var proyectos = this.getStore('Proyectos');
+		this.getProyectoImportar().store = proyectos;
+    },
 	
 	seleccionoColor: function(picker, selColor){
 		var texto = selColor;
