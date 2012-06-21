@@ -89,6 +89,9 @@ def main(global_config, **settings):
     config.add_route('asignarUnidadItem' , '/unidadItem')
     config.add_route('editarUnidadItem' , '/unidadItem/{id}')
     
+    config.add_route('asignarAtributoItem' , '/itemAtributo')
+    config.add_route('editarAtributoItem' , '/itemAtributo/{id}')
+    
     
     #rutas Volpe 5 iteracion
     config.add_route('lineas_base', '/lineas_base')

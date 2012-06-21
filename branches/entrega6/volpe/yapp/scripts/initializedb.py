@@ -17,6 +17,7 @@ from yapp.models.roles.permisos import Permisos
 from yapp.models.roles.permisos_roles import PermisosRoles
 from yapp.models.roles.rol import Rol
 from yapp.models.tipo_item.tipo_item import TipoItem
+from yapp.models.item.item_atributo import ItemAtributo
 import os
 import sys
 import transaction
@@ -36,6 +37,7 @@ import yapp.models.fase.fase
 import yapp.models.fase.tipo_fase
 import yapp.models.item.item
 import yapp.models.item.item_unidad_trabajo
+import yapp.models.item.item_atributo
 import yapp.models.proyecto.proyecto
 import yapp.models.recurso.recurso
 import yapp.models.recurso.recurso_bien

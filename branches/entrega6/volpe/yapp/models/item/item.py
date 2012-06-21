@@ -38,6 +38,7 @@ class Item (EntidadPadre):
         self._fecha_fin = fecha_fin
         self._padre_item_id = padre_item_id
         self._antecesor_item_id = antecesor_item_id
+#        self._linea_base_id = linea_base_id
 
 
 
@@ -57,4 +58,5 @@ class ItemDTO:
         self._fecha_fin = item._fecha_fin;
         self._padre_item_id = item._padre_item_id
         self._antecesor_item_id = item._antecesor_item_id
+#        self._linea_base_id = item._linea_base_id
 

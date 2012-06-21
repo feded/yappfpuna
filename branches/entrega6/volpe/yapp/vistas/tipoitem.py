@@ -10,6 +10,9 @@ import json
 from yapp.daos.atributo_tipo_item_dao import AtributoTipoItemDAO
 from yapp.models.tipo_item.atributo_tipo_item import AtributoTipoItem
 from yapp.models import DBSession
+from yapp.daos.item_dao import ItemDAO
+from yapp.daos.item_atributo_dao import ItemAtributoDAO
+from yapp.models.item.item_atributo import ItemAtributo
 
 
 
@@ -91,9 +94,31 @@ def save_tipo(request):
 
 @view_config(route_name='crearListarAtributos')
 def AG_atributos_tipos_item(request): 
-    if (request.method == 'GET'):        
-        rd = AtributoTipoItemDAO(request)
-        entidades = rd.get_query().filter(AtributoTipoItem._tipo_item_id == request.GET.get('id')).all()
+    if (request.method == 'GET'):
+        if request.GET.get('_item_id') != None:
+            item_id = request.GET.get('_item_id');
+            itemDAO = ItemDAO(request)
+            item = itemDAO.get_ultima_version_item_by_id(item_id);
+            atributoTipoItemDAO = AtributoTipoItemDAO(request)
+            atributosTipoItem = atributoTipoItemDAO.get_atributos_by_tipo_id(item._tipo_item_id)
+    
+                
+            dao = ItemAtributoDAO(request) 
+            entidades = dao.get_query().filter(ItemAtributo._item_id == item._id).all()
+            p = Pickler()
+            aRet = []
+            aRet = atributosTipoItem
+            if (request.GET.get('_no_definidos') == "true"):
+                for ent in entidades:
+                    for atributo in atributosTipoItem:
+                        if ent._atributo_id == atributo._id:
+                            print "removiendo"
+                            print atributo._id
+                            aRet.remove(atributo);
+            entidades = aRet
+        else:        
+            rd = AtributoTipoItemDAO(request)
+            entidades = rd.get_atributos_by_tipo_id(request.GET.get('id'))
 
         print entidades
         lista = [];
