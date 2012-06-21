@@ -12,10 +12,11 @@ Ext.define('YAPP.view.fase.ListarTipoFase' ,{
                                 			{
                                 				xtype: 'combobox',
                                 				fieldLabel: 'Tipo items',
-    											store: Ext.create('YAPP.store.TipoItems'),
+//    											store: Ext.create('YAPP.store.TipoItems'),
     											displayField: '_nombre',
     											queryMode : 'local',
     											valueField: 'id',
+    											name: 'tipoItems'
                                 		   },
                         					{
                                 	        	xtype: 'button',
@@ -48,12 +49,12 @@ Ext.define('YAPP.view.fase.ListarTipoFase' ,{
                 this.down('#delete').setDisabled(selections.length === 0);
     }
 });
-function renderizador(val) {
-	if (val == null)
-		return val;
-	return val._nombre
-	// return ""
-}
+//function renderizador(val) {
+//	if (val == null)
+//		return val;
+//	return val._nombre
+//	// return ""
+//}
 //function renderizador(value) {
 //	console.log(value);
 //	var store = Ext.create('YAPP.store.TipoItems');

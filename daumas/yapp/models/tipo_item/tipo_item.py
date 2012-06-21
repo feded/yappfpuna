@@ -2,6 +2,9 @@ from sqlalchemy import Column, String
 from sqlalchemy.types import Integer, Boolean
 from yapp.models import Base
 from yapp.models.entidad_base import EntidadBase
+from sqlalchemy.orm import relation, backref
+from sqlalchemy.schema import ForeignKey
+from yapp.models.proyecto.proyecto import Proyecto
 
 
 
@@ -16,16 +19,20 @@ class TipoItem (Base, EntidadBase):
     __tablename__ = "tipo_item"
     _nombre = Column(String, nullable=True)
     _comentario = Column(String, nullable=True)
-    _color = Column(Integer, nullable=False)
+    _color = Column(String, nullable=False)
     _prefijo = Column(String, nullable=False)
     _condicionado = Column(Boolean)
+    _proyecto_id = Column(Integer, ForeignKey('proyecto._id'))
+    _proyecto = relation(Proyecto, backref=backref('tipo_proyecto'), primaryjoin=Proyecto._id==_proyecto_id)
     
-    def __init__(self, nombre, comentario, color, prefijo, condicionado):
+    
+    def __init__(self, nombre, comentario, color, prefijo, condicionado,proyecto):
         self._nombre = nombre
         self._comentario = comentario
         self._color = color
         self._prefijo = prefijo
         self._condicionado = condicionado
+        self._proyecto = proyecto
 
 
 class TipoItemDTO:
@@ -36,3 +43,4 @@ class TipoItemDTO:
         self._color = entidad._color
         self._prefijo = entidad._prefijo
         self._condicionado = entidad._condicionado
+        self._proyecto_id = entidad._proyecto.id

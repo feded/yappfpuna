@@ -16,13 +16,16 @@ Ext.define('YAPP.model.TipoFase', {
 				name : '_fase',
 				type : 'YAPP.model.Fase'
 			},
-//			{
-//                name : '_tipo_id',
-//                type : 'int'
-//        	},
-//        	{
-//                name : '_fase_id',
-//                type : 'int'
-//        	},
-        	]
+        	],
+	
+	proxy : {
+    	type : 'rest',
+    	url: '/tipofase',
+    	
+        reader : {
+        	type : 'json',
+            root : 'tipofase',
+            successProperty : 'sucess'
+            }
+        }
 });

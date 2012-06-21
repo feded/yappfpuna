@@ -5,17 +5,37 @@ Ext.define('YAPP.controller.TipoItem', {
 		'tipoItem.List',
 		'tipoItem.Edit',
 		'tipoItem.AtributosList',
-		'tipoItem.AtributoEdit'
+		'tipoItem.AtributoEdit',
+		'tipoItem.Importar'
 		
 		],
 	stores:['TipoItems' , 'AtributoTipoItem' ],
 	models:['TipoItem' , 'AtributoTipoItem' ],
+	
+	refs: 	[
+				{
+    				selector: 'tipoItemedit textfield[name=_color]',
+    				ref: 'colorTexto'
+				},
+				{
+    				selector: 'viewport combobox[name=proyectos]',
+    				ref: 'proyectos'
+				},
+				{
+    				selector: 'importar combobox',
+    				ref: 'proyectoImportar'
+				}
+			],
+	
 	
 	init:function(){
 		console.log('Cargado controller tipoItem');
 		this.control({
             'tipolist button[action=crear]': {
                 click: this.crearTipoItem
+            },
+            'tipolist button[action=importar]': {
+                click: this.importar
             },
             'tipoItemedit button[action=guardar]': {
                 click: this.guardarTipoItem
@@ -43,9 +63,25 @@ Ext.define('YAPP.controller.TipoItem', {
 			},
 			'atributosList button[action=borrar]':{
 				click: this.borrarAtributo
-			}
+			},
+			
+			'tipoItemedit colorpicker': {
+        		select: this.seleccionoColor
+            }
 
         });
+	},
+	
+	importar : function(button){
+		var view = Ext.widget('importar');
+		
+		var proyectos = this.getStore('Proyectos');
+		this.getProyectoImportar().store = proyectos;
+    },
+	
+	seleccionoColor: function(picker, selColor){
+		var texto = selColor;
+		this.getColorTexto().setValue(texto);
 	},
 	
 	verAtributos : function(grid, view, recordIndex, cellIndex, item, e){
@@ -73,7 +109,6 @@ Ext.define('YAPP.controller.TipoItem', {
 	
 	crearAtributo : function(button){
 		var view = Ext.widget('atributoedit');
-    	console.log('Boton crear atributo apretaRdo');
 		var atributoTipoItem = new YAPP.model.AtributoTipoItem();
 		atributoTipoItem.data._tipo_item_id = tipoId;
 		atributoTipoItem.data.accion = 'POST'
@@ -81,7 +116,6 @@ Ext.define('YAPP.controller.TipoItem', {
     },
     
     guardarAtributo: function(button){
-    	console.log('Entre a guardar')
     	var win = button.up('window');
 		var form = win.down('form');
 		var record = form.getRecord();
@@ -100,19 +134,47 @@ Ext.define('YAPP.controller.TipoItem', {
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);
-		if (record.data._condicionado == 'on')record.data._condicionado = 'true'
-		else record.data._condicionado = 'false' 
-		win.close();
-		console.log(record.data.accion)
-		if (record.data.accion == "POST")
-			this.getTipoItemsStore().insert(0, record);
+		if (record.data._condicionado == 'on'){
+			record.data._condicionado = 'true'
+		}
+		else{
+			 record.data._condicionado = 'false'
+		} 
+		
+		var me = this;
+		if (record.data.accion == "POST"){
+			record.save({
+				success: function(tipo){
+					me.getTipoItemsStore().insert(0, tipo);
+					Ext.example.msg("YAPP", "Tipo de item creado con éxito");
+					win.close();	
+				},
+				
+				failure: function(tipo){
+					alert("No se puedo crear el tipo de item")
+				}
+			});
+		}else{
+			//Actualizamos
+			record.save({
+				success: function(tipo){
+					Ext.example.msg("YAPP", "Tipo de item actualizado con éxito");
+					win.close();	
+				},
+				
+				failure: function(tipo){
+					alert("No se puedo actualizar el tipo de item")
+				}
+			});
+		}
 			
 	},
     crearTipoItem : function(button){
     	var view = Ext.widget('tipoItemedit');
-    	console.log('Boton crear apretaRdo');
 		var tipoItem = new YAPP.model.TipoItem();
+		var cb = this.getProyectos();
 		tipoItem.data.accion = 'POST';
+		tipoItem.data._proyecto_id = cb.getValue();
 		view.down('form').loadRecord(tipoItem);
     },
     
@@ -133,7 +195,16 @@ Ext.define('YAPP.controller.TipoItem', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		selection.data.accion = "DELETE"
-		this.getTipoItemsStore().remove(selection)
+		var me = this;
+		selection.destroy({
+			success: function(tipo){
+				me.getTipoItemsStore().remove(selection)		
+			},
+			failure: function(tipo){
+				alert("No se pudo eliminar el tipo de item")
+			}
+		});
+		
 	},
 	borrarAtributo: function(button){
 		var win = button.up('grid');

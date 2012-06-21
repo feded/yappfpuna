@@ -10,21 +10,7 @@ Ext.define('YAPP.view.fase.ListarFase' ,{
 		  this.dockedItems = [ {
                                 xtype : 'toolbar',
                                 items : [ 
-//                                		 	{
-//                                				xtype: 'combobox',
-//                                				fieldLabel: 'Proyecto',
-//    											store: Ext.create('YAPP.store.Proyectos'),
-//    											displayField: '_nombre',
-//    											queryMode : 'local',
-//    											valueField: 'id',
-//                                		   },
-//                                		   {
-//                        	        		xtype: 'button',
-//                        	        		text : 'Actualizar',
-//                        	        		scope : this,
-//                        	        		action : 'actualizar'
-//                        					},
-                        					 '|',
+//                                		 
                         					{
                                 	        	xtype: 'button',
                                     	    	text : 'Nuevo Fase',
@@ -39,22 +25,22 @@ Ext.define('YAPP.view.fase.ListarFase' ,{
                                         		disabled : true,
                                         		scope : this
                                 			},
-                                			{
-                                        		xtype: 'button',
-                                        		text : 'Atributos',
-                                        		itemId : 'atributo',
-                                        		action : 'atributo',
-                                        		disabled : true,
-                                        		scope : this
-                                			},
-                                			{
-                                        		xtype: 'button',
-                                        		text : 'Tipos de items',
-                                        		itemId : 'tipo',
-                                        		action : 'tipo',
-                                        		disabled : true,
-                                        		scope : this
-                                			}
+//                                			{
+//                                        		xtype: 'button',
+//                                        		text : 'Atributos',
+//                                        		itemId : 'atributo',
+//                                        		action : 'atributo',
+//                                        		disabled : true,
+//                                        		scope : this
+//                                			},
+//                                			{
+//                                        		xtype: 'button',
+//                                        		text : 'Tipos de items',
+//                                        		itemId : 'tipo',
+//                                        		action : 'tipo',
+//                                        		disabled : true,
+//                                        		scope : this
+//                                			}
                                 		]
                                 }];
       
@@ -73,7 +59,7 @@ Ext.define('YAPP.view.fase.ListarFase' ,{
     //la funcion de abajo se va a pasar a view
     onSelectChange : function(selModel, selections) {
                 this.down('#delete').setDisabled(selections.length === 0);
-                this.down('#atributo').setDisabled(selections.length === 0);
-                this.down('#tipo').setDisabled(selections.length === 0);
+//                this.down('#atributo').setDisabled(selections.length === 0);
+//                this.down('#tipo').setDisabled(selections.length === 0);
     }
 });

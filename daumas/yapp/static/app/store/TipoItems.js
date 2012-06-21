@@ -1,10 +1,10 @@
 Ext.define('YAPP.store.TipoItems', {
 	extend : 'Ext.data.Store',
 	model : 'YAPP.model.TipoItem',
-	autoLoad : true,
-	autoSync: true,
+	autoLoad : false,
+	autoSync: false,
 	proxy : {
-		type : 'ajax',
+		type : 'rest',
 		api : {
 			read : '/obtenerTipos',
 	        update : '/guardarTipo',
