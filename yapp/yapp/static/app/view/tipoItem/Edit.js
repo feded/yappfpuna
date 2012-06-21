@@ -5,7 +5,7 @@ var formulario = Ext.define('YAPP.view.tipoItem.Edit', {
 	title : 'Editar Tipo Item',
 	layout : 'fit',
 	autoShow : true,
-	stores : [ 'TipoItems' , 'AtributoItem' ],
+	stores : [ 'TipoItems' ],
 	
 	initComponent : function() {
 		this.items = [{
