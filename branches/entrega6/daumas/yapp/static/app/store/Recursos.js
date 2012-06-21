@@ -2,8 +2,8 @@ Ext.define('YAPP.store.Recursos', {
 	extend: 'Ext.data.Store',
 	model: 'YAPP.model.Recurso',
 	
-	autoLoad : true,
-    autoSync: true,
+	//autoLoad : true,
+    autoSync: false,
     
 //    groupField: "_proyecto",
         

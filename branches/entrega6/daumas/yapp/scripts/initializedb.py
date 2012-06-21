@@ -59,6 +59,7 @@ import yapp.models.suscripcion.notificacion
 import yapp.models.tipo_item.atributo_tipo_item
 import yapp.models.tipo_item.tipo_item
 import yapp.models.linea_base.linea_base
+import yapp.models.unidad_trabajo.unidad_trabajo_recurso
 
 
 
@@ -114,11 +115,11 @@ def main(argv=sys.argv):
             tipo = TipoRecurso("Material");
             DBSession.add(tipo);
             
-    items = TipoItemDAO(None).get_all()
-    if (len(items) == 0):
-        with transaction.manager:
-            tipoItem = TipoItem("Tipo item por defecto", "Tipo po defecto", 0, "TD", False)
-            DBSession.add(tipoItem);
+#    items = TipoItemDAO(None).get_all()
+#    if (len(items) == 0):
+#        with transaction.manager:
+#            tipoItem = TipoItem("Tipo item por defecto", "Tipo po defecto", 0, "TD", False)
+#            DBSession.add(tipoItem);
 
             
     items = RolFinalDAO(None).get_query().filter(RolFinal._email == "admin").first();
@@ -160,6 +161,9 @@ def main(argv=sys.argv):
         admin = Permisos("Calculo de impacto");
         DBSession.add(admin);
         admin = Permisos("Ver costado derecho");
+
+        DBSession.add(admin);
+        admin = Permisos("Unidad de trabajo");
         DBSession.add(admin);
     
     print 'Creando permisos y roles'

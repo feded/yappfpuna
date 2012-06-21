@@ -1,8 +1,8 @@
-Ext.define('YAPP.view.unidadTrabajo.NuevaUnidadTrabajo', {
+Ext.define('YAPP.view.unidadTrabajo.EditarUnidadTrabajo', {
     extend: 'Ext.window.Window',
-    alias : 'widget.nuevaunidadtrabajo',
+    alias : 'widget.editarunidadtrabajo',
 
-    title : 'Nueva Unidad de trabajo',
+    title : 'Editar Unidad de trabajo',
     layout: 'fit',
     autoShow: true,
 
