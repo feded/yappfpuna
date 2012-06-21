@@ -66,11 +66,11 @@ def create_proyectos(request):
     dao_fase.crear(nueva_fase)
     
     #Le asociamos un tipo de item por defecto a esa fase por defecto
-    dao_tipo_item = TipoItemDAO(request)
-    tipo_item = dao_tipo_item.get_by_id(1)
-    nuevo_tipo_fase = TipoFase(nueva_fase,tipo_item)
-    dao_tipo_fase = TipoFaseDAO(request)
-    dao_tipo_fase.crear(nuevo_tipo_fase)
+#    dao_tipo_item = TipoItemDAO(request)
+#    tipo_item = dao_tipo_item.get_by_id(1)
+#    nuevo_tipo_fase = TipoFase(nueva_fase,tipo_item)
+#    dao_tipo_fase = TipoFaseDAO(request)
+#    dao_tipo_fase.crear(nuevo_tipo_fase)
     
     lista = []
     p = Pickler()

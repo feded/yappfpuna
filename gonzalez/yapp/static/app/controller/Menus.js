@@ -194,6 +194,13 @@ Ext.define('YAPP.controller.Menus', {
 	},
 	
 	adminTipoItems : function(button) {
+		var store = this.getStore('TipoItems');
+		var proyecto_id = this.getProyectos().getValue();
+		store.load({
+			params : {
+					id_proyecto :  proyecto_id
+			}
+		});
 		
 		var tabs = Ext.getCmp('tabPrincipal');
 		

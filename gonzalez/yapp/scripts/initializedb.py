@@ -113,11 +113,11 @@ def main(argv=sys.argv):
             tipo = TipoRecurso("Material");
             DBSession.add(tipo);
             
-    items = TipoItemDAO(None).get_all()
-    if (len(items) == 0):
-        with transaction.manager:
-            tipoItem = TipoItem("Tipo item por defecto", "Tipo po defecto", 0, "TD", False)
-            DBSession.add(tipoItem);
+#    items = TipoItemDAO(None).get_all()
+#    if (len(items) == 0):
+#        with transaction.manager:
+#            tipoItem = TipoItem("Tipo item por defecto", "Tipo po defecto", 0, "TD", False)
+#            DBSession.add(tipoItem);
 
             
     items = RolFinalDAO(None).get_query().filter(RolFinal._email == "admin").first();

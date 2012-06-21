@@ -40,6 +40,10 @@ class Proyecto(EntidadPadre):
         self._nota = nota;
         self._fecha_creacion = fecha_creacion;
         self._fecha_modificacion = fecha_modificacion;
+    
+    #Metodo para imprimir
+    def __repr__(self):
+        return "<Proyecto('%s', '%s')>" % (self.nombre, self.autor._nombre)
         
 class ProyectoDTO():
     def __init__(self, proyecto):
