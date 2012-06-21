@@ -93,6 +93,9 @@ Ext.define('YAPP.controller.Menus', {
 	traerPermiso : function() {
 		var permisos = this.getRolPermisosStore();
 		
+		var west= Ext.getCmp('west')
+		console.log(west)
+		
 		permisos.load({
 			scope : this,
 			callback : function(records, operation, success) {
@@ -113,8 +116,6 @@ Ext.define('YAPP.controller.Menus', {
 			if (!controller.casosEspeciales(record)) {
 				var sNombre = record.data._permiso._nombre;
 				var sAccion = "";
-				console.log(sNombre)
-				console.log(typeof getAliasFuncion(sNombre))
 				if (typeof getAliasFuncion(sNombre) == "undefined") {
 					sAccion = "admin" + sNombre;
 				} else {
@@ -126,7 +127,8 @@ Ext.define('YAPP.controller.Menus', {
 					textAlign : 'left',
 					xtype : 'button',
 					action : sAccion,
-					disabled : isDisabled(sNombre)
+					disabled : isDisabled(sNombre),
+					padding : '20 10 20 010'
 				})
 			}
 		})
