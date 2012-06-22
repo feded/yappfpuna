@@ -1,6 +1,10 @@
 Ext.define('YAPP.controller.Gantt', {
 	extend : 'Ext.app.Controller',
 	views : [ 'gantt.View' ],
+	refs : [ {
+		selector : 'viewport combobox[name=proyectos]',
+		ref : 'proyectos'
+	} ],
 	init : function() {
 		this.control({
 			'ganttview' : {
@@ -9,13 +13,13 @@ Ext.define('YAPP.controller.Gantt', {
 		})
 	},
 	traerPermiso : function() {
-		console.log("ENTRE");
-		var g = new JSGantt.GanttChart('g', document.getElementById('GanttChartDIV'), 'day');
-		console.log(document.getElementById('GanttChartDIV'))
-		console.log(g);
-		JSGantt.parseXML("/gantt", g);
-//		JSGantt.parseXML("/static/test.xml", g);
-		g.Draw();
-		g.DrawDependencies();
+		// console.log("ENTRE");
+		var combo = this.getProyectos();
+		if (combo.getValue() != undefined) {
+			var g = new JSGantt.GanttChart('g', document.getElementById('GanttChartDIV'), 'day');
+			JSGantt.parseXML("/gantt?id_proyecto=" + combo.getValue(), g);
+			g.Draw();
+			g.DrawDependencies();
+		}
 	}
 });

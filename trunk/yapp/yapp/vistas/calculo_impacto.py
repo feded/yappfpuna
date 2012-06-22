@@ -7,10 +7,16 @@ from jsonpickle.pickler import Pickler
 from pyramid.response import Response
 from pyramid.view import view_config
 from yapp.daos.item_dao import ItemDAO
-from yapp.models.item.item import ItemDTO, Item
-import json
+from yapp.daos.item_unidad_dao import ItemUnidadDAO
 from yapp.daos.linea_base_dao import LineaBaseDAO
+from yapp.daos.recurso_dao import RecursoDAO
+from yapp.daos.unidad_trabajo_recurso import UnidadTrabajoRecursoDAO
+from yapp.models.item.item import ItemDTO, Item
+from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
 from yapp.models.linea_base.linea_base import LineaBaseDTO
+from yapp.models.unidad_trabajo.unidad_trabajo_recurso import \
+    UnidadTrabajo_Recurso
+import json
 
 
 
@@ -32,6 +38,9 @@ class CalculoImpacto:
         self.item = item
         self.dao = ItemDAO(None);
         self.linea_base_dao = LineaBaseDAO(None)
+        self.item_unidad_dao = ItemUnidadDAO(None)
+        self.unidad_recurso_dao = UnidadTrabajoRecursoDAO(None)
+        self.recurso_dao = RecursoDAO(None)
         
     def calculo_impacto(self):
         antecesores = self.calculo_impacto_atras(self.item, [])
@@ -92,7 +101,17 @@ class CalculoImpacto:
             items = self.calculo_impacto_adelante(sucesor_ultima_version, items)
         
         return items;
+    
+    def costo_item(self, item):
+#        self.item_unidad_dao = ItemUnidadDAO(None)
+#        self.unidad_recurso_dao = UnidadTrabajoRecursoDAO(None)
+#        self.recurso_dao = RecursoDAO(None)
+        ids_unidades = self.item_unidad_dao.get_query().filter(ItemUnidadTrabajo._item_id==item._id).all();
+        return ids_unidades
         
+
+    def costo_unidad(self, unidad_id):
+        ids_recursos = self.unidad_recurso_dao.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==unidad_id).all()
         
         
 class CalculoImpactoDTO:
