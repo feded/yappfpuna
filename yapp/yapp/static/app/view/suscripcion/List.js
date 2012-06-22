@@ -26,9 +26,6 @@ Ext.define('YAPP.view.suscripcion.List', {
 		} ];
 		
 		this.columns = [ {
-			header : 'ID',
-			dataIndex : 'id'
-		}, {
 			header : 'Nombre',
 			dataIndex : '_nombre'
 		}, {

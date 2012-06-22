@@ -24,12 +24,10 @@ Ext.define('YAPP.controller.Menus', {
 	}, {
 		selector : 'viewport button[action=adminTipoItems]',
 		ref : 'botonTipoItems'
-	},
-	// {
-	// selector: 'viewport toolbar[dock=left]',
-	// ref: 'bar'
-	// }
-	],
+	}, {
+		selector : 'viewport tabpanel[name=tabPrincipal]',
+		ref : 'tabPrincipal'
+	}],
 	
 	init : function() {
 		console.log('Cargado controller Menus');
@@ -87,6 +85,9 @@ Ext.define('YAPP.controller.Menus', {
 			},
 			'viewport button[action=calculoImpacto]' : {
 				click : this.calculoImpacto
+			},
+			'viewport tabpanel[name=tabPrincipal]' : {
+				remove : this.antesDeCerrar
 			}
 		});
 	},
@@ -169,7 +170,6 @@ Ext.define('YAPP.controller.Menus', {
 				}
 			}
 		});
-		
 		var store2 = this.getStore('TipoItems');
 		var proyecto_id = this.getProyectos().getValue();
 		store2.load({
@@ -221,106 +221,29 @@ Ext.define('YAPP.controller.Menus', {
 	},
 	
 	adminProyectos : function(button) {
-		
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar proyectos',
-			xtype : 'listarproyecto',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
-		
+		this.setTab('listarproyecto','Administrar proyectos')
 	},
 	adminFases : function(button) {
-		
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar fases',
-			// xtype : 'listarfase',
-			xtype : 'faseabm',
-			closable : true
-		});
-		
-		// var combobox = this.getProyectos();
-		//		
-		// var store = this.getStore('Fases');
-		// store.load({
-		// params : {
-		// id : combobox.getValue()
-		// }
-		// });
-		
-		tabs.setActiveTab(tab);
-		
+		this.setTab('faseabm' , 'Administrar fases')
 	},
 	
 	adminRoles : function(button) {
-		
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar roles',
-			xtype : 'rolabm',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
-		
+		this.setTab('rolabm', 'Administrar roles')
 	},
 	
 	adminPrivilegios : function(button) {
-		
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar privilegios',
-			xtype : 'privilegiolist',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
-		
+		this.setTab('privilegiolist', 'Administrar privilegios')
 	},
 	
 	adminTipoItems : function(button) {
-		
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar tipo de items',
-			xtype : 'tipolist',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
-		
+		this.setTab('tipolist', 'Administrar tipo de items')
 	},
 	adminSuscripciones : function(button) {
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar suscripcion',
-			xtype : 'suscripcionview',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
-		
+		this.setTab('suscripcionview', 'Administrar suscripcion')
 	},
 	
 	adminItems : function(button) {
-		var tabs = Ext.getCmp('tabPrincipal');
-		var tab = tabs.add({
-			title : 'Administrar Items',
-			xtype : 'itemsabm',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
-		
+		this.setTab('itemsabm', 'Administrar Items')
 	},
 	adminRecursos : function(button) {
 		var store = this.getStore('Recursos');
@@ -329,42 +252,15 @@ Ext.define('YAPP.controller.Menus', {
 				operacion : 'TODOS'
 			}
 		});
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar recursos',
-			xtype : 'listarrecurso',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
-		
+		this.setTab('listarrecurso', 'Administrar recursos');
 	},
 	adminUnidadTrabajo : function(button) {
-		
 		var store = this.getStore('UnidadTrabajo');
 		store.load();
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar unidad de trabajo',
-			xtype : 'listarunidadtrabajo',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
-		
+		this.setTab('listarunidadtrabajo','Administrar unidad de trabajo' );
 	},
 	adminEsquemas : function(button) {
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Administrar Esquemas',
-			xtype : 'esquemaslist',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
+		this.setTab('esquemaslist', 'Administrar Esquemas');
 	},
 	logout : function(button) {
 		var form = new Ext.FormPanel({
@@ -382,37 +278,35 @@ Ext.define('YAPP.controller.Menus', {
 		});
 	},
 	adminLineasBase : function(button) {
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Lineas Base',
-			xtype : 'lineasbaseabm',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
+		this.setTab('lineasbaseabm', 'Lineas Base');
 	},
 	calculoImpacto : function(button) {
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Calculo de impacto',
-			xtype : 'calculoimpactosview',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
+		this.setTab('calculoimpactosview', 'Calculo de impacto');
 	},
+	
 	verDiagramaGantt : function(button) {
-		var tabs = Ext.getCmp('tabPrincipal');
-		
-		var tab = tabs.add({
-			title : 'Gantt',
-			xtype : 'ganttview',
-			closable : true
-		});
-		
-		tabs.setActiveTab(tab);
+		this.setTab('ganttview', 'Gantt');
+	},
+	
+	antesDeCerrar : function(container, panel, eOpts) {
+		this.cerrarTab(panel.xtype)
+	},
+	
+	tabs : new Array(),
+	setTab : function(tipo, titulo) {
+		var pestanhas = this.getTabPrincipal();
+		if (this.tabs[tipo] == undefined) {
+			this.tabs[tipo] = pestanhas.add({
+				title : titulo,
+				xtype : tipo,
+				closable : true
+			})
+		}
+		pestanhas.setActiveTab(this.tabs[tipo])
+		return this.tabs[tipo];
+	},
+	cerrarTab : function(tipo) {
+		this.tabs[tipo] = undefined
 	}
 });
 

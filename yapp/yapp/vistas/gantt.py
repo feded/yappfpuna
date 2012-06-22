@@ -8,6 +8,7 @@ from pyramid.view import view_config
 from xml.dom.minidom import Document
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.item_dao import ItemDAO
+from yapp.models.fase.fase import Fase
 from yapp.models.gantt import Task
 from yapp.models.item.item import Item
 import datetime
@@ -16,27 +17,15 @@ import datetime
 def view_gantt(request):
     
 
-    # Create the minidom document
     doc = Document()
-    
-    # Create the <wml> base element
     wml = doc.createElement("project")
     doc.appendChild(wml)
+
+
+    id_proyecto = request.GET.get('id_proyecto')
     
-#    # Create the main <card> element
-#    maincard = doc.createElement("card")
-#    maincard.setAttribute("id", "main")
-#    wml.appendChild(maincard)
-#    
-#    # Create a <p> element
-#    paragraph1 = doc.createElement("p")
-#    maincard.appendChild(paragraph1)
-#    
-#    # Give the <p> elemenet some text
-#    ptext = doc.createTextNode("This is a test!")
-#    paragraph1.appendChild(ptext)
     fase_dao = FaseDAO(request)
-    fases = fase_dao.get_all()
+    fases = fase_dao.get_query().filter(Fase._proyecto_id == id_proyecto).order_by(Fase._orden.asc()).all();
     item_dao = ItemDAO(request)
     for fase in fases:
         task = Task()

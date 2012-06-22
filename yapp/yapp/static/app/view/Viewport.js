@@ -116,6 +116,7 @@ Ext.define('YAPP.view.Viewport', {
 		}, {
 			region : 'center',
 			xtype : 'tabpanel',
+			name : 'tabPrincipal',
 			id : 'tabPrincipal',
 			activeTab : 0,
 			items : {
