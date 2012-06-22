@@ -68,6 +68,8 @@ def ag_atributos_tipos_item(request):
             
             
         dao_fase = FaseDAO(request)
+        print "-------------------------FASE--------------------"
+        print entidad["_fase"]
         fase = dao_fase.get_by_id(entidad["_fase"])
         
         dao_tipo_item = TipoItemDAO(request)
@@ -133,6 +135,9 @@ def bm_atributo(request):
         if(entidad["_padre"] == "" or  entidad["_padre"] == None):
             padre = None
         else:
+            print "-----------------"
+            print entidad["_padre"]
+            print "-----------------"
             padre = dao_item_padre.get_by_id(entidad["_padre"])._id
         item_viejo = item_dao.get_by_id(entidad["id"])
         id_viejo = item_viejo._id;

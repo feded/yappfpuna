@@ -35,11 +35,18 @@ def guardar_obtener_atributo(request):
         dao = ItemAtributoDAO(request)
         dao.crear(asignacion);
         asignacion = ItemAtributoDTO(asignacion)
-        p = Pickler()
+        p = Pickler(True, None)
         aRet = p.flatten(asignacion)
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
     elif (request.method == 'GET'):
         item_id = request.GET.get('_item_id');
+        p = Pickler(True, None)
+        print "--------ITEM ID-----------------------------------------------------------------------------------------------------"
+        print item_id
+        if (item_id == 0 or item_id == "0" or item_id == None):
+            j_string = p.flatten([])
+            a_ret = json.dumps({'sucess': True, 'lista':j_string})
+            return Response(a_ret)
         itemDAO = ItemDAO(request)
         item = itemDAO.get_ultima_version_item_by_id(item_id);
         atributoTipoItemDAO = AtributoTipoItemDAO(request)
@@ -48,27 +55,28 @@ def guardar_obtener_atributo(request):
             
         dao = ItemAtributoDAO(request) 
         entidades = dao.get_query().filter(ItemAtributo._item_id == item._id).all()
-        p = Pickler()
+       
         aRet = []
         if (len(entidades)==0):
             for atributo in atributosTipoItem:
                 if atributo._opcional == False:
                     itemAtributo = ItemAtributo(item._id , atributo._id, atributo._defecto)
                     dao.crear(itemAtributo);
-                    itemAtributo = ItemAtributoDTO(itemAtributo)
-                    itemAtributo._item = ItemDTO(item)
+                    itemAtributo._item = item
                     itemAtributo._atributo = atributo
+                    itemAtributo = ItemAtributoDTO(itemAtributo)
+                    
                     aRet.append(itemAtributo)
             j_string = p.flatten(aRet)
             a_ret = json.dumps({'sucess': True, 'lista':j_string})
             return Response(a_ret)
         entidadesDTO = [];
         for entidad in entidades:
-            itemAtributoDTO = ItemAtributoDTO(entidad);
-            itemAtributoDTO._item = ItemDTO(item)
             dao = AtributoTipoItemDAO(request)
             atributo = dao.get_by_id(entidad._atributo_id)
-            itemAtributoDTO._atributo = atributo
+            entidad._item = item
+            entidad._atributo = atributo
+            itemAtributoDTO = ItemAtributoDTO(entidad);
             entidadesDTO.append(itemAtributoDTO)
         
         j_string = p.flatten(entidadesDTO)

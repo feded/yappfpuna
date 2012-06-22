@@ -60,7 +60,7 @@ class ItemDAO(BaseDAO):
         return entidades_item_id
         
         
-    def set_eliminable(self, item):
+    def es_eliminable(self, item):
         """
         @param item: item a verificar si se puede eliminar
         @return: boolean true si es eliminable sin comprometer otros items, false si su eliminacion compromente otros items
@@ -95,4 +95,6 @@ class ItemDAO(BaseDAO):
         versiones = self.get_query().filter(Item._item_id == item_id).order_by(Item._version.asc()).all()
         versiones.pop()
         return versiones
+
+    
             
