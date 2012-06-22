@@ -19,6 +19,8 @@ class PermisosRoles (Base, EntidadBase):
         
 class PermisoRolDTO:
     def __init__(self, permiso_rol):
-        self._permiso = PermisoDTO(permiso_rol._permiso);
-        self._rol = RolDTO(permiso_rol._rol);
+        if permiso_rol._permiso != None:
+            self._permiso = PermisoDTO(permiso_rol._permiso);
+        if permiso_rol._rol != None:
+            self._rol = RolDTO(permiso_rol._rol);
         self._id = permiso_rol._id;

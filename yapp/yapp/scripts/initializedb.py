@@ -1,65 +1,65 @@
 from pyramid.paster import get_appsettings, setup_logging
 from sqlalchemy import engine_from_config
-from yapp.daos.entidad_dao import EntidadDAO
+from yapp.daos.permisos_dao import PermisosDAO
 from yapp.daos.privilegio_dao import PrivilegioDAO
 from yapp.daos.recurso_dao import RecursoDAO, TipoRecursoDAO
 from yapp.daos.rol_dao import RolEstadoDAO, RolDAO
 from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
-from yapp.daos.permisos_dao import PermisosDAO
 from yapp.models import Base, DBSession
 from yapp.models.historial import Historial
+from yapp.models.item.item_atributo import ItemAtributo
 from yapp.models.recurso.tipo_recurso import TipoRecurso, TipoRecurso
-from yapp.models.roles.entidad import Entidad
-from yapp.models.roles.rol_estado import RolEstado
-from yapp.models.roles.rol_final import RolFinal
 from yapp.models.roles.permisos import Permisos
 from yapp.models.roles.permisos_roles import PermisosRoles
+from yapp.models.roles.privilegio import Privilegio
 from yapp.models.roles.rol import Rol
+from yapp.models.roles.rol_estado import RolEstado
+from yapp.models.roles.rol_final import RolFinal
 from yapp.models.tipo_item.tipo_item import TipoItem
-from yapp.models.item.item_atributo import ItemAtributo
 import os
 import sys
 import transaction
 import yapp.models.entidad_padre
-import yapp.models.fase.atributo_fase
-import yapp.models.fase.fase
-import yapp.models.fase.fase
-import yapp.models.fase.tipo_fase
-import yapp.models.item.item
-import yapp.models.proyecto.proyecto
 import yapp.models.esquema.atributo_esquema
 import yapp.models.esquema.esquema
 import yapp.models.esquema.esquema_item
 import yapp.models.fase.atributo_fase
+import yapp.models.fase.atributo_fase
+import yapp.models.fase.fase
+import yapp.models.fase.fase
 import yapp.models.fase.fase
 import yapp.models.fase.fase
 import yapp.models.fase.tipo_fase
+import yapp.models.fase.tipo_fase
 import yapp.models.item.item
-import yapp.models.item.item_unidad_trabajo
+import yapp.models.item.item
 import yapp.models.item.item_atributo
+import yapp.models.item.item_unidad_trabajo
+import yapp.models.linea_base.linea_base
+import yapp.models.proyecto.proyecto
 import yapp.models.proyecto.proyecto
 import yapp.models.recurso.recurso
 import yapp.models.recurso.recurso_bien
 import yapp.models.recurso.recurso_material
 import yapp.models.recurso.recurso_persona
 import yapp.models.recurso.tipo_recurso
-import yapp.models.unidad_trabajo.unidad_trabajo
-import yapp.models.roles.entidad
+import yapp.models.roles.permisos
+import yapp.models.roles.permisos_roles
 import yapp.models.roles.privilegio
 import yapp.models.roles.rol
 import yapp.models.roles.rol_estado
 import yapp.models.roles.rol_final
 import yapp.models.roles.rol_privilegio
-import yapp.models.roles.permisos
-import yapp.models.roles.permisos_roles
 import yapp.models.root_factory
-import yapp.models.suscripcion.suscripcion
 import yapp.models.suscripcion.notificacion
+import yapp.models.suscripcion.suscripcion
 import yapp.models.tipo_item.atributo_tipo_item
 import yapp.models.tipo_item.tipo_item
-import yapp.models.linea_base.linea_base
+import yapp.models.unidad_trabajo.unidad_trabajo
 import yapp.models.unidad_trabajo.unidad_trabajo_recurso
+
+
 
 
 
@@ -85,17 +85,19 @@ def main(argv=sys.argv):
 
     
     
-    entidad_dao = EntidadDAO(None);
+    entidad_dao = PrivilegioDAO(None);
     items = entidad_dao.get_all()
     if (len(items) == 0):
         with transaction.manager:
-            entidad = Entidad("Proyecto");
+            entidad = Privilegio("Proyecto");
             DBSession.add(entidad)
-            entidad = Entidad("Fase");
+            entidad = Privilegio("Fase");
             DBSession.add(entidad)
-            entidad = Entidad("Item");
+            entidad = Privilegio("Item");
             DBSession.add(entidad)
-            entidad = Entidad("Esquema");
+            entidad = Privilegio("Esquema");
+            DBSession.add(entidad)
+            entidad = Privilegio("Activar Item");
             DBSession.add(entidad)
     items = RolEstadoDAO(None).get_all()
     if (len(items) == 0):
@@ -140,8 +142,6 @@ def main(argv=sys.argv):
     with transaction.manager:
         admin = Permisos("Roles");
         DBSession.add(admin);
-        admin = Permisos("Privilegios");
-        DBSession.add(admin);
         admin = Permisos("Proyectos");
         DBSession.add(admin);
         admin = Permisos("Fases");
@@ -170,9 +170,6 @@ def main(argv=sys.argv):
     with transaction.manager:
             rol = RolDAO(None).get_query().filter(Rol._nombre == "admin").first();
             permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Roles").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Privilegios").first();
             permiso_rol = PermisosRoles(permiso,rol);
             DBSession.add(permiso_rol);
             permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Proyectos").first();

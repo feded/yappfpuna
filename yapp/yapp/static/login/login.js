@@ -106,7 +106,6 @@ Ext.onReady(function() {
 				controllers : [ 'Menus', 
 				                'AdministrarProyectos', 
 				                'AdministrarFases', 
-				                'Privilegios', 
 				                'Roles', 
 				                'TipoItem', 
 				                'Suscripciones', 

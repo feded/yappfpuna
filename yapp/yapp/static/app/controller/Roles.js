@@ -1,14 +1,14 @@
 Ext.define('YAPP.controller.Roles', {
 	extend : 'Ext.app.Controller',
-	views : [ 'rol.ABM', 'rol.List', 'rol.Edit', 'rol_privilegio.List', 'rol_privilegio.Edit', 'rol_permiso.List' ],
+	views : [ 'rol.ABM', 'rol.List', 'rol.Edit', 'rol_permiso.List', 'privilegio.Edit', 'privilegio.List' ],
 	models : [ 'Rol' ],
-	stores : [ 'Roles', 'RolEstados', 'RolPrivilegios', 'EntidadesPadres', 'RolPermisos', 'Permisos' ],
+	stores : [ 'Roles', 'RolEstados', 'EntidadesPadres', 'RolPermisos', 'RolPrivilegios' ],
 	refs : [ {
-		selector : 'rolprivilegioedit combobox[name=_entidad_padre]',
-		ref : 'comboEntidadPadre'
-	}, {
-		selector : 'rolprivilegioedit combobox[name=_entidad]',
+		selector : 'privilegioedit combobox[name=_entidad]',
 		ref : 'comboEntidad'
+	}, {
+		selector : 'privilegioedit combobox[name=_privilegio]',
+		ref : 'comboPrivilegio'
 	}, {
 		selector : 'rollist',
 		ref : 'grillaRol'
@@ -33,6 +33,12 @@ Ext.define('YAPP.controller.Roles', {
 	}, {
 		selector : 'roledit fieldset[name=form_final]',
 		ref : 'formFinal'
+	}, {
+		selector : 'privilegioedit checkbox[name=_permitir]',
+		ref : 'checkboxPrivilegioPermitir'
+	}, {
+		selector : 'privilegiolist button[action=crear]',
+		ref : 'buttonCrearPrivilegio'
 	} ],
 	init : function() {
 		this.control({
@@ -51,19 +57,16 @@ Ext.define('YAPP.controller.Roles', {
 			'roledit button[action=guardar]' : {
 				click : this.botonEditGuardarApretado
 			},
-			'rolprivilegiolist button[action=crear]' : {
+			'privilegiolist button[action=crear]' : {
 				click : this.botonAgregarPrivilegioClick
 			},
-			'rolprivilegiolist button[action=borrar]' : {
+			'privilegiolist button[action=borrar]' : {
 				click : this.botonBorrarPrivilegioClick
 			},
-			'rolprivilegioedit combobox[name=_privilegio]' : {
-				change : this.comboRolPrivilegioPrivilegioCambiado
-			},
-			'rolprivilegioedit combobox[name=_entidad]' : {
+			'privilegioedit combobox[name=_privilegio]' : {
 				change : this.comboRolPrivilegioEntidadCambiado
 			},
-			'rolprivilegioedit button[action=guardar]' : {
+			'privilegioedit button[action=guardar]' : {
 				click : this.botonPrivilegioRolGuardarClick
 			},
 			// PERMISOS
@@ -130,16 +133,11 @@ Ext.define('YAPP.controller.Roles', {
 		});
 	},
 	
-	afterRenderRolPermiso : function(button) {
-		// var combo = this.getComboPermiso();
-		// combo.store = this.getPermisosStore();
-		
-	},
 	// ////////////////////// //
 	// SECCION DE PRIVILEGIOS //
 	// ////////////////////// //
 	botonAgregarPrivilegioClick : function(button) {
-		var rol_privilegio = new YAPP.model.RolPrivilegio();
+		var privilegio = new YAPP.model.RolPrivilegio();
 		var grilla = this.getGrillaRol();
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		if (selection == null) {
@@ -150,8 +148,9 @@ Ext.define('YAPP.controller.Roles', {
 			alert("No se puede agregar privilegios al administrador")
 			return;
 		}
-		rol_privilegio.set('_rol', selection.data.id)
-		this.ventanaEditPrivilegio(rol_privilegio);
+		privilegio.set('_rol', selection.data.id)
+		privilegio.set('_permitir', true)
+		this.ventanaEditPrivilegio(privilegio);
 		
 	},
 	
@@ -159,13 +158,25 @@ Ext.define('YAPP.controller.Roles', {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
-		this.getRolPrivilegiosStore().remove(selection)
+		var store = this.getRolPrivilegiosStore();
+		selection.destroy({
+			success : function(permiso) {
+				Ext.example.msg("Rol", "Privilegio eliminado con exito");
+				store.remove(selection);
+			},
+			failure : function(permiso) {
+				alert("No se pudo eliminar el privilegio");
+			}
+		});
 	},
 	
 	ventanaEditPrivilegio : function(record) {
-		var view = Ext.widget('rolprivilegioedit');
+		var view = Ext.widget('privilegioedit');
 		if (record != null)
 			view.down('form').loadRecord(record);
+		
+		// var cb = this.getCheckboxPrivilegioPermitir();
+		// cb.setValue(record.data._permitir)
 	},
 	
 	botonPrivilegioRolGuardarClick : function(button) {
@@ -173,45 +184,31 @@ Ext.define('YAPP.controller.Roles', {
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
+		var store = this.getRolPrivilegiosStore();
 		record.set(values);
-		console.log(record)
+		var cb = this.getCheckboxPrivilegioPermitir();
+		record.data._permitir = cb.getValue();
 		win.close();
-		if (record.get('id') == 0)
-			this.getRolPrivilegiosStore().insert(0, record);
+		record.save({
+			success : function(privilegio) {
+				// if (record.data.id == 0) {
+				store.insert(0, privilegio);
+				// }
+				Ext.example.msg("Roles", "Privilegio agregado con exito");
+			},
+			failure : function(rol_permiso) {
+				alert("No se pudo asignar el privilegio al rol");
+			}
+		});
 	},
 	
 	comboRolPrivilegioEntidadCambiado : function(combo, newValue, oldValue, eOpts) {
 		var store = combo.getStore();
 		var record = store.findRecord('id', combo.getValue());
 		if (record != null) {
-			this.cargarStoreEntidadPadre(hrecord.get('id'));
+			this.cargarStoreEntidad(record.get('id'));
 		}
 	},
-	comboRolPrivilegioPrivilegioCambiado : function(combo, newValue, oldValue, eOpts) {
-		var store = combo.getStore();
-		var record = store.findRecord('id', combo.getValue());
-		if (record == null)
-			return;
-		var entidad = record.get('_entidad')
-		var comboEntidad = this.getComboEntidad();
-		if (entidad != '') {
-			this.setearCombo(comboEntidad, entidad);
-		} else {
-			this.resetearCombo(comboEntidad);
-		}
-		var entidad_padre = record.get('_entidad_padre')
-		var comboEntidadPadre = this.getComboEntidadPadre();
-		if (entidad_padre != '') {
-			this.setearCombo(comboEntidadPadre, entidad_padre);
-		} else {
-			this.resetearCombo(comboEntidadPadre);
-		}
-		console.log(entidad);
-		if (entidad_padre == '' && entidad != '') {
-			this.cargarStoreEntidadPadre(entidad._id);
-		}
-	},
-	
 	resetearCombo : function(combo) {
 		combo.reset();
 		combo.setDisabled(false);
@@ -222,8 +219,8 @@ Ext.define('YAPP.controller.Roles', {
 		combo.setRawValue(record._nombre)
 		combo.setDisabled(true);
 	},
-	cargarStoreEntidadPadre : function(identificador) {
-		var comboEntidadPadre = this.getComboEntidadPadre();
+	cargarStoreEntidad : function(identificador) {
+		var comboEntidadPadre = this.getComboEntidad();
 		var store = this.getEntidadesPadresStore();
 		comboEntidadPadre.store = store;
 		store.load({
@@ -244,7 +241,7 @@ Ext.define('YAPP.controller.Roles', {
 		var store = this.getRolPrivilegiosStore();
 		store.load({
 			params : {
-				id : record.get('id')
+				id_rol : record.get('id')
 			}
 		});
 		
@@ -254,6 +251,13 @@ Ext.define('YAPP.controller.Roles', {
 				id : record.get('id')
 			}
 		})
+
+		if (record.get('id') != 1) {
+			this.getButtonCrearPrivilegio().setDisabled(false)
+		} else {
+			this.getButtonCrearPrivilegio().setDisabled(true)
+		}
+		
 	},
 	editUser : function(grid, record) {
 		record.data.accion = 'PUT';

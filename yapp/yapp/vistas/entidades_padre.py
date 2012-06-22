@@ -6,10 +6,11 @@ Created on May 4, 2012
 from jsonpickle.pickler import Pickler
 from pyramid.response import Response
 from pyramid.view import view_config
-from yapp.daos.entidad_dao import EntidadDAO
+from yapp.daos.entidad_dao import PrivilegioDAO
 from yapp.daos.entidad_padre_dao import EntidadPadreDAO
 from yapp.daos.esquema_dao import EsquemaDAO
 from yapp.daos.fase_dao import FaseDAO
+from yapp.daos.item_dao import ItemDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
 from yapp.models.entidad_padre import EntidadPadreDTO
 from yapp.models.proyecto.proyecto import ProyectoDTO
@@ -28,7 +29,7 @@ def get_entidades_padre(request):
 #        print request.GET.id
         id_entidad = request.GET.get('id')
 #        print id_entidad;
-        entidadDAO = EntidadDAO(request);
+        entidadDAO = PrivilegioDAO(request);
         entidad = entidadDAO.get_by_id(id_entidad);
         if (id_entidad == '0' or id_entidad == None):
             return get_entidades(request);
@@ -38,6 +39,8 @@ def get_entidades_padre(request):
             return get_fases(request)
         if (entidad._nombre == "Esquema"):
             return get_esquemas(request)
+        if (entidad._nombre == "Item" or entidad._nombre == "Activar Item"):
+            return get_items(request);
         return get_entidades(request);
     return {}
 
@@ -74,6 +77,18 @@ def get_proyectos(request):
 
 def get_fases(request):
     dao = FaseDAO(request);
+    entidades = dao.get_all();
+    p = Pickler();
+    lista = [];
+    for entidad in entidades:
+        lista.append(p.flatten(EntidadPadreDTO(entidad)));
+    j_string = p.flatten(lista)
+    a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
+#    print a_ret;
+    return Response(a_ret)
+
+def get_items(request):
+    dao = ItemDAO(request)
     entidades = dao.get_all();
     p = Pickler();
     lista = [];

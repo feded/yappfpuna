@@ -14,31 +14,32 @@ Ext.define('YAPP.view.privilegio.Edit', {
 				title : 'Privilegio',
 				scopte : this,
 				items : [ {
-					xtype : 'textfield',
-					name : '_nombre',
-					fieldLabel : 'Nombre',
-					allowBlank : false
-				}, {
 					xtype : 'combobox',
-					fieldLabel : 'Entidad',
-					name : '_entidad',
-					store : Ext.create('YAPP.store.Entidades'),
+					fieldLabel : 'Privilegio',
+					name : '_privilegio',
+					store : Ext.create('YAPP.store.Privilegios'),
 					valueField : 'id',
 					displayField : '_nombre',
 					typeAhead : true,
 					queryMode : 'local',
-					emptyText : 'Seleccione una entidad...'
+					emptyText : 'Seleccione un privilegio...'
 				}, {
 					xtype : 'combobox',
-					fieldLabel : 'Instancia',
-					id : 'comboEntidadPadre',
-					name : '_entidad_padre',
+					fieldLabel : 'Entidad',
+					name : '_entidad',
 					valueField : 'id',
 					displayField : '_nombre',
 					typeAhead : true,
 					queryMode : 'local',
 					emptyText : 'Seleccione una entidad...',
 				// store : Ext.create('YAPP.store.EntidadesPadres')
+				}, {
+					xtype : 'checkbox',
+					name : '_permitir',
+					fieldLabel : 'Permitir',
+					valueField : '_permitir',
+					displayField : '_permitir',
+					checked : '_permitir'
 				} ]
 			} ]
 		} ];
