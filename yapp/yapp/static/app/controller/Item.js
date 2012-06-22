@@ -193,6 +193,8 @@ Ext.define('YAPP.controller.Item', {
 		});
 		var storeUnidadItems = this.getItemUnidadStore();
 		storeUnidadItems.load();
+		var storeAtributoItems = this.getItemAtributoStore();
+		storeAtributoItems.load();
 	},
 	
 
@@ -318,6 +320,36 @@ Ext.define('YAPP.controller.Item', {
 		
 	},
 	
+	setearPadresTipoAntecesor : function (record){
+		console.log(record)
+		if (typeof record.data._padre != "undefined"){
+			console.log("entre1")
+			if(record.data._padre.data != null && typeof record.data._padre.data != "undefined" ){
+				console.log("entre2")
+				record.data._padre = record.data._padre.data._id;
+			}else if (record.data._padre._id != null && typeof record.data._padre._id != "undefined"){
+				console.log("entre3")
+				record.data._padre = record.data._padre._id;
+			}
+			
+		}
+		console.log("papa al final")
+		console.log(record.data._padre)
+		if (typeof record.data._antecesor != "undefined"){
+			if(record.data._antecesor.data != null && typeof record.data._antecesor.data != "undefined" ){
+				record.data._antecesor = record.data._antecesor.data._id;
+			}else if (record.data._antecesor._id != null && typeof record.data._antecesor._id != "undefined"){
+				record.data._antecesor = record.data._antecesor._id;
+			}
+			
+		}
+		if (typeof record.data._tipo_item.data != "undefined" ){
+			var id = record.data._tipo_item.data.id;
+			record.data._tipo_item = record.data._tipo_item.data;
+			record.data._tipo_item._id = id; 
+		}
+	},
+	
 	guardarItem : function(button) {
 		var fase = this.getComboFase();
 		var win = button.up('window');
@@ -329,22 +361,8 @@ Ext.define('YAPP.controller.Item', {
 			record.data._condicionado = 'true'
 		else
 			record.data._condicionado = 'false'
+		this.setearPadresTipoAntecesor(record);
 		
-		if (typeof record.data._padre != "undefined" && 
-				record.data._padre.data != null &&
-				typeof record.data._padre.data != "undefined" ){
-			record.data._padre = record.data._padre.data.id;
-		}
-		if (typeof record.data._antecesor != "undefined" && 
-				record.data._antecesor.data != null && 
-				typeof record.data._antecesor.data != "undefined" ){
-			record.data._antecesor = record.data._antecesor.data.id;
-		}
-		if (typeof record.data._tipo_item.data != "undefined" ){
-			var id = record.data._tipo_item.data.id;
-			record.data._tipo_item = record.data._tipo_item.data;
-			record.data._tipo_item._id = id; 
-		}
 		var accion = record.data.accion;
 		var store = this.getItemStore();
 		record.save(
@@ -479,16 +497,7 @@ Ext.define('YAPP.controller.Item', {
 		}else{
 			alert("El item se encuentra en estado: " + record.data._estado);
 		}
-		console.log(record)
-		if (typeof record.data._padre != "undefined" && typeof record.data._padre.data != "undefined" ){
-			record.data._padre = record.data._padre.data.id;
-		}
-		if (typeof record.data._antecesor != "undefined" && typeof record.data._antecesor.data != "undefined" ){
-			record.data._antecesor = record.data._antecesor.data.id;
-		}
-		if (typeof record.data._tipo_item.data != "undefined" ){
-			record.data._tipo_item = record.data._tipo_item.data.id;
-		}
+		this.setearPadresTipoAntecesor(record);
 		var store = this.getItemStore();
 		record.save(
 		{	
@@ -556,7 +565,7 @@ Ext.define('YAPP.controller.Item', {
 		var storeUnidadItems = this.getItemUnidadStore();
 		storeUnidadItems.load({
 			params : {
-				_item_id : record.data._item_id
+				_item_id : record.data.id
 			}
 		});
 	},
@@ -606,16 +615,7 @@ Ext.define('YAPP.controller.Item', {
 			}else{
 				alert("El item se encuentra en estado: " + record.data._estado);
 			}
-			console.log(record)
-			if (typeof record.data._padre != "undefined" && typeof record.data._padre.data != "undefined" ){
-				record.data._padre = record.data._padre.data.id;
-			}
-			if (typeof record.data._antecesor != "undefined" && typeof record.data._antecesor.data != "undefined" ){
-				record.data._antecesor = record.data._antecesor.data.id;
-			}
-			if (typeof record.data._tipo_item.data != "undefined" ){
-				record.data._tipo_item = record.data._tipo_item.data.id;
-			}
+			this.setearPadresTipoAntecesor(record);
 			var store = this.getItemStore();
 			var fase = this.getComboFase();
 			record.save(
@@ -650,64 +650,53 @@ Ext.define('YAPP.controller.Item', {
 		win.close();
 		var record = form.getRecord();
 		var values = form.getValues();
-		console.log(form)
 		record.set(values);
-		record.data._item_id= itemRecord.data._item_id
-		record.save(
-		{	
-			success : function(record) {
-				if (record.data.accion == "POST") {
-					this.getItemUnidadStore().insert(0, record);
-				}
+		console.log("itemRecord")
+		console.log(itemRecord)
+		this.setearPadresTipoAntecesor(itemRecord);
+		itemRecord.data._version = itemRecord.data._version + 1 
+		var storeUnidadItems = this.getItemUnidadStore();
+		var store = this.getItemStore();
+		itemRecord.save({
+			success : function(nuevoItemRecord){
+				itemRecord = nuevoItemRecord
+				record.data._item_id= nuevoItemRecord.data.id
+				record.save(
+				{	
+					success : function(record) {
+						if (record.data.accion == "POST") {
+							this.getItemUnidadStore().insert(0, record);
+							
+						}
+						Ext.example.msg("Unidad de Trabajo", "Agregada con exito");
+						storeUnidadItems.load({
+							params : {
+								_item_id : itemRecord.data._item_id
+							}
+						});
+						store.load({
+							params : {
+								id : fase.getValue()
+							}
+						});
+					},
+					failure : function(record) {
+						alert("No se pudo guardar la Unidad de Trabajo");
+					}
+					
+				});
 			},
-			failure : function(record) {
+			failure : function(nuevoItemRecord){
 				alert("No se pudo guardar la Unidad de Trabajo");
 			}
-			
-		});
-		var storeUnidadItems = this.getItemUnidadStore();
-		storeUnidadItems.load({
-			params : {
-				_item_id : itemRecord.data._item_id
-			}
-		});
+		})
+		
+		
+		
 		
 	},
 	
-	guardarValorAtributo : function(button){
-		var botonlist = this.getBotonList();
-		var win = botonlist.up('grid');
-		var grilla = win.down('gridview')
-		var itemRecord = grilla.getSelectionModel().getSelection()[0];
-		var fase = this.getComboFase();
-		var win = button.up('window');
-		var form = win.down('form');
-		win.close();
-		var record = form.getRecord();
-		var values = form.getValues();
-		console.log(form)
-		record.set(values);
-		record.data._item_id= itemRecord.data.id
-		record.save(
-		{	
-			success : function(record) {
-				if (record.data.accion == "POST") {
-					this.getItemAtributoStore().insert(0, record);
-				}
-			},
-			failure : function(record) {
-				alert("No se pudo guardar el Atributo");
-			}
-			
-		});
-		var storeAtributosItems = this.getItemAtributoStore();
-		storeAtributosItems.load({
-			params : {
-				_item_id : itemRecord.data._item_id
-			}
-		});
-		
-	},
+	
 	
 	revivirItemView : function(button){
 	
@@ -850,7 +839,6 @@ Ext.define('YAPP.controller.Item', {
 		console.log(itemRecord.data._item_id)
 		atributosCombo.store.load({
 			params : {
-				
 				_item_id : itemRecord.data._item_id,
 				_no_definidos : true
 			}
@@ -860,7 +848,8 @@ Ext.define('YAPP.controller.Item', {
 	editarAtributo :  function(grid, record) {
 		var view = Ext.widget('asignarAtributo');
 		var itemAtributo = new YAPP.model.ItemAtributo();
-		view.down('form').loadRecord(itemAtributo);
+		form = view.down('form');
+		form.loadRecord(record)
 		var botonlist = this.getBotonList();
 		var win = botonlist.up('grid');
 		var grilla = win.down('gridview')
@@ -876,7 +865,44 @@ Ext.define('YAPP.controller.Item', {
 //			}
 //		});
 		
-	}
+	},
+	
+	guardarValorAtributo : function(button){
+		var botonlist = this.getBotonList();
+		var win = botonlist.up('grid');
+		var grilla = win.down('gridview')
+		var itemRecord = grilla.getSelectionModel().getSelection()[0];
+		var fase = this.getComboFase();
+		var win = button.up('window');
+		var form = win.down('form');
+		win.close();
+		var record = form.getRecord();
+		var values = form.getValues();
+		console.log(form)
+		record.set(values);
+		console.log("hola");
+		record.data._item_id= itemRecord.data.id
+		record.save(
+			{	
+				success : function(record) {
+					if (record.data.accion == "POST") {
+						this.getItemAtributoStore().insert(0, record);
+					}
+					Ext.example.msg("Item", "Atributo agregado con exito");
+				},
+				failure : function(record) {
+					alert("No se pudo guardar el Atributo");
+				}
+				
+			});
+		var storeAtributosItems = this.getItemAtributoStore();
+		storeAtributosItems.load({
+			params : {
+				_item_id : itemRecord.data._item_id
+			}
+		});
+		
+	},
 	
 	
 	

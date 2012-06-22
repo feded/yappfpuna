@@ -101,7 +101,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 					xtype : 'gridpanel',
 					name : 'gridTipo',
 					store : Ext.create('YAPP.store.TipoItems'),
-					columns : columnas,
+					columns : columnas_crear_Item,
 					// stripeRows : true,
 					title : 'Tipos de Items Disponibles',
 					margins : '0 2 0 0'
@@ -110,7 +110,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 					xtype : 'gridpanel',
 					name : 'gridLB',
 					store : Ext.create('YAPP.store.LineasBase'),
-					columns : columnas,
+					columns : columnas_crear_Item,
 					// stripeRows : true,
 					title : 'Lineas Base Disponibles',
 					
@@ -135,7 +135,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 					name : 'gridItemLB',
 					height : 200,
 					store : Ext.create('YAPP.store.Item'),
-					columns : columnas,
+					columns : columnas_crear_Item,
 					// stripeRows : true,
 					title : 'Relacion Antecesor',
 					margins : '0 2 0 0'
@@ -145,7 +145,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 					store : Ext.create('YAPP.store.Item'),
 					height : 150,
 					multiSelect : true,
-					columns : columnas,
+					columns : columnas_crear_Item,
 					// stripeRows : true,
 					title : 'Relacion Padre',
 					margins : '0 0 0 3'
@@ -177,7 +177,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 
 });
 
-var columnas = [ {
+var columnas_crear_Item = [ {
 	text : "Nombre",
 	flex : 1,
 	sortable : true,

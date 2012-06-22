@@ -8,6 +8,7 @@ from yapp.models.fase.fase import Fase, FaseDTO
 from yapp.models.tipo_item.tipo_item import TipoItem, TipoItemDTO
 from yapp.models.entidad_base import EntidadBase
 from yapp.models.item.item import ItemDTO
+from yapp.models.tipo_item.atributo_tipo_item import AtributoTipoItemDTO
 
 class ItemAtributo (Base, EntidadBase):
     __tablename__ = "item_atributo"
@@ -21,11 +22,13 @@ class ItemAtributo (Base, EntidadBase):
         self._valor = valor
 
 class ItemAtributoDTO:
+    
     def __init__(self, item_atributo):
+        self._id = item_atributo._id
         self._item_id = item_atributo._item_id
         self._id = item_atributo._id
-#        self._item = item_atributo.item
-#        self._atributo = item_atributo.atributo
+        self._item = ItemDTO(item_atributo._item)
+        self._atributo = AtributoTipoItemDTO(item_atributo._atributo)
         self._atributo_id = item_atributo._atributo_id
         self._valor = item_atributo._valor
 

@@ -31,5 +31,14 @@ class AtributoTipoItem(EntidadBase, Base):
         self._opcional = opcional 
         self._defecto = defecto
         self._tipo_item_id = tipo_item_id
+    
+class AtributoTipoItemDTO():
+    def __init__(self, atributo):  
+        self._tipo = atributo._tipo
+        self._valor = atributo._valor
+        self._descripcion = atributo._descripcion
+        self._opcional = atributo._opcional 
+        self._defecto = atributo._defecto
+        self._tipo_item_id = atributo._tipo_item_id
         
         
