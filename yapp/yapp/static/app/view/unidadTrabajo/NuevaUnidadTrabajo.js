@@ -11,6 +11,7 @@ Ext.define('YAPP.view.unidadTrabajo.NuevaUnidadTrabajo', {
         this.items = [
             {
                 xtype: 'form',
+                fileUpload : true,
                 items: [
                     		{
                         		xtype: 'textfield',

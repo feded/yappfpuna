@@ -152,5 +152,20 @@ def BM_atributo(request):
         atributoItemDao.borrar(atributo)
         return Response(json.dumps({'sucess': 'true'}))
         
-
-   
+@view_config(route_name='importarTipo')
+def importar(request): 
+    u= Unpickler()
+    entidad = u.restore(request.json_body);
+    id_proyecto = entidad['id_proyecto']
+    proyectoDao = ProyectoDAO(request)
+    proyecto = proyectoDao.get_by_id(id_proyecto)
+    
+    tipoItemDao = TipoItemDAO(request);
+    for id_tipo in entidad['_tipos']:
+        tipoItem = tipoItemDao.get_by_id(id_tipo)
+        nueva_entidad = TipoItem(tipoItem._nombre, tipoItem._comentario, tipoItem._color, tipoItem._prefijo,tipoItem._condicionado,proyecto)
+        tipoItemDao.crear(nueva_entidad)
+        
+    a_ret = json.dumps({'sucess': 'true', 'tipos': entidad})
+    
+    return Response(a_ret)

@@ -38,7 +38,7 @@ Ext.define('YAPP.view.unidadTrabajo.Asignar', {
 						dropGroup : 'secondGridDDGroup'
 						},
 					},
-				columns : columnas,
+				columns : columnasAsignar,
 				// stripeRows : true,
 				title : 'Recursos Disponibles',
 				margins : '0 2 0 0'
@@ -55,7 +55,7 @@ Ext.define('YAPP.view.unidadTrabajo.Asignar', {
 							dropGroup : 'firstGridDDGroup'
 						},
 					},
-					columns : columnas,
+					columns : columnasAsignar,
 					// stripeRows : true,
 					title : 'Recursos asignados',
 					margins : '0 0 0 3'
