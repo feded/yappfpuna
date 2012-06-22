@@ -327,6 +327,9 @@ Ext.define('YAPP.controller.Item', {
 			if(record.data._padre.data != null && typeof record.data._padre.data != "undefined" ){
 				console.log("entre2")
 				record.data._padre = record.data._padre.data._id;
+				if (typeof record.data._padre === "undefined"){
+					record.data._padre = record.data._padre.data.id;
+				}
 			}else if (record.data._padre._id != null && typeof record.data._padre._id != "undefined"){
 				console.log("entre3")
 				record.data._padre = record.data._padre._id;
@@ -338,6 +341,9 @@ Ext.define('YAPP.controller.Item', {
 		if (typeof record.data._antecesor != "undefined"){
 			if(record.data._antecesor.data != null && typeof record.data._antecesor.data != "undefined" ){
 				record.data._antecesor = record.data._antecesor.data._id;
+				if (typeof record.data._antecesor === "undefined"){
+					record.data._antecesor = record.data._antecesor.data.id;
+				}
 			}else if (record.data._antecesor._id != null && typeof record.data._antecesor._id != "undefined"){
 				record.data._antecesor = record.data._antecesor._id;
 			}
@@ -593,11 +599,11 @@ Ext.define('YAPP.controller.Item', {
 		var record = grilla.getSelectionModel().getSelection()[0];
 		var store = this.getItemUnidadStore();
 		record.destroy({
-			success : function(record) {
+			success : function(rec) {
 				Ext.example.msg("Unidad de Trabajo", "Desasiganda");
-				store.remove(selection);
+				store.remove(record);
 			},
-			failure : function(record) {
+			failure : function(rec) {
 				alert("No se pudo eliminar el Item");
 			}
 		});
@@ -668,22 +674,18 @@ Ext.define('YAPP.controller.Item', {
 							this.getItemUnidadStore().insert(0, record);
 							
 						}
-						Ext.example.msg("Unidad de Trabajo", "Agregada con exito");
-						storeUnidadItems.load({
-							params : {
-								_item_id : itemRecord.data._item_id
-							}
-						});
-						store.load({
-							params : {
-								id : fase.getValue()
-							}
-						});
+						
 					},
 					failure : function(record) {
 						alert("No se pudo guardar la Unidad de Trabajo");
 					}
 					
+				});
+				Ext.example.msg("Unidad de Trabajo", "Agregada con exito");
+				store.load({
+					params : {
+						id : fase.getValue()
+					}
 				});
 			},
 			failure : function(nuevoItemRecord){
@@ -880,27 +882,39 @@ Ext.define('YAPP.controller.Item', {
 		var values = form.getValues();
 		console.log(form)
 		record.set(values);
-		console.log("hola");
-		record.data._item_id= itemRecord.data.id
-		record.save(
-			{	
-				success : function(record) {
-					if (record.data.accion == "POST") {
-						this.getItemAtributoStore().insert(0, record);
-					}
-					Ext.example.msg("Item", "Atributo agregado con exito");
-				},
-				failure : function(record) {
-					alert("No se pudo guardar el Atributo");
-				}
-				
-			});
+		this.setearPadresTipoAntecesor(itemRecord);
+		itemRecord.data._version = itemRecord.data._version + 1 
 		var storeAtributosItems = this.getItemAtributoStore();
-		storeAtributosItems.load({
-			params : {
-				_item_id : itemRecord.data._item_id
+		var store = this.getItemStore();
+		itemRecord.save({
+			success : function(nuevoItemRecord){
+				itemRecord = nuevoItemRecord
+				record.data._item_id= nuevoItemRecord.data.id
+				record.save(
+				{	
+					success : function(record) {
+						if (record.data.accion == "POST") {
+							storeAtributosItems.insert(0, record);
+						}
+						
+						
+					},
+					failure : function(record) {
+						alert("No se pudo guardar el Atributo");
+					}
+					
+				});
+				Ext.example.msg("Atributo", "Guardado con exito");
+				store.load({
+					params : {
+						id : fase.getValue()
+					}
+				});
+			},
+			failure : function(nuevoItemRecord){
+				alert("No se pudo guardar el Atributo");
 			}
-		});
+		})
 		
 	},
 	

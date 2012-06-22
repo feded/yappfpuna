@@ -19,3 +19,10 @@ class UnidadTrabajo (Base, EntidadBase):
         self._etiqueta = etiqueta;
         self._descripcion = descripcion;
         self._color = color;
+        
+class UnidadTrabajoDTO:
+    def __init__(self, unidad):
+        self._nombre = unidad._nombre
+        self._etiqueta = unidad._etiqueta;
+        self._descripcion = unidad._descripcion;
+        self._color = unidad._color;
