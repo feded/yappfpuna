@@ -20,7 +20,7 @@ Ext.define('YAPP.view.item_atributo.List', {
                     name : 'atributos',
                     action : 'atributos',
                     scope : this,
-                    disabled : false,
+                    disabled : true,
                 }, '|',{
 					text : 'Archivos Relacionados al Item',
 					scope : this,

@@ -16,8 +16,10 @@ var formulario = Ext.define('YAPP.view.esquema.EsquemaItemCreate', {
 		
 					xtype : 'combobox',
 					fieldLabel : 'Item',
-					name : '_tipo_item_id',
+					name : 'item_id',
+					store : new YAPP.store.Item(),
 					displayField : '_nombre',
+					valueField : 'id',
 					typeAhead : true,
 					queryMode : 'local',
 					emptyText : 'Seleccione un Item a Agregar...',
@@ -30,7 +32,7 @@ var formulario = Ext.define('YAPP.view.esquema.EsquemaItemCreate', {
 		
 		this.buttons = [  {
 			text : 'Guardar',
-			action : 'guardar'
+			action : 'guardarItemEsquema'
 		}, {
 			text : 'Cancel',
 			scope : this,

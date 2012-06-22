@@ -11,14 +11,15 @@ Ext.define('YAPP.controller.Esquemas', {
 		],
 	stores:['Esquemas', 'Fases', 'AtributoEsquema', 'EsquemaItem', 'Item'],
 	models:['Esquema', 'AtributoEsquema' , 'EsquemaItem' ],
-	refs : [ {
-        selector : 'esquemaslist combobox[name=fasesCombo]',
+	refs : [ 
+	{
+        selector : 'viewport combobox[name=fases]',
         ref : 'fasesCombo'
-	}, {
+    }, {
     	selector: 'esquemaslist gridview',
     	ref: 'grilla'
 	},{
-		selector: 'esquemaItemCreate combobox[name=_tipo_item_id]',
+		selector: 'esquemaItemCreate combobox[name=item_id]',
 		ref : 'itemsCombo'
 	}
 	 
@@ -31,7 +32,8 @@ Ext.define('YAPP.controller.Esquemas', {
 		this.control({
         
 				'esquemaslist button[action=crear]': {
-                	click: this.crearEsquema
+                	click: this.crearEsquema,
+                	render : this.traerEsquemas
             	},
             	'esquemaedit button[action=guardar]': {
                     click: this.guardarEsquema
@@ -39,10 +41,7 @@ Ext.define('YAPP.controller.Esquemas', {
             	'esquemaslist button[action=borrar]' : {
 					click : this.borrarEsquema
 				},
-				'esquemaslist viewport combobox[name=proyectos]': {
-            		change: this.traerFases
-            	},
-        		'esquemaslist combobox[name=fasesCombo]': {
+        		'viewport combobox[name=fasesCombo]': {
             		change: this.traerEsquemas	
             	},
             	'esquemaslist': {
@@ -71,7 +70,11 @@ Ext.define('YAPP.controller.Esquemas', {
 				},
 				'esquemaItemList button[action=borrarItem]':{
 					click : this.eliminarItemEsquema
+				},
+				'esquemaItemCreate button[action=guardarItemEsquema]':{
+					click : this.guardarItemEsquema
 				}
+				
         });
 	},
 	
@@ -111,21 +114,21 @@ Ext.define('YAPP.controller.Esquemas', {
 		selection.data.accion = "DELETE"
 		this.getEsquemasStore().remove(selection)
 	},
-	traerFases: function(object, newValue, oldValue, eOpts){
-		var combo = this.getFasesCombo();
-        var store = this.getFasesStore();
-        console.log(object.getValue())
-        if (object.getValue() == '') {
-                return;
-        }
-        combo.store = store;
-        store.load({
-                params : {
-                        id : object.getValue()
-                }
-        });
-
-	},
+//	traerFases: function(object, newValue, oldValue, eOpts){
+//		var combo = this.getFasesCombo();
+//        var store = this.getFasesStore();
+//        console.log(object.getValue())
+//        if (object.getValue() == '') {
+//                return;
+//        }
+//        combo.store = store;
+//        store.load({
+//                params : {
+//                        id : object.getValue()
+//                }
+//        });
+//
+//	},
 	traerEsquemas : function(object, newValue, oldValue, eOpts){
 		var combo = this.getFasesCombo();
 		var store = this.getStore('Esquemas');
@@ -156,8 +159,7 @@ Ext.define('YAPP.controller.Esquemas', {
 			xtype : 'atributosesquemalist',
 			closable : true
 		});
-
-		tabs.setActiveTab(tab);
+		
 	},
 	
 	crearAtributo : function(button){
@@ -211,23 +213,33 @@ Ext.define('YAPP.controller.Esquemas', {
 		var tab = tabs.add({
 			title : 'Administrar Items de Esquema',
 			xtype : 'esquemaItemList',
-			closable : true
+			closable : true,
 		});
-
 		tabs.setActiveTab(tab);
+		this.getItemStore().load({
+			params: {
+				esquema : esquemaId
+			}
+		})
+
+		
 	},
 	
+	
 	agregarItemEsquema : function(button){
+		var view = Ext.widget('esquemaItemCreate');
+		grilla = this.getGrilla();
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		esquemaId = selection.data.id;
 		var combo = this.getFasesCombo();
-		var store = this.getStore('Item');
-		store.load({
+		var items_combo = this.getItemsCombo();
+		items_combo.store.load({
 			params: {
-				id : combo.getValue()
+				id : combo.getValue(),
+				esquema : esquemaId,
+				disponibles : 'true'
 			}
 		});
-		var items_combo = this.getItemsCombo();
-		items_combo.store = store;
-		var view = Ext.widget('esquemaItemCreate');
     	console.log('Boton agregar Item apretado');
 		var esquemaItem = new YAPP.model.EsquemaItem();
 		esquemaItem.data._esquema_id = esquemaId;
@@ -237,11 +249,13 @@ Ext.define('YAPP.controller.Esquemas', {
     
     guardarItemEsquema: function(button){
     	console.log('Entre a guardar')
+    	item_id = this.getItemsCombo().getValue()
     	var win = button.up('window');
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);
+		record.data._item_id = item_id,
 		win.close();
 		if (record.data.accion == "POST")
 			this.getEsquemaItemStore().insert(0, record);

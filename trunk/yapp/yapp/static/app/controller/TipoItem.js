@@ -208,7 +208,8 @@ Ext.define('YAPP.controller.TipoItem', {
 				},
 				
 				failure: function(tipo){
-					alert("No se puedo crear el tipo de item")
+					alert("YAPP", "El Tipo de item no se puede crear")
+					
 				}
 			});
 		}else{

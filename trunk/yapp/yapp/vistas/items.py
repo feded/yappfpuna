@@ -33,8 +33,18 @@ def ag_atributos_tipos_item(request):
         if request.GET.get('linea_base') == "false" and request.GET.get('id') != None:
             return get_items_sin_linea_base_con_fase(request);
          #END parte cocho
-         
-        if request.GET.get('tipo') == "ELIMINADO":
+        if request.GET.get('esquema') != None:
+            if request.GET.get('disponibles') == "true":
+                todas = item_dao.get_items_fase(fase_id)
+                entidades_item_id = item_dao.get_items_esquema(request.GET.get('esquema'))
+                for item in todas : 
+                    for entidad in entidades_item_id:
+                        if item._id == entidad._id:
+                            todas.remove(item) 
+                entidades_item_id = todas
+            else:
+                entidades_item_id = item_dao.get_items_esquema(request.GET.get('esquema'))
+        elif request.GET.get('tipo') == "ELIMINADO":
             entidades_item_id = item_dao.get_items_eliminados(fase_id)
         elif request.GET.get('tipo') == "VERSIONES":
             entidades_item_id = item_dao.get_items_por_version(request.GET.get("item_id"))
@@ -70,8 +80,6 @@ def ag_atributos_tipos_item(request):
             
             
         dao_fase = FaseDAO(request)
-        print "-------------------------FASE--------------------"
-        print entidad["_fase"]
         fase = dao_fase.get_by_id(entidad["_fase"])
         
         dao_tipo_item = TipoItemDAO(request)
@@ -123,8 +131,6 @@ def bm_atributo(request):
         fase = dao_fase.get_by_id(entidad["_fase"]["_id"])
         
         dao_tipo_item = TipoItemDAO(request)
-        print "--------------------------"
-        print (entidad["_tipo_item"]["_id"])
         tipo_item = dao_tipo_item.get_by_id((entidad["_tipo_item"]["_id"]))
 
         dao_item_ante = ItemDAO(request)

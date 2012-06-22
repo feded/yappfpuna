@@ -46,16 +46,10 @@ var form_tipo = {
 //		allowBlank : false
 //	},
 	{
-    	xtype: 'fieldcontainer',
-        fieldLabel: 'Color',
-        items: [
-               		{
-                    	xtype: 'textfield',
-                        name : '_color',
-                        itemId : 'color',
-                    	},colorPicker
-              	]
-    },
+		xtype : 'colorcbo',
+		name : '_color',
+		fieldLabel: 'Color',
+	},
 	{
 		xtype : 'textfield',
 		name : '_prefijo',
@@ -68,17 +62,7 @@ var form_tipo = {
 		allowBlank : false
 	}, ]
 };
-var colorPicker = Ext.create('Ext.picker.Color', {
-//    value: '993300',  // initial selected color
-//    listeners: {
-//        select: function(picker, selColor) {
-////            alert(selColor);
-//			var texto = selColor;
-//            var win = picker.up('window');
-//            win.down('#color').setValue(texto);
-//        }
-//    }
-});
+
 
 
 

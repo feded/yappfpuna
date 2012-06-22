@@ -25,14 +25,10 @@ Ext.define('YAPP.view.fase.EditarFase', {
 				name : '_comentario',
 				fieldLabel : 'Comentario'
 			}, {
-				xtype : 'fieldcontainer',
-				fieldLabel : 'Color',
-				items : [ {
-					xtype : 'textfield',
-					name : '_color',
-					itemId : 'color',
-				}, this.colorPicker ]
-			} ]
+				xtype : 'colorcbo',
+				name : '_color',
+				fieldLabel: 'Color',
+			}, ]
 		} ];
 		this.buttons = [ {
 			text : 'Guardar',
@@ -45,14 +41,8 @@ Ext.define('YAPP.view.fase.EditarFase', {
 		
 		this.callParent(arguments);
 	},
-	colorPicker : Ext.create('Ext.picker.Color', {
-//		listeners : {
-//			select : function(picker, selColor) {
-////				console.log(selColor);
-//				var texto = selColor;
-//				var win = picker.up('window');
-//				win.down('#color').setValue(texto);
-//			}
-//		}
-	})
+	
+
 });
+
+

@@ -55,7 +55,23 @@ Ext.define('YAPP.view.item.List', {
                     disabled : true,
                 }]}],
 			
-			columns : [ {
+			columns : columnas_item,
+		});
+		this.callParent();
+	},
+
+});
+
+function renderizador_lista_item(val) {
+	if (val != null && val._nombre != null) {
+		return val._nombre;
+	}else if (val != null && val.data != null && val.data._nombre != null){
+		return val.data._nombre;
+	}
+	return val;
+}
+
+var columnas_item = [ {
 				header : 'Nombre',
 				sortable : true,
 				dataIndex : '_nombre',
@@ -119,18 +135,4 @@ Ext.define('YAPP.view.item.List', {
 				renderer : renderizador_lista_item
 			}
 	
-			]
-		});
-		this.callParent();
-	},
-
-});
-
-function renderizador_lista_item(val) {
-	if (val != null && val._nombre != null) {
-		return val._nombre;
-	}else if (val != null && val.data != null && val.data._nombre != null){
-		return val.data._nombre;
-	}
-	return val;
-}
+			];

@@ -12,11 +12,25 @@ Ext.define('YAPP.view.item_unidad.List', {
 			frame : true,
 			dockedItems : [ {
 				xtype : 'toolbar',
-				items : [ 
+				items : [
+				{
+            		xtype : 'combobox',
+					fieldLabel : 'Unidad de Trbajo',
+					name : '_unidad_id',
+					store : Ext.create('YAPP.store.UnidadTrabajo'),
+					displayField : '_nombre',
+					valueField: 'id',
+					typeAhead : true,
+					queryMode : 'local',
+					emptyText : 'Seleccione una Unidad...',
+					allowBlank : false,
+					disabled : true,
+        		}, 
 				{
 					text : 'Asignar U. de Trabajo',
 					scope : this,
-					action : 'asignar',
+					action : 'guardar',
+					//action : 'asignar',
 					disabled : true,
 					name : 'btnAsignar'
 				}, {
@@ -28,18 +42,12 @@ Ext.define('YAPP.view.item_unidad.List', {
 				} ]
 			} ],
 			columns : [ {
-				text : 'Nombre Unidad',
+				text : 'Asignadas',
 				flex : 1,
 				sortable : true,
 				dataIndex : '_unidad',
 				renderer : renderizar_nombre_unidad
-			},{
-				header : 'Cantidad Asignadada',
-				flex : 1,
-				sortable : true,
-				dataIndex : '_cantidad',
-				
-			} ]
+			}]
 		});
 		this.callParent(arguments);
 		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);

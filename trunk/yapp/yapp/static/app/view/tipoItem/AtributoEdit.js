@@ -34,10 +34,22 @@ var form_atributo = {
 		name : '_valor',
 		fieldLabel : 'Nombre',
 	},{
-		xtype : 'textfield',
+		xtype : 'combobox',
 		name : '_tipo',
 		fieldLabel : 'Tipo',
-		allowBlank : false
+		store : Ext.create('Ext.data.Store', {
+			    fields: ['abbr', 'name'],
+			    data : [
+			        {"abbr":"Cadena de Texto", "name":"Cadena de Texto"},
+			        {"abbr":"Numerico", "name":"Numerico"},
+			        {"abbr":"Booleano", "name":"Booleano"}
+			    ]
+			}),
+		allowBlank : false,
+		valueField : 'abbr',
+		displayField : 'name',
+		queryMode: 'local',
+		emptyText : 'Seleccione un tipo...',
 	},{
 		xtype : 'textfield',
 		name : '_descripcion',
@@ -56,3 +68,6 @@ var form_atributo = {
 	} ] 
 };
 
+
+
+    

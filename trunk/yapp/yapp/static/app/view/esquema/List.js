@@ -7,15 +7,6 @@ Ext.define('YAPP.view.esquema.List' ,{
 		this.dockedItems = [ {
 				xtype : 'toolbar',
 				items : [ 
-						
-						{
-							xtype: 'combobox',
-							name : 'fasesCombo',
-							fieldLabel: 'Fases',
-							displayField: '_nombre',
-							queryMode : 'local',
-							valueField: 'id',
-						},
 						{
 							iconCls : 'icon-add',
 							text : 'Nuevo Esquema',

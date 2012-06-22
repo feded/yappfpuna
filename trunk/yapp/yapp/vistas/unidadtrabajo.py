@@ -28,13 +28,14 @@ def obtener_crear_unidad_trabajo(request):
         item_id = request.GET.get('_item_id')
         print item_id
         if (item_id !=None):
-
-            itemUnidadDao = ItemUnidadDAO(request)
-            unidadesAsignadas = itemUnidadDao.get_query().filter(ItemUnidadTrabajo._item_id == item_id).all()
-            for unidadAsignada in unidadesAsignadas:
-                for unidad in unidades:
-                    if (unidad._id == unidadAsignada._unidad_id):
-                        unidades.remove(unidad)
+            item_dao = ItemDAO(request)
+            unidades = item_dao.get_unidades_disponibles(item_dao.get_by_id(item_id))
+#            itemUnidadDao = ItemUnidadDAO(request)
+#            unidadesAsignadas = itemUnidadDao.get_query().filter(ItemUnidadTrabajo._item_id == item_id).all()
+#            for unidadAsignada in unidadesAsignadas:
+#                for unidad in unidades:
+#                    if (unidad._id == unidadAsignada._unidad_id):
+#                        unidades.remove(unidad)
         lista = [];
         p = Pickler()
         for entidad in unidades:
