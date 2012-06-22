@@ -32,6 +32,8 @@ def asignar_unidad_intem(request):
         asignacion = ItemUnidadTrabajo(entidad["_item_id"], entidad["_unidad_id"], entidad["_cantidad"])
         dao = ItemUnidadDAO(request)
         dao.crear(asignacion);
+        asignacion._item = None
+        asignacion._unidad = None
         asignacion = ItemUnidadTrabajoDTO(asignacion)
         p = Pickler()
         aRet = p.flatten(asignacion)
@@ -51,12 +53,12 @@ def asignar_unidad_intem(request):
         entidades = dao.get_query().filter(ItemUnidadTrabajo._item_id == item_id).all()
         entidadesDTO = [];
         for entidad in entidades:
-            itemUnidadDTO = ItemUnidadTrabajoDTO(entidad);
-            itemUnidadDTO._item = item
+            entidad._item = item
             if (unidad == None):
                 unidadDAO = UnidadTrabajoDAO(request)
                 unidad = unidadDAO.get_by_id(entidad._unidad_id)
-            itemUnidadDTO._unidad = unidad
+            entidad._unidad = unidad
+            itemUnidadDTO = ItemUnidadTrabajoDTO(entidad);
             entidadesDTO.append(itemUnidadDTO)
         p = Pickler()
         j_string = p.flatten(entidadesDTO)
