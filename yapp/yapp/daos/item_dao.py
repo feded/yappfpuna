@@ -1,5 +1,11 @@
 from yapp.daos.base_dao import BaseDAO
-from yapp.models.item.item import Item
+from yapp.models.item.item import Item, ItemDTO
+from yapp.daos.item_unidad_dao import ItemUnidadDAO
+from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
+from yapp.daos.unidad_trabajo_dao import UnidadTrabajoDAO
+from yapp.daos.esquema_item_dao import EsquemaItemDAO
+from yapp.models.esquema.esquema_item import EsquemaItem
+from yapp.models.esquema import esquema_item
 
 class ItemDAO(BaseDAO):
     def get_clase(self):
@@ -43,7 +49,18 @@ class ItemDAO(BaseDAO):
              
         return entidades_item_id
         
-        
+    
+    def get_items_globales(self):
+        entidades = self.get_query().distinct(Item._item_id).all()
+        entidades_item_id = []
+        for entidad in entidades:
+            posible_actual = self.get_query().filter(Item._item_id == entidad._item_id).order_by(Item._version.desc()).first();
+            if (posible_actual._estado != "ELIMINADO"):            
+                if (entidades_item_id.count(posible_actual) == 0):
+                    entidades_item_id.append(posible_actual)
+             
+        return entidades_item_id
+     
     def es_eliminable(self, item):
         """
         @param item: item a verificar si se puede eliminar
@@ -79,24 +96,40 @@ class ItemDAO(BaseDAO):
         versiones = self.get_query().filter(Item._item_id == item_id).order_by(Item._version.asc()).all()
         versiones.pop()
         return versiones
-    
-    def guadar_item_con_nueva_version(self, item):
-        n_item = Item(
-            item._item_id,
-            item._nombre,
-            item._tipo_item,
-            item._fase,
-            item._duracion,
-            item._descripcion,
-            item._condicionado,
-            item._version,
-            item._estado,
-            item._fecha_inicio,
-            item._fecha_fin,
-            item._padre_item_id,
-            item._antecesor_item_id)
-        n_item._version += 1;
-        return self.crear(n_item)
 
-    
-            
+
+    def items_padre_disponibles(self, items, item):
+        if item in items:
+            return items
+        else:
+            items.append(item)
+        if item._padre != None:
+            return self.items_padre_disponibles(items, item._padre)
+        else:
+            return self.items_padre_disponibles(items, item)
+        
+    def get_unidades_disponibles(self, item):
+        todos_los_items = self.get_items_globales() 
+        unidad_dao = UnidadTrabajoDAO(self._request)
+        unidades = unidad_dao.get_all();
+        for item in todos_los_items:
+            item_unidad_dao = ItemUnidadDAO(self._request)
+            entidades = item_unidad_dao.get_query().filter(ItemUnidadTrabajo._item_id == item._id).all()
+            for entidad in entidades:
+                for unidad in unidades:
+                    if entidad._unidad_id == unidad._id:
+                        unidades.remove(unidad)
+        return unidades
+     
+    def get_items_esquema(self, esquema_id):
+        esquema_item_dao = EsquemaItemDAO(self._request)
+        esquema_items = esquema_item_dao.get_query().filter(EsquemaItem._esquema_id == esquema_id).all()         
+        items = []
+        for esquema_item in esquema_items:
+            items_esquema = self.get_query().filter(Item._id == esquema_item._item_id).all()
+            for item in items_esquema:
+                items.append(item)
+        print "-------------items------------------"
+        print items
+        return items
+

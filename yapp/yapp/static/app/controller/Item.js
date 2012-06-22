@@ -60,11 +60,14 @@ Ext.define('YAPP.controller.Item', {
 	} , {
 		selector : 'itemslist button[name=atributos]',
 		ref : 'atributos'
+	} , {
+		selector : 'atributositemlist button[name=atributos]',
+		ref : 'btnAtributosItemList'
 	} ,  {
 		selector : 'itemslist button[name=borrar]',
 		ref : 'delete'
 	} , {
-		selector : 'asignarUnidad combobox[name=_unidad_id]',
+		selector : 'itemunidadlist combobox[name=_unidad_id]',
 		ref : 'unidad'
 	} , {
 		selector : 'itemslist button[name=crear]',
@@ -135,13 +138,11 @@ Ext.define('YAPP.controller.Item', {
 			'itemslist button[action=versiones]' : {
 				click : this.verVersiones
 			},
-			'itemunidadlist button[action=asignar]' : {
-				click : this.asignarRecursoItem
-			},
+			
 			'itemunidadlist button[action=desasignar]' : {
 				click : this.desAsignarRecursoItem
 			},
-			'asignarUnidad button[action=guardar]' : {
+			'itemunidadlist button[action=guardar]' : {
 				click : this.guardarAsignacion
 			},
 			'revertirItems gridpanel[name=gridVersionesItem]' :{
@@ -538,25 +539,33 @@ Ext.define('YAPP.controller.Item', {
 	
 	habilitarBotones : function(estado){
 		if (estado == "ACTIVO" || estado == "REVISION" ){
+			this.getBtnAtributosItemList().setDisabled(false);
 			this.getBtnAsignar().setDisabled(false);
+			this.getUnidad().setDisabled(false);
 			this.getDelete().setDisabled(false);
 			this.getAprove().setDisabled(false);
 			this.getDeaprove().setDisabled(true);
 			this.getVersiones().setDisabled(false);
 		}else if (estado == "APROBADO"){
+			this.getBtnAtributosItemList().setDisabled(true);
 			this.getBtnAsignar().setDisabled(true);
+			this.getUnidad().setDisabled(true);
 			this.getDelete().setDisabled(true);
 			this.getAprove().setDisabled(true);
 			this.getDeaprove().setDisabled(false);
 			this.getVersiones().setDisabled(false);
 		}else if (estado == "BLOQUEADO"){
+			this.getBtnAtributosItemList().setDisabled(true);
 			this.getBtnAsignar().setDisabled(true);
+			this.getUnidad().setDisabled(true);
 			this.getDelete().setDisabled(true);
 			this.getAprove().setDisabled(true);
 			this.getDeaprove().setDisabled(true);
 			this.getVersiones().setDisabled(true);
 		}else{
+			this.getBtnAtributosItemList().setDisabled(true);
 			this.getBtnAsignar().setDisabled(true);
+			this.getUnidad().setDisabled(true);
 			this.getDelete().setDisabled(true);
 			this.getAprove().setDisabled(true);
 			this.getDeaprove().setDisabled(true);
@@ -568,6 +577,7 @@ Ext.define('YAPP.controller.Item', {
 		this.mostrarRecursos(grid, record);
 		this.mostrarAtributos(grid, record);
 		this.habilitarBotones(record.data._estado);
+		this.mostarUnidades(grid, record);
 	},
 	
 	mostrarAtributos: function(grid, record){
@@ -587,38 +597,66 @@ Ext.define('YAPP.controller.Item', {
 			}
 		});
 	},
-	asignarRecursoItem : function(button){
-		var view = Ext.widget('asignarUnidad');
-		var itemUnidad = new YAPP.model.ItemUnidad();
-		view.down('form').loadRecord(itemUnidad);
-		var botonlist = this.getBotonList();
-		var win = botonlist.up('grid');
-		var grilla = win.down('gridview')
-		var itemRecord = grilla.getSelectionModel().getSelection()[0];
+	mostarUnidades : function(grid, record){
 		var unidadCombo = this.getUnidad()
 		var itemUnidadStore = this.getItemUnidadStore()
 		unidadCombo.store.load({
 			params : {
-				_item_id : itemRecord.data.id
-			}
+				_item_id : record.data.id
+			},
+			callback: function(records, operation, success) {
+					if (Ext.typeOf(unidadCombo.getPicker().loadMask) !== "boolean") {
+				        unidadCombo.getPicker().loadMask.hide();
+				    }
+				}
 		});
 	},
 	
 	desAsignarRecursoItem  : function(button){
-		
+		var botonlist = this.getBotonList();
+		var win = botonlist.up('grid');
+		var grilla = win.down('gridview')
+		var itemRecord = grilla.getSelectionModel().getSelection()[0];
+		var ItemStore = this.getItemStore()
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var record = grilla.getSelectionModel().getSelection()[0];
 		var store = this.getItemUnidadStore();
-		record.destroy({
-			success : function(rec) {
-				Ext.example.msg("Unidad de Trabajo", "Desasiganda");
-				store.remove(record);
+		var fase = this.getComboFase();
+		
+		this.setearPadresTipoAntecesor(itemRecord);
+		itemRecord.data._version = itemRecord.data._version + 1 
+		var storeUnidadItems = this.getItemUnidadStore();
+		var store = this.getItemStore();
+		var me = this
+		itemRecord.save({
+			success : function(nuevoItemRecord){
+				itemRecord = nuevoItemRecord
+				record.data._item_id= nuevoItemRecord.data.id
+				record.destroy({
+					success : function(rec) {
+						Ext.example.msg("Unidad de Trabajo", "Desasiganda");
+						store.remove(record);
+						me.onRender();
+					},
+					failure : function(rec) {
+						alert("No se pudo Desasinar la Unidad");
+					}
+				});
+				
+				ItemStore.load({
+					params : {
+						id : fase.getValue()
+					}
+				});
 			},
-			failure : function(rec) {
-				alert("No se pudo eliminar el Item");
+			failure : function(nuevoItemRecord){
+				alert("No se pudo guardar la Unidad de Trabajo");
 			}
-		});
+		})
+		
+	
+		
 	},
 	
 	activarItem : function(button) {
@@ -663,18 +701,16 @@ Ext.define('YAPP.controller.Item', {
 		var grilla = win.down('gridview')
 		var itemRecord = grilla.getSelectionModel().getSelection()[0];
 		var fase = this.getComboFase();
-		var win = button.up('window');
-		var form = win.down('form');
-		win.close();
-		var record = form.getRecord();
-		var values = form.getValues();
-		record.set(values);
+		var unidadId = this.getUnidad().getValue();
+		var record = new YAPP.model.ItemUnidad();
+		record.data._unidad_id = unidadId;
 		console.log("itemRecord")
 		console.log(itemRecord)
 		this.setearPadresTipoAntecesor(itemRecord);
 		itemRecord.data._version = itemRecord.data._version + 1 
 		var storeUnidadItems = this.getItemUnidadStore();
 		var store = this.getItemStore();
+		var me = this
 		itemRecord.save({
 			success : function(nuevoItemRecord){
 				itemRecord = nuevoItemRecord
@@ -682,9 +718,8 @@ Ext.define('YAPP.controller.Item', {
 				record.save(
 				{	
 					success : function(record) {
-						this.getItemUnidadStore().insert(0, record);
 						Ext.example.msg("Unidad de Trabajo", "Agregada con exito");
-						
+						me.onRender();
 					},
 					failure : function(record) {
 						alert("No se pudo guardar la Unidad de Trabajo");
@@ -735,6 +770,7 @@ Ext.define('YAPP.controller.Item', {
 		var items = grid2.store.getRange();
 		
 		var store = this.getItemStore();
+		var me = this
 		for (record in items){
 			record = items[record]
 			console.log(record)
@@ -748,7 +784,8 @@ Ext.define('YAPP.controller.Item', {
 							id : fase.getValue()
 						}
 					});
-					
+					Ext.example.msg("Item", "Revivido con exito");
+					me.onRender()
 				},
 				failure : function(record) {
 					alert("No se pudo revivir el Item: " + record.data._nombre);
@@ -758,6 +795,7 @@ Ext.define('YAPP.controller.Item', {
 		}
 		
 		win.close();
+		
 		
 	},
 	
@@ -817,6 +855,7 @@ Ext.define('YAPP.controller.Item', {
 		recordActual = record;
 		recordActual.data._version = versionActual +1;
 		recordActual.data._estado = "REVISION";
+		var me = this
 		recordActual.save(
 		{	
 			success : function(registro) {
@@ -827,6 +866,7 @@ Ext.define('YAPP.controller.Item', {
 				});
 				win.close();
 				Ext.example.msg("Item", "Revertido con exito");
+				me.onRender();
 			},
 			failure : function(record) {
 				alert("No se pudo guardar el Item");
@@ -866,7 +906,6 @@ Ext.define('YAPP.controller.Item', {
 		var itemRecord = grilla.getSelectionModel().getSelection()[0];
 		var atributosCombo = this.getAtributoCombo();
 		//var itemAtributoStore = this.getAtributoTipoItemStore();
-		console.log(itemRecord.data._item_id)
 //		atributosCombo.store.load({
 //			params : {
 //				
@@ -894,6 +933,7 @@ Ext.define('YAPP.controller.Item', {
 		itemRecord.data._version = itemRecord.data._version + 1 
 		var storeAtributosItems = this.getItemAtributoStore();
 		var store = this.getItemStore();
+		var me = this;
 		itemRecord.save({
 			success : function(nuevoItemRecord){
 				itemRecord = nuevoItemRecord
@@ -902,13 +942,15 @@ Ext.define('YAPP.controller.Item', {
 				{	
 					success : function(record) {
 						storeAtributosItems.insert(0, record);
+						Ext.example.msg("Atributo", "Guardado con exito");
+						me.onRender();
 					},
 					failure : function(record) {
 						alert("No se pudo guardar el Atributo");
 					}
 					
 				});
-				Ext.example.msg("Atributo", "Guardado con exito");
+				
 			},
 			failure : function(nuevoItemRecord){
 				alert("No se pudo guardar el Atributo");

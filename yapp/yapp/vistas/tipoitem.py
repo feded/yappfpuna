@@ -35,6 +35,10 @@ def create_tipo(request):
         tipoItemDao = TipoItemDAO(request);
         proyectoDao = ProyectoDAO(request)
         proyecto = proyectoDao.get_by_id(entidad["_proyecto_id"])
+        topos_tipos = tipoItemDao.get_query().filter(TipoItem._proyecto_id == entidad["_proyecto_id"]).all()
+        for tipo in topos_tipos:
+            if tipo._prefijo == entidad["_prefijo"]:
+                return Response(json.dumps({'sucess': 'false' , 'lista':'Prefijo ya Asignado'}))
         nueva_entidad = TipoItem(entidad["_nombre"], entidad["_comentario"], entidad["_color"], entidad["_prefijo"], entidad["_condicionado"],proyecto)
         tipoItemDao.crear(nueva_entidad);
         lista = []

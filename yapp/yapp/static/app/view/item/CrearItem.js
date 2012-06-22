@@ -37,7 +37,8 @@ Ext.define('YAPP.view.item.CrearItem', {
 				name : '_duracion',
 				fieldLabel : 'Duracion en dias',
 				typeAhead : true,
-				allowBlank : false
+				allowBlank : false,
+				minValue : 1
 			},
 			{
 				name : '_fecha_inicio',
@@ -54,17 +55,9 @@ Ext.define('YAPP.view.item.CrearItem', {
 				allowBlank : false
 			}, 
 			{
-				xtype: 'fieldcontainer',
+				xtype : 'colorcbo',
+				name : 'color',
 				fieldLabel: 'Color',
-				colspan : 2,
-				items: [
-						{
-							xtype: 'textfield',
-							name : '_color',
-							//itemId : 'color',
-						}
-						//,colorPicker
-						]
 			},
 			{
 				xtype : 'displayfield',
@@ -196,15 +189,36 @@ var columnas_crear_Item = [ {
 
 
 
-var colorPicker = Ext.create('Ext.picker.Color', {
-//    value: '993300',  // initial selected color
-    listeners: {
-        select: function(picker, selColor) {
-//            alert(selColor);
-			var texto = selColor;
-            var win = picker.up('window');
-            win.down('#color').setValue(texto);
-        }
-    }
-});
+var colorPicker = Ext.define('Ext.ux.ColorPickerCombo', {
+		extend: 'Ext.form.field.Trigger',
+		alias: 'widget.colorcbo',
+		triggerTip: 'Seleccione un color.',
+	 	onTriggerClick: function() {
+		  var me = this; 
+		  picker = Ext.create('Ext.picker.Color', {     
+			pickerField: this,     
+			ownerCt: this,    
+			renderTo: document.body,     
+			floating: true,    
+			hidden: true,    
+			focusOnShow: true,
+			style: {
+	            	backgroundColor: "#fff"
+	        	} ,
+			listeners: {
+	            	scope:this,
+	            	select: function(field, value, opts){
+						me.setValue(value);
+						me.inputEl.setStyle({backgroundColor:value});
+						picker.hide();
+					},
+					show: function(field,opts){
+						field.getEl().monitorMouseLeave(500, field.hide, field);
+						}
+	        	}
+	});
+	       picker.alignTo(me.inputEl, 'tl-bl?');
+	       picker.show(me.inputEl);
+		}	
+	});
 

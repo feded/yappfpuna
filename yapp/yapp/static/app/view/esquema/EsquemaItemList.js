@@ -1,8 +1,6 @@
 Ext.define('YAPP.view.esquema.EsquemaItemList' ,{
     extend: 'Ext.grid.Panel',
     alias : 'widget.esquemaItemList',
-    
-    
     store : 'Item',
 	initComponent : function() {
 		this.dockedItems = [ {
