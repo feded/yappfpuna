@@ -94,6 +94,7 @@ def main(global_config, **settings):
     config.add_route('asignarAtributoItem' , '/itemAtributo')
     config.add_route('editarAtributoItem' , '/itemAtributo/{id}')
     
+    config.add_route('adjuntar' , '/adjuntar')
     
     #rutas volpe
     config.add_route('crearRol', '/crearRol')

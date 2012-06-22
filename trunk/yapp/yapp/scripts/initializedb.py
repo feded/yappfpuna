@@ -33,7 +33,7 @@ import yapp.models.fase.fase
 import yapp.models.fase.tipo_fase
 import yapp.models.fase.tipo_fase
 import yapp.models.item.item
-import yapp.models.item.item
+import yapp.models.item.item_archivo
 import yapp.models.item.item_atributo
 import yapp.models.item.item_unidad_trabajo
 import yapp.models.linea_base.linea_base
