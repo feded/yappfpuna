@@ -18,6 +18,8 @@ from yapp.models import DBSession
 from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
 from yapp.daos.base_dao import BaseDAO
 from yapp.daos.item_unidad_dao import ItemUnidadDAO
+from yapp.daos.item_archivo_dao import ArchivoDAO
+from yapp.models.item.item_archivo import itemArchivo
 
 
 @view_config(route_name='crearListarItems')
@@ -248,3 +250,17 @@ def get_items_sin_linea_base_con_fase(request):
 #        self._fecha_fin = fecha_fin;
 #        self._padre = padre;
 #        self._antecesor = antecesor
+
+@view_config(route_name='adjuntar')
+def adjuntar(request):
+    id_item = request.params['id_item'],
+    archivo = request.params['archivo'].file.read()
+    nombre=request.params['archivo'].filename
+    
+    archivo_dao = ArchivoDAO(request)
+    nuevo_archivo = itemArchivo(id_item,archivo,nombre)
+    archivo_dao.crear(nuevo_archivo)
+    
+    response= Response(content_type='application/force-download',content_disposition='attachment; filename=' + nuevo_archivo._nombre_archivo)
+    response.app_iter= nuevo_archivo._archivo
+    return response

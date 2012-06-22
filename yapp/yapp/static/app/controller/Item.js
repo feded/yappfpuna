@@ -2,7 +2,7 @@ Ext.define('YAPP.controller.Item', {
 	extend : 'Ext.app.Controller',
 	
 	views : [ 'item.Edit', 'item.List',  'item.CrearItem', 'item.RevertirItem', 'item_atributo.Edit',
-	 'item_unidad.List', 'item_unidad.Edit', 'item.RevivirItem', 'item_atributo.List', 'item_atributo.Agregar' ],
+	 'item_unidad.List', 'item_unidad.Edit', 'item.RevivirItem', 'item_atributo.List', 'item_atributo.Agregar', 'item_atributo.Archivo' ],
 	stores : [ 'Item', 'Fases', 'TipoItems', 'ItemUnidad', 'ItemAtributo', 'AtributoTipoItem' ],
 	models : [ 'Item' , 'ItemUnidad', 'ItemAtributo' ],
 	
@@ -78,6 +78,9 @@ Ext.define('YAPP.controller.Item', {
 	}, {
 		selector : 'agregaratributo combobox[name=_atributo_id]',
 		ref : 'atributoCombo'
+	}, {
+		selector: 'itemslist gridview',
+		ref: 'grilla'
 	}
 	],
 	
@@ -173,6 +176,13 @@ Ext.define('YAPP.controller.Item', {
 			},
 			'viewport combobox[name=fases]' : {
 				change : this.changeFase
+			},
+			'atributositemlist button[action=archivos]':{
+				click: this.archivos
+			},
+			
+			'archivo button[action=adjuntar]' :{
+				click: this.adjuntar
 			}
 		});
 	},
@@ -907,8 +917,26 @@ Ext.define('YAPP.controller.Item', {
 		
 	},
 	
+	archivos: function(){
+		var view = Ext.widget('archivo');		
+	},
+
 	
-	
-	
-	
+	adjuntar: function(button){
+		var win = button.up('window');
+		var form = win.down('form');
+		
+		var g = this.getGrilla();
+		var item = g.getSelectionModel().getSelection()[0];
+		
+		console.log(item);
+		
+		form.submit({
+			url: '/adjuntar',
+			clientValidation: true,
+			params:{
+				id_item : item.data._item_id
+			}
+		});
+	}
 });
