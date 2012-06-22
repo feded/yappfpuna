@@ -11,7 +11,7 @@ Ext.define('YAPP.view.rol.ABM', {
 		this.items = [ {
 			xtype : 'rollist',
 		}, {
-			xtype : 'rolprivilegiolist'
+			xtype : 'privilegiolist'
 		}, {
 			xtype : 'rolpermisolist'
 		} ];

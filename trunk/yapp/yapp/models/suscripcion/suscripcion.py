@@ -9,8 +9,7 @@ from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Integer
 from yapp.models import Base
 from yapp.models.entidad_base import EntidadBase
-from yapp.models.entidad_padre import EntidadPadre
-from yapp.models.roles.entidad import EntidadDTO
+from yapp.models.entidad_padre import EntidadPadre, EntidadPadreDTO
 from yapp.models.roles.rol_estado import RolEstado
 from yapp.models.roles.rol_final import RolFinal
 from yapp.models.roles.rol import RolDTO
@@ -38,7 +37,7 @@ class SuscripcionDTO:
         self._id = notificacion._id
         self._nombre = notificacion._nombre;
         if notificacion._entidad_padre != None:
-            self._entidad_padre = EntidadDTO(notificacion._entidad_padre)
+            self._entidad_padre = EntidadPadreDTO(notificacion._entidad_padre)
         if notificacion._rol_final != None:
             self._rol_final = RolDTO(notificacion._rol_final)
         

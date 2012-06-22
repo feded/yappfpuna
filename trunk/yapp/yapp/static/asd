@@ -1,0 +1,3 @@
+		console.log("Privilegio")
+		console.log(object)
+		return ""

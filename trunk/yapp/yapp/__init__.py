@@ -61,9 +61,7 @@ def main(global_config, **settings):
     config.add_route('tipos_recursos', '/tipo_recurso')
     config.add_route('logout', '/logout')
     config.add_route('crearProyecto', '/crearProyecto')
-    config.add_route('crearRol', '/crearRol')
-    config.add_route('privilegios', '/privilegios/{id_privilegio}')
-    config.add_route('entidades', '/entidades')
+ 
     config.add_route('roles', '/roles/{id_rol}')
     config.add_route('estados_roles', '/roles_estados')
     config.add_route('obtenerTipos', '/obtenerTipos')
@@ -96,6 +94,11 @@ def main(global_config, **settings):
     config.add_route('asignarAtributoItem' , '/itemAtributo')
     config.add_route('editarAtributoItem' , '/itemAtributo/{id}')
     
+    
+    #rutas volpe
+    config.add_route('crearRol', '/crearRol')
+    config.add_route('rol_privilegios', '/rol_privilegios/{id_privilegio}')
+    config.add_route('privilegios', '/privilegios')
     
     #rutas Volpe 5 iteracion
     config.add_route('lineas_base', '/lineas_base')

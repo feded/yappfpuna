@@ -122,8 +122,9 @@ Ext.define('YAPP.controller.Menus', {
 			if (!controller.casosEspeciales(record)) {
 				var sNombre = record.data._permiso._nombre;
 				var sAccion = "";
-				console.log(sNombre)
-				console.log(typeof getAliasFuncion(sNombre))
+//				console.log(sNombre)
+//				console.log(record)
+//				console.log(typeof getAliasFuncion(sNombre))
 				if (typeof getAliasFuncion(sNombre) == "undefined") {
 					sAccion = "admin" + sNombre;
 				} else {
@@ -142,7 +143,7 @@ Ext.define('YAPP.controller.Menus', {
 
 		panel.addDocked({
 			xtype : 'button',
-			text : 'SALIR',
+			text : 'Cerrar sesión',
 			width : '100%',
 			flex : 1,
 			textAlign : 'left',

@@ -3,7 +3,7 @@ Ext.define('YAPP.view.privilegio.List', {
 	alias : 'widget.privilegiolist',
 	
 	title : 'Privilegios',
-	store : 'Privilegios',
+	store : 'RolPrivilegios',
 	layout : 'fit',
 	
 	initComponent : function() {
@@ -12,7 +12,8 @@ Ext.define('YAPP.view.privilegio.List', {
 			items : [ {
 				text : 'Nuevo Privilegio',
 				scope : this,
-				action : 'crear'
+				action : 'crear',
+				disabled : true
 			}, '|', {
 				text : 'Eliminar Privilegio',
 				itemId : 'delete',
@@ -22,48 +23,32 @@ Ext.define('YAPP.view.privilegio.List', {
 			} ]
 		} ];
 		this.columns = [ {
-			text : 'ID',
-			width : 40,
-			sortable : true,
-			dataIndex : 'id'
-		}, {
-			text : 'Nombre',
+			header : 'Privilegio sobre',
 			flex : 1,
 			sortable : true,
-			dataIndex : '_nombre'
+			dataIndex : '_privilegio',
+			renderer : this.renderPrivilegio
 		}, {
 			header : 'Entidad',
 			flex : 1,
 			sortable : true,
 			dataIndex : '_entidad',
-			renderer : renderizarEntidad,
-			field : {
-				type : 'textfield'
-			}
+			renderer : this.renderEntidad,
 		}, {
-			header : 'Asignado a',
-			flex : 1,
+			header : 'Permitir',
 			sortable : true,
-			dataIndex : '_entidad_padre',
-			renderer : renderizarEntidadPadre
+			dataIndex : '_permitir'
 		} ];
 		this.callParent(arguments);
 		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
 	},
 	onSelectChange : function(selModel, selections) {
 		this.down('#delete').setDisabled(selections.length === 0);
+	},
+	renderPrivilegio : function(object) {
+		return object._nombre
+	},
+	renderEntidad : function(object) {
+		return object._nombre
 	}
 });
-
-function renderizarEntidad(val) {
-	// console.log(val)
-	if (val != null && val._nombre != null)
-		return val._nombre
-	return "A asignar";
-}
-
-function renderizarEntidadPadre(val) {
-	if (val != null && val._nombre != null)
-		return val._nombre
-	return "A asignar";
-}

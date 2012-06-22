@@ -2,6 +2,7 @@ Ext.define('YAPP.view.rol_permiso.List', {
 	extend : 'Ext.grid.Panel',
 	alias : 'widget.rolpermisolist',
 	
+	title : 'Permisos',
 	store : 'RolPermisos',
 	layout : 'fit',
 	
@@ -15,7 +16,7 @@ Ext.define('YAPP.view.rol_permiso.List', {
 				xtype : 'toolbar',
 				items : [ {
 					xtype : 'combobox',
-					fieldLabel : 'Estado',
+					fieldLabel : 'Permiso',
 					name : '_permiso',
 					displayField : '_nombre',
 					store : Ext.create('YAPP.store.Permisos'),
