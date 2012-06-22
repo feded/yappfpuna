@@ -211,10 +211,14 @@ def get_items_sin_linea_base_con_fase(request):
     rd = ItemDAO(request)
     linea_base_id = request.GET.get('id_linea_base')
     fase_id = request.GET.get('id')
-    entidades = rd.get_query().filter(Item._linea_base_id == None, Item._fase_id == fase_id).all()
+    entidades = rd.get_items_aprobados(fase_id);
+#    entidades = rd.get_query().filter(Item._linea_base_id == None, Item._fase_id == fase_id).all()
     lista = [];
     p = Pickler(True, None)
     for entidad in entidades:
+        print entidad._linea_base_id
+        if entidad._linea_base_id != None:
+            continue;
         rd = ItemDAO(request)
 #        padre = rd.get_by_id(entidad._padre_item_id)
 #        antecesor = rd.get_by_id(entidad._antecesor_item_id)

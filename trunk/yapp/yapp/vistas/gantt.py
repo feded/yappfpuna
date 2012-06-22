@@ -10,9 +10,12 @@ from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.item_dao import ItemDAO
 from yapp.models.gantt import Task
 from yapp.models.item.item import Item
+import datetime
  
 @view_config(route_name='gantt')
 def view_gantt(request):
+    
+
     # Create the minidom document
     doc = Document()
     
@@ -40,14 +43,14 @@ def view_gantt(request):
         task.set_fase(fase)
         wml.appendChild(task.get_xml(doc))
         
-        entidades = item_dao.get_query().filter(Item._fase_id==fase._id)
+        entidades = item_dao.get_items_fase(fase._id)
         for item in entidades:
             task = Task()
             task.set_item(item)
             wml.appendChild(task.get_xml(doc))
     
     # Print our newly created XML
-    print doc.toprettyxml(indent="  ")
+#    print doc.toprettyxml(indent="  ")
     return Response(doc.toprettyxml(indent="  "))
 
 

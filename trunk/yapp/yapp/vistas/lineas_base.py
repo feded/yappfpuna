@@ -10,6 +10,7 @@ from pyramid.view import view_config
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.item_dao import ItemDAO
 from yapp.daos.linea_base_dao import LineaBaseDAO
+from yapp.models.item.item import Item
 from yapp.models.linea_base.linea_base import LineaBaseDTO, LineaBase
 import json
 
@@ -64,7 +65,28 @@ def rest(request):
             for item_id in objeto['_items']:
                 items.append(item_dao.get_by_id(item_id))
 
-            linea_base = LineaBase(objeto['_nombre'], objeto['_descripcion'], fase, items)              
+            dao_item = ItemDAO(request)
+            nItems = []
+            for item in items:
+                n_item = Item(
+                    item._item_id,
+                    item._nombre,
+                    item._tipo_item,
+                    item._fase,
+                    item._duracion,
+                    item._descripcion,
+                    item._condicionado,
+                    item._version + 1,
+                    "BLOQUEADO",
+                    item._fecha_inicio,
+                    item._fecha_fin,
+                    item._padre_item_id,
+                    item._antecesor_item_id)
+                dao_item.crear(n_item)
+                nItems.append(n_item)
+            
+
+            linea_base = LineaBase(objeto['_nombre'], objeto['_descripcion'], fase, nItems)              
             dao = LineaBaseDAO(request);
             dao.crear(linea_base);
             p = Pickler()
@@ -78,7 +100,24 @@ def rest(request):
         try:
             id_linea_base = request.matchdict['id']
             dao = LineaBaseDAO(request)
+            dao_item = ItemDAO(request)
             entidad = dao.get_by_id(id_linea_base);
+            for item in entidad._items:
+                n_item = Item(
+                    item._item_id,
+                    item._nombre,
+                    item._tipo_item,
+                    item._fase,
+                    item._duracion,
+                    item._descripcion,
+                    item._condicionado,
+                    item._version + 1,
+                    "ACTIVO",
+                    item._fecha_inicio,
+                    item._fecha_fin,
+                    item._padre_item_id,
+                    item._antecesor_item_id)
+                dao_item.crear(n_item)
             dao.borrar(entidad)
             return Response(json.dumps({'sucess': 'true'}))
         except FaseNoEncontradaException , e :

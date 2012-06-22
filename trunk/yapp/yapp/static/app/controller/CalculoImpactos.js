@@ -10,7 +10,7 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 		selector : 'calculoimpactosview gridpanel[name=sucesores]',
 		ref : 'sucesores'
 	}, {
-		selector : 'calculoimpactosview gridpanel[name=base]',
+		selector : 'calculoimpactosview gridpanel[name=bases]',
 		ref : 'bases'
 	}, {
 		selector : 'calculoimpactosview combobox[name=cbFase]',
@@ -76,11 +76,12 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 		})
 	},
 	actualizarStores : function(records) {
+		console.log(records)
 		var antecesores = this.getAntecesores();
 		antecesores.store.loadData(records[0].data.antecesores)
 		var sucesores = this.getSucesores();
 		sucesores.store.loadData(records[0].data.sucesores)
-//		var lineasBases = this.getBases();
-//		lineasBases.store.loadData(records[0].data.bases)
+		var lineasBases = this.getBases();
+		lineasBases.store.loadData(records[0].data.bases)
 	}
 });

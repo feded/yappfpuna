@@ -10,11 +10,14 @@ Ext.define('YAPP.controller.LineasBase', {
 		selector : 'lineabaseedit gridpanel[name=secondGrid]',
 		ref : 'secondGrid'
 	}, {
-		selector : 'lineasbaselist combobox[name=cbFase]',
-		ref : 'comboFase'
-	}, {
 		selector : 'viewport combobox[name=proyectos]',
 		ref : 'proyectos'
+	}, {
+		selector : 'lineasbaseabm grid[name=gridItems]',
+		ref : 'gridItems'
+	}, {
+		selector : 'viewport combobox[name=fases]',
+		ref : 'comboFase'
 	} ],
 	
 	init : function() {
@@ -30,11 +33,7 @@ Ext.define('YAPP.controller.LineasBase', {
 			'lineasbaselist button[action=borrar]' : {
 				click : this.botonBorrarApretado
 			},
-			'viewport combobox[name=proyectos]' : {
-				change : this.changeProyecto
-			},
-			
-			'lineasbaselist combobox[name=cbFase]' : {
+			'viewport combobox[name=fases]' : {
 				change : this.changeFase
 			},
 			'lineabaseedit button[action=guardar]' : {
@@ -43,6 +42,7 @@ Ext.define('YAPP.controller.LineasBase', {
 		});
 	},
 	lineaBaseClick : function(grid, record) {
+		// var store = this.getGridItems().getStore();
 		var store = this.getItemStore();
 		store.load({
 			params : {
@@ -85,23 +85,6 @@ Ext.define('YAPP.controller.LineasBase', {
 			}
 		});
 	},
-	changeProyecto : function(object, newValue, oldValue, eOpts) {
-		var combo = this.getComboFase();
-		if (combo == null)
-			return;
-		var store = this.getFasesStore();
-		if (store == null)
-			return;
-		if (object.getValue() == '') {
-			return;
-		}
-		combo.store = store;
-		store.load({
-			params : {
-				id : object.getValue()
-			}
-		});
-	},
 	changeFase : function(object, newValue, oldValue, eOpts) {
 		var store = this.getLineasBaseStore();
 		var fase = this.getComboFase();
@@ -132,7 +115,7 @@ Ext.define('YAPP.controller.LineasBase', {
 		}
 		record.data._items = itemsDTO;
 		record.data._fase = fase.getValue()
-//		console.log(record)
+		// console.log(record)
 		var store = this.getLineasBaseStore()
 		win.close();
 		record.save({
@@ -150,10 +133,13 @@ Ext.define('YAPP.controller.LineasBase', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		var store = this.getLineasBaseStore();
+		var me = this;
 		selection.destroy({
 			success : function(linea_base) {
 				Ext.example.msg("Linea Base", "Eliminada con exito");
 				store.remove(selection);
+				var store2 = me.getItemStore();
+				store2.removeAll();
 			},
 			failure : function(linea_base) {
 				alert("No se pudo eliminar la linea base");

@@ -88,7 +88,7 @@ Ext.define('YAPP.view.unidadTrabajo.Asignar', {
 
 });
 
-var columnas = [
+var columnasAsignar = [
 	{
 		text : "Nombre",
 		flex : 1,

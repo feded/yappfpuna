@@ -27,7 +27,9 @@ Ext.define('YAPP.view.linea_base.Edit', {
 		}, {
 			xtype : 'container',
 			width : 650,
+			name : 'gridItems',
 			height : 300,
+			store : Ext.create('YAPP.store.Item'),
 			layout : {
 				type : 'hbox',
 				align : 'stretch',
@@ -48,12 +50,8 @@ Ext.define('YAPP.view.linea_base.Edit', {
 						dragGroup : 'firstGridDDGroup',
 						dropGroup : 'secondGridDDGroup'
 					},
-					listeners : {
-						drop : function(node, data, dropRec, dropPosition) {
-						}
-					}
 				},
-				columns : columnas,
+				columns : columnas_linea_base,
 				// stripeRows : true,
 				title : 'Items de la fase',
 				margins : '0 2 0 0'
@@ -85,7 +83,7 @@ Ext.define('YAPP.view.linea_base.Edit', {
 
 });
 
-var columnas = [ {
+var columnas_linea_base = [ {
 	text : "Nombre",
 	flex : 1,
 	sortable : true,
@@ -112,12 +110,8 @@ var secondGrid = {
 			dragGroup : 'secondGridDDGroup',
 			dropGroup : 'firstGridDDGroup'
 		},
-		listeners : {
-			drop : function(node, data, dropRec, dropPosition) {
-			}
-		}
 	},
-	columns : columnas,
+	columns : columnas_linea_base,
 	// stripeRows : true,
 	title : 'Items de la linea base',
 	margins : '0 0 0 3'

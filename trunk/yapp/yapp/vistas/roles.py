@@ -220,9 +220,6 @@ def getPadresDisponibles(request):
         baneados.append(relacionado._padre_id)
     relacionados = rol_rol_dao.get_query().filter(RolRol._padre_id == base._id).all();
     for relacionado in relacionados:
-        print "--------------"
-        print relacionado._rol_id
-        print "--------------"
         baneados.append(relacionado._rol_id)
     baneado = False
     aBorrar = []
@@ -246,11 +243,6 @@ def getPadresDisponibles(request):
                 aBorrar.append(rol)
                 break
         for borrado in aBorrar:
-            print "--------------"
-            print "BORRANDO--------------"
-            print borrado._id
-            print "--------------"
-            bandera = True
             roles.remove(borrado)
         aBorrar = []
     return retornador_de_roles(request, roles)
