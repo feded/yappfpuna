@@ -103,7 +103,6 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
         record.data._recursos = recursosDTO;
         record.data.id_unidad_trabajo =  id_unidad_trabajo;
         
-//        var store = this.getRolesStore()
         record.save({
                 success : function(recursos) {
                         Ext.example.msg("Yapp", "Asignacion correcta");

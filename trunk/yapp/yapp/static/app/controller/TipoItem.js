@@ -10,7 +10,7 @@ Ext.define('YAPP.controller.TipoItem', {
 		
 		],
 	stores:['TipoItems' , 'AtributoTipoItem' ],
-	models:['TipoItem' , 'AtributoTipoItem' ],
+	models:['TipoItem' , 'AtributoTipoItem' , 'TipoImportar' ],
 	
 	refs: 	[
 				{
@@ -24,13 +24,29 @@ Ext.define('YAPP.controller.TipoItem', {
 				{
     				selector: 'importar combobox',
     				ref: 'proyectoImportar'
-				}
+				},
+				{
+	       			selector: 'importar grid[name=firstGrid]',
+	       			ref: 'firstGrid'
+	       		},
+	       		{
+	       			selector: 'importar grid[name=secondGrid]',
+	       			ref: 'secondGrid'
+	       		}
 			],
 	
 	
 	init:function(){
 		console.log('Cargado controller tipoItem');
 		this.control({
+			'importar combobox' : {
+				select: this.traerTiposItems
+			},
+			
+			'importar button[action=guardar]' : {
+				click: this.guardarImportar
+			},
+			
             'tipolist button[action=crear]': {
                 click: this.crearTipoItem
             },
@@ -77,6 +93,47 @@ Ext.define('YAPP.controller.TipoItem', {
 		
 		var proyectos = this.getStore('Proyectos');
 		this.getProyectoImportar().store = proyectos;
+    },
+    
+    traerTiposItems: function(){
+    	var proyecto_id = this.getProyectoImportar().getValue();
+    	console.log(proyecto_id);
+    	this.getFirstGrid().store.load({
+			params : {
+				id_proyecto :  proyecto_id
+			}
+		});
+    },
+    
+    
+    guardarImportar: function(button){
+    	var win = button.up('window');
+    	var proyecto_id = this.getProyectos().getValue();
+    	
+    	var tipos = this.getSecondGrid().getStore().getRange();
+        var tiposDTO = new Array();
+        for (var i in tipos) {
+                tiposDTO[i] = tipos[i].data.id;
+        }
+        var record = new YAPP.model.TipoImportar();
+        record.data._tipos = tiposDTO;
+        record.data.id_proyecto = proyecto_id;
+        var me = this;
+        record.save({
+                success : function(recursos) {
+                        Ext.example.msg("Yapp", "Importacion correcta");
+                        var store2 = me.getStore('TipoItems');
+						store2.load({
+							params : {
+									id_proyecto :  proyecto_id
+							}
+						});
+                        win.close();
+                },
+                failure : function(recursos) {
+                        alert("Importacion no correcta");
+                }
+        });
     },
 	
 	seleccionoColor: function(picker, selColor){

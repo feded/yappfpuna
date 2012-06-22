@@ -70,6 +70,7 @@ def main(global_config, **settings):
     config.add_route('crearTipo', '/crearTipo')
     config.add_route('eliminarTipo', '/eliminarTipo/{id}')
     config.add_route('guardarTipo', '/guardarTipo/{id}')
+    config.add_route('importarTipo', '/importarTipos')
     config.add_route('crearListarAtributos', '/atributoItem')
     config.add_route('editarEliminarAtributos', '/atributoItem/{id}')
     config.add_route('crearListarItems', '/item')
