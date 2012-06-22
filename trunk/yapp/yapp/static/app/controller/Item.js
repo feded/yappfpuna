@@ -326,10 +326,11 @@ Ext.define('YAPP.controller.Item', {
 			console.log("entre1")
 			if(record.data._padre.data != null && typeof record.data._padre.data != "undefined" ){
 				console.log("entre2")
-				record.data._padre = record.data._padre.data._id;
-				if (typeof record.data._padre === "undefined"){
-					record.data._padre = record.data._padre.data.id;
+				posible = record.data._padre.data._id;
+				if (typeof posible === "undefined"){
+					posible = record.data._padre.data.id;
 				}
+				record.data._padre = posible
 			}else if (record.data._padre._id != null && typeof record.data._padre._id != "undefined"){
 				console.log("entre3")
 				record.data._padre = record.data._padre._id;
@@ -340,10 +341,11 @@ Ext.define('YAPP.controller.Item', {
 		console.log(record.data._padre)
 		if (typeof record.data._antecesor != "undefined"){
 			if(record.data._antecesor.data != null && typeof record.data._antecesor.data != "undefined" ){
-				record.data._antecesor = record.data._antecesor.data._id;
-				if (typeof record.data._antecesor === "undefined"){
-					record.data._antecesor = record.data._antecesor.data.id;
+				posible = record.data._antecesor.data._id;
+				if (typeof posible === "undefined"){
+					posible = record.data._antecesor.data.id;
 				}
+				record.data._antecesor = posible
 			}else if (record.data._antecesor._id != null && typeof record.data._antecesor._id != "undefined"){
 				record.data._antecesor = record.data._antecesor._id;
 			}
@@ -670,10 +672,8 @@ Ext.define('YAPP.controller.Item', {
 				record.save(
 				{	
 					success : function(record) {
-						if (record.data.accion == "POST") {
-							this.getItemUnidadStore().insert(0, record);
-							
-						}
+						this.getItemUnidadStore().insert(0, record);
+						Ext.example.msg("Unidad de Trabajo", "Agregada con exito");
 						
 					},
 					failure : function(record) {
@@ -681,7 +681,7 @@ Ext.define('YAPP.controller.Item', {
 					}
 					
 				});
-				Ext.example.msg("Unidad de Trabajo", "Agregada con exito");
+				
 				store.load({
 					params : {
 						id : fase.getValue()
@@ -692,8 +692,6 @@ Ext.define('YAPP.controller.Item', {
 				alert("No se pudo guardar la Unidad de Trabajo");
 			}
 		})
-		
-		
 		
 		
 	},
@@ -893,11 +891,7 @@ Ext.define('YAPP.controller.Item', {
 				record.save(
 				{	
 					success : function(record) {
-						if (record.data.accion == "POST") {
-							storeAtributosItems.insert(0, record);
-						}
-						
-						
+						storeAtributosItems.insert(0, record);
 					},
 					failure : function(record) {
 						alert("No se pudo guardar el Atributo");
@@ -905,11 +899,6 @@ Ext.define('YAPP.controller.Item', {
 					
 				});
 				Ext.example.msg("Atributo", "Guardado con exito");
-				store.load({
-					params : {
-						id : fase.getValue()
-					}
-				});
 			},
 			failure : function(nuevoItemRecord){
 				alert("No se pudo guardar el Atributo");
