@@ -24,9 +24,6 @@ def calcular_impacto(request):
 #    ret_json = p.flatten(CalculoImpactoDTO(item, antecesores, None))
     ret_json = p.flatten(impacto.calculo_impacto())
     a_ret = json.dumps({'sucess': 'true', 'impacto':ret_json})
-    print "-----------------"
-    print "Aca llege"
-    print "-----------------"
     return Response(a_ret)
     
     
@@ -39,9 +36,11 @@ class CalculoImpacto:
     def calculo_impacto(self):
         antecesores = self.calculo_impacto_atras(self.item, [])
         sucesores = self.calculo_impacto_adelante(self.item, [])
+        
         bases = self.verificar_lineas_base(antecesores, [])
         bases = self.verificar_lineas_base(sucesores, bases)
         bases = self.verificar_linea_base_item(self.item, bases)
+        
         return CalculoImpactoDTO(self.item, antecesores, sucesores, bases)
     
     def verificar_lineas_base (self, items, bases):
@@ -58,6 +57,8 @@ class CalculoImpacto:
         if linea != None and linea not in bases:
             bases.append(linea)
         return bases
+    
+    
     def calculo_impacto_atras(self, item, items):
         if item == None:
             return items
@@ -83,10 +84,12 @@ class CalculoImpacto:
             items.append(item)
         hijos = self.dao.get_query().filter(Item._padre_item_id == item._id).all()
         for hijo in hijos:
-            items = self.calculo_impacto_adelante(hijo, items)
+            hijo_ultima_version = self.dao.get_ultima_version_item(hijo)
+            items = self.calculo_impacto_adelante(hijo_ultima_version, items)
         sucesores = self.dao.get_query().filter(Item._antecesor_item_id == item._id).all()
         for sucesor in sucesores:
-            items = self.calculo_impacto_adelante(sucesor, items)
+            sucesor_ultima_version = self.dao.get_ultima_version_item(sucesor)
+            items = self.calculo_impacto_adelante(sucesor_ultima_version, items)
         
         return items;
         
@@ -108,4 +111,8 @@ class CalculoImpactoDTO:
             for base in bases:
                 self.bases.append(LineaBaseDTO(base))
         
+class ItemDTOCalculo:
+    def __init__(self, item):
+        self._nombre = item._nombre
+        self._descripcion = item._descripcion
         

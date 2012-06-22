@@ -1,8 +1,7 @@
 Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
-	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List', 'esquema.List', 'rol.ABM', 
-			'rol.List', 'tipoItem.List', 'suscripcion.List', 'item.ABM', 'recurso.ListarRecurso',
+	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List', 'esquema.List', 'rol.ABM', 'rol.List', 'tipoItem.List', 'suscripcion.List', 'item.ABM', 'recurso.ListarRecurso',
 			'linea_base.ABM', 'calculo_impacto.View', 'gantt.View', 'fase.ABM' ],
 	
 	stores : [ 'Proyectos', 'RolPermisos' ],
@@ -10,24 +9,19 @@ Ext.define('YAPP.controller.Menus', {
 	refs : [ {
 		selector : 'viewport combobox[name=proyectos]',
 		ref : 'proyectos'
-	},
-	 {
-            selector : 'viewport combobox[name=fases]',
-            ref : 'fases'
-    },
-	{
+	}, {
+		selector : 'viewport combobox[name=fases]',
+		ref : 'fases'
+	}, {
 		selector : 'viewport button[action=adminRoles]',
 		ref : 'botonRoles'
-	},
-	{
+	}, {
 		selector : 'viewport button[action=adminItems]',
 		ref : 'botonItems'
-	},
-	{
+	}, {
 		selector : 'viewport button[action=adminFases]',
 		ref : 'botonFases'
-	},
-	{
+	}, {
 		selector : 'viewport button[action=adminTipoItems]',
 		ref : 'botonTipoItems'
 	},
@@ -45,11 +39,11 @@ Ext.define('YAPP.controller.Menus', {
 			},
 			'viewport combobox[name=proyectos]' : {
 				afterrender : this.onComboBoxRendered,
-				select: this.activarFase
+				select : this.activarFase
 			},
 			
 			'viewport combobox[name=fases]' : {
-				select: this.activarItem
+				select : this.activarItem
 			},
 			
 			'viewport button[action=adminProyectos]' : {
@@ -97,8 +91,6 @@ Ext.define('YAPP.controller.Menus', {
 		});
 	},
 	
-	
-	
 	traerPermiso : function() {
 		var permisos = this.getRolPermisosStore();
 		
@@ -122,9 +114,9 @@ Ext.define('YAPP.controller.Menus', {
 			if (!controller.casosEspeciales(record)) {
 				var sNombre = record.data._permiso._nombre;
 				var sAccion = "";
-//				console.log(sNombre)
-//				console.log(record)
-//				console.log(typeof getAliasFuncion(sNombre))
+				// console.log(sNombre)
+				// console.log(record)
+				// console.log(typeof getAliasFuncion(sNombre))
 				if (typeof getAliasFuncion(sNombre) == "undefined") {
 					sAccion = "admin" + sNombre;
 				} else {
@@ -156,35 +148,39 @@ Ext.define('YAPP.controller.Menus', {
 		});
 	},
 	
-	activarFase: function(combo){
+	activarFase : function(combo) {
 		this.getBotonFases().setDisabled(false);
 		this.getBotonTipoItems().setDisabled(false);
 		
 		var store = this.getStore('Fases');
-        store.load({
-                params : {
-                        id : combo.getValue()
-                },
-                scope : this,
-                callback : function(records, operation, success) {
-                        fases = this.getStore('Fases');
-                        this.getFases().store = fases;
-                        this.getFases().setDisabled(false);
-                        this.getStore('Fases').sort('_orden', 'ASC');
-                }
-        });
-        
-        var store2 = this.getStore('TipoItems');
+		store.load({
+			params : {
+				id : combo.getValue()
+			},
+			scope : this,
+			callback : function(records, operation, success) {
+				fases = this.getStore('Fases');
+				this.getFases().store = fases;
+				this.getFases().setDisabled(false);
+				this.getStore('Fases').sort('_orden', 'ASC');
+				var combo = this.getFases();
+				if (Ext.typeOf(combo.getPicker().loadMask) !== "boolean") {
+					combo.getPicker().loadMask.hide();
+				}
+			}
+		});
+		
+		var store2 = this.getStore('TipoItems');
 		var proyecto_id = this.getProyectos().getValue();
 		store2.load({
 			params : {
-					id_proyecto :  proyecto_id
+				id_proyecto : proyecto_id
 			}
 		});
 		
 	},
 	
-	activarItem: function(combo){
+	activarItem : function(combo) {
 		this.getBotonItems().setDisabled(false);
 	},
 	casosEspeciales : function(permiso) {
@@ -203,14 +199,14 @@ Ext.define('YAPP.controller.Menus', {
 				name : 'proyectos'
 			});
 			panel.add({
-                xtype : 'combobox',
-               	fieldLabel : 'Fase',
-                displayField : '_nombre',
-                queryMode : 'local',
-                valueField : 'id',
-                disabled:true,
-                name : 'fases'
-            })
+				xtype : 'combobox',
+				fieldLabel : 'Fase',
+				displayField : '_nombre',
+				queryMode : 'local',
+				valueField : 'id',
+				disabled : true,
+				name : 'fases'
+			})
 			panel.setVisible(true);
 			return true;
 		}
@@ -243,19 +239,19 @@ Ext.define('YAPP.controller.Menus', {
 		
 		var tab = tabs.add({
 			title : 'Administrar fases',
-//			xtype : 'listarfase',
+			// xtype : 'listarfase',
 			xtype : 'faseabm',
 			closable : true
 		});
 		
-//		var combobox = this.getProyectos();
-//		
-//		var store = this.getStore('Fases');
-//		store.load({
-//			params : {
-//				id : combobox.getValue()
-//			}
-//		});
+		// var combobox = this.getProyectos();
+		//		
+		// var store = this.getStore('Fases');
+		// store.load({
+		// params : {
+		// id : combobox.getValue()
+		// }
+		// });
 		
 		tabs.setActiveTab(tab);
 		
@@ -330,7 +326,7 @@ Ext.define('YAPP.controller.Menus', {
 		var store = this.getStore('Recursos');
 		store.load({
 			params : {
-					operacion : 'TODOS' 
+				operacion : 'TODOS'
 			}
 		});
 		var tabs = Ext.getCmp('tabPrincipal');
@@ -446,13 +442,13 @@ function popularHashMap() {
 	// "Linea base"
 	// "Recursos"
 	alias["Calculo de impacto"] = "calculoImpacto";
+	alias["Diagrama de gantt"] = "verDiagramaGantt";
 	// "Ver costado derecho"
 	
 }
 
-function isDisabled(nombre){
-	if (nombre == "Items" || nombre == "Fases" || nombre == "Tipo de items")
-	{
+function isDisabled(nombre) {
+	if (nombre == "Items" || nombre == "Fases" || nombre == "Tipo de items") {
 		return true;
 	}
 	

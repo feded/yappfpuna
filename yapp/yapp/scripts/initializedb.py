@@ -161,7 +161,8 @@ def main(argv=sys.argv):
         admin = Permisos("Calculo de impacto");
         DBSession.add(admin);
         admin = Permisos("Ver costado derecho");
-
+        DBSession.add(admin);
+        admin = Permisos("Diagrama de gantt");
         DBSession.add(admin);
         admin = Permisos("Unidad de trabajo");
         DBSession.add(admin);

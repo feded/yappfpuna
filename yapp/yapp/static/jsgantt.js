@@ -299,24 +299,24 @@ var vVisible  = 1;
             {
                 tmpPer =  Math.ceil((this.getEnd() - this.getStart()) /  ( 60 * 60 * 1000) );
                 if(tmpPer == 1)  
-                    vDuration = '1 Hour';
+                    vDuration = '1 Hora';
                 else
-                    vDuration = tmpPer + ' Hours';
+                    vDuration = tmpPer + ' Horas';
             }
             
             else if (vFormat=='minute')
             {
                 tmpPer =  Math.ceil((this.getEnd() - this.getStart()) /  ( 60 * 1000) );
                 if(tmpPer == 1)  
-                    vDuration = '1 Minute';
+                    vDuration = '1 Minuto';
                 else
-                    vDuration = tmpPer + ' Minutes';
+                    vDuration = tmpPer + ' Minutos';
             }
             
  		   else { //if(vFormat == 'day') {
             tmpPer =  Math.ceil((this.getEnd() - this.getStart()) /  (24 * 60 * 60 * 1000) + 1);
-            if(tmpPer == 1)  vDuration = '1 Day';
-            else             vDuration = tmpPer + ' Days';
+            if(tmpPer == 1)  vDuration = '1 Dia';
+            else             vDuration = tmpPer + ' Dias';
          }
 
          //else if(vFormat == 'week') {
@@ -1000,11 +1000,11 @@ Complete-Displays task percent complete</p>
             '  <TD style="BORDER-TOP: #efefef 1px solid; WIDTH: 15px; HEIGHT: 20px"></TD>' +
             '  <TD style="BORDER-TOP: #efefef 1px solid; WIDTH: ' + vNameWidth + 'px; HEIGHT: 20px"><NOBR></NOBR></TD>' ;
 
-         if(vShowRes ==1) vLeftTable += '  <TD style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid; WIDTH: 60px; HEIGHT: 20px" align=center nowrap>Resource</TD>' ;
-         if(vShowDur ==1) vLeftTable += '  <TD style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid; WIDTH: 60px; HEIGHT: 20px" align=center nowrap>Duration</TD>' ;
+         if(vShowRes ==1) vLeftTable += '  <TD style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid; WIDTH: 60px; HEIGHT: 20px" align=center nowrap>Recurso</TD>' ;
+         if(vShowDur ==1) vLeftTable += '  <TD style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid; WIDTH: 60px; HEIGHT: 20px" align=center nowrap>Duracion</TD>' ;
          if(vShowComp==1) vLeftTable += '  <TD style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid; WIDTH: 60px; HEIGHT: 20px" align=center nowrap>% Comp.</TD>' ;
-         if(vShowStartDate==1) vLeftTable += '  <TD style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid; WIDTH: 60px; HEIGHT: 20px" align=center nowrap>Start Date</TD>' ;
-         if(vShowEndDate==1) vLeftTable += '  <TD style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid; WIDTH: 60px; HEIGHT: 20px" align=center nowrap>End Date</TD>' ;
+         if(vShowStartDate==1) vLeftTable += '  <TD style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid; WIDTH: 60px; HEIGHT: 20px" align=center nowrap>Fecha Inicio</TD>' ;
+         if(vShowEndDate==1) vLeftTable += '  <TD style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid; WIDTH: 60px; HEIGHT: 20px" align=center nowrap>fecha fin</TD>' ;
  
          vLeftTable += '</TR>';
 

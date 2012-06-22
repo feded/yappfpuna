@@ -10,16 +10,10 @@ Ext.define('YAPP.view.linea_base.List', {
 		Ext.apply(this, {
 			iconCls : 'icon-grid',
 			frame : true,
+			height : 220,
 			dockedItems : [ {
 				xtype : 'toolbar',
 				items : [ {
-					xtype : 'combobox',
-					name : 'cbFase',
-					fieldLabel : 'Fase',
-					displayField : '_nombre',
-					queryMode : 'local',
-					valueField : 'id',
-				}, ' |', {
 					text : 'Generar Linea Base',
 					scope : this,
 					action : 'crear'

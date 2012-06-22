@@ -30,29 +30,13 @@ class ItemDAO(BaseDAO):
         return self.get_query().filter(Item._item_id == item_id).order_by(Item._version.asc()).first();
     
     def get_items_fase(self, fase_id):
-        
         """
         @return: lista de todos los items que no estan eliminados en la fase
         """
-        
         entidades = self.get_query().filter(Item._fase_id == fase_id).distinct(Item._item_id).all()
         entidades_item_id = []
-        print "------------------"
-        print "------------------"
-        print "------------------"
-        print len(entidades)
-        print "------------------"
-        print "------------------"
         for entidad in entidades:
             posible_actual = self.get_query().filter(Item._item_id == entidad._item_id).order_by(Item._version.desc()).first();
-            print "------------------"
-            print "------------------"
-            print "------------------"
-            print posible_actual._item_id
-            print posible_actual._estado
-            
-            print "------------------"
-            print "------------------"
             if (posible_actual._estado != "ELIMINADO"):            
                 if (entidades_item_id.count(posible_actual) == 0):
                     entidades_item_id.append(posible_actual)
@@ -95,6 +79,24 @@ class ItemDAO(BaseDAO):
         versiones = self.get_query().filter(Item._item_id == item_id).order_by(Item._version.asc()).all()
         versiones.pop()
         return versiones
+    
+    def guadar_item_con_nueva_version(self, item):
+        n_item = Item(
+            item._item_id,
+            item._nombre,
+            item._tipo_item,
+            item._fase,
+            item._duracion,
+            item._descripcion,
+            item._condicionado,
+            item._version,
+            item._estado,
+            item._fecha_inicio,
+            item._fecha_fin,
+            item._padre_item_id,
+            item._antecesor_item_id)
+        n_item._version += 1;
+        return self.crear(n_item)
 
     
             

@@ -13,7 +13,7 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 			width : 650,
 			height : 300,
 			layout : {
-				type : 'hbox',
+				type : 'vbox',
 				align : 'stretch',
 				padding : 5
 			},
@@ -24,28 +24,55 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 				xtype : 'gridpanel',
 				name : 'bases',
 				height : 100,
-				columns : columnas,
+				columns : columnas_calculo_impacto,
 				// stripeRows : true,
 				title : 'Lineas bases afectadas',
-				margins : '0 2 0 0'
+				margins : '0 2 0 0',
+				padding : 5
 			}, {
-				xtype : 'gridpanel',
-				name : 'antecesores',
-				height : 100,
-				columns : columnas,
-				store : Ext.create('YAPP.store.Item'),
-				// stripeRows : true,
-				title : 'Antecesores',
-				margins : '0 2 0 0'
-			}, {
-				xtype : 'gridpanel',
-				name : 'sucesores',
-				height : 100,
-				columns : columnas,
-				store : Ext.create('YAPP.store.Item'),
-				// stripeRows : true,
-				title : 'Sucesores',
-				margins : '0 0 0 3'
+				xtype : 'container',
+				width : 650,
+				height : 300,
+				layout : {
+					type : 'hbox',
+					align : 'stretch',
+					padding : 1
+				},
+				defaults : {
+					flex : 1
+				},
+				items : [ {
+					xtype : 'gridpanel',
+					name : 'antecesores',
+					height : 100,
+					columns : columnas_calculo_impacto,
+					store : Ext.create('YAPP.store.Item'),
+					// stripeRows : true,
+					title : 'Antecesores',
+					margins : '0 2 0 0'
+				}, {
+					xtype : 'gridpanel',
+					name : 'sucesores',
+					height : 100,
+					columns : columnas_calculo_impacto,
+					store : Ext.create('YAPP.store.Item'),
+					// stripeRows : true,
+					title : 'Sucesores',
+					margins : '0 0 0 3',
+					dockedItems : [ {
+						xtype : 'toolbar',
+						dock : 'bottom',
+						items : [ {
+							xtype : 'label',
+							name : 'label_sucesores',
+							text : 'Costo sucesores: '
+						}, {
+							xtype : 'label',
+							name : 'label_costo_sucesores',
+							text : '0'
+						} ]
+					} ]
+				} ]
 			} ]
 		} ];
 		this.dockedItems = [ {
@@ -72,19 +99,16 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 
 });
 
-var columnas = [ {
+var columnas_calculo_impacto = [ {
 	text : "Nombre",
 	flex : 1,
 	sortable : true,
-	width : 70,
-	dataIndex : '_nombre',
-	field : {
-		type : 'textfield'
-	}
+	width : 40,
+	dataIndex : '_nombre'
 }, {
 	text : "Descripcion",
 	flex : 1,
-	
+	width : 60,
 	sortable : true,
 	dataIndex : '_descripcion'
 } ];

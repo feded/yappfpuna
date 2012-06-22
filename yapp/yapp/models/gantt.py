@@ -3,9 +3,13 @@ Created on May 25, 2012
 
 @author: arturo
 '''
+import datetime
     
 
 class Task(object):
+    
+    formato_entrada = "%Y-%m-%d"
+    formato_salida = "%m/%d/%Y"
     def set_id(self, id):
         self.pID = id
     def set_name(self, name):
@@ -52,8 +56,13 @@ class Task(object):
             self.set_dependencia(item._antecesor_item_id)
 #            self.set_grupo(item._antecesor_item_id)
         self.set_completado(100)
-        self.set_fecha_inicio(self.get_fecha(item._fecha_inicio))
-        self.set_fecha_fin(self.get_fecha(item._fecha_fin))
+        
+        fecha_inicio = datetime.datetime.strptime(item._fecha_inicio, self.formato_entrada)
+        delta = datetime.timedelta(days=item._duracion - 1)
+        fecha_fin = fecha_inicio + delta
+        self.set_fecha_inicio(fecha_inicio.strftime(self.formato_salida))
+        self.set_fecha_fin(fecha_fin.strftime(self.formato_salida))
+        self.set_color(item._tipo_item._color)
         
     def set_fase (self, fase):
         self.pID = fase._id
@@ -63,6 +72,9 @@ class Task(object):
         
     def get_nombre(self, entidad):
         nombre = ""
+        if hasattr(entidad, '_tipo_item'):
+            if entidad._tipo_item != None:
+                nombre += "[" + entidad._tipo_item._prefijo + "]"
         if entidad._nombre != None:
             nombre += entidad._nombre
         if entidad._descripcion != None:
@@ -71,11 +83,6 @@ class Task(object):
             nombre += entidad._descripcion
         return nombre
                 
-    def get_fecha(self, fecha):
-        cadena = fecha.rsplit('-')
-        aRet = cadena[1] + '/' + cadena[2] + '/' + cadena[0]
-        return aRet
-    
     def get_xml(self, documento):
         xml = documento.createElement("task")
         i = 0
