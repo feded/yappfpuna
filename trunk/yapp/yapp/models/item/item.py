@@ -19,12 +19,12 @@ class Item (EntidadPadre):
     _version = Column(Integer, nullable=False)
     _estado = Column(String, nullable=False)
     _fecha_inicio = Column(String, nullable=True)
-    _fecha_fin = Column(String, nullable=True)
+    _completado = Column(Integer, nullable=True)
     _padre_item_id = Column(Integer, ForeignKey('item._id'))
     _antecesor_item_id = Column(Integer, ForeignKey('item._id'))    
     _linea_base_id = Column(Integer, ForeignKey('linea_base._id'))
     
-    def __init__(self, item_id,  nombre, tipo_item, fase, duracion, descripcion,  condicionado, version, estado, fecha_inicio, fecha_fin, padre_item_id, antecesor_item_id):
+    def __init__(self, item_id,  nombre, tipo_item, fase, duracion, descripcion,  condicionado, version, estado, fecha_inicio, completado, padre_item_id, antecesor_item_id):
         self._item_id = item_id
         self._nombre = nombre
         self._tipo_item = tipo_item
@@ -35,7 +35,7 @@ class Item (EntidadPadre):
         self._version = version
         self._estado = estado
         self._fecha_inicio = fecha_inicio
-        self._fecha_fin = fecha_fin
+        self._completado = completado
         self._padre_item_id = padre_item_id
         self._antecesor_item_id = antecesor_item_id
 #        self._linea_base_id = linea_base_id
@@ -55,7 +55,7 @@ class ItemDTO:
         self._version = item._version;
         self._estado = item._estado;
         self._fecha_inicio = item._fecha_inicio;
-        self._fecha_fin = item._fecha_fin;
+        self._completado = item._completado;
         self._padre_item_id = item._padre_item_id
         self._antecesor_item_id = item._antecesor_item_id
 #        self._linea_base_id = item._linea_base_id

@@ -6,20 +6,20 @@ from pyramid.security import forget
 from pyramid.view import view_config
 from sqlalchemy import Sequence
 from yapp.daos.atributo_tipo_item_dao import AtributoTipoItemDAO
-from yapp.daos.fase_dao import FaseDAO
-from yapp.daos.item_dao import ItemDAO
-from yapp.daos.tipo_item_dao import TipoItemDAO
-from yapp.models import DBSession
-from yapp.models.fase.fase import FaseDTO
-from yapp.models.item.item import  Item, ItemDTO
-from yapp.models.tipo_item.tipo_item import TipoItem
-import json
-from yapp.models import DBSession
-from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
 from yapp.daos.base_dao import BaseDAO
-from yapp.daos.item_unidad_dao import ItemUnidadDAO
+from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.item_archivo_dao import ArchivoDAO
+from yapp.daos.item_dao import ItemDAO
+from yapp.daos.item_unidad_dao import ItemUnidadDAO
+from yapp.daos.tipo_item_dao import TipoItemDAO
+from yapp.models import DBSession, DBSession
+from yapp.models.fase.fase import FaseDTO
+from yapp.models.item.item import Item, ItemDTO
 from yapp.models.item.item_archivo import itemArchivo
+from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
+from yapp.models.tipo_item.tipo_item import TipoItem
+import datetime
+import json
 
 
 @view_config(route_name='crearListarItems')
@@ -71,14 +71,6 @@ def ag_atributos_tipos_item(request):
         print "----------------------JSON----------------"
         print request.json_body
         entidad = u.restore(request.json_body);
-#   aca tenemos que eliminar la linea base y cambiar los estados de los demas items a activos
-#        if (entidad['_action'] == "PUT"):
-            
-            
-            
-            
-            
-            
         dao_fase = FaseDAO(request)
         fase = dao_fase.get_by_id(entidad["_fase"])
         
@@ -90,18 +82,29 @@ def ag_atributos_tipos_item(request):
             antecesor = None
             antecesor_id = None
         else:
-            antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])._id
+            antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])
+            antecesor_id = antecesor._id
         print antecesor
         dao_item_padre = ItemDAO(request)
         if(entidad["_padre"] == "" or  entidad["_padre"] == None):
             padre = None
             padre_id = None
         else:
-            padre = dao_item_padre.get_by_id(entidad["_padre"])._id                          
+            padre = dao_item_padre.get_by_id(entidad["_padre"])
+            padre_id = padre._id                          
         seq = Sequence('item_id_seq')
         item_id = DBSession.execute(seq)
         
-        nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"], padre, antecesor)
+        
+        formato_entrada = "%Y-%m-%d"
+        fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
+        delta = datetime.timedelta(days=entidad["_duracion"] - 1)
+        fecha_fin = fecha_inicio + delta
+        
+        if padre != None:
+            if fecha_inicio < padre._fecha_inicio :
+                return Response(json.dumps({'sucess': 'false', 'lista':''}))
+        nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, fecha_fin, padre_id, antecesor_id)
         itemDao = ItemDAO(request)
         itemDao.crear(nuevo_item)
         nuevo_item = ItemDTO(nuevo_item)
@@ -110,7 +113,6 @@ def ag_atributos_tipos_item(request):
         lista.append(p.flatten(nuevo_item))
 
         j_string = p.flatten(lista)
-        
         return Response(json.dumps({'sucess': 'true', 'lista':j_string}))
               
         
@@ -137,19 +139,23 @@ def bm_atributo(request):
         if(entidad["_antecesor"] == "" or  entidad["_antecesor"] == None):
             antecesor = None
         else:
-            antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])._id
+            if isinstance(entidad["_antecesor"], int) != True:
+                padre = entidad["_antecesor"]["_id"]
+            else:
+                antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])._id
+           
         print antecesor
         dao_item_padre = ItemDAO(request)
         if(entidad["_padre"] == "" or  entidad["_padre"] == None):
             padre = None
         else:
-            print "-----------------"
-            print entidad["_padre"]
-            print "-----------------"
-            padre = dao_item_padre.get_by_id(entidad["_padre"])._id
+            if isinstance(entidad["_padre"], int) != True:
+                padre = entidad["_padre"]["_id"]
+            else:
+                padre = dao_item_padre.get_by_id(entidad["_padre"])._id
         item_viejo = item_dao.get_by_id(entidad["id"])
         id_viejo = item_viejo._id;
-        nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_fecha_fin"], padre, antecesor)
+        nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_completado"], padre, antecesor)
 
         if request.method == "DELETE":
             nuevo_item._estado = "ELIMINADO"

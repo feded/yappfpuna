@@ -11,13 +11,25 @@ from yapp.models.tipo_item.atributo_tipo_item import AtributoTipoItem
 from yapp.daos.item_dao import ItemDAO
 from yapp.daos.item_atributo_dao import ItemAtributoDAO
 from yapp.models.item.item_atributo import ItemAtributo
+from yapp.daos.tipo_fase_dao import TipoFaseDAO
+from yapp.models.fase.tipo_fase import TipoFase
 
 @view_config(route_name='obtenerTipos')
 def get_tipos_item(request):
     if (request.method == 'GET'):
         proyecto_id = request.GET.get('id_proyecto')
+        fase_id = request.GET.get('id_fase')
         rd = TipoItemDAO(request)
-        entidades = rd.get_query().filter(TipoItem._proyecto_id == proyecto_id).all()
+        if (fase_id!= None):
+            entidades =[]
+            tipo_fase_dao = TipoFaseDAO(request)
+            tipos = tipo_fase_dao.get_query().filter(TipoFase._fase_id == fase_id).all()
+            for tipo in tipos:
+                print "--------------------------"
+                print "A;adiendo"
+                entidades.append(tipo._tipo)
+        else:
+            entidades = rd.get_query().filter(TipoItem._proyecto_id == proyecto_id).all()
         lista = [];
         p = Pickler(True, None)
         for entidad in entidades:

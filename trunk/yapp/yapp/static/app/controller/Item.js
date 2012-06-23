@@ -1,7 +1,7 @@
 Ext.define('YAPP.controller.Item', {
 	extend : 'Ext.app.Controller',
 	
-	views : [ 'item.Edit', 'item.List',  'item.CrearItem', 'item.RevertirItem', 'item_atributo.Edit',
+	views : [  'item.List',  'item.CrearItem', 'item.RevertirItem', 'item_atributo.Edit',
 	 'item_unidad.List', 'item_unidad.Edit', 'item.RevivirItem', 'item_atributo.List', 'item_atributo.Agregar', 'item_atributo.Archivo' ],
 	stores : [ 'Item', 'Fases', 'TipoItems', 'ItemUnidad', 'ItemAtributo', 'AtributoTipoItem' ],
 	models : [ 'Item' , 'ItemUnidad', 'ItemAtributo' ],
@@ -175,6 +175,12 @@ Ext.define('YAPP.controller.Item', {
 			'crearitem button[action=guardar]' : {
 				click : this.guardarItem
 			},
+			'crearitem button[action=eliminar_antecesor]' : {
+				click : this.eliminarRelacionAntecesor
+			},
+			'crearitem button[action=eliminar_padre]' : {
+				click : this.eliminarRelacionPadre
+			},
 			'viewport combobox[name=fases]' : {
 				change : this.changeFase
 			},
@@ -240,7 +246,6 @@ Ext.define('YAPP.controller.Item', {
 		formRecord.set(values);
 		
 		var tipo = this.getTipoItemsStore().getById(record.data.id);
-		console.log(tipo)
 		formRecord.data._tipo_item = tipo
 		formRecord.data._tipo_item_prefijo = tipo.data._prefijo
 		win.down('form').loadRecord(formRecord); 
@@ -273,9 +278,30 @@ Ext.define('YAPP.controller.Item', {
 		
 		var itemSelected = this.getGridPD().getStore().getById(record.data.id);
 		formRecord.data._padre = itemSelected
-		console.log(itemSelected.data._nombre)
 		formRecord.data.padre_nombre = itemSelected.data._nombre
 		win.down('form').loadRecord(formRecord); 
+	},
+	
+	eliminarRelacionPadre: function(button){
+		var win = button.up('window');
+		var form = win.down('form');
+		var formRecord = form.getRecord();
+		var values = form.getValues();
+		formRecord.set(values);
+		formRecord.data._padre = null;
+		formRecord.data.padre_nombre = ""
+		win.down('form').loadRecord(formRecord);
+	},
+	
+	eliminarRelacionAntecesor: function(button){
+		var win = button.up('window');
+		var form = win.down('form');
+		var formRecord = form.getRecord();
+		var values = form.getValues();
+		formRecord.set(values);
+		formRecord.data._antecesor = null
+		formRecord.data.antecesor_nombre = ""
+		win.down('form').loadRecord(formRecord);
 	},
 	
 	crearItem : function(button) {
@@ -292,7 +318,7 @@ Ext.define('YAPP.controller.Item', {
 		
 		gridTipo.store.load({
 			params : {
-				id_proyecto : this.getProyectos().getValue()
+				id_fase : fase.getValue()
 			},
 		});
 		
@@ -332,25 +358,19 @@ Ext.define('YAPP.controller.Item', {
 	},
 	
 	setearPadresTipoAntecesor : function (record){
-		console.log(record)
-		if (typeof record.data._padre != "undefined"){
-			console.log("entre1")
+		if (record.data._padre!= null && typeof record.data._padre != "undefined" ){
 			if(record.data._padre.data != null && typeof record.data._padre.data != "undefined" ){
-				console.log("entre2")
 				posible = record.data._padre.data._id;
 				if (typeof posible === "undefined"){
 					posible = record.data._padre.data.id;
 				}
 				record.data._padre = posible
 			}else if (record.data._padre._id != null && typeof record.data._padre._id != "undefined"){
-				console.log("entre3")
 				record.data._padre = record.data._padre._id;
 			}
 			
 		}
-		console.log("papa al final")
-		console.log(record.data._padre)
-		if (typeof record.data._antecesor != "undefined"){
+		if (record.data._antecesor!= null  && typeof record.data._antecesor != "undefined"  ){
 			if(record.data._antecesor.data != null && typeof record.data._antecesor.data != "undefined" ){
 				posible = record.data._antecesor.data._id;
 				if (typeof posible === "undefined"){
@@ -373,6 +393,10 @@ Ext.define('YAPP.controller.Item', {
 		var fase = this.getComboFase();
 		var win = button.up('window');
 		var form = win.down('form');
+		if(!form.getForm().isValid()){
+			Ext.example.msg("Item", "Complete correctamente el formulario");
+			return
+		}
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);
@@ -387,14 +411,7 @@ Ext.define('YAPP.controller.Item', {
 		record.save(
 		{	
 			success : function(registro) {
-//				console.log(record);
-//				if (accion == "POST") {
-//					store.insert(0, registro);
-//				}
-//				else {
-//					store.remove(record);
-//					store.insert(0, registro);
-//				}
+				Ext.example.msg("Item", "Guardado con exito");
 				store.load({
 					params : {
 						id : fase.getValue()
@@ -414,7 +431,6 @@ Ext.define('YAPP.controller.Item', {
 		
 		if (record.data._estado == "ACTIVO" || record.data._estado == "REVISION"){
 			var fase = this.getComboFase();
-			console.log("Editar")
 			var view = Ext.widget('crearitem');
 			view.setTitle('Editar Item');
 			view.down('form').loadRecord(record);
@@ -452,8 +468,6 @@ Ext.define('YAPP.controller.Item', {
 			
 			
 			var storePadre = gridPD.getStore();
-			console.log(storePadre);
-			console.log(fase.getValue());
 			storePadre.load({
 				params : {
 					id : fase.getValue()
@@ -704,8 +718,6 @@ Ext.define('YAPP.controller.Item', {
 		var unidadId = this.getUnidad().getValue();
 		var record = new YAPP.model.ItemUnidad();
 		record.data._unidad_id = unidadId;
-		console.log("itemRecord")
-		console.log(itemRecord)
 		this.setearPadresTipoAntecesor(itemRecord);
 		itemRecord.data._version = itemRecord.data._version + 1 
 		var storeUnidadItems = this.getItemUnidadStore();
@@ -746,7 +758,6 @@ Ext.define('YAPP.controller.Item', {
 	revivirItemView : function(button){
 	
 		var fase = this.getComboFase();
-		console.log("Revivir Items")
 		var view = Ext.widget('revivirItems');
 		view.setTitle('Revivir Items');
 		var store = this.getGridEliminados().getStore();
@@ -773,7 +784,6 @@ Ext.define('YAPP.controller.Item', {
 		var me = this
 		for (record in items){
 			record = items[record]
-			console.log(record)
 			record.data._estado = "REVISION";
 			record.data._version = record.data._version + 1 
 			record.save(
@@ -800,7 +810,6 @@ Ext.define('YAPP.controller.Item', {
 	},
 	
  	agregarDetalle : function(grid, record){
- 		console.log("entro aca?")
 		var gridDetallesItems = this.getGridDetalleItem();
 		var store = gridDetallesItems.store;
 		store.add(record);
@@ -817,7 +826,6 @@ Ext.define('YAPP.controller.Item', {
 		var grilla = win.down('gridview')
 		var record = grilla.getSelectionModel().getSelection()[0];
 		var fase = this.getComboFase();
-		console.log("Revertir Items")
 		var view = Ext.widget('revertirItems');
 		view.setTitle('Revertir Item');
 		var store = this.getGridVersionesItem().getStore();
@@ -885,8 +893,6 @@ Ext.define('YAPP.controller.Item', {
 		var grilla = win.down('gridview')
 		var itemRecord = grilla.getSelectionModel().getSelection()[0];
 		var atributosCombo = this.getAtributoCombo();
-		//var itemAtributoStore = this.getAtributoTipoItemStore();
-		console.log(itemRecord.data._item_id)
 		atributosCombo.store.load({
 			params : {
 				_item_id : itemRecord.data._item_id,
@@ -927,7 +933,6 @@ Ext.define('YAPP.controller.Item', {
 		win.close();
 		var record = form.getRecord();
 		var values = form.getValues();
-		console.log(form)
 		record.set(values);
 		this.setearPadresTipoAntecesor(itemRecord);
 		itemRecord.data._version = itemRecord.data._version + 1 
@@ -971,7 +976,6 @@ Ext.define('YAPP.controller.Item', {
 		var g = this.getGrilla();
 		var item = g.getSelectionModel().getSelection()[0];
 		
-		console.log(item);
 		
 		form.submit({
 			url: '/adjuntar',
@@ -980,5 +984,6 @@ Ext.define('YAPP.controller.Item', {
 				id_item : item.data._item_id
 			}
 		});
-	}
+	},
+	
 });

@@ -91,6 +91,11 @@ var columnas_item = [ {
 				sortable : true,
 				dataIndex : '_condicionado',
 				flex : 1
+			},{
+				header : '% Completado',
+				sortable : true,
+				dataIndex : '_completado',
+				flex : 1
 			}, {
 				header : 'Tipo de Item',
 				sortable : true,
