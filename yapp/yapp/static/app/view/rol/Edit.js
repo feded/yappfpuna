@@ -43,7 +43,8 @@ Ext.define('YAPP.view.rol.Edit', {
 			displayField : '_estado',
 			typeAhead : true,
 			queryMode : 'local',
-			emptyText : 'Seleccione un estado...'
+			emptyText : 'Seleccione un estado...',
+			allowBlank : false
 		} ]
 	},
 	form_final : {
@@ -57,13 +58,13 @@ Ext.define('YAPP.view.rol.Edit', {
 			xtype : 'textfield',
 			name : '_email',
 			fieldLabel : 'Correo',
-			allowBlank : true
+			allowBlank : false
 		}, {
 			xtype : 'textfield',
 			name : '_password',
 			fieldLabel : 'Contraseña',
 			inputType : 'password',
-			allowBlank : true
+			allowBlank : false
 		} ],
 		
 		setExpanded : function(expanded) {

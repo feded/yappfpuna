@@ -12,6 +12,8 @@ class Recurso (Base, EntidadBase):
     @param _descripcion: una breve descripcion del recurso.
     @param _tipo: tipo de recurso. Puede ser persona, bien o material.
     """
+    discriminator = Column('type', String(50))
+    __mapper_args__ = {'polymorphic_on': discriminator}
     __tablename__ = "recurso"
     _nombre = Column(String, nullable = False)
     _tipo_id = Column(Integer, ForeignKey('tipo_recurso._id'))

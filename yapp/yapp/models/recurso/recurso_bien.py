@@ -15,6 +15,7 @@ class RecursoBien (Recurso):
     _id = Column(Integer, ForeignKey('recurso._id'), primary_key=True)
     _costo_cantidad = Column(Integer, nullable=False)
     _cantidad = Column(Integer, nullable=False)
+    __mapper_args__ = {'polymorphic_identity': 'recurso_bien'}
     
     def __init__(self, nombre, tipo, descripcion,costo_cantidad, cantidad):
         self._nombre = nombre

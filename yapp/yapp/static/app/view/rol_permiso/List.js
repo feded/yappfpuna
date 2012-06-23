@@ -9,7 +9,6 @@ Ext.define('YAPP.view.rol_permiso.List', {
 	initComponent : function() {
 		
 		Ext.apply(this, {
-			iconCls : 'icon-grid',
 			frame : true,
 			height : 200,
 			dockedItems : [ {

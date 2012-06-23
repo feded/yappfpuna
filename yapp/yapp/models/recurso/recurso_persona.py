@@ -12,7 +12,7 @@ class RecursoPersona (Recurso):
     __tablename__ = "recurso_persona"
     _id = Column(Integer, ForeignKey('recurso._id'), primary_key=True)
     _costo_hora = Column(Integer, nullable=False)
-    
+    __mapper_args__ = {'polymorphic_identity': 'recurso_persona'}
     def __init__(self, nombre, tipo, descripcion,costo_hora):
         self._nombre = nombre
         self._tipo = tipo
