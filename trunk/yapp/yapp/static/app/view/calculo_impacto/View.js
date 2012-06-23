@@ -10,7 +10,7 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 	initComponent : function() {
 		this.items = [ {
 			xtype : 'container',
-			width : 650,
+			width : 800,
 			height : 300,
 			layout : {
 				type : 'vbox',
@@ -24,14 +24,13 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 				xtype : 'gridpanel',
 				name : 'bases',
 				height : 100,
-				columns : columnas_calculo_impacto,
+				columns : columnas_calculo_impacto_fase,
 				// stripeRows : true,
 				title : 'Lineas bases afectadas',
 				margins : '0 2 0 0',
 				padding : 5
 			}, {
 				xtype : 'container',
-				width : 650,
 				height : 300,
 				layout : {
 					type : 'hbox',
@@ -45,16 +44,29 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 					xtype : 'gridpanel',
 					name : 'antecesores',
 					height : 100,
-					columns : columnas_calculo_impacto,
+					columns : columna_calculo_impacto_item,
 					store : Ext.create('YAPP.store.Item'),
 					// stripeRows : true,
 					title : 'Antecesores',
-					margins : '0 2 0 0'
+					margins : '0 2 0 0',
+					dockedItems : [ {
+						xtype : 'toolbar',
+						dock : 'bottom',
+						items : [ {
+							xtype : 'label',
+							name : 'label_antecesores',
+							text : 'Costo sucesores: '
+						}, {
+							xtype : 'label',
+							name : 'label_costo_antecesores',
+							text : '0'
+						} ]
+					} ]
 				}, {
 					xtype : 'gridpanel',
 					name : 'sucesores',
 					height : 100,
-					columns : columnas_calculo_impacto,
+					columns : columna_calculo_impacto_item,
 					store : Ext.create('YAPP.store.Item'),
 					// stripeRows : true,
 					title : 'Sucesores',
@@ -99,11 +111,11 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 
 });
 
-var columnas_calculo_impacto = [ {
+var columnas_calculo_impacto_fase = [ {
 	text : "Nombre",
 	flex : 1,
 	sortable : true,
-	width : 40,
+	width : 20,
 	dataIndex : '_nombre'
 }, {
 	text : "Descripcion",
@@ -111,4 +123,18 @@ var columnas_calculo_impacto = [ {
 	width : 60,
 	sortable : true,
 	dataIndex : '_descripcion'
+}, {
+	text : "Fase",
+	flex : 1,
+	width : 20,
+	sortable : true,
+	dataIndex : '_fase'
 } ];
+
+var columna_calculo_impacto_item = [ columnas_calculo_impacto_fase, {
+	text : "Costo",
+	flex : 1,
+	width : 20,
+	sortable : true,
+	dataIndex : '_costo'
+} ]

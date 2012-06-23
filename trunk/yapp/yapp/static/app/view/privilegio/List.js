@@ -7,6 +7,7 @@ Ext.define('YAPP.view.privilegio.List', {
 	layout : 'fit',
 	
 	initComponent : function() {
+		this.frame = true;
 		this.dockedItems = [ {
 			xtype : 'toolbar',
 			items : [ {

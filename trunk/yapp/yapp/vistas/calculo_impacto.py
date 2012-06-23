@@ -14,6 +14,7 @@ from yapp.daos.unidad_trabajo_recurso import UnidadTrabajoRecursoDAO
 from yapp.models.item.item import ItemDTO, Item
 from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
 from yapp.models.linea_base.linea_base import LineaBaseDTO
+from yapp.models.recurso.recurso_persona import RecursoPersona
 from yapp.models.unidad_trabajo.unidad_trabajo_recurso import \
     UnidadTrabajo_Recurso
 import json
@@ -50,7 +51,10 @@ class CalculoImpacto:
         bases = self.verificar_lineas_base(sucesores, bases)
         bases = self.verificar_linea_base_item(self.item, bases)
         
-        return CalculoImpactoDTO(self.item, antecesores, sucesores, bases)
+        costo_antecesores = self.calcular_costo_items(antecesores)
+        costo_sucesores = self.calcular_costo_items(sucesores)
+        
+        return CalculoImpactoDTO(self.item, antecesores, sucesores, bases, costo_antecesores, costo_sucesores)
     
     def verificar_lineas_base (self, items, bases):
         for item in items:
@@ -102,36 +106,75 @@ class CalculoImpacto:
         
         return items;
     
+    def calcular_costo_items(self, items):
+        costo = 0;
+        for item in items:
+            print "---------------------"
+            print "Costo de item con id " + str(item._id)
+            costo_item = self.costo_item(item)
+            item._costo = costo_item;
+            print "Costo: " + str(costo_item)
+            print "---------------------"
+            costo += costo_item;
+        return costo;
+    
     def costo_item(self, item):
 #        self.item_unidad_dao = ItemUnidadDAO(None)
 #        self.unidad_recurso_dao = UnidadTrabajoRecursoDAO(None)
 #        self.recurso_dao = RecursoDAO(None)
-        ids_unidades = self.item_unidad_dao.get_query().filter(ItemUnidadTrabajo._item_id==item._id).all();
-        return ids_unidades
+        items_unidades = self.item_unidad_dao.get_query().filter(ItemUnidadTrabajo._item_id==item._id).all();
+        costo = 0;
+        for item_unidad in items_unidades:
+            print "---------------------"
+            print "Costo de item con id " + str(item._id)
+            costo_unidad = self.costo_unidad(item_unidad._unidad_id)
+            costo += costo_unidad
+            print "Costo: " + str(costo_unidad)
+            print "---------------------"
+        return costo
         
 
     def costo_unidad(self, unidad_id):
-        ids_recursos = self.unidad_recurso_dao.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==unidad_id).all()
-        
+        unidad_recursos = self.unidad_recurso_dao.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==unidad_id).all()
+        costo = 0
+        for unidad_recurso in unidad_recursos:
+            recurso = self.recurso_dao.get_by_id(unidad_recurso._recurso_id)
+            costo += self.get_costo_recurso(recurso)
+        return costo
+            
+    def get_costo_recurso(self, recurso):
+        if isinstance(recurso, RecursoPersona) :
+            return recurso._costo_hora
+        return recurso._costo_cantidad
         
 class CalculoImpactoDTO:
-    def __init__(self, item, antecesores, sucesores, bases):
+    def __init__(self, item, antecesores, sucesores, bases, costo_antecesores, costo_sucesores):
         self.item = ItemDTO(item)
         if antecesores != None:
             self.antecesores = []
             for antecesor in antecesores:
-                self.antecesores.append(ItemDTO(antecesor))
+                self.antecesores.append(EntidadDTO(antecesor))
         if sucesores != None:
             self.sucesores = []
             for sucesor in sucesores:
-                self.sucesores.append(ItemDTO(sucesor))
+                self.sucesores.append(EntidadDTO(sucesor))
         if bases != None:
             self.bases = []
             for base in bases:
-                self.bases.append(LineaBaseDTO(base))
+                self.bases.append(EntidadDTO(base))
+        self.costo_antecesores = costo_antecesores;
+        self.costo_sucesores = costo_sucesores;
         
 class ItemDTOCalculo:
     def __init__(self, item):
         self._nombre = item._nombre
         self._descripcion = item._descripcion
+        
+class EntidadDTO:
+    def __init__(self, entidad):
+        self._nombre = entidad._nombre
+        self._descripcion = entidad._descripcion
+        self._fase = entidad._fase._nombre
+        if hasattr(entidad, '_costo'):
+            self._costo = entidad._costo
         

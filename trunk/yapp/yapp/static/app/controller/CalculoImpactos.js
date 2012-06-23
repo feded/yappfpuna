@@ -21,6 +21,12 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 	}, {
 		selector : 'viewport combobox[name=proyectos]',
 		ref : 'proyectos'
+	}, {
+		selector : 'calculoimpactosview label[name=label_costo_antecesores]',
+		ref : 'labelAntecesores'
+	}, {
+		selector : 'calculoimpactosview label[name=label_costo_sucesores]',
+		ref : 'labelSucesores'
 	} ],
 	
 	init : function() {
@@ -76,12 +82,18 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 		})
 	},
 	actualizarStores : function(records) {
-		console.log(records)
 		var antecesores = this.getAntecesores();
 		antecesores.store.loadData(records[0].data.antecesores)
 		var sucesores = this.getSucesores();
 		sucesores.store.loadData(records[0].data.sucesores)
 		var lineasBases = this.getBases();
 		lineasBases.store.loadData(records[0].data.bases)
+
+		var labelSucesores = this.getLabelSucesores()
+		var labelAntecesores = this.getLabelAntecesores()
+
+		labelSucesores.setText(records[0].data.costo_sucesores)
+		labelAntecesores.setText(records[0].data.costo_antecesores)
+
 	}
 });
