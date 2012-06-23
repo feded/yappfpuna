@@ -34,6 +34,7 @@ import yapp.models.fase.tipo_fase
 import yapp.models.fase.tipo_fase
 import yapp.models.item.item
 import yapp.models.item.item_archivo
+import yapp.models.item.archivo
 import yapp.models.item.item_atributo
 import yapp.models.item.item_unidad_trabajo
 import yapp.models.linea_base.linea_base
@@ -183,6 +184,9 @@ def main(argv=sys.argv):
             permiso_rol = PermisosRoles(permiso,rol);
             DBSession.add(permiso_rol);
             permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Tipo de items").first();
+            permiso_rol = PermisosRoles(permiso,rol);
+            DBSession.add(permiso_rol);
+            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Items").first();
             permiso_rol = PermisosRoles(permiso,rol);
             DBSession.add(permiso_rol);
             permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Suscripciones").first();
