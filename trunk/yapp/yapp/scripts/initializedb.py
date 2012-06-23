@@ -86,37 +86,37 @@ def main(argv=sys.argv):
 
     
     
-    entidad_dao = PrivilegioDAO(None);
-    items = entidad_dao.get_all()
-    if (len(items) == 0):
-        with transaction.manager:
-            entidad = Privilegio("Proyecto");
-            DBSession.add(entidad)
-            entidad = Privilegio("Fase");
-            DBSession.add(entidad)
-            entidad = Privilegio("Item");
-            DBSession.add(entidad)
-            entidad = Privilegio("Esquema");
-            DBSession.add(entidad)
-            entidad = Privilegio("Activar Item");
-            DBSession.add(entidad)
-    items = RolEstadoDAO(None).get_all()
-    if (len(items) == 0):
-        with transaction.manager:
-            estado = RolEstado("Activo")
-            DBSession.add(estado);
-            estado = RolEstado("Suspendido");
-            DBSession.add(estado);
-            
-    items = TipoRecursoDAO(None).get_all()
-    if (len(items) == 0):
-        with transaction.manager:
-            tipo = TipoRecurso("Persona")
-            DBSession.add(tipo);
-            tipo = TipoRecurso("Bien");
-            DBSession.add(tipo);
-            tipo = TipoRecurso("Material");
-            DBSession.add(tipo);
+#    entidad_dao = PrivilegioDAO(None);
+#    items = entidad_dao.get_all()
+#    if (len(items) == 0):
+#        with transaction.manager:
+#            entidad = Privilegio("Proyecto");
+#            DBSession.add(entidad)
+#            entidad = Privilegio("Fase");
+#            DBSession.add(entidad)
+#            entidad = Privilegio("Item");
+#            DBSession.add(entidad)
+#            entidad = Privilegio("Esquema");
+#            DBSession.add(entidad)
+#            entidad = Privilegio("Activar Item");
+#            DBSession.add(entidad)
+#    items = RolEstadoDAO(None).get_all()
+#    if (len(items) == 0):
+#        with transaction.manager:
+#            estado = RolEstado("Activo")
+#            DBSession.add(estado);
+#            estado = RolEstado("Suspendido");
+#            DBSession.add(estado);
+#            
+#    items = TipoRecursoDAO(None).get_all()
+#    if (len(items) == 0):
+#        with transaction.manager:
+#            tipo = TipoRecurso("Persona")
+#            DBSession.add(tipo);
+#            tipo = TipoRecurso("Bien");
+#            DBSession.add(tipo);
+#            tipo = TipoRecurso("Material");
+#            DBSession.add(tipo);
             
 #    items = TipoItemDAO(None).get_all()
 #    if (len(items) == 0):
@@ -139,137 +139,137 @@ def main(argv=sys.argv):
             DBSession.add(desarrollador);
             
             
-    print "Creando permisos"
-    with transaction.manager:
-        admin = Permisos("Roles");
-        DBSession.add(admin);
-        admin = Permisos("Proyectos");
-        DBSession.add(admin);
-        admin = Permisos("Fases");
-        DBSession.add(admin);
-        admin = Permisos("Esquemas");
-        DBSession.add(admin);
-        admin = Permisos("Tipo de items");
-        DBSession.add(admin);
-        admin = Permisos("Items");
-        DBSession.add(admin);
-        admin = Permisos("Suscripciones");
-        DBSession.add(admin);
-        admin = Permisos("Linea base");
-        DBSession.add(admin);
-        admin = Permisos("Recursos");
-        DBSession.add(admin);
-        admin = Permisos("Calculo de impacto");
-        DBSession.add(admin);
-        admin = Permisos("Ver costado derecho");
-        DBSession.add(admin);
-        admin = Permisos("Diagrama de gantt");
-        DBSession.add(admin);
-        admin = Permisos("Unidad de trabajo");
-        DBSession.add(admin);
-    
-    print 'Creando permisos y roles'
-    with transaction.manager:
-            rol = RolDAO(None).get_query().filter(Rol._nombre == "admin").first();
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Roles").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Proyectos").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Fases").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Esquemas").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Tipo de items").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Items").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Suscripciones").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Linea base").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Recursos").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Calculo de impacto").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Ver costado derecho").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            
-            rol = RolDAO(None).get_query().filter(Rol._nombre == "Manager").first();
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Fases").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Esquemas").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Tipo de items").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Suscripciones").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Linea base").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Recursos").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Calculo de impacto").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Ver costado derecho").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            
-            rol = RolDAO(None).get_query().filter(Rol._nombre == "Lider de proyecto").first();
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Fases").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Esquemas").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Tipo de items").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Suscripciones").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Linea base").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Recursos").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Calculo de impacto").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Ver costado derecho").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            
-            rol = RolDAO(None).get_query().filter(Rol._nombre == "Desarrollador").first();
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Esquemas").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Suscripciones").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Recursos").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Calculo de impacto").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
-            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Ver costado derecho").first();
-            permiso_rol = PermisosRoles(permiso,rol);
-            DBSession.add(permiso_rol);
+#    print "Creando permisos"
+#    with transaction.manager:
+#        admin = Permisos("Roles");
+#        DBSession.add(admin);
+#        admin = Permisos("Proyectos");
+#        DBSession.add(admin);
+#        admin = Permisos("Fases");
+#        DBSession.add(admin);
+#        admin = Permisos("Esquemas");
+#        DBSession.add(admin);
+#        admin = Permisos("Tipo de items");
+#        DBSession.add(admin);
+#        admin = Permisos("Items");
+#        DBSession.add(admin);
+#        admin = Permisos("Suscripciones");
+#        DBSession.add(admin);
+#        admin = Permisos("Linea base");
+#        DBSession.add(admin);
+#        admin = Permisos("Recursos");
+#        DBSession.add(admin);
+#        admin = Permisos("Calculo de impacto");
+#        DBSession.add(admin);
+#        admin = Permisos("Ver costado derecho");
+#        DBSession.add(admin);
+#        admin = Permisos("Diagrama de gantt");
+#        DBSession.add(admin);
+#        admin = Permisos("Unidad de trabajo");
+#        DBSession.add(admin);
+#    
+#    print 'Creando permisos y roles'
+#    with transaction.manager:
+#            rol = RolDAO(None).get_query().filter(Rol._nombre == "admin").first();
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Roles").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Proyectos").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Fases").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Esquemas").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Tipo de items").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Items").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Suscripciones").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Linea base").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Recursos").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Calculo de impacto").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Ver costado derecho").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            
+#            rol = RolDAO(None).get_query().filter(Rol._nombre == "Manager").first();
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Fases").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Esquemas").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Tipo de items").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Suscripciones").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Linea base").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Recursos").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Calculo de impacto").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Ver costado derecho").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            
+#            rol = RolDAO(None).get_query().filter(Rol._nombre == "Lider de proyecto").first();
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Fases").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Esquemas").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Tipo de items").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Suscripciones").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Linea base").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Recursos").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Calculo de impacto").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Ver costado derecho").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            
+#            rol = RolDAO(None).get_query().filter(Rol._nombre == "Desarrollador").first();
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Esquemas").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Suscripciones").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Recursos").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Calculo de impacto").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);
+#            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Ver costado derecho").first();
+#            permiso_rol = PermisosRoles(permiso,rol);
+#            DBSession.add(permiso_rol);

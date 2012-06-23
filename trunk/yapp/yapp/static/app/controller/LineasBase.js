@@ -88,11 +88,13 @@ Ext.define('YAPP.controller.LineasBase', {
 	changeFase : function(object, newValue, oldValue, eOpts) {
 		var store = this.getLineasBaseStore();
 		var fase = this.getComboFase();
-		store.load({
-			params : {
-				id_fase : fase.getValue()
-			}
-		});
+		if (fase.getValue() != null){
+			store.load({
+				params : {
+					id : fase.getValue()
+				}
+			});
+		}
 	},
 	botonEditGuardarApretado : function(button) {
 		var win = button.up('window');

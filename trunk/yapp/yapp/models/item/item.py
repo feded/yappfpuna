@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, Integer, Sequence
 from sqlalchemy.orm import relation, backref
 from sqlalchemy.schema import ForeignKey
-from sqlalchemy.types import Boolean
+from sqlalchemy.types import Boolean, DateTime
 from yapp.models.entidad_padre import EntidadPadre
 from yapp.models.fase.fase import Fase, FaseDTO
 from yapp.models.tipo_item.tipo_item import TipoItem, TipoItemDTO

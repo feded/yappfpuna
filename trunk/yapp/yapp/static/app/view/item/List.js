@@ -71,6 +71,10 @@ function renderizador_lista_item(val) {
 	return val;
 }
 
+function renderizador_fecha_item(val){
+	console.log(val)
+}
+
 var columnas_item = [ {
 				header : 'Nombre',
 				sortable : true,
@@ -118,6 +122,7 @@ var columnas_item = [ {
 				 sortable : true, 
 				 dataIndex: '_fecha_inicio', 
 				 format: 'd/m/Y', 
+				 renderer : renderizador_fecha_item,
 				 flex: 1
 			}, {
 				header : 'Padre',

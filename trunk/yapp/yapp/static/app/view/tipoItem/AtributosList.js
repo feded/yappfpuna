@@ -1,9 +1,11 @@
 Ext.define('YAPP.view.tipoItem.AtributosList' ,{
     extend: 'Ext.grid.Panel',
     alias : 'widget.atributosList',
-    width: 400,
+    //width: 600,
     defaultType:'textfield',
-    
+    title : 'Atributos',
+    layout: 'fit',
+    autoShow : true,
     store : 'AtributoTipoItem',
 	initComponent : function() {
 		this.dockedItems = [ {
