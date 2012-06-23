@@ -1,6 +1,6 @@
 from yapp.daos.base_dao import BaseDAO
-from yapp.models.item.item_archivo import itemArchivo
+from yapp.models.item.item_archivo import ItemArchivo
 
-class ArchivoDAO(BaseDAO):
+class ItemArchivoDAO(BaseDAO):
     def get_clase(self):
-        return itemArchivo
+        return ItemArchivo

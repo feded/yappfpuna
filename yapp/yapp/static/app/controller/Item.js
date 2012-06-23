@@ -2,8 +2,9 @@ Ext.define('YAPP.controller.Item', {
 	extend : 'Ext.app.Controller',
 	
 	views : [  'item.List',  'item.CrearItem', 'item.RevertirItem', 'item_atributo.Edit',
-	 'item_unidad.List', 'item_unidad.Edit', 'item.RevivirItem', 'item_atributo.List', 'item_atributo.Agregar', 'item_atributo.Archivo' ],
-	stores : [ 'Item', 'Fases', 'TipoItems', 'ItemUnidad', 'ItemAtributo', 'AtributoTipoItem' ],
+	 'item_unidad.List', 'item_unidad.Edit', 'item.RevivirItem', 'item_atributo.List', 'item_atributo.Agregar', 
+	 'item_atributo.Archivo', 'item_atributo.ListarArchivo'],
+	stores : [ 'Item', 'Fases', 'TipoItems', 'ItemUnidad', 'ItemAtributo', 'AtributoTipoItem', 'Archivos' ],
 	models : [ 'Item' , 'ItemUnidad', 'ItemAtributo' ],
 	
 	refs : [ 
@@ -63,7 +64,10 @@ Ext.define('YAPP.controller.Item', {
 	} , {
 		selector : 'atributositemlist button[name=atributos]',
 		ref : 'btnAtributosItemList'
-	} ,  {
+	} ,{
+		selector : 'listararchivo button[name=btnListarArchivos]',
+		ref : 'btnListarArchivos'
+	} , {
 		selector : 'itemslist button[name=borrar]',
 		ref : 'delete'
 	} , {
@@ -84,6 +88,10 @@ Ext.define('YAPP.controller.Item', {
 	}, {
 		selector: 'itemslist gridview',
 		ref: 'grilla'
+	},
+	{
+		selector: 'listararchivo gridview',
+		ref: 'grilla2'
 	}
 	],
 	
@@ -184,14 +192,41 @@ Ext.define('YAPP.controller.Item', {
 			'viewport combobox[name=fases]' : {
 				change : this.changeFase
 			},
-			'atributositemlist button[action=archivos]':{
+			'listararchivo button[action=archivos]':{
 				click: this.archivos
 			},
 			
 			'archivo button[action=adjuntar]' :{
 				click: this.adjuntar
+			},
+			
+			'listararchivo' :{
+				itemclick  : this.download	
 			}
 		});
+	},
+	
+	download:function(){
+		console.log('adfasdfasdfs');
+		var g2 = this.getGrilla2();
+		var archivo = g2.getSelectionModel().getSelection()[0];
+		
+		
+		Ext.Ajax.request({
+   			url: '/download',
+			clientValidation: true,
+			params:{
+				archivo_id : archivo.data.id
+			}
+		});
+		
+//			success : function() {
+//				Ext.example.msg("YAPP", "Archivo subido correctamente");
+//				win.close();
+//			},
+//			failure : function() {
+//				alert('No se pudo alzar el archivo');
+//			}
 	},
 	
 	onRender : function() {
@@ -560,6 +595,7 @@ Ext.define('YAPP.controller.Item', {
 			this.getAprove().setDisabled(false);
 			this.getDeaprove().setDisabled(true);
 			this.getVersiones().setDisabled(false);
+			this.getBtnListarArchivos().setDisabled(false);
 		}else if (estado == "APROBADO"){
 			this.getBtnAtributosItemList().setDisabled(true);
 			this.getBtnAsignar().setDisabled(true);
@@ -568,6 +604,7 @@ Ext.define('YAPP.controller.Item', {
 			this.getAprove().setDisabled(true);
 			this.getDeaprove().setDisabled(false);
 			this.getVersiones().setDisabled(false);
+			this.getBtnListarArchivos().setDisabled(true);
 		}else if (estado == "BLOQUEADO"){
 			this.getBtnAtributosItemList().setDisabled(true);
 			this.getBtnAsignar().setDisabled(true);
@@ -576,6 +613,7 @@ Ext.define('YAPP.controller.Item', {
 			this.getAprove().setDisabled(true);
 			this.getDeaprove().setDisabled(true);
 			this.getVersiones().setDisabled(true);
+			this.getBtnListarArchivos().setDisabled(true);
 		}else{
 			this.getBtnAtributosItemList().setDisabled(true);
 			this.getBtnAsignar().setDisabled(true);
@@ -584,6 +622,7 @@ Ext.define('YAPP.controller.Item', {
 			this.getAprove().setDisabled(true);
 			this.getDeaprove().setDisabled(true);
 			this.getVersiones().setDisabled(true);
+			this.getBtnListarArchivos().setDisabled(true);
 		}
 	},
 	
@@ -592,6 +631,16 @@ Ext.define('YAPP.controller.Item', {
 		this.mostrarAtributos(grid, record);
 		this.habilitarBotones(record.data._estado);
 		this.mostarUnidades(grid, record);
+		this.mostrarArchivos(grid, record);
+	},
+	
+	mostrarArchivos: function(grid, record){
+		var storeArchivos = this.getArchivosStore();
+		storeArchivos.load({
+			params : {
+				_item_id : record.data.id
+			}
+		});
 	},
 	
 	mostrarAtributos: function(grid, record){
@@ -976,12 +1025,18 @@ Ext.define('YAPP.controller.Item', {
 		var g = this.getGrilla();
 		var item = g.getSelectionModel().getSelection()[0];
 		
-		
 		form.submit({
-			url: '/adjuntar',
+			url: '/upload',
 			clientValidation: true,
 			params:{
-				id_item : item.data._item_id
+				id_item : item.data.id
+			},
+			success : function() {
+				Ext.example.msg("YAPP", "Archivo subido correctamente");
+				win.close();
+			},
+			failure : function() {
+				alert('No se pudo alzar el archivo');
 			}
 		});
 	},

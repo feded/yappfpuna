@@ -20,7 +20,14 @@ from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
 from yapp.models.tipo_item.tipo_item import TipoItem
 import datetime
 import json
-
+from yapp.models import DBSession
+from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
+from yapp.daos.base_dao import BaseDAO
+from yapp.daos.item_unidad_dao import ItemUnidadDAO
+from yapp.daos.item_archivo_dao import ItemArchivoDAO
+from yapp.models.item.item_archivo import ItemArchivo
+from yapp.daos.archivo_dao import ArchivoDAO
+from yapp.models.item.archivo import Archivo, ArchivoDTO
 
 @view_config(route_name='crearListarItems')
 def ag_atributos_tipos_item(request): 
@@ -263,16 +270,55 @@ def get_items_sin_linea_base_con_fase(request):
 #        self._padre = padre;
 #        self._antecesor = antecesor
 
-@view_config(route_name='adjuntar')
-def adjuntar(request):
+@view_config(route_name='upload')
+def upload(request):
     id_item = request.params['id_item'],
     archivo = request.params['archivo'].file.read()
     nombre=request.params['archivo'].filename
     
     archivo_dao = ArchivoDAO(request)
-    nuevo_archivo = itemArchivo(id_item,archivo,nombre)
+    nuevo_archivo = Archivo(archivo,nombre)
     archivo_dao.crear(nuevo_archivo)
     
-    response= Response(content_type='application/force-download',content_disposition='attachment; filename=' + nuevo_archivo._nombre_archivo)
-    response.app_iter= nuevo_archivo._archivo
+    item_dao = ItemDAO(request)
+    item = item_dao.get_by_id(id_item)
+    
+    item_archivo_dao = ItemArchivoDAO(request)
+    nuevo_item_archivo = ItemArchivo(item,nuevo_archivo)
+    item_archivo_dao.crear(nuevo_item_archivo)
+    
+    return Response(json.dumps({'success': True}))
+#    response= Response(content_type='application/force-download',content_disposition='attachment; filename=' + nuevo_archivo._nombre_archivo)
+#    response.app_iter= nuevo_archivo._archivo
+#    return response
+
+@view_config(route_name='archivos')
+def get_archivos(request):
+        item_id = request.GET.get('_item_id')
+        dao = ItemArchivoDAO(request)
+        entidades = dao.get_query().filter(ItemArchivo._item_id == item_id).all()
+        lista = [];
+#        p = Pickler(True, None)
+        p = Pickler()
+        archivo_dao = ArchivoDAO(request)
+        for entidad in entidades:
+            a = archivo_dao.get_by_id(entidad._archivo_id)
+            b = ArchivoDTO(a)
+            lista.append(p.flatten(b))
+        j_string = p.flatten(lista)
+        a_ret = json.dumps({'sucess': True, 'archivos':j_string})
+        return Response(a_ret)
+    
+
+
+@view_config(route_name='download')
+def download(request):
+    id_archivo = request.params['archivo_id'],
+#    archivo = request.params['archivo'].file.read()
+    
+    archivo_dao = ArchivoDAO(request)
+    archivo = archivo_dao.get_by_id(id_archivo)
+    
+    response= Response(content_type='application/force-download',content_disposition='attachment; filename=' + archivo._nombre)
+    response.app_iter= archivo._contenido
     return response

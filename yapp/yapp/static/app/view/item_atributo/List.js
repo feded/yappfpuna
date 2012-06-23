@@ -7,10 +7,7 @@ Ext.define('YAPP.view.item_atributo.List', {
 	
 	initComponent : function() {
 		
-		Ext.apply(this, {
-			iconCls : 'icon-grid',
-			frame : true,
-			dockedItems : [ {
+		this.dockedItems = [{
 				xtype : 'toolbar',
 				title: 'Atributos Particulares',
 				items : [ 
@@ -21,15 +18,10 @@ Ext.define('YAPP.view.item_atributo.List', {
                     action : 'atributos',
                     scope : this,
                     disabled : true,
-                }, '|',{
-					text : 'Archivos Relacionados al Item',
-					scope : this,
-					action : 'archivos',
-					disabled : false,
-					name : 'btnListarArchivos'
-				}, ]
-			} ],
-			columns : [ {
+                }]
+		}];
+		
+		this.columns = [ {
 				text : 'Nombre Atributo',
 				flex : 1,
 				sortable : true,
@@ -47,8 +39,7 @@ Ext.define('YAPP.view.item_atributo.List', {
 				sortable : true,
 				dataIndex : '_valor',
 				
-			} ]
-		});
+			} ];
 		this.callParent(arguments);
 	}
 	

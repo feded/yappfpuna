@@ -12,7 +12,7 @@ Ext.define('YAPP.view.item_atributo.Archivo', {
     		id: 'form_adjuntar_archivo',
 			xtype: 'form',
 			frame : true,
-			height: 267,
+//			height: 267,
 			fileUpload: true,
 			method: 'post',
             items: [{
