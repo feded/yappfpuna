@@ -8,14 +8,12 @@ from sqlalchemy import Sequence
 from yapp.daos.atributo_tipo_item_dao import AtributoTipoItemDAO
 from yapp.daos.base_dao import BaseDAO
 from yapp.daos.fase_dao import FaseDAO
-from yapp.daos.item_archivo_dao import ArchivoDAO
 from yapp.daos.item_dao import ItemDAO
 from yapp.daos.item_unidad_dao import ItemUnidadDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import DBSession, DBSession
 from yapp.models.fase.fase import FaseDTO
 from yapp.models.item.item import Item, ItemDTO
-from yapp.models.item.item_archivo import itemArchivo
 from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
 from yapp.models.tipo_item.tipo_item import TipoItem
 import datetime
@@ -55,6 +53,8 @@ def ag_atributos_tipos_item(request):
             entidades_item_id = item_dao.get_items_eliminados(fase_id)
         elif request.GET.get('tipo') == "VERSIONES":
             entidades_item_id = item_dao.get_items_por_version(request.GET.get("item_id"))
+        elif fase_id == None:
+            return Response(json.dumps({'sucess': 'true', 'lista':[]}))
         else: 
             entidades_item_id = item_dao.get_items_fase(fase_id);
         lista = [];
@@ -109,11 +109,16 @@ def ag_atributos_tipos_item(request):
         fecha_fin = fecha_inicio + delta
         
         if padre != None:
-            if fecha_inicio < padre._fecha_inicio :
-                return Response(json.dumps({'sucess': 'false', 'lista':''}))
-        nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, fecha_fin, padre_id, antecesor_id)
+            formato_entrada = "%Y-%m-%d %H:%M:%S"
+            print "-----------------"
+            if len(padre._fecha_inicio)>1:
+                padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
+                if fecha_inicio <  padre_inicio:
+                    return Response(json.dumps({'sucess': 'false', 'lista':''}))
+        nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, entidad["_completado"], padre_id, antecesor_id)
         itemDao = ItemDAO(request)
         itemDao.crear(nuevo_item)
+        itemDao.actualizarEstadosFaseyProyecto(nuevo_item)
         nuevo_item = ItemDTO(nuevo_item)
         lista = []
         p = Pickler()
@@ -172,7 +177,9 @@ def bm_atributo(request):
         item_dao.crear(nuevo_item);
         padre = item_dao.get_by_id(nuevo_item._padre_item_id)
         antecesor = item_dao.get_by_id(nuevo_item._antecesor_item_id)
-        actualizar_referencias_item(nuevo_item, item_dao, id_viejo)
+        if (nuevo_item._estado == "APROBADO" or nuevo_item._estado == "BLOQUEADO") == False: 
+            actualizar_referencias_item(nuevo_item, item_dao, id_viejo)
+        item_dao.actualizarEstadosFaseyProyecto(nuevo_item)
         nuevo_item = ItemDTO(nuevo_item)
         if padre != None:
             nuevo_item._padre = ItemDTO(padre)
@@ -196,6 +203,7 @@ def actualizar_referencias_item(item, item_dao, anterior_id):
                 #VERIFICAR ESTADO DE SUS HIJOS
                 posible_hijo._estado = "REVISION"
             item_dao.update(posible_hijo)
+            item_dao.actualizarEstadosFaseyProyecto(posible_hijo)
             updated.append(hijo._item_id)
     #este item es antecesor, vamos a actualizar las referencias de sus descendendientes
     sucesores = item_dao.get_query().filter(Item._antecesor_item_id==anterior_id)
@@ -208,6 +216,7 @@ def actualizar_referencias_item(item, item_dao, anterior_id):
                 #VERIFICAR ESTADO DE SUS HIJOS
                 posible_sucesor._estado = "REVISION"
             item_dao.update(posible_sucesor)
+            item_dao.actualizarEstadosFaseyProyecto(posible_sucesor)
             updated.append(sucesor._item_id)
 
 def get_items_con_linea_base(request):

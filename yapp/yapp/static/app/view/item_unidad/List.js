@@ -25,14 +25,21 @@ Ext.define('YAPP.view.item_unidad.List', {
 					emptyText : 'Seleccione una Unidad...',
 					allowBlank : false,
 					disabled : true,
+					listeners: {
+						select: function(combo, record, index) {
+							var win = combo.up('window');
+							win.down('#asignar').setDisabled(false);
+						}
+					}
         		}, 
 				{
 					text : 'Asignar U. de Trabajo',
 					scope : this,
 					action : 'guardar',
-					//action : 'asignar',
+					itemId : 'asignar',
 					disabled : true,
-					name : 'btnAsignar'
+					name : 'btnAsignar',
+					scope : this,
 				}, {
 					text : 'Desasignar U. de Trabajo',
 					itemId : 'desasignar',

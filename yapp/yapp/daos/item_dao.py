@@ -6,6 +6,8 @@ from yapp.daos.unidad_trabajo_dao import UnidadTrabajoDAO
 from yapp.daos.esquema_item_dao import EsquemaItemDAO
 from yapp.models.esquema.esquema_item import EsquemaItem
 from yapp.models.esquema import esquema_item
+from yapp.daos.fase_dao import FaseDAO
+from yapp.daos.proyecto_dao import ProyectoDAO
 
 class ItemDAO(BaseDAO):
     def get_clase(self):
@@ -132,4 +134,53 @@ class ItemDAO(BaseDAO):
         print "-------------items------------------"
         print items
         return items
+    
+    def actualizarEstadosFaseyProyecto(self, item):
+        fase_dao = FaseDAO(self._request)
+        proyecto_dao = ProyectoDAO(self._request)
+        fase = fase_dao.get_by_id(item._fase_id)
+        proyecto = proyecto_dao.get_by_id(fase._proyecto_id)
+        
+        if item._estado == 'ACTIVO':
+            items_fase = self.get_items_fase(fase._id)
+            cambiar = True
+            for item_fase in items_fase:
+                if item_fase._estado != 'ACTIVO':
+                    cambiar = False
+            print cambiar
+            if (cambiar == True):
+                print fase._estado
+                if fase._estado != 'ACTIVA':
+                    fase_dao.update_estado_entidad(fase._id, 'ACTIVA')
+                if proyecto._estado != 'ACTIVO':
+                    proyecto_dao.update_estado_entidad(proyecto._id, 'ACTIVO')
+        elif item._estado == 'REVISION' or item._estado == 'COMPROMETIDO' :
+            if fase._estado != 'COMPROMETIDA':
+                fase_dao.update_estado_entidad(fase._id, 'COMPROMETIDA')
+            if proyecto._estado != 'COMPROMETIDO':
+                proyecto_dao.update_estado_entidad(proyecto._id, 'COMPROMETIDO')
+        elif item._estado == 'BLOQUEADO' or item._estado == 'APROBADO':
+            items_fase = self.get_items_fase(fase._id)
+            cambiarFinalizado = 0
+            cambiarActivo = 0
+            for item_fase in items_fase:
+                if item_fase._estado == 'BLOQUEADO' or item._estado == 'APROBADO':
+                    cambiarFinalizado += 1 
+                elif item_fase._estado == 'ACTIVO' or item._estado == 'APROBADO' :
+                    cambiarActivo += 1
+            if (cambiarFinalizado == len(items_fase)):
+                if fase._estado != 'FINALIZADA':
+                    fase_dao.update_estado_entidad(fase._id, 'FINALIZADA')
+                if proyecto._estado != 'FINALIZADO':
+                    proyecto_dao.update_estado_entidad(proyecto._id, 'FINALIZADO')
+                return
+            if (cambiarActivo == len(items_fase)):
+                if fase._estado != 'ACTIVA':
+                    fase_dao.update_estado_entidad(fase._id, 'ACTIVA')
+                if proyecto._estado != 'ACTIVO':
+                    proyecto_dao.update_estado_entidad(proyecto._id, 'ACTIVO')
+                
+        
+        
+        
 

@@ -6,7 +6,8 @@ Ext.define('YAPP.controller.TipoItem', {
 		'tipoItem.Edit',
 		'tipoItem.AtributosList',
 		'tipoItem.AtributoEdit',
-		'tipoItem.Importar'
+		'tipoItem.Importar',
+		'tipoItem.ABM'
 		
 		],
 	stores:['TipoItems' , 'AtributoTipoItem' ],
@@ -46,7 +47,6 @@ Ext.define('YAPP.controller.TipoItem', {
 			'importar button[action=guardar]' : {
 				click: this.guardarImportar
 			},
-			
             'tipolist button[action=crear]': {
                 click: this.crearTipoItem
             },
@@ -63,11 +63,12 @@ Ext.define('YAPP.controller.TipoItem', {
                 click: this.guardarAtributo
             },
             'tipolist': {
-            	itemdblclick: this.editarTipoItem
+            	itemdblclick: this.editarTipoItem,
+            	itemclick: this.verAtributos
         	},
-        	'tipolist actioncolumn':{
-                click: this.verAtributos
-            },
+//        	'tipolist actioncolumn':{
+//                click: this.verAtributos
+//            },
 //            'tipolist button[action=verAtributos]':{
 //                click: this.verAtributos
 //            },
@@ -141,18 +142,18 @@ Ext.define('YAPP.controller.TipoItem', {
 		this.getColorTexto().setValue(texto);
 	},
 	
-	verAtributos : function(grid, view, recordIndex, cellIndex, item, e){
+	verAtributos : function(grid, record){
 		var tabs = Ext.getCmp('tabPrincipal');
-		tipoId = this.getTipoItemsStore().getAt(recordIndex).get('id');
+		tipoId = record.data.id;
 //		console.log(tipoId)
 //		this.getAtributoTipoItemStore().clearFilter(true)
 //		this.getAtributoTipoItemStore().filter('_tipo_item_id', tipoId);
 //		var tab = Ext.getCmpByName('Atributos Tipo Item')
-		var tab = tabs.add({
-			title : 'Atributos Tipo Item',
-			xtype : 'atributosList',
-			closable : true
-			});
+//		var tab = tabs.add({
+//			title : 'Atributos Tipo Item',
+//			xtype : 'atributosList',
+//			closable : true
+//			});
 		var store = this.getStore('AtributoTipoItem');
 		store.load({
 			params:{
@@ -161,7 +162,7 @@ Ext.define('YAPP.controller.TipoItem', {
 		});
 		
 		
-		tabs.setActiveTab(tab);
+//		tabs.setActiveTab(tab);
 	},
 	
 	crearAtributo : function(button){

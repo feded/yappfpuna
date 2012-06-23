@@ -1,10 +1,10 @@
 Ext.define('YAPP.controller.Menus', {
 	extend : 'Ext.app.Controller',
 	
-	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List', 'esquema.List', 'rol.ABM', 'rol.List', 'tipoItem.List', 'suscripcion.List', 'item.ABM', 'recurso.ListarRecurso',
+	views : [ 'proyecto.ListarProyecto', 'fase.ListarFase', 'privilegio.List', 'esquema.List', 'rol.ABM', 'rol.List', 'tipoItem.ABM', 'suscripcion.List', 'item.ABM', 'recurso.ListarRecurso',
 			'linea_base.ABM', 'calculo_impacto.View', 'gantt.View', 'fase.ABM' ],
 	
-	stores : [ 'Proyectos', 'RolPermisos' ],
+	stores : [ 'Proyectos', 'RolPermisos', 'Item' ],
 	
 	refs : [ {
 		selector : 'viewport combobox[name=proyectos]',
@@ -25,6 +25,12 @@ Ext.define('YAPP.controller.Menus', {
 		selector : 'viewport button[action=adminTipoItems]',
 		ref : 'botonTipoItems'
 	}, {
+		selector : 'viewport button[action=adminEsquemas]',
+		ref : 'botonEsquemas'
+	},{
+		selector : 'viewport button[action=adminLineasBase]',
+		ref : 'botonLineasBase'
+	},{
 		selector : 'viewport tabpanel[name=tabPrincipal]',
 		ref : 'tabPrincipal'
 	}],
@@ -152,7 +158,9 @@ Ext.define('YAPP.controller.Menus', {
 	activarFase : function(combo) {
 		this.getBotonFases().setDisabled(false);
 		this.getBotonTipoItems().setDisabled(false);
-		
+		this.getBotonItems().setDisabled(true);
+		this.getBotonEsquemas().setDisabled(true);
+		this.getBotonLineasBase().setDisabled(true);
 		var store = this.getStore('Fases');
 		store.load({
 			params : {
@@ -168,6 +176,7 @@ Ext.define('YAPP.controller.Menus', {
 				if (Ext.typeOf(combo.getPicker().loadMask) !== "boolean") {
 					combo.getPicker().loadMask.hide();
 				}
+				combo.reset();
 			}
 		});
 		var store2 = this.getStore('TipoItems');
@@ -182,6 +191,8 @@ Ext.define('YAPP.controller.Menus', {
 	
 	activarItem : function(combo) {
 		this.getBotonItems().setDisabled(false);
+		this.getBotonEsquemas().setDisabled(false);
+		this.getBotonLineasBase().setDisabled(false);
 	},
 	casosEspeciales : function(permiso) {
 		if (permiso.data._permiso._nombre == "Ver costado derecho") {
@@ -236,7 +247,7 @@ Ext.define('YAPP.controller.Menus', {
 	},
 	
 	adminTipoItems : function(button) {
-		this.setTab('tipolist', 'Administrar tipo de items')
+		this.setTab('tipoitemsabm', 'Administrar tipo de items')
 	},
 	adminSuscripciones : function(button) {
 		this.setTab('suscripcionview', 'Administrar suscripcion')
@@ -342,8 +353,12 @@ function popularHashMap() {
 }
 
 function isDisabled(nombre) {
-	if (nombre == "Items" || nombre == "Fases" || nombre == "Tipo de items") {
-		return true;
+	if (nombre == "Items" || 
+		nombre == "Fases" || 
+		nombre == "Tipo de items" ||
+		nombre == "Esquemas" ||
+		nombre == "Linea base") {
+			return true;
 	}
 	
 	return false;

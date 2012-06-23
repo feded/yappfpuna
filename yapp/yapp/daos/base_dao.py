@@ -108,6 +108,8 @@ class BaseDAO :
                 nDAO.crear(notificacion);
         return
     
+
+    
 class HistorialDAO(BaseDAO):
     def get_clase(self):
         return Historial

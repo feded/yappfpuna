@@ -254,11 +254,13 @@ Ext.define('YAPP.controller.Item', {
 	changeFase : function(object, newValue, oldValue, eOpts) {
 		var itemStore = this.getItemStore();
 		var fase = this.getComboFase();
-		itemStore.load({
-			params : {
-				id : fase.getValue()
-			}
-		});
+		if (fase.getValue() != null){
+			itemStore.load({
+				params : {
+					id : fase.getValue()
+				}
+			});
+		}
 	},
 	
 	lineaBaseClick : function(grid, record) {
@@ -589,7 +591,7 @@ Ext.define('YAPP.controller.Item', {
 	habilitarBotones : function(estado){
 		if (estado == "ACTIVO" || estado == "REVISION" ){
 			this.getBtnAtributosItemList().setDisabled(false);
-			this.getBtnAsignar().setDisabled(false);
+			//this.getBtnAsignar().setDisabled(false);
 			this.getUnidad().setDisabled(false);
 			this.getDelete().setDisabled(false);
 			this.getAprove().setDisabled(false);
