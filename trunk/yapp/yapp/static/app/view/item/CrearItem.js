@@ -5,7 +5,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 	store : 'Item',
 	autoShow : true,
 	title : 'Crear Item',
-	
+
 	initComponent : function() {
 		this.items = [ {
 			xtype : 'form',
@@ -23,52 +23,66 @@ Ext.define('YAPP.view.item.CrearItem', {
 			items : [ {
 				xtype : 'textfield',
 				name : '_nombre',
-				padding : .5,
 				fieldLabel : 'Nombre',
-				allowBlank : false
+				allowBlank : false,
+
 			}, {
 				xtype : 'textfield',
 				name : '_descripcion',
 				fieldLabel : 'Descripcion',
-				allowBlank : false
+				allowBlank : false,
+
 			}, {
 				xtype : 'numberfield',
 				name : '_duracion',
 				fieldLabel : 'Duracion en dias',
 				typeAhead : true,
 				allowBlank : false,
-				minValue : 1
+				minValue : 1,
+				value : 1,
+
 			}, {
 				name : '_fecha_inicio',
 				xtype : 'datefield',
 				fieldLabel : 'Fecha de Inicio',
 				format : 'd/m/Y',
-				submitFormat : 'Y-m-d'
+				submitFormat : 'Y-m-d',
+
 			}, {
+				xtype : 'numberfield',
+				name : '_completado',
+				fieldLabel : 'Porcentaje Completado',
+				minValue : 0,
+				maxValue : 100,
+
+			},{
+				xtype : 'colorcbo',
+				name : 'color',
+				fieldLabel : 'Color',
+
+			},{
 				xtype : 'checkbox',
 				name : '_condicionado',
 				fieldLabel : 'Condicionado',
 				typeAhead : true,
-				allowBlank : false
-			}, {
-				xtype : 'colorcbo',
-				name : 'color',
-				fieldLabel : 'Color',
+				allowBlank : false,
+
 			}, {
 				xtype : 'displayfield',
 				name : '_tipo_item_prefijo',
 				fieldLabel : 'Prefijo Tipo de Item ',
-				allowBlank : false
+				allowBlank : false,
+
 			}, {
 				xtype : 'displayfield',
 				name : 'antecesor_nombre',
 				fieldLabel : 'Antecesor',
-			
+
 			}, {
 				xtype : 'displayfield',
 				name : 'padre_nombre',
 				fieldLabel : 'Padre',
-			
+
 			}, ],
 		}, {
 			xtype : 'container',
@@ -90,7 +104,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 				// stripeRows : true,
 				title : 'Tipos de Items Disponibles',
 				margins : '0 2 0 0'
-			
+
 			}, {
 				xtype : 'gridpanel',
 				name : 'gridLB',
@@ -98,7 +112,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 				columns : columnas_crear_Item,
 				// stripeRows : true,
 				title : 'Lineas Base Disponibles',
-			
+
 			} ]
 		},
 
@@ -121,8 +135,13 @@ Ext.define('YAPP.view.item.CrearItem', {
 				store : Ext.create('YAPP.store.Item'),
 				columns : columnas_crear_Item,
 				// stripeRows : true,
-				title : 'Relacion Antecesor',
-				margins : '0 2 0 0'
+				title : 'Relación Antecesor',
+				margins : '0 2 0 0',
+				fbar : [ {
+					text : 'Eliminar',
+					name : 'eliminar_antecesor',
+					action : 'eliminar_antecesor',
+				} ]
 			}, {
 				xtype : 'gridpanel',
 				name : 'gridPD',
@@ -131,10 +150,15 @@ Ext.define('YAPP.view.item.CrearItem', {
 				multiSelect : true,
 				columns : columnas_crear_Item,
 				// stripeRows : true,
-				title : 'Relacion Padre',
-				margins : '0 0 0 3'
+				title : 'Relación Padre',
+				margins : '0 0 0 3',
+				fbar : [ {
+					text : 'Eliminar',
+					name : 'eliminar_padre',
+					action : 'eliminar_padre',
+				} ]
 			} ]
-		} ]
+		} ];
 		this.layout = {
 			type : 'vbox',
 			align : 'stretch',
@@ -155,7 +179,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 			scope : this,
 			handler : this.close
 		} ];
-		
+
 		this.callParent(arguments);
 	}
 
@@ -173,7 +197,7 @@ var columnas_crear_Item = [ {
 }, {
 	text : "Descripcion",
 	flex : 1,
-	
+
 	sortable : true,
 	dataIndex : '_descripcion'
 } ];
