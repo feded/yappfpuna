@@ -27,13 +27,13 @@ Ext.define('YAPP.controller.Menus', {
 	}, {
 		selector : 'viewport button[action=adminEsquemas]',
 		ref : 'botonEsquemas'
-	},{
+	}, {
 		selector : 'viewport button[action=adminLineasBase]',
 		ref : 'botonLineasBase'
-	},{
+	}, {
 		selector : 'viewport tabpanel[name=tabPrincipal]',
 		ref : 'tabPrincipal'
-	}],
+	} ],
 	
 	init : function() {
 		console.log('Cargado controller Menus');
@@ -93,9 +93,14 @@ Ext.define('YAPP.controller.Menus', {
 				click : this.calculoImpacto
 			},
 			'viewport tabpanel[name=tabPrincipal]' : {
-				remove : this.antesDeCerrar
+				remove : this.antesDeCerrar,
+				tabchange : this.tabChange
 			}
 		});
+	},
+	
+	tabChange : function(tabPanel, newCard, oldCard, eOpts) {
+		newCard.fireEvent('tabSeleccionada', newCard);
 	},
 	
 	traerPermiso : function() {
@@ -232,10 +237,10 @@ Ext.define('YAPP.controller.Menus', {
 	},
 	
 	adminProyectos : function(button) {
-		this.setTab('listarproyecto','Administrar proyectos')
+		this.setTab('listarproyecto', 'Administrar proyectos')
 	},
 	adminFases : function(button) {
-		this.setTab('faseabm' , 'Administrar fases')
+		this.setTab('faseabm', 'Administrar fases')
 	},
 	
 	adminRoles : function(button) {
@@ -268,7 +273,7 @@ Ext.define('YAPP.controller.Menus', {
 	adminUnidadTrabajo : function(button) {
 		var store = this.getStore('UnidadTrabajo');
 		store.load();
-		this.setTab('listarunidadtrabajo','Administrar unidad de trabajo' );
+		this.setTab('listarunidadtrabajo', 'Administrar unidad de trabajo');
 	},
 	adminEsquemas : function(button) {
 		this.setTab('esquemaslist', 'Administrar Esquemas');
@@ -310,7 +315,7 @@ Ext.define('YAPP.controller.Menus', {
 			this.tabs[tipo] = pestanhas.add({
 				title : titulo,
 				xtype : tipo,
-				closable : true
+				closable : true,
 			})
 		}
 		pestanhas.setActiveTab(this.tabs[tipo])
@@ -353,12 +358,8 @@ function popularHashMap() {
 }
 
 function isDisabled(nombre) {
-	if (nombre == "Items" || 
-		nombre == "Fases" || 
-		nombre == "Tipo de items" ||
-		nombre == "Esquemas" ||
-		nombre == "Linea base") {
-			return true;
+	if (nombre == "Items" || nombre == "Fases" || nombre == "Tipo de items" || nombre == "Esquemas" || nombre == "Linea base") {
+		return true;
 	}
 	
 	return false;
