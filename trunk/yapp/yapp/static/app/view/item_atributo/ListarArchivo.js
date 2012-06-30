@@ -24,7 +24,7 @@ Ext.define('YAPP.view.item_atributo.ListarArchivo' ,{
 					xtype: 'button',
                     text : 'Eliminar archivo',
 					scope : this,
-					action : 'eiminarArchivo',
+					action : 'eliminarArchivo',
 					disabled : true,
 					name : 'btnEliminarArchivo'
                 }]

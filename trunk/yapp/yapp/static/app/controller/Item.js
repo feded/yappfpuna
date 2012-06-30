@@ -208,7 +208,10 @@ Ext.define('YAPP.controller.Item', {
 			'listararchivo' :{
 				itemdblclick  : this.download,
 				itemclick: this.habilitarEliminarArchivo
-			}
+			},
+			'listararchivo button[action=eliminarArchivo]':{
+				click: this.eliminarArchivo
+			},
 		});
 	},
 	
@@ -217,9 +220,35 @@ Ext.define('YAPP.controller.Item', {
 		var win = botonlist.up('grid');
 		var grilla = win.down('gridview')
 		var itemRecord = grilla.getSelectionModel().getSelection()[0];
+		
 		if(itemRecord.data._estado == 'ACTIVO' || itemRecord.data._estado == 'REVISION'){
 			this.getBtnEliminarArchivo().setDisabled(false);
 		}
+	},
+	
+	eliminarArchivo: function(button){
+		var grid = button.up('grid');
+		var grilla = grid.down('gridview')
+		var selection = grilla.getSelectionModel().getSelection()[0];
+		
+		var g = this.getGrilla();
+		var item = g.getSelectionModel().getSelection()[0];
+		var me = this;
+		selection.data._item_id = item.data.id
+		selection.destroy({
+//			params:{
+//				id_item : item.data.id
+//			},
+			success: function(fase){
+				me.getArchivosStore().remove(selection);
+				Ext.example.msg("YAPP", "Se elimino con éxito el archivo");
+			},
+			
+			failure: function(fase){
+				alert("No se elimino el archivo");
+			}
+		});
+		
 	},
 	
 	download:function(){
@@ -620,6 +649,7 @@ Ext.define('YAPP.controller.Item', {
 			this.getDeaprove().setDisabled(false);
 			this.getVersiones().setDisabled(false);
 			this.getBtnListarArchivos().setDisabled(true);
+			this.getBtnEliminarArchivo().setDisabled(true);
 		}else if (estado == "BLOQUEADO"){
 			this.getBtnAtributosItemList().setDisabled(true);
 			this.getBtnAsignar().setDisabled(true);
@@ -629,6 +659,7 @@ Ext.define('YAPP.controller.Item', {
 			this.getDeaprove().setDisabled(true);
 			this.getVersiones().setDisabled(true);
 			this.getBtnListarArchivos().setDisabled(true);
+			this.getBtnEliminarArchivo().setDisabled(true);
 		}else{
 			this.getBtnAtributosItemList().setDisabled(true);
 			this.getBtnAsignar().setDisabled(true);
@@ -638,6 +669,7 @@ Ext.define('YAPP.controller.Item', {
 			this.getDeaprove().setDisabled(true);
 			this.getVersiones().setDisabled(true);
 			this.getBtnListarArchivos().setDisabled(true);
+			this.getBtnEliminarArchivo().setDisabled(true);
 		}
 	},
 	
