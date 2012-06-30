@@ -97,6 +97,7 @@ def main(global_config, **settings):
     config.add_route('upload' , '/upload')
     config.add_route('download' , '/download')
     config.add_route('archivos' , '/archivos')
+    config.add_route('eliminarArchivo' , '/archivos/{id}')
     
     #rutas volpe
     config.add_route('crearRol', '/crearRol')
