@@ -31,7 +31,8 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 				},
             	
             	'listarproyecto': {
-            		itemdblclick: this.editarProyecto
+            		itemdblclick: this.editarProyecto,
+            		'tabSeleccionada' : this.focuseada
             	},
             	
             	'nuevoproyecto button[action=guardar]': {
@@ -40,16 +41,19 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
             	
             	'editarproyecto button[action=guardar]': {
             		click: this.guardarEditarProyecto
-            	}
+            	},
             	
         });
+	},
+	focuseada : function(view) {
+		this.getProyectosStore().load();
 	},
 	
 	crearProyecto: function(){
 		var view = Ext.widget('nuevoproyecto');
         var proyecto = new YAPP.model.Proyecto();
 		
-		proyecto.data._estado = "Elaboración";
+		proyecto.data._estado = "ELABORACION";
 		var fecha = new Date();
 		var hoy = Ext.Date.format(fecha,'Y-m-d, g:i a');
 		proyecto.data._fecha_creacion = hoy;
@@ -74,6 +78,12 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		var me = this;
+		
+		if(selection.data._estado != 'ELABORACION'){
+			Ext.Msg.alert('YAPP','No se pudo eliminar un proyecto debido a que se encuentra en un estado ' + selection.data._estado);
+			return;
+		}
+		
 		selection.destroy({
 			success: function(proyecto){
 				me.getProyectosStore().remove(selection)
@@ -81,7 +91,7 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 			},
 			
 			failure: function(proyecto){
-				alert("No se elimino el proyecto");
+				Ext.Msg.alert("YAPP","No se elimino el proyecto");
 			}
 		});
 	},	
@@ -96,6 +106,12 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		var cb2 = this.getComboLider();
 		record.data._autor_id = cb1.getValue();
 		record.data._lider_id = cb2.getValue();
+		
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP","Faltan datos por completar");
+			return;
+		}
+		
 		record.save({
 			success: function(proyecto){
 				Ext.example.msg("YAPP", "Cambios guardados correctamente");
@@ -103,7 +119,7 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 			},
 			
 			failure: function(proyector){
-				alert("No se modifico el proyecto");
+				Ext.Msg.alert("YAPP","No se modifico el proyecto");
 			}
 		});
 		
@@ -120,6 +136,11 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 		record.set('_lider_id',record.data._lider);
 		var me = this;
 	
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP",'Faltan datos por completar');
+			return;
+		}
+		
 		record.save({
 			success: function(proyecto){
 				me.getProyectosStore().insert(me.getProyectosStore().getCount(),proyecto);
@@ -128,12 +149,9 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 			},
 			
 			failure: function(proyecto){
-				alert("No se pudo crear el proyecto");
+				Ext.Msg.alert("YAPP","No se pudo crear el proyecto");
 			}
 		});	
-		
-		
-		
 	}
 	
 });

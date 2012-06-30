@@ -14,7 +14,8 @@ Ext.define('YAPP.view.proyecto.NuevoProyecto', {
                     {
                         xtype: 'textfield',
                         name : '_nombre',
-                        fieldLabel: 'Proyecto'
+                        fieldLabel: 'Proyecto',
+                        allowBlank: false
                     },
 //                    {
 //                        xtype: 'textfield',
@@ -30,7 +31,8 @@ Ext.define('YAPP.view.proyecto.NuevoProyecto', {
 						displayField : '_nombre',
 						typeAhead : true,
 						queryMode : 'local',
-						emptyText : 'Seleccione un autor...'
+						emptyText : 'Seleccione un autor...',
+						allowBlank: false
 					},
                     {
                         xtype: 'numberfield',
@@ -54,12 +56,14 @@ Ext.define('YAPP.view.proyecto.NuevoProyecto', {
 						displayField : '_nombre',
 						typeAhead : true,
 						queryMode : 'local',
-						emptyText : 'Seleccione un líder...'
+						emptyText : 'Seleccione un líder...',
+						allowBlank: false
 					},
                     {
                         xtype: 'textfield',
                         name : '_nota',
-                        fieldLabel: 'Nota'
+                        fieldLabel: 'Nota',
+                        allowBlank: false
                     }
                 ]
             }

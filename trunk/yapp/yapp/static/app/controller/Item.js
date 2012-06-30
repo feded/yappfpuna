@@ -195,7 +195,7 @@ Ext.define('YAPP.controller.Item', {
 				click : this.eliminarRelacionPadre
 			},
 			'viewport combobox[name=fases]' : {
-				change : this.changeFase
+				select : this.changeFase
 			},
 			'listararchivo button[action=archivos]':{
 				click: this.archivos
