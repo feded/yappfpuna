@@ -14,11 +14,19 @@ Ext.define('YAPP.view.item_atributo.ListarArchivo' ,{
 				items : [ 
 				{
 					xtype: 'button',
-                    text : 'Archivos Relacionados al Item',
+                    text : 'Subir archivo',
 					scope : this,
 					action : 'archivos',
 					disabled : true,
 					name : 'btnListarArchivos'
+                },
+                {
+					xtype: 'button',
+                    text : 'Eliminar archivo',
+					scope : this,
+					action : 'eiminarArchivo',
+					disabled : true,
+					name : 'btnEliminarArchivo'
                 }]
 		}];
     	
