@@ -30,16 +30,11 @@ Ext.define('YAPP.view.fase.NuevaFase', {
             					fieldLabel: 'Comentario'
                     		},
                     		{
-                    			xtype: 'fieldcontainer',
-                    			fieldLabel: 'Color',
-                    			items: [
-                    					{
-                        					xtype: 'textfield',
-                        					name : '_color',
-                        					itemId : 'color',
-                    					},colorPicker
-                    					]
-                    		}
+								xtype : 'colorcbo',
+								name : '_color',
+								fieldLabel: 'Color'
+							}
+                    		
 //                    		{
 //                    			xtype: 'colorpicker',
 ////                    			name: '_color',
@@ -85,16 +80,4 @@ Ext.define('YAPP.view.fase.NuevaFase', {
 
         this.callParent(arguments);
     },
-});
-
-var colorPicker = Ext.create('Ext.picker.Color', {
-//    value: '993300',  // initial selected color
-//    listeners: {
-//        select: function(picker, selColor) {
-////            alert(selColor);
-//			var texto = selColor;
-//            var win = picker.up('window');
-//            win.down('#color').setValue(texto);
-//        }
-//    }
 });

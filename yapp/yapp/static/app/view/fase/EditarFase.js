@@ -28,7 +28,7 @@ Ext.define('YAPP.view.fase.EditarFase', {
 				xtype : 'colorcbo',
 				name : '_color',
 				fieldLabel: 'Color',
-			}, ]
+			} ]
 		} ];
 		this.buttons = [ {
 			text : 'Guardar',

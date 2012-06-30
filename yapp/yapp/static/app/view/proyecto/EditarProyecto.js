@@ -14,7 +14,8 @@ Ext.define('YAPP.view.proyecto.EditarProyecto', {
                     {
                         xtype: 'textfield',
                         name : '_nombre',
-                        fieldLabel: 'Proyecto'
+                        fieldLabel: 'Proyecto',
+                        allowBlank: false
                     },
 					{
 						xtype : 'combobox',
@@ -25,7 +26,8 @@ Ext.define('YAPP.view.proyecto.EditarProyecto', {
 						displayField : '_nombre',
 						typeAhead : true,
 						queryMode : 'local',
-						emptyText : 'Seleccione un autor...'
+						emptyText : 'Seleccione un autor...',
+						allowBlank: false
 					},
                     {
                         xtype: 'numberfield',
@@ -33,8 +35,7 @@ Ext.define('YAPP.view.proyecto.EditarProyecto', {
                         fieldLabel: 'Prioridad',
                         minValue: 1,
                         Value: 1,
-                        maxValue: 10,
-                        
+                        maxValue: 10
                     },
                     {
 						xtype : 'combobox',
@@ -45,12 +46,14 @@ Ext.define('YAPP.view.proyecto.EditarProyecto', {
 						displayField : '_nombre',
 						typeAhead : true,
 						queryMode : 'local',
-						emptyText : 'Seleccione un lider...'
+						emptyText : 'Seleccione un lider...',
+						allowBlank: false
 					},
                     {
                         xtype: 'textfield',
                         name : '_nota',
-                        fieldLabel: 'Nota'
+                        fieldLabel: 'Nota',
+                        allowBlank: false
                     }
                 ]
             }

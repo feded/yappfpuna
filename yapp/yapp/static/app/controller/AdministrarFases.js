@@ -119,7 +119,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var cb = this.getProyectos();
 		
 		fase.data._proyecto_id = cb.getValue();
-		fase.data._estado = "Pendiente";
+		fase.data._estado = "PENDIENTE";
 
 		view.down('form').loadRecord(fase);
 	},
