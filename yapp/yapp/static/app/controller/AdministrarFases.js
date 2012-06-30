@@ -56,6 +56,10 @@ Ext.define('YAPP.controller.AdministrarFases', {
             		itemclick : this.faseListSelectChange
             	},
             	
+            	'faseabm':{
+            		'tabSeleccionada' : this.focuseada
+            	},
+            	
             	'editarfase button[action=guardar]': {
             		click: this.guardarEditarFase
             	},
@@ -112,6 +116,10 @@ Ext.define('YAPP.controller.AdministrarFases', {
         });
 	},
 	
+	focuseada : function(view) {
+		this.getGrilla().getSelectionModel().select(0, false, true)
+	},
+	
 	crearFase: function(button){
 		var view = Ext.widget('nuevafase');
         var fase = new YAPP.model.Fase();
@@ -134,6 +142,12 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		//verificamos si ya existe una fase con ese nro de orden
 		var existe = storeFases.findExact('_orden', values._orden);
 		var me = this;
+		
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP","Faltan datos por completar");
+			return;
+		}
+		
 		if(existe == -1){
 			record.save({
 				success: function(fase){
@@ -169,6 +183,12 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var storeFases = this.getFasesStore();
 		var existe = storeFases.findExact('_orden', values._orden);
 		var me = this;
+		
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP","Faltan datos por completar");
+			return;
+		}
+		
 		if(existe == -1){
 			//No existe el nro de orden
 			record.set(values);
@@ -216,6 +236,19 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		var me = this;
+		
+		if(selection.data._estado != 'PENDIENTE'){
+			Ext.Msg.alert('YAPP','No se puede eliminar debido a que se encuentra en un estado ' + selection.data._estado);
+			return;
+		}
+		
+		var cantidad = this.getFasesStore().getCount();
+		
+		if(cantidad == 1){
+			Ext.Msg.alert('YAPP','El proyecto no se puede quedar sin fases');
+			return;
+		}
+		
 		selection.destroy({
 			success: function(fase){
 				me.getFasesStore().remove(selection);

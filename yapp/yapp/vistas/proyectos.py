@@ -59,7 +59,7 @@ def create_proyectos(request):
     nombre_fase = "Fase por defecto de " + entidad["_nombre"]
     orden = 1
     comentario = "Fase creada por defecto"
-    estado = "Pendiente"
+    estado = "PENDIENTE"
     color = "0"
     nueva_fase = Fase(nombre_fase, nuevo_proyecto, orden, comentario, estado,color)
     dao_fase = FaseDAO(request)
