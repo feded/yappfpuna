@@ -92,7 +92,7 @@ Ext.define('YAPP.controller.Item', {
 	{
 		selector: 'listararchivo gridview',
 		ref: 'grilla2'
-	}
+	}	
 	],
 	
 	init : function() {
@@ -207,26 +207,25 @@ Ext.define('YAPP.controller.Item', {
 	},
 	
 	download:function(){
-		console.log('adfasdfasdfs');
 		var g2 = this.getGrilla2();
 		var archivo = g2.getSelectionModel().getSelection()[0];
 		
-		
-		Ext.Ajax.request({
-   			url: '/download',
+		var form = Ext.create('Ext.form.Panel', {
+			fileUpload: true,
+			method: 'post',
+            items: [{
+				xtype: 'filefield',
+			}]
+		});
+	
+		form.submit({
+			url: '/download',
 			clientValidation: true,
 			params:{
 				archivo_id : archivo.data.id
 			}
 		});
 		
-//			success : function() {
-//				Ext.example.msg("YAPP", "Archivo subido correctamente");
-//				win.close();
-//			},
-//			failure : function() {
-//				alert('No se pudo alzar el archivo');
-//			}
 	},
 	
 	onRender : function() {
@@ -254,13 +253,11 @@ Ext.define('YAPP.controller.Item', {
 	changeFase : function(object, newValue, oldValue, eOpts) {
 		var itemStore = this.getItemStore();
 		var fase = this.getComboFase();
-		if (fase.getValue() != null){
-			itemStore.load({
-				params : {
-					id : fase.getValue()
-				}
-			});
-		}
+		itemStore.load({
+			params : {
+				id : fase.getValue()
+			}
+		});
 	},
 	
 	lineaBaseClick : function(grid, record) {
@@ -591,7 +588,7 @@ Ext.define('YAPP.controller.Item', {
 	habilitarBotones : function(estado){
 		if (estado == "ACTIVO" || estado == "REVISION" ){
 			this.getBtnAtributosItemList().setDisabled(false);
-			//this.getBtnAsignar().setDisabled(false);
+			this.getBtnAsignar().setDisabled(false);
 			this.getUnidad().setDisabled(false);
 			this.getDelete().setDisabled(false);
 			this.getAprove().setDisabled(false);
