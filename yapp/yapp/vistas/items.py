@@ -114,12 +114,12 @@ def ag_atributos_tipos_item(request):
             if fecha_inicio < padre._fecha_inicio :
                 return Response(json.dumps({'sucess': 'false', 'lista':''}))
         nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, entidad["_completado"],padre_id, antecesor_id)
-            formato_entrada = "%Y-%m-%d %H:%M:%S"
-            print "-----------------"
-            if len(padre._fecha_inicio)>1:
-                padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
-                if fecha_inicio <  padre_inicio:
-                    return Response(json.dumps({'sucess': 'false', 'lista':''}))
+        formato_entrada = "%Y-%m-%d %H:%M:%S"
+        print "-----------------"
+        if len(padre._fecha_inicio)>1:
+            padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
+            if fecha_inicio <  padre_inicio:
+                return Response(json.dumps({'sucess': 'false', 'lista':''}))
         nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, entidad["_completado"], padre_id, antecesor_id)
         itemDao = ItemDAO(request)
         itemDao.crear(nuevo_item)
