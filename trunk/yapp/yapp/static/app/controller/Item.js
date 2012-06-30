@@ -67,7 +67,12 @@ Ext.define('YAPP.controller.Item', {
 	} ,{
 		selector : 'listararchivo button[name=btnListarArchivos]',
 		ref : 'btnListarArchivos'
-	} , {
+	} ,
+	{
+		selector : 'listararchivo button[name=btnEliminarArchivo]',
+		ref : 'btnEliminarArchivo'
+	} ,
+	{
 		selector : 'itemslist button[name=borrar]',
 		ref : 'delete'
 	} , {
@@ -201,9 +206,20 @@ Ext.define('YAPP.controller.Item', {
 			},
 			
 			'listararchivo' :{
-				itemclick  : this.download	
+				itemdblclick  : this.download,
+				itemclick: this.habilitarEliminarArchivo
 			}
 		});
+	},
+	
+	habilitarEliminarArchivo: function(){
+		var botonlist = this.getBotonList();
+		var win = botonlist.up('grid');
+		var grilla = win.down('gridview')
+		var itemRecord = grilla.getSelectionModel().getSelection()[0];
+		if(itemRecord.data._estado == 'ACTIVO' || itemRecord.data._estado == 'REVISION'){
+			this.getBtnEliminarArchivo().setDisabled(false);
+		}
 	},
 	
 	download:function(){
