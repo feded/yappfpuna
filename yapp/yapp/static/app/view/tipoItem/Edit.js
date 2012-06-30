@@ -49,6 +49,7 @@ var form_tipo = {
 		xtype : 'colorcbo',
 		name : '_color',
 		fieldLabel: 'Color',
+		allowBlank: false
 	},
 	{
 		xtype : 'textfield',
@@ -59,7 +60,6 @@ var form_tipo = {
 		xtype : 'checkbox',
 		name : '_condicionado',
 		fieldLabel : 'Condicionado',
-		allowBlank : false
 	}, ]
 };
 

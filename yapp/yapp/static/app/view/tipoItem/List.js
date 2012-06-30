@@ -8,22 +8,21 @@ Ext.define('YAPP.view.tipoItem.List' ,{
 		this.dockedItems = [ {
 				xtype : 'toolbar',
 				items : [ {
-					iconCls : 'icon-add',
 					text : 'Nuevo Tipo de Item',
 					itemId : 'nuevo_tipo_item',
 					scope : this,
-					action : 'crear'
+					action : 'crear',
 				}, '|', {
-					iconCls : 'icon-delete',
 					text : 'Eliminar Tipo de Item',
 					disabled : true,
 					itemId : 'delete',
 					action : 'borrar',
 					scope : this,
-				}, {
+				},'|', {
 					text : 'Importar',
 					action : 'importar',
 					scope : this,
+					
 				}]
 			} ];
     

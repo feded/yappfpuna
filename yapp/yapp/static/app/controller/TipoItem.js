@@ -191,6 +191,12 @@ Ext.define('YAPP.controller.TipoItem', {
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
+		
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP","Faltan datos por completar");
+			return;
+		}
+		
 		record.set(values);
 		if (record.data._condicionado == 'on'){
 			record.data._condicionado = 'true'
@@ -230,6 +236,7 @@ Ext.define('YAPP.controller.TipoItem', {
 	},
     crearTipoItem : function(button){
     	var view = Ext.widget('tipoItemedit');
+    	view.setTitle('Nuevo tipo de item');
 		var tipoItem = new YAPP.model.TipoItem();
 		var cb = this.getProyectos();
 		tipoItem.data.accion = 'POST';

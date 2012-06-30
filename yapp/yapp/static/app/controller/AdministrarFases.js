@@ -158,14 +158,14 @@ Ext.define('YAPP.controller.AdministrarFases', {
 				},
 				
 				failure: function(fase){
-					alert('No se pudo crear la fase');
+					Ext.Msg.alert("YAPP",'No se pudo crear la fase');
 				}
 			});
 			
 			
 		}
 		else{
-			alert("Existe ya una fase con ese orden");
+			Ext.Msg.alert("YAPP","Existe ya una fase con ese orden");
 		}		
 	},
 	
@@ -200,7 +200,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 				},
 				
 				failure : function(fase){
-					alert("No se modifico la fase");
+					Ext.Msg.alert("YAPP","No se modifico la fase");
 				}	
 			});
 			
@@ -219,14 +219,14 @@ Ext.define('YAPP.controller.AdministrarFases', {
 					},
 					
 					failure : function(fase){
-						alert("No se modifico la fase");
+						Ext.Msg.alert("YAPP","No se modifico la fase");
 					}
 					
 				});
 				
 			}
 			else{
-				alert("Existe ya una fase con ese orden");	
+				Ext.Msg.alert("YAPP","Existe ya una fase con ese orden");	
 			}
 		}
 	},
@@ -256,7 +256,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 			},
 			
 			failure: function(fase){
-				alert("No se elimino la fase");
+				Ext.Msg.alert("YAPP","No se elimino la fase");
 			}
 		});
 	},
@@ -314,7 +314,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 			},
 			
 			failure: function(atributo){
-				alert("No se pudo crear el atributo particular");
+				Ext.Msg.alert("YAPP","No se pudo crear el atributo particular");
 			}
 		});
 		
@@ -339,7 +339,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 			},
 			
 			failure: function(atributo){
-				alert("No se pudo modificar el atributo");
+				Ext.Msg.alert("YAPP","No se pudo modificar el atributo");
 			}
 		});
 	},
@@ -355,7 +355,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 				Ext.example.msg("YAPP", "Atributo de fase eliminado con éxito");
 			},
 			failure: function(atributo){
-				alert("No se pudo eliminar el atributo");
+				Ext.Msg.alert("YAPP","No se pudo eliminar el atributo");
 			}
 		});
 	},
@@ -389,7 +389,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 				},
 				
 				failure: function(tipo){
-					alert('No se pudo agregar el tipo de item');
+					Ext.Msg.alert("YAPP",'No se pudo agregar el tipo de item');
 				}
 			});
 		}else{
@@ -410,7 +410,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 			},
 			
 			failure: function(tipo){
-				alert('No se pudo realizar la operacion');
+				Ext.Msg.alert("YAPP",'No se pudo realizar la operacion');
 			}
 			
 		});
