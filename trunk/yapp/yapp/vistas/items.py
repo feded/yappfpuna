@@ -8,12 +8,14 @@ from sqlalchemy import Sequence
 from yapp.daos.atributo_tipo_item_dao import AtributoTipoItemDAO
 from yapp.daos.base_dao import BaseDAO
 from yapp.daos.fase_dao import FaseDAO
+from yapp.daos.archivo_dao import ArchivoDAO
 from yapp.daos.item_dao import ItemDAO
 from yapp.daos.item_unidad_dao import ItemUnidadDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
 from yapp.models import DBSession, DBSession
 from yapp.models.fase.fase import FaseDTO
 from yapp.models.item.item import Item, ItemDTO
+from yapp.models.item.item_archivo import ItemArchivo
 from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
 from yapp.models.tipo_item.tipo_item import TipoItem
 import datetime
@@ -109,6 +111,9 @@ def ag_atributos_tipos_item(request):
         fecha_fin = fecha_inicio + delta
         
         if padre != None:
+            if fecha_inicio < padre._fecha_inicio :
+                return Response(json.dumps({'sucess': 'false', 'lista':''}))
+        nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, entidad["_completado"],padre_id, antecesor_id)
             formato_entrada = "%Y-%m-%d %H:%M:%S"
             print "-----------------"
             if len(padre._fecha_inicio)>1:
@@ -295,6 +300,10 @@ def upload(request):
     item_archivo_dao = ItemArchivoDAO(request)
     nuevo_item_archivo = ItemArchivo(item,nuevo_archivo)
     item_archivo_dao.crear(nuevo_item_archivo)
+    
+#    response= Response(content_type='application/force-download',content_disposition='attachment; filename=' + nuevo_archivo._nombre)
+#    response.app_iter= nuevo_archivo._contenido
+#    return response
     
     return Response(json.dumps({'success': True}))
 #    response= Response(content_type='application/force-download',content_disposition='attachment; filename=' + nuevo_archivo._nombre_archivo)
