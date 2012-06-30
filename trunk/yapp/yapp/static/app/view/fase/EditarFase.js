@@ -13,7 +13,8 @@ Ext.define('YAPP.view.fase.EditarFase', {
 			items : [ {
 				xtype : 'textfield',
 				name : '_nombre',
-				fieldLabel : 'Nombre'
+				fieldLabel : 'Nombre',
+				allowBlank: false
 			}, {
 				xtype : 'numberfield',
 				name : '_orden',
@@ -28,6 +29,7 @@ Ext.define('YAPP.view.fase.EditarFase', {
 				xtype : 'colorcbo',
 				name : '_color',
 				fieldLabel: 'Color',
+				allowBlank: false
 			} ]
 		} ];
 		this.buttons = [ {

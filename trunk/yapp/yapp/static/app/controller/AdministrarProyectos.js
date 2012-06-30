@@ -16,6 +16,10 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
         		{
                 	selector : 'editarproyecto combobox[name=_lider]',
                 	ref : 'comboLider'
+        		},
+        		{
+        			selector : 'viewport combobox[name=proyectos]',
+        			ref : 'proyectos'
         		}
         	],
 	
@@ -46,7 +50,16 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
         });
 	},
 	focuseada : function(view) {
-		this.getProyectosStore().load();
+		var proyectos = this.getProyectosStore();
+		var cbProyecto = this.getProyectos();
+		proyectos.load({
+				callback: function(){
+					if (Ext.typeOf(cbProyecto.getPicker().loadMask) !== "boolean") {
+			             cbProyecto.getPicker().loadMask.hide();
+			         }
+					cbProyecto.store = proyectos;
+				}
+		});
 	},
 	
 	crearProyecto: function(){
@@ -63,6 +76,10 @@ Ext.define('YAPP.controller.AdministrarProyectos', {
 	},
 	
 	editarProyecto: function(grid, record){
+		if(record.data._estado != 'ELABORACION'){
+			Ext.Msg.alert('YAPP','No se puede modificar un proyecto debido a que se encuentra en un estado ' + record.data._estado);
+			return;
+		}
 		var view = Ext.widget('editarproyecto');
 		var fecha = new Date();
 		var hoy = Ext.Date.format(fecha,'Y-m-d, g:i a');

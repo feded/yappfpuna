@@ -15,13 +15,14 @@ Ext.define('YAPP.view.fase.NuevaFase', {
                     		{
                         		xtype: 'textfield',
                         		name : '_nombre',
-                        		fieldLabel: 'Nombre'
+                        		fieldLabel: 'Nombre',
+                        		allowBlank: false
                     		},
                     		{
                     			xtype: 'numberfield',
                     			name: '_orden',
                 				fieldLabel: 'Orden',
-                				value: 5,
+                        		Value: 1,
                 				minValue: 1
                     		},
                     		{
@@ -32,7 +33,8 @@ Ext.define('YAPP.view.fase.NuevaFase', {
                     		{
 								xtype : 'colorcbo',
 								name : '_color',
-								fieldLabel: 'Color'
+								fieldLabel: 'Color',
+								allowBlank: false
 							}
                     		
 //                    		{
