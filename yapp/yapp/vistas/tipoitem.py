@@ -67,9 +67,14 @@ def delete_tipo(request):
     
     tipoItemDao = TipoItemDAO(request);
     tipoItem = tipoItemDao.get_by_id(entidad["id"])
-    tipoItemDao.borrar(tipoItem)
-    return Response(json.dumps({'sucess': 'true'}))
-        
+    
+    rd = TipoFaseDAO(request)
+    temp = rd.get_query().filter(TipoFase._tipo_id == entidad["id"]).first()
+    if temp == None:
+        tipoItemDao.borrar(tipoItem)
+        return Response(json.dumps({'sucess': 'true'}))
+    else:
+        return Response(json.dumps({'sucess': 'false' , "message": "El tipo de item se encuentra asociado a una fase" }))
 
 @view_config(route_name='guardarTipo')
 def update_tipo(request):
@@ -112,8 +117,6 @@ def AG_atributos_tipos_item(request):
                 for ent in entidades:
                     for atributo in atributosTipoItem:
                         if ent._atributo_id == atributo._id:
-                            print len(entidades)
-                            print item._id
                             print "removiendo"
                             print atributo._id
                             aRet.remove(atributo);

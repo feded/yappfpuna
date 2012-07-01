@@ -12,7 +12,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		'fase.EditarFase',
 		'tipoItem.Edit'
 		],
-	stores:['Fases', 'AtributoFase', 'TipoFase'],
+	stores:['Fases', 'AtributoFase', 'TipoFase','Item'],
 	models:['Fase', 'AtributoFase'],
 	
 	refs: [	{
@@ -34,8 +34,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 			{
     			selector: 'listartipofase combobox',
     			ref: 'comboTipoItem'
-			},
-
+			}
 			
 
 	],
@@ -118,6 +117,11 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	
 	focuseada : function(view) {
 		this.getGrilla().getSelectionModel().select(0, false, true)
+		var grid = this.getGrilla();
+		var record = grid.getSelectionModel().getSelection()[0];
+		
+		grid.fireEvent('itemclick', grid, record);
+		this.getComboTipoItem().setValue("");
 	},
 	
 	crearFase: function(button){
@@ -423,17 +427,48 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		var storeTipoFase = win.getStore()
-		selection.destroy({
-			success: function(tipo){
-				storeTipoFase.remove(selection);
-				Ext.example.msg("YAPP", "Operación exitosa");	
+		
+		
+		var g = this.getGrilla();
+       	var fase = g.getSelectionModel().getSelection()[0];
+       	
+		
+		
+		var itemStore = this.getItemStore();
+		var registro;
+		itemStore.load({
+			params : {
+				id : fase.data.id
 			},
 			
-			failure: function(tipo){
-				Ext.Msg.alert("YAPP",'No se pudo realizar la operacion');
+			callback: function(){
+				registro = itemStore.findBy(function (record, id) {
+					return record.data._tipo_item._id == selection.data._tipo
+				});
+				
+				if(registro != -1){
+					Ext.Msg.alert("YAPP",'Existen items de ese tipo de item');
+					return	
+				}
+				
+				selection.destroy({
+					success: function(tipo){
+						storeTipoFase.remove(selection);
+						Ext.example.msg("YAPP", "Operación exitosa");	
+					},
+					
+					failure: function(tipo){
+						Ext.Msg.alert("YAPP",'No se pudo realizar la operacion');
+					}
+					
+				});				
 			}
-			
 		});
+
+		
+		
+//		
+		
 		
 	},
 	

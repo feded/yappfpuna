@@ -40,6 +40,12 @@ Ext.define('YAPP.controller.TipoItem', {
 				},{
 					selector: 'atributosList button[action=crearAtributo]',
 					ref: 'botonNuevoAtributo'
+				},{
+					selector: 'tipolist button[action=borrar]',
+					ref: 'botonEliminarTipoItem'
+				},{
+					selector: 'atributoedit textfield[name=_defecto]',
+					ref: 'textoDefecto'
 				}
 			],
 	
@@ -94,7 +100,11 @@ Ext.define('YAPP.controller.TipoItem', {
             },
             'tipoitemsabm':{
             	'tabSeleccionada' : this.focuseada
+            },
+            'atributoedit combobox[name=_tipo]':{
+            	select: this.selectTipo
             }
+            	
 
         });
 	},
@@ -105,10 +115,31 @@ Ext.define('YAPP.controller.TipoItem', {
 		{
 			this.getGridTipo().getSelectionModel().select(0, false, true);
 			this.getBotonNuevoAtributo().setDisabled(false);
+			this.getBotonEliminarTipoItem().setDisabled(false);
 		}else{
 			this.getBotonNuevoAtributo().setDisabled(true);
+			this.getBotonEliminarTipoItem().setDisabled(true);
 		}
 		
+	},
+
+	selectTipo:function(cb){
+		console.log(cb.getValue());
+		
+		var tipo = cb.getValue();
+		var texto = this.getTextoDefecto();
+		if(tipo == 'Numerico'){
+			texto.regex = /^\d/
+			texto.regexText = 'Solo numeros'
+		}	
+		if (tipo == 'Cadena de Texto'){
+			texto.regex = /^[\d\w]/
+			texto.regexText = 'Cadena de numeros y letras'
+		}
+		if (tipo == 'Booleano'){
+			texto.regex = /^(true|false)$/
+			texto.regexText = "Escriba: 'true' o 'false'"
+		}
 	},
 	
 	importar : function(button){
@@ -231,13 +262,13 @@ Ext.define('YAPP.controller.TipoItem', {
 		if (record.data.accion == "POST"){
 			record.save({
 				success: function(tipo){
-					me.getTipoItemsStore().insert(0, tipo);
+					me.getTipoItemsStore().insert(me.getTipoItemsStore().getCount(), tipo);
 					Ext.example.msg("YAPP", "Tipo de item creado con éxito");
 					win.close();	
 				},
 				
-				failure: function(tipo){
-					alert("YAPP", "El Tipo de item no se puede crear")
+				failure: function(rec, op){
+					Ext.Msg.alert("YAPP","No se pudo crear el tipo de item");
 					
 				}
 			});
@@ -250,7 +281,7 @@ Ext.define('YAPP.controller.TipoItem', {
 				},
 				
 				failure: function(tipo){
-					alert("No se puedo actualizar el tipo de item")
+					Ext.Msg.alert("YAPP","No se pudo actualizar el tipo de item")
 				}
 			});
 		}
@@ -284,16 +315,23 @@ Ext.define('YAPP.controller.TipoItem', {
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		selection.data.accion = "DELETE"
 		var me = this;
+		
+		
 		selection.destroy({
 			success: function(tipo){
 				me.getTipoItemsStore().remove(selection)		
 			},
-			failure: function(tipo){
-				alert("No se pudo eliminar el tipo de item")
+			failure: function(rec, op){
+				if (op.request.scope.reader.jsonData == undefined){
+					Ext.Msg.alert("YAPP","No se pudo eliminar el tipo de item");
+				}
+				else{
+					Ext.Msg.alert("YAPP",op.request.scope.reader.jsonData["message"]);
+				}
 			}
-		});
-		
+		});			
 	},
+	
 	borrarAtributo: function(button){
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
