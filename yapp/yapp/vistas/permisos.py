@@ -20,7 +20,6 @@ def obtener_permisos(request):
     
     r = RolDAO(request)
     rol = r.get_by_id(user._id)
-    
 
     rd = PermisosRolesDAO(request)
     
@@ -47,16 +46,11 @@ def get_permisos_rol(request, rol, permisos, rol_permiso_dao, roles_visitados, d
             continue
         permisos.append(permiso)
     for rol_padre in rol._padres:
-#        print "------------------"
-#        print "------------------"
-#        print "------------------"
-#        print "buscando en " + str(rol_padre._id)
-#        print "------------------"
-#        print "------------------"
-#        print "------------------"
         if rol_padre in roles_visitados:
             continue;
-        avisitar = dao_rol.get_by_id(rol_padre._padre._id)
+#        avisitar = dao_rol.get_by_id(rol_padre._padre._id)
+        avisitar = rol_padre._padre
+#        avisitar = dao_rol.get_by_id(rol_padre._padre._id)
         permisos = get_permisos_rol(request, avisitar, permisos, rol_permiso_dao, roles_visitados, dao_rol)
     
     return permisos

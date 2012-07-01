@@ -10,7 +10,7 @@ from pyramid.view import view_config
 from yapp.daos.entidad_padre_dao import EntidadPadreDAO
 from yapp.daos.privilegio_dao import PrivilegioDAO
 from yapp.daos.rol_privilegio_dao import RolPrivilegioDAO
-from yapp.models.roles.privilegio import Privilegio, PrivilegioDTO
+from yapp.models.roles.privilegio import PrivilegioDTO
 from yapp.models.roles.rol_privilegio import RolPrivilegio, RolPrivilegioDTO
 import json
 from yapp.daos.rol_dao import RolDAO
@@ -25,11 +25,6 @@ def get_privilegios(request):
     """
     if (request.method == 'GET'):
         id_rol = request.GET.get('id_rol')
-        print "-----------------"
-        print "-----------------"
-        print "-----------------"
-        print "-----------------"
-        print id_rol
         dao = RolPrivilegioDAO(request);
         entidades = dao.get_query().filter(RolPrivilegio._rol_id == id_rol).all()
         lista = [];
@@ -68,29 +63,6 @@ def get_privilegios(request):
         return Response(json.dumps({'sucess': 'true'}))
     
 
-
-def get_entidad_padre(request, objeto):
-#    entidad_dao = EntidadPadreDAO(request);
-#    if (objeto["_entidad_padre"] == ""):
-#        return None;
-#    if (isinstance(objeto["_entidad_padre"], dict)):
-#        entidad = entidad_dao.get_query().filter(EntidadPadre._id == objeto["_entidad_padre"]["_id"]).first()
-#    else:
-#        entidad = entidad_dao.get_query().filter(EntidadPadre._id == objeto["_entidad_padre"]).first()
-#    return entidad;
-    return True
-
-def get_entidad(request, objeto):
-#    entidad_dao = EntidadDAO(request);
-#    if (objeto["_entidad"] == ""):
-#        return None;
-#    if (isinstance(objeto["_entidad"], dict)):
-#        entidad = entidad_dao.get_query().filter(Entidad._id == objeto["_entidad"]["_id"]).first()
-#    else:
-#        entidad = entidad_dao.get_query().filter(Entidad._id == objeto["_entidad"]).first()
-#    return entidad;
-    return True
-
 @view_config(route_name='privilegios')
 def get_entidades(request):
     """Metodo que maneja las llamadas para entidades
@@ -110,11 +82,3 @@ def get_entidades(request):
         a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
         return Response(a_ret)
 
-def info(var):
-    print "----CLASE----"
-    print var.__class__
-    print "---METODOS---"
-    print dir (var)
-    print "--ATRIBUTOS--"
-    print var
-    print "-------------"

@@ -21,6 +21,7 @@ Ext.define('YAPP.view.privilegio.Edit', {
 					valueField : 'id',
 					displayField : '_nombre',
 					typeAhead : true,
+					allowBlank : false,
 					queryMode : 'local',
 					emptyText : 'Seleccione un privilegio...'
 				}, {
@@ -30,6 +31,7 @@ Ext.define('YAPP.view.privilegio.Edit', {
 					valueField : 'id',
 					displayField : '_nombre',
 					typeAhead : true,
+					allowBlank : false,
 					queryMode : 'local',
 					emptyText : 'Seleccione una entidad...',
 				// store : Ext.create('YAPP.store.EntidadesPadres')

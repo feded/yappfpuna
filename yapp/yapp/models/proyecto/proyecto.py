@@ -17,7 +17,7 @@ class Proyecto(EntidadPadre):
     @param _fecha_creacion: fecha de creacion del proyecto.
     @param _fecha_modificacion: fecha de ultima modificacion del proyecto.
     """
-#    __mapper_args__ = {'polymorphic_identity': 'proyecto'}
+    __mapper_args__ = {'polymorphic_identity': 'proyecto'}
     _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
     __tablename__ = "proyecto"
     

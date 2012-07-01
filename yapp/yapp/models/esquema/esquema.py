@@ -14,6 +14,7 @@ class Esquema(EntidadPadre):
         - _fase_id: relacion con la fase sobre la que se crea el esquema
     """
     __tablename__ = "esquema"
+    __mapper_args__ = {'polymorphic_identity': 'esquema'}
     _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
     _nombre = Column(String, nullable=False)
     _descripcion = Column(String, nullable=False)

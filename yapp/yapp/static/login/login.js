@@ -25,8 +25,10 @@ Ext.onReady(function() {
 			name : 'usuario',
 			allowBlank : false
 		}, {
+			id : 'login_password_field',
 			fieldLabel : 'Password',
 			name : 'password',
+			allowBlank : false,
 			inputType : 'password'
 		
 		} ],
@@ -85,7 +87,11 @@ Ext.onReady(function() {
 			value : 'login'
 		});
 		Ext.getCmp("login").doLayout();
+		var passwordTF = Ext.getCmp("login_password_field");
+		var pass_plain = passwordTF.getValue()
+		passwordTF.setValue(md5(passwordTF.getValue()))
 		login.getForm().submit(submit);
+//		passwordTF.setValue(pass_plain)
 	}
 	
 	var submit = {

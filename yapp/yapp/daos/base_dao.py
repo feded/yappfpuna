@@ -3,6 +3,8 @@ Created on Mar 31, 2012
 
 @author: arturo
 '''
+from sqlalchemy.orm.query import Query
+from sqlalchemy.orm.scoping import instrument
 from yapp.models import DBSession
 from yapp.models.entidad_padre import EntidadPadre
 from yapp.models.historial import Historial
@@ -10,6 +12,7 @@ from yapp.models.suscripcion.notificacion import Notificacion
 from yapp.models.suscripcion.suscripcion import Suscripcion
 import abc
 import transaction
+import types
 
 class BaseDAO :
     
@@ -31,7 +34,7 @@ class BaseDAO :
         - B{Retorna:}
             - B{Entidad:} Entidad con ID pedido, o None.
         """
-        entidad = DBSession.query(self.get_clase()).filter_by(_id=id).first();
+        entidad = self.get_query().filter_by(_id=id).first();
         return entidad;
 
     def get_all(self):
@@ -39,7 +42,7 @@ class BaseDAO :
         - B{Retorna:}
             - B{List<Entidad>: Todas} las entidades de una tabla.
         """
-        return DBSession.query(self.get_clase()).all()
+        return self.get_query().all()
     
     def get_query(self):
         """B{Metodo que retorna una query para que se le pueda aplicar filtros}
@@ -48,7 +51,14 @@ class BaseDAO :
             - first()
             - all()
         """
-        return DBSession.query(self.get_clase())
+        
+#        queryReal = DBSession.query(self.get_clase())
+#        print queryReal
+        query = DBSession.query(self.get_clase())
+        if self._request != None:
+            query.sesion_yapp = self._request.session
+        query.clase = self.get_clase()
+        return query
     
     def crear(self, entidad):
         """B{Metodo que retorna crea una entidad, y almacena la creacion en la tabla de B{HISTORIAL}
@@ -61,7 +71,7 @@ class BaseDAO :
         DBSession.flush()
         lista = self.get_query().all();
         entidad = lista[len(lista) - 1];
-        if (self._request!= None):
+        if (self._request != None):
             #no va a tener user en caso de que venga del pyunit
             if ('user' in self._request.session):
                 historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
@@ -75,7 +85,7 @@ class BaseDAO :
             - B{entidad:} entidad a ser eliminada
         """
         DBSession.delete(entidad);
-        if (self._request!= None):
+        if (self._request != None):
             #no va a tener user en caso de que venga del pyunit
             if ('user' in self._request.session):
                 historia = Historial(entidad.__tablename__, entidad._id, "ELIMINACION", self._request.session['user']._id);
@@ -89,7 +99,7 @@ class BaseDAO :
             - B{entidad:} entidad a ser persistida
         """
         DBSession.merge(entidad)
-        if (self._request!= None):
+        if (self._request != None):
             #no va a tener user en caso de que venga del pyunit
             if ('user' in self._request.session):
                 historia = Historial(entidad.__tablename__, entidad._id, "MODIFICACION", self._request.session['user']._id);
@@ -109,7 +119,6 @@ class BaseDAO :
         return
     
 
-    
 class HistorialDAO(BaseDAO):
     def get_clase(self):
         return Historial

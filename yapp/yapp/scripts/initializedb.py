@@ -129,13 +129,13 @@ def main(argv=sys.argv):
     if (items == None) :
         with transaction.manager:
             estadoActivo = RolEstadoDAO(None).get_query().filter(RolEstado._estado == "Activo").first();
-            admin = RolFinal("admin", estadoActivo, "admin", "admin");
+            admin = RolFinal("admin", estadoActivo, "admin", "21232f297a57a5a743894a0e4a801fc3");
             DBSession.add(admin);
-            manager = RolFinal("Manager", estadoActivo, "manager", "manager");
+            manager = RolFinal("Manager", estadoActivo, "manager", "1d0258c2440a8d19e716292b231e3190");
             DBSession.add(manager);
-            lider = RolFinal("Lider de proyecto", estadoActivo, "lider", "lider");
+            lider = RolFinal("Lider de proyecto", estadoActivo, "lider", "64ff9e4a58fe52fb1a55987f34bc979d");
             DBSession.add(lider);
-            desarrollador = RolFinal("Desarrollador", estadoActivo, "desarrollador", "desarrollador");
+            desarrollador = RolFinal("Desarrollador", estadoActivo, "desarrollador", "21878e2b7bebe62feae406d88a68fab5");
             DBSession.add(desarrollador);
             
             
