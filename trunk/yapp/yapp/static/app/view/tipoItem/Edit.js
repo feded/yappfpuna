@@ -2,7 +2,7 @@ var formulario = Ext.define('YAPP.view.tipoItem.Edit', {
 	extend : 'Ext.window.Window',
 	alias : 'widget.tipoItemedit',
 	
-	title : 'Editar Tipo Item',
+//	title : 'Editar Tipo Item',
 	layout : 'fit',
 	autoShow : true,
 	stores : [ 'TipoItems' ],
@@ -28,7 +28,7 @@ var formulario = Ext.define('YAPP.view.tipoItem.Edit', {
 });
 var form_tipo = {
 	xtype : 'fieldset',
-	title : 'Tipo de Item',
+//	title : 'Tipo de Item',
 	items : [ {
 		xtype : 'textfield',
 		name : '_nombre',

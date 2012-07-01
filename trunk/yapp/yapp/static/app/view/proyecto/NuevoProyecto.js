@@ -62,8 +62,7 @@ Ext.define('YAPP.view.proyecto.NuevoProyecto', {
                     {
                         xtype: 'textfield',
                         name : '_nota',
-                        fieldLabel: 'Nota',
-                        allowBlank: false
+                        fieldLabel: 'Nota'
                     }
                 ]
             }

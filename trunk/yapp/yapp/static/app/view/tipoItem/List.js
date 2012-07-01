@@ -58,13 +58,7 @@ Ext.define('YAPP.view.tipoItem.List' ,{
 //		   	}	 
 		];
 		this.callParent();
-		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
-	},
-	onSelectChange : function(selModel, selections) {
-            this.down('#delete').setDisabled(selections.length === 0);
-            this.down('#nuevo_tipo_item').setDisabled(selections.length === 0);
-    }
-	
+	}	
 });
 	    
 
