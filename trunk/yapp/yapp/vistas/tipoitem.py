@@ -112,6 +112,8 @@ def AG_atributos_tipos_item(request):
                 for ent in entidades:
                     for atributo in atributosTipoItem:
                         if ent._atributo_id == atributo._id:
+                            print len(entidades)
+                            print item._id
                             print "removiendo"
                             print atributo._id
                             aRet.remove(atributo);

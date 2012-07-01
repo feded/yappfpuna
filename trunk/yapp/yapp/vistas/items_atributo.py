@@ -28,15 +28,25 @@ def guardar_obtener_atributo(request):
     if (request.method == 'POST'):
         u = Unpickler()
         print "----------------------JSON----------------"
+        
         print request.json_body
         entidad = u.restore(request.json_body);
-        
-        asignacion = ItemAtributo(entidad["_item_id"], entidad["_atributo_id"], entidad["_valor"])
         dao = ItemAtributoDAO(request)
+        item_dao = ItemDAO(request)
+        item = item_dao.get_by_id(entidad["_item_id"])
+        a_tipo_dao = AtributoTipoItemDAO(request)
+        print "--------------------------VALOR-------------------"
+        print entidad["_valor"]
+        
+        asignacion = ItemAtributo(entidad["_item_id"], entidad["_atributo_id"], entidad["_valor"] )
         dao.crear(asignacion);
+        asignacion._item = item
+        atributo = a_tipo_dao.get_by_id(entidad["_atributo_id"])
+        asignacion._atributo = atributo 
         asignacion = ItemAtributoDTO(asignacion)
         p = Pickler(True, None)
         aRet = p.flatten(asignacion)
+        item_dao.actualizarReferenciasItemNuevaVersion(item._id)
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
     elif (request.method == 'GET'):
         item_id = request.GET.get('_item_id');
@@ -48,36 +58,49 @@ def guardar_obtener_atributo(request):
             a_ret = json.dumps({'sucess': True, 'lista':j_string})
             return Response(a_ret)
         itemDAO = ItemDAO(request)
-        item = itemDAO.get_ultima_version_item_by_id(item_id);
+        item = itemDAO.get_by_id(item_id);
         atributoTipoItemDAO = AtributoTipoItemDAO(request)
         atributosTipoItem = atributoTipoItemDAO.get_atributos_by_tipo_id(item._tipo_item_id)
+#        lista=[]
+#        for atributo in atributosTipoItem:
+#            dao = ItemAtributoDAO(request) 
+#            actual = dao.get_query().filter(ItemAtributo._item_id == item.id , ItemAtributo._atributo_id == atributo._id).order_by(ItemAtributo._version.desc()).first();
+#            if actual != None:
+#                lista.append(actual)
+#        aRet = []
+#        print "'-------------------llnlistas---------------"
+#        print len(lista)
+#        if (len(lista)==0):
 
             
         dao = ItemAtributoDAO(request) 
         entidades = dao.get_query().filter(ItemAtributo._item_id == item._id).all()
        
-        aRet = []
-        if (len(entidades)==0):
-            for atributo in atributosTipoItem:
-                if atributo._opcional == False:
-                    itemAtributo = ItemAtributo(item._id , atributo._id, atributo._defecto)
+        aRet = entidades
+        
+        for atributov in atributosTipoItem:
+            if atributov._opcional == False:
+                itemAtributo = ItemAtributo(item.id , atributov._id, atributov._defecto)
+#                itemAtributo._item = item
+#                itemAtributo._atributo = atributo
+#                itemAtributoDTO = ItemAtributoDTO(itemAtributo)
+                if len(entidades)==0:
                     dao.crear(itemAtributo);
-                    itemAtributo._item = item
-                    itemAtributo._atributo = atributo
-                    itemAtributo = ItemAtributoDTO(itemAtributo)
-                    
                     aRet.append(itemAtributo)
-            j_string = p.flatten(aRet)
-            a_ret = json.dumps({'sucess': True, 'lista':j_string})
-            return Response(a_ret)
+#                else:
+#                    for entidad in entidades:
+#                        if (itemAtributo._atributo_id != entidad._atributo_id):
+#                            aRet.append(itemAtributo)
         entidadesDTO = [];
-        for entidad in entidades:
+        for entidad in aRet:
             dao = AtributoTipoItemDAO(request)
             atributo = dao.get_by_id(entidad._atributo_id)
             entidad._item = item
             entidad._atributo = atributo
             itemAtributoDTO = ItemAtributoDTO(entidad);
             entidadesDTO.append(itemAtributoDTO)
+        
+        
         
         j_string = p.flatten(entidadesDTO)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
@@ -92,7 +115,7 @@ def editar_atributo_item(request):
         entidad = u.restore(request.json_body);
         dao = ItemAtributoDAO(request)
         item_atributo = dao.get_by_id(entidad["id"])
-        
+        item_dao = ItemDAO(request)
         item_atributo._valor  = entidad["_valor"]
         
         dao.update(item_atributo);

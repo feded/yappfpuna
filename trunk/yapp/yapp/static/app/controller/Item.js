@@ -195,7 +195,7 @@ Ext.define('YAPP.controller.Item', {
 				click : this.eliminarRelacionPadre
 			},
 			'viewport combobox[name=fases]' : {
-				select : this.changeFase
+				change : this.changeFase
 			},
 			'listararchivo button[action=archivos]':{
 				click: this.archivos
@@ -220,7 +220,6 @@ Ext.define('YAPP.controller.Item', {
 		var win = botonlist.up('grid');
 		var grilla = win.down('gridview')
 		var itemRecord = grilla.getSelectionModel().getSelection()[0];
-		
 		if(itemRecord.data._estado == 'ACTIVO' || itemRecord.data._estado == 'REVISION'){
 			this.getBtnEliminarArchivo().setDisabled(false);
 		}
@@ -486,17 +485,22 @@ Ext.define('YAPP.controller.Item', {
 		this.setearPadresTipoAntecesor(record);
 		
 		var accion = record.data.accion;
+		var me = this;
 		var store = this.getItemStore();
 		record.save(
 		{	
+			params : {
+				actualizar : "true"
+			},
 			success : function(registro) {
 				Ext.example.msg("Item", "Guardado con exito");
 				store.load({
 					params : {
-						id : fase.getValue()
+						id : fase.getValue(),
 					}
 				});
 				win.close();
+				me.onRender();
 			},
 			failure : function(record) {
 				alert("No se pudo guardar el Item");
@@ -633,7 +637,7 @@ Ext.define('YAPP.controller.Item', {
 	habilitarBotones : function(estado){
 		if (estado == "ACTIVO" || estado == "REVISION" ){
 			this.getBtnAtributosItemList().setDisabled(false);
-			this.getBtnAsignar().setDisabled(false);
+			this.getBtnAsignar().setDisabled(true);
 			this.getUnidad().setDisabled(false);
 			this.getDelete().setDisabled(false);
 			this.getAprove().setDisabled(false);
@@ -694,7 +698,7 @@ Ext.define('YAPP.controller.Item', {
 		var storeAtributoItems = this.getItemAtributoStore();
 		storeAtributoItems.load({
 			params : {
-				_item_id : record.data._item_id
+				_item_id : record.data.id
 			}
 		});
 	},
@@ -1027,9 +1031,12 @@ Ext.define('YAPP.controller.Item', {
 		var win = button.up('window');
 		var form = win.down('form');
 		win.close();
-		var record = form.getRecord();
+		var record = new YAPP.model.ItemAtributo();
+		var recordForm = form.getRecord();
 		var values = form.getValues();
+		recordForm.set(values)
 		record.set(values);
+		record.data._atributo_id = recordForm.data._atributo_id 
 		this.setearPadresTipoAntecesor(itemRecord);
 		itemRecord.data._version = itemRecord.data._version + 1 
 		var storeAtributosItems = this.getItemAtributoStore();
@@ -1042,7 +1049,7 @@ Ext.define('YAPP.controller.Item', {
 				record.save(
 				{	
 					success : function(record) {
-						storeAtributosItems.insert(0, record);
+						//storeAtributosItems.insert(0, record);
 						Ext.example.msg("Atributo", "Guardado con exito");
 						me.onRender();
 					},
@@ -1071,21 +1078,33 @@ Ext.define('YAPP.controller.Item', {
 		
 		var g = this.getGrilla();
 		var item = g.getSelectionModel().getSelection()[0];
-		
-		form.submit({
-			url: '/upload',
-			clientValidation: true,
-			params:{
-				id_item : item.data.id
+		item.data._version = item.data._version +1; 
+		var me = this;
+		item.save({
+			success : function(nuevoItemRecord){
+				item = nuevoItemRecord
+				form.submit({
+					url: '/upload',
+					clientValidation: true,
+					params:{
+						id_item : nuevoItemRecord.data.id
+					},
+					success : function() {
+						Ext.example.msg("YAPP", "Archivo subido correctamente");
+						win.close();
+						me.onRender()
+					},
+					failure : function() {
+						alert('No se pudo alzar el archivo');
+					}
+				});
+				
 			},
-			success : function() {
-				Ext.example.msg("YAPP", "Archivo subido correctamente");
-				win.close();
-			},
-			failure : function() {
-				alert('No se pudo alzar el archivo');
+			failure : function(nuevoItemRecord){
+				alert("No se pudo guardar el Atributo");
 			}
-		});
+		})
+		
 	},
 	
 });

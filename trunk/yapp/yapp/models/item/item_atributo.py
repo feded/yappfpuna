@@ -31,4 +31,3 @@ class ItemAtributoDTO:
         self._atributo = AtributoTipoItemDTO(item_atributo._atributo)
         self._atributo_id = item_atributo._atributo_id
         self._valor = item_atributo._valor
-

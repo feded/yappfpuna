@@ -28,7 +28,7 @@ def asignar_unidad_intem(request):
         print "----------------------JSON----------------"
         print request.json_body
         entidad = u.restore(request.json_body);
-        
+        itemDAO = ItemDAO(request)
         asignacion = ItemUnidadTrabajo(entidad["_item_id"], entidad["_unidad_id"], entidad["_cantidad"])
         dao = ItemUnidadDAO(request)
         dao.crear(asignacion);
@@ -37,6 +37,7 @@ def asignar_unidad_intem(request):
         asignacion = ItemUnidadTrabajoDTO(asignacion)
         p = Pickler()
         aRet = p.flatten(asignacion)
+        itemDAO.actualizarReferenciasItemNuevaVersion(entidad["_item_id"])
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
     elif (request.method == 'GET'):
         item_id = request.GET.get('_item_id');
@@ -77,7 +78,7 @@ def editar_unidad_item(request):
         
         item_unidad._cantidad  = entidad["_cantidad"]
         
-        dao.update(item_unidad);
+        dao.crear(item_unidad);
         return Response(json.dumps({'sucess': 'true'}))
         
     elif (request.method == 'DELETE'):

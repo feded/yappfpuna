@@ -49,7 +49,7 @@ Ext.define('YAPP.view.item_atributo.List', {
 
 
 function renderizarNombreAtributo(val) {
-	console.log(val)
+	
 	if (val == null)
 		return val;
 	if (val._valor == null)
@@ -58,7 +58,7 @@ function renderizarNombreAtributo(val) {
 }
 
 function renderizarTipoAtributo(val) {
-	console.log(val)
+	
 	if (val == null)
 		return val;
 	if (val._tipo == null)
