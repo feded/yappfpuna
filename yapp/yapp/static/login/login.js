@@ -90,6 +90,7 @@ Ext.onReady(function() {
 		var passwordTF = Ext.getCmp("login_password_field");
 		var pass_plain = passwordTF.getValue()
 		passwordTF.setValue(md5(passwordTF.getValue()))
+		console.log(passwordTF.getValue());
 		login.getForm().submit(submit);
 //		passwordTF.setValue(pass_plain)
 	}

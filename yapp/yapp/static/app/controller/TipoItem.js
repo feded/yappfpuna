@@ -121,6 +121,9 @@ Ext.define('YAPP.controller.TipoItem', {
 			this.getBotonEliminarTipoItem().setDisabled(true);
 		}
 		
+		var grid = this.getGridTipo();
+		var record = grid.getSelectionModel().getSelection()[0];
+		grid.fireEvent('itemclick', grid, record);
 	},
 
 	selectTipo:function(cb){
@@ -231,6 +234,10 @@ Ext.define('YAPP.controller.TipoItem', {
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP","Datos invalidos");
+			return;
+		}
 		record.set(values);
 		if (record.data._opcional == 'on')record.data._opcional = 'true'
 		else record.data._opcional = 'false'
