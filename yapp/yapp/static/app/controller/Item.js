@@ -888,6 +888,10 @@ Ext.define('YAPP.controller.Item', {
 			record.data._version = record.data._version + 1 
 			record.save(
 			{	
+				params: {
+					actualizar : "true",
+					rev: "true"
+				},
 				success : function(registro) {
 					store.load({
 						params : {
@@ -966,6 +970,10 @@ Ext.define('YAPP.controller.Item', {
 		var me = this
 		recordActual.save(
 		{	
+			params: {
+				actualizar:"true",
+				rev: "true"
+			},
 			success : function(registro) {
 				store.load({
 					params : {

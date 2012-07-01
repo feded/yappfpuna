@@ -186,18 +186,17 @@ class ItemDAO(BaseDAO):
                 
         
        
-    def actualizarReferenciasItemNuevaVersion(self, item_id):
-        print "--------------------------MEK+LLAMARON-------------------------------"
-        item_nuevo = self.get_by_id(item_id)
-        item_viejo = self.get_query().filter(Item._item_id == item_nuevo._item_id , Item._version == (item_nuevo._version-1)).first()
+    def actualizarReferenciasItemNuevaVersion(self, item_id, id_viejo=None):
+        if (id_viejo != None):
+            item_viejo = self.get_by_id(id_viejo)
+        else:
+            item_nuevo = self.get_by_id(item_id)
+            item_viejo = self.get_query().filter(Item._item_id == item_nuevo._item_id , Item._version == (item_nuevo._version-1)).first()
         if (item_viejo!=None):
             #### Primero nos metemos con los atributos
             item_atributo_dao = ItemAtributoDAO(self._request)
             atributos_anteriores = item_atributo_dao.get_query().filter(ItemAtributo._item_id == item_viejo._id).all()
             atributo_actual = item_atributo_dao.get_query().filter(ItemAtributo._item_id == item_id).first()
-            print "-----------------atributo actual--------------------"
-            print atributo_actual
-            print "----------------------------------------------------"
             for atributo in atributos_anteriores:
                 if atributo_actual!= None :
                     if atributo._atributo_id != atributo_actual._atributo_id:

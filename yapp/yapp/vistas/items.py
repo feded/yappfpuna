@@ -123,9 +123,11 @@ def ag_atributos_tipos_item(request):
 
         j_string = p.flatten(lista)
         if (request.GET.get('actualizar')=="true"):
-            
-            item_dao.actualizarReferenciasItemNuevaVersion(nuevo_item._id)
-            print "---------------------------hola-------------------"
+            if (request.GET.get('rev') == True):
+                itemDao.actualizarReferenciasItemNuevaVersion(nuevo_item._id, entidad["_id"])
+                print "Entre en rev -----------------"
+            else:
+                itemDao.actualizarReferenciasItemNuevaVersion(nuevo_item._id)
         return Response(json.dumps({'sucess': 'true', 'lista':j_string}))
               
         
@@ -138,7 +140,6 @@ def bm_atributo(request):
         print request.json_body
         
         entidad = u.restore(request.json_body);
-        #id = request.params.matchdict['id'] 
         item_dao = ItemDAO(request);
         dao_fase = FaseDAO(request)
         print "------------------------"
@@ -191,7 +192,11 @@ def bm_atributo(request):
         print "miravos-------------------------------"
         print request.GET.get('actualizar')
         if (request.GET.get('actualizar')=="true"):
-            item_dao.actualizarReferenciasItemNuevaVersion(nuevo_item._id)
+            if (request.GET.get('rev') == "true"):
+                item_dao.actualizarReferenciasItemNuevaVersion(nuevo_item._id, entidad["id"])
+                print "Entre en rev -----------------"
+            else:
+                item_dao.actualizarReferenciasItemNuevaVersion(nuevo_item._id)
             print "---------------------------hola-------------------"
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
 
