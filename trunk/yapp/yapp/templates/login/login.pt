@@ -8,6 +8,7 @@
     <script type="text/javascript" src="/static/login/login.js"></script>
       <!-- DIAGRAMA DE GANTT -->
     <script type="text/javascript" src="/static/jsgantt.js"></script>
+    <script type="text/javascript" src="/static/md5.pack.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/jsgantt.css">
 	<!--     CSS -->
 <!-- 	<link rel="stylesheet" type="text/css" href="/static/app/resources/css/tema.css"> -->

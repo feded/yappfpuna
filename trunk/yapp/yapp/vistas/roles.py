@@ -63,8 +63,6 @@ def get_roles(request):
         
         u = Unpickler()
         entidad = u.restore(request.json_body);
-        print request.json_body;
-        print "--------------------------"
         if (entidad["accion"] == "POST"):
             estado_dao = RolEstadoDAO(request);
             if (isinstance(entidad["_estado"], dict)):
@@ -118,15 +116,9 @@ def get_roles(request):
         vieja = rolDAO.get_by_id(entidad["id"]);
         p = Pickler(False, None)
         
-        print "======================"
-        print "======================"
-        print request.json_body
-        print "======================"
-        print "======================"
         
         rr_dao = RolRolDAO(request)
         for padre in vieja._padres:
-            print "Borrando relacion " + str(padre._rol_id) + " ==>" + str(padre._padre_id)
             rr_dao.borrar(padre);
             
         padres = []
@@ -134,7 +126,6 @@ def get_roles(request):
 #        print entidad["_padres"]
 #        print "-------------"
         for padre_id in entidad["_padres"]:
-            print "Creando relacion " + str(vieja._id) + " ==>" + str(padre_id)
             rolrol = RolRol(vieja._id, padre_id)
             rr_dao.crear(rolrol)
             padres.append(rolrol)

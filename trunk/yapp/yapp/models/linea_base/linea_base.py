@@ -11,6 +11,7 @@ from yapp.models.fase.fase import Fase, FaseDTO
 from yapp.models.item.item import ItemDTO, Item
 class LineaBase (EntidadPadre):
     __tablename__ = "linea_base"
+    __mapper_args__ = {'polymorphic_identity': 'lineabase'}
     _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
     _fase_id = Column(Integer, ForeignKey('fase._id'))
     _fase = relationship(Fase, primaryjoin=Fase._id==_fase_id)

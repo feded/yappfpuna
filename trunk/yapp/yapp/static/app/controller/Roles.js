@@ -39,6 +39,18 @@ Ext.define('YAPP.controller.Roles', {
 	}, {
 		selector : 'privilegiolist button[action=crear]',
 		ref : 'buttonCrearPrivilegio'
+	}, {
+		selector : 'roledit textfield[name=_email]',
+		ref : 'emailTF'
+	}, {
+		selector : 'roledit textfield[name=_password]',
+		ref : 'passwordTF'
+	}, {
+		selector : 'roledit textfield[name=_nombre]',
+		ref : 'nombreTF'
+	}, {
+		selector : 'roledit combo[name=_estado]',
+		ref : 'estadoCB'
 	} ],
 	init : function() {
 		this.control({
@@ -81,21 +93,28 @@ Ext.define('YAPP.controller.Roles', {
 			}
 		});
 	},
+	
 	// /////////////////// //
 	// SECCION DE PERMISOS //
 	// /////////////////// //
 	borrarPermiso : function(button) {
 		var permiso = this.getGrillaPermiso().getSelectionModel().getSelection()[0];
 		var store = this.getRolPermisosStore();
-		permiso.destroy({
-			success : function(permiso_eliminado) {
-				Ext.example.msg("Rol", "Privilegio eliminado con exito");
-				store.remove(permiso);
-			},
-			failure : function(permiso_eliminado) {
-				alert("No se pudo eliminar el privilegio");
+		
+		Ext.Msg.confirm('Roles', 'Seguro de que desa eliminar el privilegio?', function(button) {
+			if (button === 'yes') {
+				permiso.destroy({
+					success : function(permiso_eliminado) {
+						Ext.example.msg("Rol", "Privilegio eliminado con exito");
+						store.remove(permiso);
+					},
+					failure : function(permiso_eliminado) {
+						alert("No se pudo eliminar el privilegio");
+					}
+				});
 			}
-		});
+		}, this);
+		
 	},
 	agregarPermiso : function(button) {
 		var rol = this.getGrillaRol().getSelectionModel().getSelection()[0];
@@ -155,19 +174,25 @@ Ext.define('YAPP.controller.Roles', {
 	},
 	
 	botonBorrarPrivilegioClick : function(button) {
-		var win = button.up('grid');
-		var grilla = win.down('gridview')
-		var selection = grilla.getSelectionModel().getSelection()[0];
-		var store = this.getRolPrivilegiosStore();
-		selection.destroy({
-			success : function(permiso) {
-				Ext.example.msg("Rol", "Privilegio eliminado con exito");
-				store.remove(selection);
-			},
-			failure : function(permiso) {
-				alert("No se pudo eliminar el privilegio");
+		Ext.Msg.confirm('Rol', 'Seguro que desea eliminar privilegio', function(button) {
+			if (button === 'yes') {
+				var win = button.up('grid');
+				var grilla = win.down('gridview')
+				var selection = grilla.getSelectionModel().getSelection()[0];
+				var store = this.getRolPrivilegiosStore();
+				
+				selection.destroy({
+					success : function(permiso) {
+						Ext.example.msg("Rol", "Privilegio eliminado con exito");
+						store.remove(selection);
+					},
+					failure : function(permiso) {
+						Ext.Msg.alert("Rol", "No se pudo eliminar el privilegio");
+					}
+				});
 			}
-		});
+		}, this);
+		
 	},
 	
 	ventanaEditPrivilegio : function(record) {
@@ -182,6 +207,9 @@ Ext.define('YAPP.controller.Roles', {
 	botonPrivilegioRolGuardarClick : function(button) {
 		var win = button.up('window');
 		var form = win.down('form');
+		if (!form.getForm().isValid()) {
+			Ext.Msg.alert("Privilegio", "Seleccione los campos");
+		}
 		var record = form.getRecord();
 		var values = form.getValues();
 		var store = this.getRolPrivilegiosStore();
@@ -191,13 +219,11 @@ Ext.define('YAPP.controller.Roles', {
 		win.close();
 		record.save({
 			success : function(privilegio) {
-				// if (record.data.id == 0) {
 				store.insert(0, privilegio);
-				// }
 				Ext.example.msg("Roles", "Privilegio agregado con exito");
 			},
 			failure : function(rol_permiso) {
-				alert("No se pudo asignar el privilegio al rol");
+				Ext.Msg.alert("Privilegio", "No se pudo asignar el privilegio al rol");
 			}
 		});
 	},
@@ -223,9 +249,15 @@ Ext.define('YAPP.controller.Roles', {
 		var comboEntidadPadre = this.getComboEntidad();
 		var store = this.getEntidadesPadresStore();
 		comboEntidadPadre.store = store;
+		comboEntidadPadre.setValue("")
 		store.load({
 			params : {
 				id : identificador
+			},
+			callback : function(records) {
+				if (Ext.typeOf(comboEntidadPadre.getPicker().loadMask) !== "boolean") {
+					comboEntidadPadre.getPicker().loadMask.hide();
+				}
 			}
 		});
 	},
@@ -260,16 +292,51 @@ Ext.define('YAPP.controller.Roles', {
 		
 	},
 	editUser : function(grid, record) {
+		record.data.old_pass = record.data._password
 		record.data.accion = 'PUT';
 		this.ventanaRol(record);
 	},
+	botonCrearApretado : function(button) {
+		var rol = new YAPP.model.Rol();
+		record.data.old_pass = ""
+		rol.data.accion = "POST";
+		this.ventanaRol(rol);
+	},
+	
 	botonEditGuardarApretado : function(button) {
 		
 		var win = button.up('window');
 		var form = win.down('form');
+		
+		var emailTF = this.getEmailTF();
+		var passwTF = this.getPasswordTF();
+		var nombrTF = this.getNombreTF();
+		var estadCB = this.getEstadoCB();
+		
 		var record = form.getRecord();
 		var values = form.getValues();
 		record.set(values);
+		
+		if (!nombrTF.isValid()) {
+			Ext.Msg.alert("Roles", "Por favor, ingrese un nombre correcto");
+			return;
+		}
+		
+		if (!estadCB.isValid()) {
+			Ext.Msg.alert("Roles", "Por favor, ingrese un estado correcto");
+			return;
+		}
+		
+		if (record.data._esFinal == true) {
+			if (!emailTF.isValid()) {
+				Ext.Msg.alert("Roles", "Por favor, ingrese un email correcto");
+				return;
+			}
+			if (!passwTF.isValid()) {
+				Ext.Msg.alert("Roles", "Por favor, ingrese un password correctamente");
+				return;
+			}
+		}
 		
 		var accion = record.data.accion;
 		
@@ -279,6 +346,10 @@ Ext.define('YAPP.controller.Roles', {
 			itemsDTO[i] = items[i].data.id;
 		}
 		record.data._padres = itemsDTO;
+
+		if (record.data.old_pass != record.data._password) {
+			record.data._password = md5(record.data._password)
+		}
 		
 		console.log(record)
 		var store = this.getRolesStore()
@@ -303,38 +374,41 @@ Ext.define('YAPP.controller.Roles', {
 		// if (record.data.accion == "POST")
 		// this.getRolesStore().insert(0, record);
 	},
-	botonCrearApretado : function(button) {
-		var rol = new YAPP.model.Rol();
-		rol.data.accion = "POST";
-		this.ventanaRol(rol);
-	},
+	
 	botonBorrarApretado : function(button) {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		if (selection.get('id') == 1) {
-			alert("No se puede eliminar el administrador")
+			Ext.Msg.alert("Rol", "No se puede eliminar el administrador")
 			return;
 		}
-		
-		store = this.getRolesStore();
-		selection.destroy({
-			success : function(rol) {
-				store.remove(selection);
-				Ext.example.msg("Rol", "Eliminado con exito");
-			},
-			failure : function(rol) {
-				alert("No se pudo guardar el rol");
+		Ext.Msg.confirm('Rol', 'Seguro que desa eliminar el rol ' + selection.get('_nombre') + '?', function(button) {
+			if (button === 'yes') {
+				store = this.getRolesStore();
+				selection.destroy({
+					success : function(rol) {
+						store.remove(selection);
+						Ext.example.msg("Rol", "Eliminado con exito");
+					},
+					failure : function(rol) {
+						alert("No se pudo guardar el rol");
+					}
+				});
 			}
-		});
+		}, this);
+		
 	},
 	
 	ventanaRol : function(record) {
 		fieldSetRolFinalColapsado = true;
 		if (record.get('_esFinal') == true && record.get('id') != 0)
 			fieldSetRolFinalColapsado = false
-
 		var view = Ext.widget('roledit');
+		
+		if (record.data.accion == "POST") {
+			view.setTitle("Nuevo rol")
+		}
 		
 		var combo = this.getComboEstadoRol()
 		combo.store = this.getRolEstadosStore();

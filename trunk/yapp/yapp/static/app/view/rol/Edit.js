@@ -57,12 +57,16 @@ Ext.define('YAPP.view.rol.Edit', {
 		items : [ {
 			xtype : 'textfield',
 			name : '_email',
+			regex : /^([\w\-\'\-]+)(\.[\w-\'\-]+)*@([\w\-]+\.){1,5}([A-Za-z]){2,4}$/,
+			regexText : "<b>Error</b></br>Direccion invalida.",
 			fieldLabel : 'Correo',
 			allowBlank : false
 		}, {
 			xtype : 'textfield',
 			name : '_password',
 			fieldLabel : 'Contraseña',
+			regex : /^[\w\d]{6,100}$/,
+			regexText : "<b>Error</b><br>Password de 6 a 100 caracteres, solo letras y numeros</br>",
 			inputType : 'password',
 			allowBlank : false
 		} ],

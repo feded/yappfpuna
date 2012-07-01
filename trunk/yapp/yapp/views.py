@@ -33,9 +33,13 @@ from pyramid.view import view_config
 from pyramid_mailer.message import Message
 from yapp.daos.proyecto_dao import ProyectoDAO
 from yapp.daos.rol_final_dao import RolFinalDAO
+from yapp.daos.rol_privilegio_dao import RolPrivilegioDAO
 from yapp.models.proyecto.proyecto import Proyecto
+from yapp.models.roles.rol_privilegio import RolPrivilegio
 import json
 import yapp
+from yapp.filter import PrivilegioHolder
+from yapp.daos.rol_rol_dao import RolRolDAO
 
 
 #Ponemos nuestros View callables
@@ -59,13 +63,16 @@ def login_view(request):
         mail = request.POST.get("usuario")
         password = request.POST.get("password")
         rh = RolFinalDAO(request)
-        rol = rh.get_query().filter_by(_email=mail , _password=password).first()
+        query = rh.get_query()
+        query = query.filter_by(_email=mail , _password=password)
+        query.omitir_seguridad = True
+        rol = query.first()
         if rol != None:
-            print "logueando"
             session = request.session
             session['user'] = rol
+            session['holder'] = crearPrivilegioHolder(request, rol)
+            session['holder'].imprimir()
             session.changed()
-            print 'user' in session
             return Response(json.dumps({'success': True}))
         return Response( json.dumps({'failure': True}))
     elif request.method == 'POST' and request.POST.get("type") == 'olvide':
@@ -87,6 +94,15 @@ def login_view(request):
     return {}
 
 
+def crearPrivilegioHolder(request, rol):
+    dao = RolPrivilegioDAO(request)
+    rr_dao= RolRolDAO(request)
+#    entities = dao.get_query().filter(RolPrivilegio._rol_id==rol._id).all();
+    holder = PrivilegioHolder(rol)
+    
+    holder.agregar_privilegios_rol(request, rol._id, rr_dao, dao)
+    return holder
+    
 
 
 @view_config(route_name='crearProyecto', renderer="templates/crearProyecto.pt")
@@ -156,5 +172,7 @@ def crearProyecto_view(request):
 @view_config(route_name='logout')
 def logout(request):
     headers = forget(request)
+    request.session['rol'] = None
+    request.session['holder'] = None
     request.session.invalidate()
     return Response(json.dumps({'success': True}))

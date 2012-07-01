@@ -15,6 +15,7 @@ class Fase (EntidadPadre):
     @param _proyecto: proyecto al cual pertenece la fase.
     """
     __tablename__ = "fase"
+    __mapper_args__ = {'polymorphic_identity': 'fase'}
     _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
     _orden = Column(Integer, nullable=False)
     _comentario = Column(String, nullable=False)

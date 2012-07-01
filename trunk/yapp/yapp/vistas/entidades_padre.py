@@ -89,7 +89,7 @@ def get_fases(request):
 
 def get_items(request):
     dao = ItemDAO(request)
-    entidades = dao.get_all();
+    entidades = dao.get_items_globales();
     p = Pickler();
     lista = [];
     for entidad in entidades:

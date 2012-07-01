@@ -8,6 +8,7 @@ from yapp.models.tipo_item.tipo_item import TipoItem, TipoItemDTO
 
 class Item (EntidadPadre):
     __tablename__ = "item"
+    __mapper_args__ = {'polymorphic_identity': 'item'}
     _id = Column(Integer, ForeignKey('entidad_padre._id'), primary_key=True)
     _item_id = Column(Integer, Sequence('item_id_seq'), nullable = False )
     _tipo_item_id = Column(Integer, ForeignKey('tipo_item._id'))
