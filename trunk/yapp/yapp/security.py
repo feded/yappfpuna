@@ -31,8 +31,10 @@ def first(s):
     if hasattr(s, 'omitir_seguridad') == True:
         imprimir("OMITIENDO SEGURIDAD First")
         return aRet
-    else:
-        return verificar_privilegio(s.sesion_yapp, s.sesion_yapp['holder'], aRet)
+    if 'sesion_yapp' not in s :
+        return aRet
+    
+    return verificar_privilegio(s.sesion_yapp, s.sesion_yapp['holder'], aRet)
 
 def verificar_privilegios(query, lista):
 #    if 'holder' not in query.session:
