@@ -8,6 +8,10 @@ from yapp.models.esquema.esquema_item import EsquemaItem
 from yapp.models.esquema import esquema_item
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
+from yapp.daos.item_atributo_dao import ItemAtributoDAO
+from yapp.models.item.item_atributo import ItemAtributo
+from yapp.daos.item_archivo_dao import ItemArchivoDAO
+from yapp.models.item.item_archivo import ItemArchivo
 
 class ItemDAO(BaseDAO):
     def get_clase(self):
@@ -35,7 +39,7 @@ class ItemDAO(BaseDAO):
                 return it
     
     def get_ultima_version_item_by_id(self, item_id):
-        return self.get_query().filter(Item._item_id == item_id).order_by(Item._version.asc()).first();
+        return self.get_query().filter(Item._item_id == item_id).order_by(Item._version.desc()).first();
     
     def get_items_fase(self, fase_id):
         """
@@ -181,6 +185,50 @@ class ItemDAO(BaseDAO):
                     proyecto_dao.update_estado_entidad(proyecto._id, 'ACTIVO')
                 
         
-        
-        
-
+       
+    def actualizarReferenciasItemNuevaVersion(self, item_id):
+        print "--------------------------MEK+LLAMARON-------------------------------"
+        item_nuevo = self.get_by_id(item_id)
+        item_viejo = self.get_query().filter(Item._item_id == item_nuevo._item_id , Item._version == (item_nuevo._version-1)).first()
+        if (item_viejo!=None):
+            #### Primero nos metemos con los atributos
+            item_atributo_dao = ItemAtributoDAO(self._request)
+            atributos_anteriores = item_atributo_dao.get_query().filter(ItemAtributo._item_id == item_viejo._id).all()
+            atributo_actual = item_atributo_dao.get_query().filter(ItemAtributo._item_id == item_id).first()
+            print "-----------------atributo actual--------------------"
+            print atributo_actual
+            print "----------------------------------------------------"
+            for atributo in atributos_anteriores:
+                if atributo_actual!= None :
+                    if atributo._atributo_id != atributo_actual._atributo_id:
+                        nuevo_atributo = ItemAtributo(item_id, atributo._atributo_id, atributo._valor)
+                        item_atributo_dao.crear(nuevo_atributo)
+                else:
+                    nuevo_atributo = ItemAtributo(item_id, atributo._atributo_id, atributo._valor)
+                    item_atributo_dao.crear(nuevo_atributo)
+            ### Ahora con las unidades
+            item_unidad_dao = ItemUnidadDAO(self._request)
+            unidades_anteriores = item_unidad_dao.get_query().filter(ItemUnidadTrabajo._item_id == item_viejo._id).all()
+            unidad_actual = item_unidad_dao.get_query().filter(ItemUnidadTrabajo._item_id == item_id).first()
+            for unidad in unidades_anteriores:
+                if unidad_actual!= None:
+                    if unidad._unidad_id != unidad_actual._unidad_id:
+                        nueva_unidad = ItemUnidadTrabajo(item_id, unidad._unidad_id, 1)
+                        item_unidad_dao.crear(nueva_unidad)
+                else:
+                    nueva_unidad = ItemUnidadTrabajo(item_id, unidad._unidad_id, 1)
+                    item_unidad_dao.crear(nueva_unidad)
+            ### Ahora con los proyectos
+            item_archivo_dao = ItemArchivoDAO(self._request)
+            archivos_anteriores = item_archivo_dao.get_query().filter(ItemArchivo._item_id == item_viejo._id).all()
+            rchivo_actual = item_archivo_dao.get_query().filter(ItemArchivo._item_id == item_id).first()
+            item_nuevo = self.get_by_id(item_id);
+            for archivo in archivos_anteriores:
+                if rchivo_actual!= None and archivo._id != rchivo_actual._id:
+                    if archivo._archivo_id != rchivo_actual._archivo_id:
+                        nuevo_archivo = ItemArchivo(item_nuevo, archivo._archivo )
+                        item_archivo_dao.crear(nuevo_archivo)
+                else:
+                    nuevo_archivo = ItemArchivo(item_nuevo, archivo._archivo )
+                    item_archivo_dao.crear(nuevo_archivo)
+            ### ya estamos

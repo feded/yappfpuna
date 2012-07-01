@@ -27,8 +27,8 @@ Ext.define('YAPP.view.item_unidad.List', {
 					disabled : true,
 					listeners: {
 						select: function(combo, record, index) {
-							var win = combo.up('window');
-							win.down('#asignar').setDisabled(false);
+							var panel = combo.up('panel');
+							panel.down('#asignar').setDisabled(false);
 						}
 					}
         		}, 

@@ -22,49 +22,11 @@ Ext.define('YAPP.view.item_atributo.Agregar', {
 						queryMode : 'local',
 						emptyText : 'Seleccione un Atributo...',
 						allowBlank : false,
-						listeners: {
-							select: function(combo, record, index) {
-								var tipo = record[0]._tipo;
-								var win = combo.up('window');
-								if (tipo == "Cadena de Texto" ){
-									
-									win.down('#valort').setVisible(true);
-									win.down('#valorn').setVisible(false);
-									win.down('#valorc').setVisible(false);
-								}if (tipo == "Numerico"){
-									
-									win.down('#valort').setVisible(false);
-									win.down('#valorn').setVisible(true);
-									win.down('#valorc').setVisible(false);
-								}
-								if (tipo == "Booleano"){
-									
-									win.down('#valort').setVisible(false);
-									win.down('#valorn').setVisible(false);
-									win.down('#valorc').setVisible(true);
-								}
-    								
-							}
-						}
 					},
 					{
 						xtype : 'textfield',
 						name : '_valor',
 						itemId : 'valort',
-						fieldLabel : 'Valor',
-						typeAhead : true,
-					},{
-						xtype : 'numberfield',
-						hidden: true,
-						name : '_valor',
-						itemId : 'valorn',
-						fieldLabel : 'Valor',
-						typeAhead : true,
-					},{
-						xtype : 'checkbox',
-						hidden: true,
-						name : '_valor',
-						itemId : 'valorc',
 						fieldLabel : 'Valor',
 						typeAhead : true,
 					},

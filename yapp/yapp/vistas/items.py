@@ -5,29 +5,24 @@ from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config
 from sqlalchemy import Sequence
+from yapp.daos.archivo_dao import ArchivoDAO, ArchivoDAO
 from yapp.daos.atributo_tipo_item_dao import AtributoTipoItemDAO
-from yapp.daos.base_dao import BaseDAO
+from yapp.daos.base_dao import BaseDAO, BaseDAO
 from yapp.daos.fase_dao import FaseDAO
-from yapp.daos.archivo_dao import ArchivoDAO
+from yapp.daos.item_archivo_dao import ItemArchivoDAO
 from yapp.daos.item_dao import ItemDAO
-from yapp.daos.item_unidad_dao import ItemUnidadDAO
+from yapp.daos.item_unidad_dao import ItemUnidadDAO, ItemUnidadDAO
 from yapp.daos.tipo_item_dao import TipoItemDAO
-from yapp.models import DBSession, DBSession
+from yapp.models import DBSession, DBSession, DBSession
 from yapp.models.fase.fase import FaseDTO
+from yapp.models.item.archivo import Archivo, ArchivoDTO
 from yapp.models.item.item import Item, ItemDTO
-from yapp.models.item.item_archivo import ItemArchivo
-from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
+from yapp.models.item.item_archivo import ItemArchivo, ItemArchivo
+from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo, \
+    ItemUnidadTrabajo
 from yapp.models.tipo_item.tipo_item import TipoItem
 import datetime
 import json
-from yapp.models import DBSession
-from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo
-from yapp.daos.base_dao import BaseDAO
-from yapp.daos.item_unidad_dao import ItemUnidadDAO
-from yapp.daos.item_archivo_dao import ItemArchivoDAO
-from yapp.models.item.item_archivo import ItemArchivo
-from yapp.daos.archivo_dao import ArchivoDAO
-from yapp.models.item.archivo import Archivo, ArchivoDTO
 
 @view_config(route_name='crearListarItems')
 def ag_atributos_tipos_item(request): 
@@ -106,19 +101,16 @@ def ag_atributos_tipos_item(request):
         
         
         formato_entrada = "%Y-%m-%d"
-        fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"], formato_entrada)
+        fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
         delta = datetime.timedelta(days=entidad["_duracion"] - 1)
         fecha_fin = fecha_inicio + delta
         
         if padre != None:
-            if fecha_inicio < padre._fecha_inicio :
-                return Response(json.dumps({'sucess': 'false', 'lista':''}))
-            nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, entidad["_completado"], padre_id, antecesor_id)
             formato_entrada = "%Y-%m-%d %H:%M:%S"
             print "-----------------"
-            if len(padre._fecha_inicio) > 1:
+            if len(padre._fecha_inicio)>1:
                 padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
-                if fecha_inicio < padre_inicio:
+                if fecha_inicio <  padre_inicio:
                     return Response(json.dumps({'sucess': 'false', 'lista':''}))
         nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, entidad["_completado"], padre_id, antecesor_id)
         itemDao = ItemDAO(request)
@@ -130,6 +122,10 @@ def ag_atributos_tipos_item(request):
         lista.append(p.flatten(nuevo_item))
 
         j_string = p.flatten(lista)
+        if (request.GET.get('actualizar')=="true"):
+            
+            item_dao.actualizarReferenciasItemNuevaVersion(nuevo_item._id)
+            print "---------------------------hola-------------------"
         return Response(json.dumps({'sucess': 'true', 'lista':j_string}))
               
         
@@ -192,13 +188,18 @@ def bm_atributo(request):
             nuevo_item._antecesor = ItemDTO(antecesor)
         p = Pickler(False, None)
         aRet = p.flatten(nuevo_item)
+        print "miravos-------------------------------"
+        print request.GET.get('actualizar')
+        if (request.GET.get('actualizar')=="true"):
+            item_dao.actualizarReferenciasItemNuevaVersion(nuevo_item._id)
+            print "---------------------------hola-------------------"
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
 
 
 
-def actualizar_referencias_item(item, item_dao, anterior_id):
+def actualizar_referencias_item(item, item_dao, anterior_id):    
     #Este item es padre.. vamos a actualizar las refeencias de sus hijos
-    hijos = item_dao.get_query().filter(Item._padre_item_id == anterior_id)
+    hijos = item_dao.get_query().filter(Item._padre_item_id==anterior_id)
     updated = []
     for hijo in hijos:
         if (updated.count(hijo._item_id) == 0):
@@ -211,7 +212,7 @@ def actualizar_referencias_item(item, item_dao, anterior_id):
             item_dao.actualizarEstadosFaseyProyecto(posible_hijo)
             updated.append(hijo._item_id)
     #este item es antecesor, vamos a actualizar las referencias de sus descendendientes
-    sucesores = item_dao.get_query().filter(Item._antecesor_item_id == anterior_id)
+    sucesores = item_dao.get_query().filter(Item._antecesor_item_id==anterior_id)
     updated = []
     for sucesor in sucesores:
         if (updated.count(sucesor._item_id) == 0):
@@ -287,31 +288,25 @@ def get_items_sin_linea_base_con_fase(request):
 @view_config(route_name='upload')
 def upload(request):
     id_item = request.params['id_item'],
+    
     archivo = request.params['archivo'].file.read()
-    nombre = request.params['archivo'].filename
+    nombre=request.params['archivo'].filename
     
     archivo_dao = ArchivoDAO(request)
-    nuevo_archivo = Archivo(archivo, nombre)
+    nuevo_archivo = Archivo(archivo,nombre)
     archivo_dao.crear(nuevo_archivo)
     
     item_dao = ItemDAO(request)
     item = item_dao.get_by_id(id_item)
     
     item_archivo_dao = ItemArchivoDAO(request)
-    nuevo_item_archivo = ItemArchivo(item, nuevo_archivo)
+    nuevo_item_archivo = ItemArchivo(item,nuevo_archivo)
     item_archivo_dao.crear(nuevo_item_archivo)
     
 #    response= Response(content_type='application/force-download',content_disposition='attachment; filename=' + nuevo_archivo._nombre)
 #    response.app_iter= nuevo_archivo._contenido
 #    return response
-#    lista = [];
-#    p = Pickler();
-#    lista.append(p.flatten(ArchivoDTO(nuevo_archivo)))
-#    
-#    j_string = p.flatten(lista)
-#    a_ret = json.dumps({'success': True, 'archivos':j_string})
-#    return Response(a_ret)
-    
+    item_dao.actualizarReferenciasItemNuevaVersion(id_item)
     return Response(json.dumps({'success': True}))
 #    response= Response(content_type='application/force-download',content_disposition='attachment; filename=' + nuevo_archivo._nombre_archivo)
 #    response.app_iter= nuevo_archivo._archivo
@@ -338,32 +333,12 @@ def get_archivos(request):
 
 @view_config(route_name='download')
 def download(request):
-    id_archivo = request.params['archivo_id']
+    id_archivo = request.params['archivo_id'],
 #    archivo = request.params['archivo'].file.read()
     
     archivo_dao = ArchivoDAO(request)
     archivo = archivo_dao.get_by_id(id_archivo)
     
-    response = Response(content_type='application/force-download', content_disposition='attachment; filename=' + archivo._nombre)
-    response.app_iter = archivo._contenido
+    response= Response(content_type='application/force-download',content_disposition='attachment; filename=' + archivo._nombre)
+    response.app_iter= archivo._contenido
     return response
-
-@view_config(route_name='eliminarArchivo')
-def eliminarArchivo(request):
-    id_archivo = request.matchdict['id']
-    u = Unpickler()
-    entidad = u.restore(request.json_body);
-    item_id = entidad['_item_id']
-    dao = ItemArchivoDAO(request)
-    entidad = dao.get_query().filter(ItemArchivo._item_id == item_id, ItemArchivo._archivo_id == id_archivo).first()
-    
-    dao.borrar(entidad)
-    
-    entidades = dao.get_query().filter(ItemArchivo._archivo_id == id_archivo).first()
-    if entidades == None:
-        archivo_dao = ArchivoDAO(request)
-        archivo = archivo_dao.get_by_id(id_archivo)
-        archivo_dao.borrar(archivo)
-    
-    a_ret = json.dumps({'sucess': True})
-    return Response(a_ret)

@@ -13,9 +13,10 @@ from yapp.models.unidad_trabajo.unidad_trabajo import UnidadTrabajoDTO
 
 class ItemUnidadTrabajo (Base, EntidadBase):
     __tablename__ = "item_unidad_trabajo"
-    _item_id = Column(Integer,  unique=True,  nullable = False )
+    _item_id = Column(Integer,  ForeignKey('item._id') )
     _unidad_id = Column(Integer,  ForeignKey('unidad_trabajo._id'))
     _cantidad = Column(Integer , nullable = False)
+    
     
     def __init__(self, item_id, unidad_id, cantidad):
         self._item_id = item_id
