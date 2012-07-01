@@ -33,6 +33,7 @@ var form_atributo = {
 		xtype : 'textfield',
 		name : '_valor',
 		fieldLabel : 'Nombre',
+		allowBlank: false
 	},{
 		xtype : 'combobox',
 		name : '_tipo',
@@ -59,12 +60,10 @@ var form_atributo = {
 		xtype : 'checkbox',
 		name : '_opcional',
 		fieldLabel : 'Opcional',
-		allowBlank : false
 	}, {
 		xtype : 'textfield',
 		name : '_defecto',
 		fieldLabel : 'Campo por Defecto',
-		allowBlank : false
 	} ] 
 };
 

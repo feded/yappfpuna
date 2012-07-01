@@ -33,7 +33,14 @@ Ext.define('YAPP.controller.TipoItem', {
 	       		{
 	       			selector: 'importar grid[name=secondGrid]',
 	       			ref: 'secondGrid'
-	       		}
+	       		},
+	       		{
+    				selector: 'tipolist gridview',
+    				ref: 'gridTipo'
+				},{
+					selector: 'atributosList button[action=crearAtributo]',
+					ref: 'botonNuevoAtributo'
+				}
 			],
 	
 	
@@ -84,9 +91,24 @@ Ext.define('YAPP.controller.TipoItem', {
 			
 			'tipoItemedit colorpicker': {
         		select: this.seleccionoColor
+            },
+            'tipoitemsabm':{
+            	'tabSeleccionada' : this.focuseada
             }
 
         });
+	},
+	
+	focuseada : function(view) {
+		var cantidad =this.getTipoItemsStore().getCount();
+		if (cantidad > 0)
+		{
+			this.getGridTipo().getSelectionModel().select(0, false, true);
+			this.getBotonNuevoAtributo().setDisabled(false);
+		}else{
+			this.getBotonNuevoAtributo().setDisabled(true);
+		}
+		
 	},
 	
 	importar : function(button){
@@ -98,7 +120,6 @@ Ext.define('YAPP.controller.TipoItem', {
     
     traerTiposItems: function(){
     	var proyecto_id = this.getProyectoImportar().getValue();
-    	console.log(proyecto_id);
     	this.getFirstGrid().store.load({
 			params : {
 				id_proyecto :  proyecto_id
@@ -161,6 +182,7 @@ Ext.define('YAPP.controller.TipoItem', {
 				}
 		});
 		
+		this.getBotonNuevoAtributo().setDisabled(false);
 		
 //		tabs.setActiveTab(tab);
 	},

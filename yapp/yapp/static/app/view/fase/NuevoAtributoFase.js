@@ -14,17 +14,20 @@ Ext.define('YAPP.view.fase.NuevoAtributoFase', {
                     {
                         xtype: 'textfield',
                         name : '_nombre',
-                        fieldLabel: 'Atributo'
+                        fieldLabel: 'Atributo',
+                        allowBlank: false
                     },
                      {
                         xtype: 'textareafield',
                         name : '_descripcion',
-                        fieldLabel: 'Descripcion'
+                        fieldLabel: 'Descripcion',
+                        allowBlank: false
                     },
                      {
                         xtype: 'textfield',
                         name : '_valor',
-                        fieldLabel: 'Valor'
+                        fieldLabel: 'Valor',
+                        allowBlank: false
                     }
                 ]
             }

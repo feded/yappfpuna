@@ -274,10 +274,19 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		});
 		
 		var store2 = this.getStore('TipoFase');
+		var cbTipoItem = this.getComboTipoItem()
+//		cbTipoItem.reset();
 		store2.load({
 			params: {
 				id : record.get('id')
-			}
+			},
+//			callback: function(){
+//				if (Ext.typeOf(cbTipoItem.getPicker().loadMask) !== "boolean") {
+//		             cbTipoItem.getPicker().loadMask.hide();
+//		         }
+//				cbTipoItem.store = store2;
+//			}
+			
 		});
 		
 	},
@@ -306,9 +315,14 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var values = form.getValues();
 		record.set(values);
 		var me = this;
+		
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP","Faltan datos por completar");
+			return;
+		}
 		record.save({
 			success: function(atributo){
-				me.getAtributoFaseStore().insert(0, atributo);
+				me.getAtributoFaseStore().insert(me.getAtributoFaseStore().getCount(), atributo);
 				Ext.example.msg("YAPP", "Atributo de fase creado con éxito");
 				win.close();
 			},
@@ -331,6 +345,12 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
+		
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP","Faltan datos por completar");
+			return;
+		}
+		
 		record.set(values);
 		record.save({
 			success: function(atributo){
