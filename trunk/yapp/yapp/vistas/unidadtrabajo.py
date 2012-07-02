@@ -100,6 +100,13 @@ def actualizar_eliminar_unidad_trabajo(request):
         u= Unpickler()
         dao = UnidadTrabajoDAO(request)
         entidad = u.restore(request.json_body);
+        
+        unidad_item_dao = ItemUnidadDAO(request)
+        items = unidad_item_dao.get_query().filter(ItemUnidadTrabajo._unidad_id == entidad["id"]).first()
+        
+        if items != None:
+            return Response(json.dumps({'sucess': 'false' , "message": "La unidad de trabajo no se puede modificar,debido a que esta asignado a un item" }))
+        
         vieja = dao.get_by_id(entidad["id"])
         vieja._nombre = entidad["_nombre"]
         vieja._etiqueta = entidad["_etiqueta"]
@@ -123,6 +130,13 @@ def asignar_recursos(request):
     u= Unpickler()
     entidad = u.restore(request.json_body);
     id_unidad = entidad['id_unidad_trabajo']
+    
+    unidad_item_dao = ItemUnidadDAO(request)
+    items = unidad_item_dao.get_query().filter(ItemUnidadTrabajo._unidad_id == id_unidad).first()
+    
+    if items != None:
+        return Response(json.dumps({'sucess': 'false' , "message": "No se puede realizar la operacion debido a que la unidad de trabajo esta asignado a un item" }))
+    
     dao_unidad_recurso = UnidadTrabajoRecursoDAO(request)
     entidades = dao_unidad_recurso.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==id_unidad).all();
     for unidad_recurso in entidades:
