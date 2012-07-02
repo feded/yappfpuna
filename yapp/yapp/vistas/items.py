@@ -88,7 +88,6 @@ def ag_atributos_tipos_item(request):
         else:
             antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])
             antecesor_id = antecesor._id
-        print antecesor
         dao_item_padre = ItemDAO(request)
         if(entidad["_padre"] == "" or  entidad["_padre"] == None):
             padre = None
@@ -107,7 +106,6 @@ def ag_atributos_tipos_item(request):
         
         if padre != None:
             formato_entrada = "%Y-%m-%d %H:%M:%S"
-            print "-----------------"
             if len(padre._fecha_inicio)>1:
                 padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
                 if fecha_inicio <  padre_inicio:
@@ -125,7 +123,6 @@ def ag_atributos_tipos_item(request):
         if (request.GET.get('actualizar')=="true"):
             if (request.GET.get('rev') == True):
                 itemDao.actualizarReferenciasItemNuevaVersion(nuevo_item._id, entidad["_id"])
-                print "Entre en rev -----------------"
             else:
                 itemDao.actualizarReferenciasItemNuevaVersion(nuevo_item._id)
         return Response(json.dumps({'sucess': 'true', 'lista':j_string}))
@@ -142,8 +139,6 @@ def bm_atributo(request):
         entidad = u.restore(request.json_body);
         item_dao = ItemDAO(request);
         dao_fase = FaseDAO(request)
-        print "------------------------"
-        print entidad["_fase"]
         fase = dao_fase.get_by_id(entidad["_fase"]["_id"])
         
         dao_tipo_item = TipoItemDAO(request)
@@ -158,7 +153,6 @@ def bm_atributo(request):
             else:
                 antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])._id
            
-        print antecesor
         dao_item_padre = ItemDAO(request)
         if(entidad["_padre"] == "" or  entidad["_padre"] == None):
             padre = None
@@ -189,15 +183,11 @@ def bm_atributo(request):
             nuevo_item._antecesor = ItemDTO(antecesor)
         p = Pickler(False, None)
         aRet = p.flatten(nuevo_item)
-        print "miravos-------------------------------"
-        print request.GET.get('actualizar')
         if (request.GET.get('actualizar')=="true"):
             if (request.GET.get('rev') == "true"):
                 item_dao.actualizarReferenciasItemNuevaVersion(nuevo_item._id, entidad["id"])
-                print "Entre en rev -----------------"
             else:
                 item_dao.actualizarReferenciasItemNuevaVersion(nuevo_item._id)
-            print "---------------------------hola-------------------"
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
 
 
@@ -257,7 +247,6 @@ def get_items_sin_linea_base_con_fase(request):
     lista = [];
     p = Pickler(True, None)
     for entidad in entidades:
-        print entidad._linea_base_id
         if entidad._linea_base_id != None:
             continue;
         rd = ItemDAO(request)
@@ -318,21 +307,24 @@ def upload(request):
 #    return response
 
 @view_config(route_name='archivos')
-def get_archivos(request):
-        item_id = request.GET.get('_item_id')
-        dao = ItemArchivoDAO(request)
-        entidades = dao.get_query().filter(ItemArchivo._item_id == item_id).all()
-        lista = [];
-#        p = Pickler(True, None)
-        p = Pickler()
-        archivo_dao = ArchivoDAO(request)
-        for entidad in entidades:
-            a = archivo_dao.get_by_id(entidad._archivo_id)
-            b = ArchivoDTO(a)
-            lista.append(p.flatten(b))
-        j_string = p.flatten(lista)
-        a_ret = json.dumps({'sucess': True, 'archivos':j_string})
+def get_archivos(request):    
+    item_id = request.GET.get('_item_id')
+    if (item_id== None):
+        a_ret = json.dumps({'sucess': True, 'archivos':[]})
         return Response(a_ret)
+    dao = ItemArchivoDAO(request)
+    entidades = dao.get_query().filter(ItemArchivo._item_id == item_id).all()
+    lista = [];
+#        p = Pickler(True, None)
+    p = Pickler()
+    archivo_dao = ArchivoDAO(request)
+    for entidad in entidades:
+        a = archivo_dao.get_by_id(entidad._archivo_id)
+        b = ArchivoDTO(a)
+        lista.append(p.flatten(b))
+    j_string = p.flatten(lista)
+    a_ret = json.dumps({'sucess': True, 'archivos':j_string})
+    return Response(a_ret)
     
 
 

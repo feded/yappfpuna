@@ -113,6 +113,10 @@ Ext.define('YAPP.controller.Item', {
 				itemclick : this.mostrarDatos
 			},
 			
+			'itemsabm':{
+        		'tabSeleccionada' : this.onRender
+        	},
+			
 			'atributositemlist' : {
 				itemdblclick : this.editarAtributo,
 			},
@@ -244,7 +248,7 @@ Ext.define('YAPP.controller.Item', {
 			},
 			
 			failure: function(fase){
-				alert("No se elimino el archivo");
+				Ext.Msg.alert("No se elimino el archivo");
 			}
 		});
 		
@@ -272,24 +276,39 @@ Ext.define('YAPP.controller.Item', {
 		
 	},
 	
-	onRender : function() {
+	
+	
+	onRender : function(item_id) {
 		var fase = this.getComboFase().getValue();
 		var itemStore = this.getItemStore();
 		var store = this.getFasesStore();
 		var object = this.getProyectos().getValue();
+		var me = this
 		if (object == '' || fase == '') {
 			return;
 		}
-		itemStore.store = store;
+		//itemStore.store = store;
 		itemStore.load({
 			params : {
 				id : fase
+			},
+			callback: function(records, operation, success) {
+				if (typeof item_id!="undefined" && !isNaN(item_id)){
+					var posicion = itemStore.findExact('id', item_id)
+					var grid = me.getGrilla();
+					var record =  records[posicion];
+					grid.fireEvent('itemclick', grid, record);
+				}else{
+					var storeUnidadItems = me.getItemUnidadStore();
+					storeUnidadItems.load();
+					var storeAtributoItems = me.getItemAtributoStore();
+					storeAtributoItems.load();
+					var storeArchivosItems = me.getArchivosStore();
+					storeArchivosItems.load();
+				}
 			}
 		});
-		var storeUnidadItems = this.getItemUnidadStore();
-		storeUnidadItems.load();
-		var storeAtributoItems = this.getItemAtributoStore();
-		storeAtributoItems.load();
+		
 	},
 	
 
@@ -500,10 +519,10 @@ Ext.define('YAPP.controller.Item', {
 					}
 				});
 				win.close();
-				me.onRender();
+				me.onRender(registro.data.id);
 			},
 			failure : function(record) {
-				alert("No se pudo guardar el Item");
+				Ext.Msg.alert("No se pudo guardar el Item");
 			}
 			
 		});
@@ -579,7 +598,7 @@ Ext.define('YAPP.controller.Item', {
 			record.data._tipo_item_prefijo = record.data._tipo_item._prefijo;
 			view.down('form').loadRecord(record);
 		}else{
-			alert("El item se encuentra en estado: " + record.data._estado) + ".\n Debe estar ACTIVO para modificarlo";
+			Ext.Msg.alert("El item se encuentra en estado: " + record.data._estado) + ".\n Debe estar ACTIVO para modificarlo";
 		}
 	},
 
@@ -589,13 +608,15 @@ Ext.define('YAPP.controller.Item', {
 		var grilla = win.down('gridview')
 		var record = grilla.getSelectionModel().getSelection()[0];
 		var store = this.getItemStore();
+		var me = this
 		record.destroy({
 			success : function(linea_base) {
 				Ext.example.msg("Item", "Eliminado con exito");
 				store.remove(record);
+				me.onRender();
 			},
 			failure : function(linea_base) {
-				alert("No se pudo eliminar el Item");
+				Ext.Msg.alert("No se pudo eliminar el Item");
 			}
 		});
 		
@@ -606,12 +627,13 @@ Ext.define('YAPP.controller.Item', {
 		var win = button.up('grid');
 		var grilla = win.down('gridview')
 		var record = grilla.getSelectionModel().getSelection()[0];
+		var me = this
 		if (record.data._estado == "ACTIVO" || record.data._estado == "REVISION"){
 			record.data._estado = "APROBADO"
 			record.data._version = record.data._version + 1;
 			
 		}else{
-			alert("El item se encuentra en estado: " + record.data._estado);
+			Ext.Msg.alert("El item se encuentra en estado: " + record.data._estado);
 		}
 		this.setearPadresTipoAntecesor(record);
 		var store = this.getItemStore();
@@ -624,10 +646,11 @@ Ext.define('YAPP.controller.Item', {
 					}
 				});
 				Ext.example.msg("Item", "Aprobado con exito");
+				me.onRender(record.data.id)
 				//habilitarBotones("APROBADO");
 			},
 			failure : function(record) {
-				alert("No se pudo aprobar el Item");
+				Ext.Msg.alert("No se pudo aprobar el Item");
 			}
 			
 		});
@@ -683,6 +706,7 @@ Ext.define('YAPP.controller.Item', {
 		this.habilitarBotones(record.data._estado);
 		this.mostarUnidades(grid, record);
 		this.mostrarArchivos(grid, record);
+		grid.getSelectionModel().select(record, false, false)
 	},
 	
 	mostrarArchivos: function(grid, record){
@@ -751,10 +775,10 @@ Ext.define('YAPP.controller.Item', {
 					success : function(rec) {
 						Ext.example.msg("Unidad de Trabajo", "Desasiganda");
 						store.remove(record);
-						me.onRender();
+						me.onRender(nuevoItemRecord.data._id);
 					},
 					failure : function(rec) {
-						alert("No se pudo Desasinar la Unidad");
+						Ext.Msg.alert("No se pudo Desasinar la Unidad");
 					}
 				});
 				
@@ -765,7 +789,7 @@ Ext.define('YAPP.controller.Item', {
 				});
 			},
 			failure : function(nuevoItemRecord){
-				alert("No se pudo guardar la Unidad de Trabajo");
+				Ext.Msg.alert("No se pudo guardar la Unidad de Trabajo");
 			}
 		})
 		
@@ -774,39 +798,42 @@ Ext.define('YAPP.controller.Item', {
 	},
 	
 	activarItem : function(button) {
-		if (confirm("El item pasara a estado \"ACTIVO\" \n¿Está seguro que quiere Desaprobar el Ítem?")){
-			var win = button.up('grid');
-			var grilla = win.down('gridview')
-			var record = grilla.getSelectionModel().getSelection()[0];
-			if (record.data._estado == "APROBADO" || record.data._estado == "REVISION"){
-				record.data._estado = "ACTIVO"
-				record.data._version = record.data._version + 1;
-				
-			}else{
-				alert("El item se encuentra en estado: " + record.data._estado);
-			}
-			this.setearPadresTipoAntecesor(record);
-			var store = this.getItemStore();
-			var fase = this.getComboFase();
-			record.save(
-			{	
-				success : function(record) {
+		Ext.Msg.confirm("Items","El ítem pasara a estado \"ACTIVO\" \n ¿Está seguro que quiere Desaprobar el Ítem?",function(boton){
+			if (boton === 'yes'){
+				var win = button.up('grid');
+				var grilla = win.down('gridview')
+				var record = grilla.getSelectionModel().getSelection()[0];
+				if (record.data._estado == "APROBADO" || record.data._estado == "REVISION"){
+					record.data._estado = "ACTIVO"
+					record.data._version = record.data._version + 1;
 					
-					store.load({
-						params : {
-							id : fase.getValue()
-						}
-					});
-					Ext.example.msg("Item", "Activado con exito");
-					//habilitarBotones("ACTIVO");
-				},
-				failure : function(record) {
-					alert("No se pudo activar el Item");
+				}else{
+					Ext.Msg.alert("El item se encuentra en estado: " + record.data._estado);
 				}
-				
-			});
-			this.habilitarBotones("");
-		}
+				this.setearPadresTipoAntecesor(record);
+				var store = this.getItemStore();
+				var fase = this.getComboFase();
+				var me = this;
+				record.save(
+				{	
+					success : function(record) {
+						
+						store.load({
+							params : {
+								id : fase.getValue()
+							}
+						});
+						Ext.example.msg("Item", "Activado con exito");
+						me.onRender(record.data.id)
+					},
+					failure : function(record) {
+						Ext.Msg.alert("No se pudo activar el Item");
+					}
+					
+				});
+				this.habilitarBotones("");
+			}
+		}, this)
 	},
 	
 	guardarAsignacion : function(button){
@@ -831,10 +858,10 @@ Ext.define('YAPP.controller.Item', {
 				{	
 					success : function(record) {
 						Ext.example.msg("Unidad de Trabajo", "Agregada con exito");
-						me.onRender();
+						me.onRender(nuevoItemRecord.data.id);
 					},
 					failure : function(record) {
-						alert("No se pudo guardar la Unidad de Trabajo");
+						Ext.Msg.alert("No se pudo guardar la Unidad de Trabajo");
 					}
 					
 				});
@@ -846,7 +873,7 @@ Ext.define('YAPP.controller.Item', {
 				});
 			},
 			failure : function(nuevoItemRecord){
-				alert("No se pudo guardar la Unidad de Trabajo");
+				Ext.Msg.alert("No se pudo guardar la Unidad de Trabajo");
 			}
 		})
 		
@@ -874,7 +901,7 @@ Ext.define('YAPP.controller.Item', {
 		var win = button.up('window');
 		var grid2 = this.getGridARevivir();
 		if (grid2.store.count() == 0) {
-			alert("Seleccione al menos un item para revivir");
+			Ext.Msg.alert("Seleccione al menos un item para revivir");
 			return;
 		}
 		var fase = this.getComboFase();
@@ -899,10 +926,10 @@ Ext.define('YAPP.controller.Item', {
 						}
 					});
 					Ext.example.msg("Item", "Revivido con exito");
-					me.onRender()
+					me.onRender(registro.data.id)
 				},
 				failure : function(record) {
-					alert("No se pudo revivir el Item: " + record.data._nombre);
+					Ext.Msg.alert("No se pudo revivir el Item: " + record.data._nombre);
 				}
 				
 			});
@@ -982,10 +1009,10 @@ Ext.define('YAPP.controller.Item', {
 				});
 				win.close();
 				Ext.example.msg("Item", "Revertido con exito");
-				me.onRender();
+				me.onRender(registro.data.id);
 			},
 			failure : function(record) {
-				alert("No se pudo guardar el Item");
+				Ext.Msg.alert("No se pudo guardar el Item");
 			}
 			
 		});
@@ -1059,17 +1086,17 @@ Ext.define('YAPP.controller.Item', {
 					success : function(record) {
 						//storeAtributosItems.insert(0, record);
 						Ext.example.msg("Atributo", "Guardado con exito");
-						me.onRender();
+						me.onRender(nuevoItemRecord.data.id);
 					},
 					failure : function(record) {
-						alert("No se pudo guardar el Atributo");
+						Ext.Msg.alert("No se pudo guardar el Atributo");
 					}
 					
 				});
 				
 			},
 			failure : function(nuevoItemRecord){
-				alert("No se pudo guardar el Atributo");
+				Ext.Msg.alert("No se pudo guardar el Atributo");
 			}
 		})
 		
@@ -1100,16 +1127,16 @@ Ext.define('YAPP.controller.Item', {
 					success : function() {
 						Ext.example.msg("YAPP", "Archivo subido correctamente");
 						win.close();
-						me.onRender()
+						me.onRender(nuevoItemRecord.data.id)
 					},
 					failure : function() {
-						alert('No se pudo alzar el archivo');
+						Ext.Msg.alert('No se pudo alzar el archivo');
 					}
 				});
 				
 			},
 			failure : function(nuevoItemRecord){
-				alert("No se pudo guardar el Atributo");
+				Ext.Msg.alert("No se pudo guardar el Atributo");
 			}
 		})
 		
