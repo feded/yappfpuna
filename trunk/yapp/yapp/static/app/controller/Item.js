@@ -248,7 +248,7 @@ Ext.define('YAPP.controller.Item', {
 			},
 			
 			failure: function(fase){
-				Ext.Msg.alert("No se elimino el archivo");
+				Ext.Msg.alert("YAPP","No se elimino el archivo");
 			}
 		});
 		
@@ -522,7 +522,7 @@ Ext.define('YAPP.controller.Item', {
 				me.onRender(registro.data.id);
 			},
 			failure : function(record) {
-				Ext.Msg.alert("No se pudo guardar el Item");
+				Ext.Msg.alert("YAPP","No se pudo guardar el Item");
 			}
 			
 		});
@@ -598,7 +598,7 @@ Ext.define('YAPP.controller.Item', {
 			record.data._tipo_item_prefijo = record.data._tipo_item._prefijo;
 			view.down('form').loadRecord(record);
 		}else{
-			Ext.Msg.alert("El item se encuentra en estado: " + record.data._estado) + ".\n Debe estar ACTIVO para modificarlo";
+			Ext.Msg.alert("YAPP","El item se encuentra en estado: " + record.data._estado) + ".\n Debe estar ACTIVO para modificarlo";
 		}
 	},
 
@@ -616,7 +616,7 @@ Ext.define('YAPP.controller.Item', {
 				me.onRender();
 			},
 			failure : function(linea_base) {
-				Ext.Msg.alert("No se pudo eliminar el Item");
+				Ext.Msg.alert("YAPP","No se pudo eliminar el Item");
 			}
 		});
 		
@@ -641,7 +641,7 @@ Ext.define('YAPP.controller.Item', {
 						if (typeof record.data._antecesor_item_id === "undefined" ||
 							 record.data._antecesor_item_id == "" ||
 							 record.data._antecesor_item_id == null){
-							Ext.Msg.alert("El item no tiene antecesor");
+							Ext.Msg.alert("YAPP","El item no tiene antecesor");
 							
 						}
 					}else{
@@ -662,7 +662,7 @@ Ext.define('YAPP.controller.Item', {
 								//habilitarBotones("APROBADO");
 							},
 							failure : function(record) {
-								Ext.Msg.alert("No se pudo aprobar el Item");
+								Ext.Msg.alert("YAPP","No se pudo aprobar el Item");
 							}
 							
 						});
@@ -674,7 +674,7 @@ Ext.define('YAPP.controller.Item', {
 			
 			
 		}else{
-			Ext.Msg.alert("El item se encuentra en estado: " + record.data._estado);
+			Ext.Msg.alert("YAPP","El item se encuentra en estado: " + record.data._estado);
 		}
 		
 	},
@@ -800,7 +800,7 @@ Ext.define('YAPP.controller.Item', {
 						me.onRender(nuevoItemRecord.data._id);
 					},
 					failure : function(rec) {
-						Ext.Msg.alert("No se pudo Desasinar la Unidad");
+						Ext.Msg.alert("YAPP","No se pudo Desasinar la Unidad");
 					}
 				});
 				
@@ -811,7 +811,7 @@ Ext.define('YAPP.controller.Item', {
 				});
 			},
 			failure : function(nuevoItemRecord){
-				Ext.Msg.alert("No se pudo guardar la Unidad de Trabajo");
+				Ext.Msg.alert("YAPP","No se pudo guardar la Unidad de Trabajo");
 			}
 		})
 		
@@ -883,7 +883,7 @@ Ext.define('YAPP.controller.Item', {
 						me.onRender(nuevoItemRecord.data.id);
 					},
 					failure : function(record) {
-						Ext.Msg.alert("No se pudo guardar la Unidad de Trabajo");
+						Ext.Msg.alert("YAPP","No se pudo guardar la Unidad de Trabajo");
 					}
 					
 				});
@@ -895,7 +895,7 @@ Ext.define('YAPP.controller.Item', {
 				});
 			},
 			failure : function(nuevoItemRecord){
-				Ext.Msg.alert("No se pudo guardar la Unidad de Trabajo");
+				Ext.Msg.alert("YAPP","No se pudo guardar la Unidad de Trabajo");
 			}
 		})
 		
@@ -923,7 +923,7 @@ Ext.define('YAPP.controller.Item', {
 		var win = button.up('window');
 		var grid2 = this.getGridARevivir();
 		if (grid2.store.count() == 0) {
-			Ext.Msg.alert("Seleccione al menos un item para revivir");
+			Ext.Msg.alert("YAPP","Seleccione al menos un item para revivir");
 			return;
 		}
 		var fase = this.getComboFase();
@@ -951,7 +951,7 @@ Ext.define('YAPP.controller.Item', {
 					me.onRender(registro.data.id)
 				},
 				failure : function(record) {
-					Ext.Msg.alert("No se pudo revivir el Item: " + record.data._nombre);
+					Ext.Msg.alert("YAPP","No se pudo revivir el Item: " + record.data._nombre);
 				}
 				
 			});
@@ -1034,7 +1034,7 @@ Ext.define('YAPP.controller.Item', {
 				me.onRender(registro.data.id);
 			},
 			failure : function(record) {
-				Ext.Msg.alert("No se pudo guardar el Item");
+				Ext.Msg.alert("YAPP","No se pudo guardar el Item");
 			}
 			
 		});
