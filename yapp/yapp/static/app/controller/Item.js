@@ -435,11 +435,9 @@ Ext.define('YAPP.controller.Item', {
 				if (faseAntecesora == 'undefined' || faseAntecesora == "" || faseAntecesora == null) {
 					return;
 				}
-				console.log(faseAntecesora.data.id)
 				store.load({
 					params : {
 						id_fase : faseAntecesora.data.id,
-						//linea_base : "false"
 					}
 				})
 			}
@@ -567,7 +565,6 @@ Ext.define('YAPP.controller.Item', {
 					store.load({
 						params : {
 							id_fase : faseAntecesora.data.id,
-							//linea_base : "false"
 						}
 					})
 				}
