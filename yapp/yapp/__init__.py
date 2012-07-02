@@ -113,6 +113,7 @@ def main(global_config, **settings):
     config.add_route('rol_permisos', '/rol_permisos')
     config.add_route('rol_permisos_rest', '/rol_permisos/{id}')
     
+    config.add_route('login2', '/asd')
     config.scan()
 #    config.scan("views")
 
