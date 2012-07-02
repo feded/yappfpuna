@@ -9,13 +9,14 @@ Ext.define('YAPP.view.linea_base.ABM', {
 	// stores : [ 'RolEstados' ],
 	
 	initComponent : function() {
+//		this.frame = true;
 		this.items = [ {
 			xtype : 'lineasbaselist',
 		}, {
-			padding : 5,
 			xtype : 'gridpanel',
 			name : 'gridItems',
-			store : 'Item',
+			frame : true,
+			store : Ext.create("YAPP.store.Item"),
 			height : 400,
 			columns : [ {
 				header : 'Nombre',

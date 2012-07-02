@@ -39,11 +39,17 @@ Ext.define('YAPP.controller.LineasBase', {
 			'lineabaseedit button[action=guardar]' : {
 				click : this.botonEditGuardarApretado
 			},
+			'lineasbaseabm' : {
+				'tabSeleccionada' : this.focuseado
+			}
 		});
 	},
+	focuseado : function(abm) {
+	},
+	
 	lineaBaseClick : function(grid, record) {
-		// var store = this.getGridItems().getStore();
-		var store = this.getItemStore();
+		var store = this.getGridItems().getStore();
+		// var store = this.storeItem;
 		store.load({
 			params : {
 				id_linea_base : record.get('id')
@@ -88,7 +94,7 @@ Ext.define('YAPP.controller.LineasBase', {
 	changeFase : function(object, newValue, oldValue, eOpts) {
 		var store = this.getLineasBaseStore();
 		var fase = this.getComboFase();
-		if (fase.getValue() != null){
+		if (fase.getValue() != null) {
 			store.load({
 				params : {
 					id : fase.getValue()
@@ -99,13 +105,17 @@ Ext.define('YAPP.controller.LineasBase', {
 	botonEditGuardarApretado : function(button) {
 		var win = button.up('window');
 		var form = win.down('form');
+		if (!form.getForm().isValid()) {
+			Ext.Msg.alert("Linea Base", "Valores incorrectos en la creacion")
+			return;
+		}
 		var record = form.getRecord();
 		var values = form.getValues();
 		var grid2 = this.getSecondGrid();
 		record.set(values);
 		
 		if (grid2.store.count() == 0) {
-			alert("Seleccione al menos un item para la linea base");
+			Ext.Msg.alert("Linea Base", "Seleccione al menos un item para la linea base");
 			return;
 		}
 		var fase = this.getComboFase();
@@ -119,14 +129,14 @@ Ext.define('YAPP.controller.LineasBase', {
 		record.data._fase = fase.getValue()
 		// console.log(record)
 		var store = this.getLineasBaseStore()
-		win.close();
 		record.save({
 			success : function(linea_base) {
 				store.insert(0, linea_base);
 				Ext.example.msg("Linea Base", "Creada con exito");
+				win.close();
 			},
 			failure : function(linea_base) {
-				alert("No se pudo crear la linea base");
+				Ext.Msg.alert("Linea Base", "No se pudo crear la linea base");
 			}
 		});
 	},
@@ -144,7 +154,7 @@ Ext.define('YAPP.controller.LineasBase', {
 				store2.removeAll();
 			},
 			failure : function(linea_base) {
-				alert("No se pudo eliminar la linea base");
+				Ext.Msg.alert("Linea Base", "No se pudo eliminar la linea base");
 			}
 		});
 	}

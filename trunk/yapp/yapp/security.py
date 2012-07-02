@@ -33,8 +33,12 @@ def first(s):
         return aRet
     if 'sesion_yapp' not in s :
         return aRet
-    
-    return verificar_privilegio(s.sesion_yapp, s.sesion_yapp['holder'], aRet)
+    entidades = s.all(s);
+    for entidad in entidades:
+        aRet = verificar_privilegio(s.sesion_yapp, s.sesion_yapp['holder'], aRet)
+        if aRet != None:
+            return aRet
+    return None
 
 def verificar_privilegios(query, lista):
 #    if 'holder' not in query.session:

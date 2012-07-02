@@ -298,7 +298,7 @@ Ext.define('YAPP.controller.Roles', {
 	},
 	botonCrearApretado : function(button) {
 		var rol = new YAPP.model.Rol();
-		record.data.old_pass = ""
+		rol.data.old_pass = ""
 		rol.data.accion = "POST";
 		this.ventanaRol(rol);
 	},
@@ -346,7 +346,7 @@ Ext.define('YAPP.controller.Roles', {
 			itemsDTO[i] = items[i].data.id;
 		}
 		record.data._padres = itemsDTO;
-
+		
 		if (record.data.old_pass != record.data._password) {
 			record.data._password = md5(record.data._password)
 		}
