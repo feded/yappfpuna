@@ -53,6 +53,12 @@ Ext.define('YAPP.controller.Recursos', {
 		record.set(values);
 		record.set('tipo_nombre',record.data._tipo);
 		var store = this.getRecursosStore();
+		
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP","Faltan datos por completar");
+			return;
+		}
+		
 		record.save({
 			success : function(recurso) {
 				store.insert(0, recurso);
@@ -95,9 +101,16 @@ Ext.define('YAPP.controller.Recursos', {
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
+		
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP","Faltan datos por completar");
+			return;
+		}
+		
 		record.set(values);
 		record.data._tipo = record.data._tipo._tipo;
 		var store = this.getRecursosStore();
+		
 		record.save({
 			success : function(recurso) {
 				Ext.example.msg("YAPP", "Se modifico el recurso con éxito");

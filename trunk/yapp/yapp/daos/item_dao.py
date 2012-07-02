@@ -149,7 +149,7 @@ class ItemDAO(BaseDAO):
             items_fase = self.get_items_fase(fase._id)
             cambiar = True
             for item_fase in items_fase:
-                if item_fase._estado != 'ACTIVO':
+                if item_fase._estado == 'REVISION' or item._estado == 'COMPROMETIDO' :
                     cambiar = False
             print cambiar
             if (cambiar == True):

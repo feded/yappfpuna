@@ -116,14 +116,15 @@ Ext.define('YAPP.controller.TipoItem', {
 			this.getGridTipo().getSelectionModel().select(0, false, true);
 			this.getBotonNuevoAtributo().setDisabled(false);
 			this.getBotonEliminarTipoItem().setDisabled(false);
+			var grid = this.getGridTipo();
+			var record = grid.getSelectionModel().getSelection()[0];
+			grid.fireEvent('itemclick', grid, record);
 		}else{
 			this.getBotonNuevoAtributo().setDisabled(true);
 			this.getBotonEliminarTipoItem().setDisabled(true);
 		}
 		
-		var grid = this.getGridTipo();
-		var record = grid.getSelectionModel().getSelection()[0];
-		grid.fireEvent('itemclick', grid, record);
+		
 	},
 
 	selectTipo:function(cb){

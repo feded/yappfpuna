@@ -79,7 +79,7 @@ def rest(request):
                     item._version + 1,
                     "BLOQUEADO",
                     item._fecha_inicio,
-                    item._fecha_fin,
+                    item._completado, 
                     item._padre_item_id,
                     item._antecesor_item_id)
                 dao_item.crear(n_item)
@@ -114,7 +114,7 @@ def rest(request):
                     item._version + 1,
                     "ACTIVO",
                     item._fecha_inicio,
-                    item._fecha_fin,
+                    item._completado, 
                     item._padre_item_id,
                     item._antecesor_item_id)
                 dao_item.crear(n_item)
