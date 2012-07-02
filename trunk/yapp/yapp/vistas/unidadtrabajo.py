@@ -40,7 +40,7 @@ def obtener_crear_unidad_trabajo(request):
 #            for unidadAsignada in unidadesAsignadas:
 #                for unidad in unidades:
 #                    if (unidad._id == unidadAsignada._unidad_id):
-#                        unidades.remove(unidad)
+#                        unidades.remove(unidad)            
         lista = [];
         p = Pickler()
         for entidad in unidades:
@@ -81,6 +81,13 @@ def actualizar_eliminar_unidad_trabajo(request):
         unidad = dao.get_by_id(entidad["id"])
         
         id_unidad = entidad['id']
+        
+        unidad_item_dao = ItemUnidadDAO(request)
+        items = unidad_item_dao.get_query().filter(ItemUnidadTrabajo._unidad_id == id_unidad).first()
+        
+        if items != None:
+            return Response(json.dumps({'sucess': 'false' , "message": "La unidad de trabajo no se puede eliminar,debido a que esta asignado a un item" }))
+        
         dao_unidad_recurso = UnidadTrabajoRecursoDAO(request)
         entidades = dao_unidad_recurso.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==id_unidad).all();
         for unidad_recurso in entidades:

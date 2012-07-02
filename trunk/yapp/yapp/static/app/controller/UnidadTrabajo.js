@@ -71,13 +71,19 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 		var grilla = win.down('gridview')
 		var selection = grilla.getSelectionModel().getSelection()[0];
 		var me = this;
+	
 		selection.destroy({
 			success : function(unidad){
 				me.getUnidadTrabajoStore().remove(selection)
 				Ext.example.msg("YAPP", "Se elimino la unidad de trabajo con éxito");
 			},
-			failure : function(unidad){
-				alert("No se pudo eliminar la unidad de trabajo");
+			failure: function(rec, op){
+				if (op.request.scope.reader.jsonData == undefined){
+					Ext.Msg.alert("YAPP","No se pudo eliminar la unidad de trabajo");
+				}
+				else{
+					Ext.Msg.alert("YAPP",op.request.scope.reader.jsonData["message"]);
+				}
 			}
 			
 		});
