@@ -86,12 +86,9 @@ class ItemDAO(BaseDAO):
         
         entidades = self.get_query().filter(Item._fase_id == fase_id).distinct(Item._item_id).all()
         entidades_item_id = []
-        print len(entidades)
         
         for entidad in entidades:
             posible_actual = self.get_query().filter(Item._item_id == entidad._item_id).order_by(Item._version.desc()).first();
-            print posible_actual._item_id
-            print posible_actual._estado
             if (posible_actual._estado == "ELIMINADO"):            
                 if (entidades_item_id.count(posible_actual) == 0):
                     entidades_item_id.append(posible_actual)
@@ -135,8 +132,6 @@ class ItemDAO(BaseDAO):
             items_esquema = self.get_query().filter(Item._id == esquema_item._item_id).all()
             for item in items_esquema:
                 items.append(item)
-        print "-------------items------------------"
-        print items
         return items
     
     def actualizarEstadosFaseyProyecto(self, item):
@@ -151,9 +146,7 @@ class ItemDAO(BaseDAO):
             for item_fase in items_fase:
                 if item_fase._estado == 'REVISION' or item._estado == 'COMPROMETIDO' :
                     cambiar = False
-            print cambiar
             if (cambiar == True):
-                print fase._estado
                 if fase._estado != 'ACTIVA':
                     fase_dao.update_estado_entidad(fase._id, 'ACTIVA')
                 if proyecto._estado != 'ACTIVO':

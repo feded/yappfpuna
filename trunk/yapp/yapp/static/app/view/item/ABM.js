@@ -21,7 +21,7 @@ Ext.define('YAPP.view.item.ABM', {
 		{
 			xtype : 'container',
 //			width : 650,
-			height : 300,
+			height : 150,
 			layout : {
 				type : 'hbox',
 				align : 'stretch',
