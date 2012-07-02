@@ -26,7 +26,7 @@ def calcular_impacto(request):
     id_item = request.GET.get("id")
     item_dao = ItemDAO(request)
     item = item_dao.get_by_id(id_item);
-    impacto = CalculoImpacto(item);
+    impacto = CalculoImpacto(item, request);
     p = Pickler(False, None)
 #    ret_json = p.flatten(CalculoImpactoDTO(item, antecesores, None))
     ret_json = p.flatten(impacto.calculo_impacto())
@@ -35,13 +35,13 @@ def calcular_impacto(request):
     
     
 class CalculoImpacto:
-    def __init__(self, item):
+    def __init__(self, item, request):
         self.item = item
-        self.dao = ItemDAO(None);
-        self.linea_base_dao = LineaBaseDAO(None)
-        self.item_unidad_dao = ItemUnidadDAO(None)
-        self.unidad_recurso_dao = UnidadTrabajoRecursoDAO(None)
-        self.recurso_dao = RecursoDAO(None)
+        self.dao = ItemDAO(request);
+        self.linea_base_dao = LineaBaseDAO(request)
+        self.item_unidad_dao = ItemUnidadDAO(request)
+        self.unidad_recurso_dao = UnidadTrabajoRecursoDAO(request)
+        self.recurso_dao = RecursoDAO(request)
         
     def calculo_impacto(self):
         antecesores = self.calculo_impacto_atras(self.item, [])

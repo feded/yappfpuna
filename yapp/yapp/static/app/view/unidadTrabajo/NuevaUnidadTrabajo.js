@@ -16,7 +16,8 @@ Ext.define('YAPP.view.unidadTrabajo.NuevaUnidadTrabajo', {
                     		{
                         		xtype: 'textfield',
                         		name : '_nombre',
-                        		fieldLabel: 'Nombre'
+                        		fieldLabel: 'Nombre',
+                        		allowBlank: false
                     		},
                     		{
                     			xtype: 'textfield',
@@ -29,15 +30,9 @@ Ext.define('YAPP.view.unidadTrabajo.NuevaUnidadTrabajo', {
             					fieldLabel: 'Descripcion'
                     		},
                     		{
-                    			xtype: 'fieldcontainer',
-                    			fieldLabel: 'Color',
-                    			items: [
-                    					{
-                        					xtype: 'textfield',
-                        					name : '_color',
-                        					itemId : 'color',
-                    					},colorPicker
-                    					]
+								xtype : 'colorcbo',
+								name : '_color',
+								fieldLabel: 'Color',
                     		}
                 ]
             }
@@ -56,7 +51,4 @@ Ext.define('YAPP.view.unidadTrabajo.NuevaUnidadTrabajo', {
 
         this.callParent(arguments);
     },
-});
-
-var colorPicker = Ext.create('Ext.picker.Color', {
 });

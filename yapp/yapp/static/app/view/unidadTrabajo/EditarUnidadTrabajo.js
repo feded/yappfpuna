@@ -13,7 +13,8 @@ Ext.define('YAPP.view.unidadTrabajo.EditarUnidadTrabajo', {
 			items : [ {
 				xtype : 'textfield',
 				name : '_nombre',
-				fieldLabel : 'Nombre'
+				fieldLabel : 'Nombre',
+				allowBlank: false
 			}, {
 				xtype : 'textfield',
 				name : '_etiqueta',
@@ -22,15 +23,12 @@ Ext.define('YAPP.view.unidadTrabajo.EditarUnidadTrabajo', {
 				xtype : 'textareafield',
 				name : '_descripcion',
 				fieldLabel : 'Descripcion'
-			}, {
-				xtype : 'fieldcontainer',
-				fieldLabel : 'Color',
-				items : [ {
-					xtype : 'textfield',
-					name : '_color',
-					itemId : 'color',
-				}, colorPicker ]
-			} ]
+			}, 
+			{
+				xtype : 'colorcbo',
+				name : '_color',
+				fieldLabel: 'Color',
+    		}]
 		} ];
 		this.buttons = [ {
 			text : 'Guardar',

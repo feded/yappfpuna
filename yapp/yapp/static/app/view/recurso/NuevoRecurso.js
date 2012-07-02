@@ -25,7 +25,8 @@ Ext.define('YAPP.view.recurso.NuevoRecurso', {
                     		{
                         		xtype: 'textfield',
                         		name : '_nombre',
-                        		fieldLabel: 'Recurso'
+                        		fieldLabel: 'Recurso',
+                        		allowBlank: false
                     		},
                     		{
 								xtype : 'combobox',
@@ -37,6 +38,7 @@ Ext.define('YAPP.view.recurso.NuevoRecurso', {
 								typeAhead : true,
 								queryMode : 'local',
 								emptyText : 'Seleccione un tipo...',
+								allowBlank: false,
 								listeners: {
     								select: function(combo, record, index) {
       									var tipo = combo.getValue();

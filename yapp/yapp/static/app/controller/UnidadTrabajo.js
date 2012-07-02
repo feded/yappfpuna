@@ -161,6 +161,12 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 		var values = form.getValues();
 		record.set(values);
 		var store = this.getUnidadTrabajoStore();
+		
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP","Faltan datos por completar");
+			return;
+		}
+		
 		record.save({
 			success: function(unidad){
 				store.insert(0, unidad);
@@ -181,6 +187,12 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 		var record = form.getRecord();
 		var values = form.getValues();
 		//console.log(values);
+		
+		if(form.getForm().isValid()==false){
+			Ext.Msg.alert("YAPP","Faltan datos por completar");
+			return;
+		}
+		
 		record.set(values);
 		//console.log(record);
 		record.save({
