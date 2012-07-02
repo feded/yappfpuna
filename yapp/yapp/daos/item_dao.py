@@ -144,7 +144,7 @@ class ItemDAO(BaseDAO):
             items_fase = self.get_items_fase(fase._id)
             cambiar = True
             for item_fase in items_fase:
-                if item_fase._estado == 'REVISION' or item._estado == 'COMPROMETIDO' :
+                if item_fase._estado == 'REVISION' or item_fase._estado == 'COMPROMETIDO' :
                     cambiar = False
             if (cambiar == True):
                 if fase._estado != 'ACTIVA':
@@ -161,9 +161,9 @@ class ItemDAO(BaseDAO):
             cambiarFinalizado = 0
             cambiarActivo = 0
             for item_fase in items_fase:
-                if item_fase._estado == 'BLOQUEADO' or item._estado == 'APROBADO':
+                if item_fase._estado == 'BLOQUEADO' or item_fase._estado == 'APROBADO':
                     cambiarFinalizado += 1 
-                elif item_fase._estado == 'ACTIVO' or item._estado == 'APROBADO' :
+                if item_fase._estado == 'ACTIVO' or item_fase._estado == 'APROBADO' :
                     cambiarActivo += 1
             if (cambiarFinalizado == len(items_fase)):
                 if fase._estado != 'FINALIZADA':

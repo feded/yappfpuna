@@ -6,11 +6,11 @@ Created on May 4, 2012
 from jsonpickle.pickler import Pickler
 from pyramid.response import Response
 from pyramid.view import view_config
-from yapp.daos.entidad_dao import PrivilegioDAO
 from yapp.daos.entidad_padre_dao import EntidadPadreDAO
 from yapp.daos.esquema_dao import EsquemaDAO
 from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.item_dao import ItemDAO
+from yapp.daos.privilegio_dao import PrivilegioDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
 from yapp.models.entidad_padre import EntidadPadreDTO
 from yapp.models.proyecto.proyecto import ProyectoDTO

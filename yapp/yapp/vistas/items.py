@@ -100,9 +100,12 @@ def ag_atributos_tipos_item(request):
         
         
         formato_entrada = "%Y-%m-%d"
-        fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
-        delta = datetime.timedelta(days=entidad["_duracion"] - 1)
-        fecha_fin = fecha_inicio + delta
+        if len(entidad["_fecha_inicio"])>1:
+            fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
+            delta = datetime.timedelta(days=entidad["_duracion"] - 1)
+            fecha_fin = fecha_inicio + delta
+        else:
+            fecha_inicio = ""
         
         if padre != None:
             formato_entrada = "%Y-%m-%d %H:%M:%S"
