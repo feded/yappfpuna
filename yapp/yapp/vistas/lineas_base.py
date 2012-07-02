@@ -17,6 +17,7 @@ import json
 @view_config(route_name='lineas_base')
 def getAll(request):
     if (request.GET.get('id_fase') != None):
+        print "entre-------------------------------------"
         return get_con_fase(request)
     dao = LineaBaseDAO(request)
     entidades = dao.get_all()

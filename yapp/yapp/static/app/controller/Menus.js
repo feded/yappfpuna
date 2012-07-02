@@ -212,6 +212,7 @@ Ext.define('YAPP.controller.Menus', {
 				displayField : '_nombre',
 				queryMode : 'local',
 				valueField : 'id',
+				emptyText : 'Seleccione un proyecto...',
 				name : 'proyectos'
 			});
 			panel.add({
@@ -221,6 +222,7 @@ Ext.define('YAPP.controller.Menus', {
 				queryMode : 'local',
 				valueField : 'id',
 				disabled : true,
+				emptyText : 'Seleccione una fase...',
 				name : 'fases'
 			})
 			panel.setVisible(true);

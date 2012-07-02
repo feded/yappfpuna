@@ -29,7 +29,7 @@ def calcular_impacto(request):
     impacto = CalculoImpacto(item, request);
     p = Pickler(False, None)
 #    ret_json = p.flatten(CalculoImpactoDTO(item, antecesores, None))
-    ret_json = p.flatten(impacto.calculo_impacto())
+    ret_json = p.flatten(impacto.calculo_impacto(True))
     a_ret = json.dumps({'sucess': 'true', 'impacto':ret_json})
     return Response(a_ret)
     
@@ -42,24 +42,63 @@ class CalculoImpacto:
         self.item_unidad_dao = ItemUnidadDAO(request)
         self.unidad_recurso_dao = UnidadTrabajoRecursoDAO(request)
         self.recurso_dao = RecursoDAO(request)
+        self.antecesores = []
+        self.sucesores = []
+        self.request = request
+        self.item.calculado = True
         
-    def calculo_impacto(self):
-        antecesores = self.calculo_impacto_atras(self.item, [])
-        sucesores = self.calculo_impacto_adelante(self.item, [])
+    def imprimir_items(self, items):
+        for item in items:
+            print "\tITEM con NOMBRE: " + item._nombre
         
-        bases = self.verificar_lineas_base(antecesores, [])
-        bases = self.verificar_lineas_base(sucesores, bases)
-        bases = self.verificar_linea_base_item(self.item, bases)
+    def calculo_impacto(self, with_costo=False):
+        self.calculo_impacto_atras(self.item)
+        self.calculo_impacto_adelante(self.item)
         
-        costo_antecesores = self.calcular_costo_items(antecesores)
-        costo_sucesores = self.calcular_costo_items(sucesores)
+        for item in self.antecesores:
+            if not hasattr(item, 'calculado'):
+                ci = CalculoImpacto(item, self.request)
+                ci.antecesores = self.antecesores
+                ci.sucesores = self.sucesores
+                ci.calculo_impacto()
+                print "Calculando recursivamente costo de item " + item._nombre
+                print "ANTECESORES"
+                self.imprimir_items(ci.antecesores)
+                print "SUCESORES"
+                self.imprimir_items(ci.sucesores)
+                print "--------------"
+                self.antecesores = ci.antecesores;
+                self.sucesores = ci.sucesores
+            
+        for item in self.sucesores:
+            if not hasattr(item, 'calculado'):
+                ci = CalculoImpacto(item, self.request)
+                ci.antecesores = self.antecesores
+                ci.sucesores = self.sucesores
+                ci.calculo_impacto()
+                print "Calculando recursivamente costo de item " + item._nombre
+                print "ANTECESORES"
+                self.imprimir_items(ci.antecesores)
+                print "SUCESORES"
+                self.imprimir_items(ci.sucesores)
+                print "--------------"
+                self.antecesores = ci.antecesores;
+                self.sucesores = ci.sucesores            
         
-        return CalculoImpactoDTO(self.item, antecesores, sucesores, bases, costo_antecesores, costo_sucesores)
+        if with_costo==True:
+            bases = self.verificar_lineas_base(self.antecesores, [])
+            bases = self.verificar_lineas_base(self.sucesores, bases)
+            bases = self.verificar_linea_base_item(self.item, bases)
+            costo_antecesores = self.calcular_costo_items(self.antecesores)
+            costo_sucesores = self.calcular_costo_items(self.sucesores)
+            return CalculoImpactoDTO(self.item, self.antecesores, self.sucesores, bases, costo_antecesores, costo_sucesores)
+        
     
     def verificar_lineas_base (self, items, bases):
         for item in items:
-            linea = self.linea_base_dao.get_by_id(item._linea_base_id)
-            if linea != None and linea not in bases:
+            item_fresco = self.dao.get_ultima_version_item_by_id(item._item_id)
+            linea = self.linea_base_dao.get_by_id(item_fresco._linea_base_id)
+            if linea != None and self._esta_adentro(linea, bases) == False:
                 bases.append(linea)
         return bases
     
@@ -67,54 +106,71 @@ class CalculoImpacto:
         if item._linea_base_id == None:
             return bases;
         linea = self.linea_base_dao.get_by_id(item._linea_base_id)
-        if linea != None and linea not in bases:
+        if linea != None and self._esta_adentro(linea, bases) == False:
             bases.append(linea)
         return bases
     
     
-    def calculo_impacto_atras(self, item, items):
+    def calculo_impacto_atras(self, item):
+        items = self.antecesores
         if item == None:
-            return items
-        if item in items:
-            return items;
+            return 
+        if self._esta_adentro(item, items) == True or self._esta_adentro(item, self.sucesores):
+            return 
         if self.item != item:
             items.append(item);
-        antecesor = self.dao.get_by_id(item._antecesor_item_id)
-        if antecesor != None:
-            items = self.calculo_impacto_atras(antecesor, items)
-        padre = self.dao.get_by_id(item._padre_item_id)
-        if padre != None:
-            items = self.calculo_impacto_atras(padre, items)
         
-        return items;
-    
-    def calculo_impacto_adelante(self, item, items):
+        antecesor = self.get_item(item._antecesor_item_id)
+        if antecesor != None:
+            self.calculo_impacto_atras(antecesor)
+        padre = self.get_item(item._padre_item_id)
+        if padre != None:
+            self.calculo_impacto_atras(padre)
+        
+
+    def calculo_impacto_adelante(self, item):
+        items = self.sucesores
         if item == None:
-            return items;
-        if item in items:
-            return items;
+            return 
+        if self._esta_adentro(item, items) == True or self._esta_adentro(item, self.antecesores):
+            return 
         if self.item != item:
             items.append(item)
         hijos = self.dao.get_query().filter(Item._padre_item_id == item._id).all()
         for hijo in hijos:
-            hijo_ultima_version = self.dao.get_ultima_version_item(hijo)
-            items = self.calculo_impacto_adelante(hijo_ultima_version, items)
+            hijo_ultima_version = self.dao.get_ultima_version_item_by_id(hijo._item_id)
+            if hijo_ultima_version._padre_item_id == item._id:
+                self.calculo_impacto_adelante(hijo_ultima_version)
         sucesores = self.dao.get_query().filter(Item._antecesor_item_id == item._id).all()
         for sucesor in sucesores:
-            sucesor_ultima_version = self.dao.get_ultima_version_item(sucesor)
-            items = self.calculo_impacto_adelante(sucesor_ultima_version, items)
+            sucesor_ultima_version = self.dao.get_ultima_version_item_by_id(sucesor._item_id)
+            if sucesor_ultima_version._antecesor_item_id == item._id:
+                self.calculo_impacto_adelante(sucesor_ultima_version)
         
-        return items;
+        
+    
+    def get_item(self, item_id):
+        if item_id == None:
+            return None
+        item_temporal = self.dao.get_by_id(item_id)
+        antecesor = self.dao.get_ultima_version_item_by_id(item_temporal._item_id)
+        return antecesor
+    
+    def _esta_adentro(self, item, lista):
+        for entidad in lista:
+            if entidad._id == item._id:
+                return True;
+        return False
     
     def calcular_costo_items(self, items):
         costo = 0;
         for item in items:
-            print "---------------------"
-            print "Costo de item con id " + str(item._id)
+#            print "---------------------"
+#            print "Costo de item con id " + str(item._id)
             costo_item = self.costo_item(item)
             item._costo = costo_item;
-            print "Costo: " + str(costo_item)
-            print "---------------------"
+#            print "Costo: " + str(costo_item)
+#            print "---------------------"
             costo += costo_item;
         return costo;
     
@@ -122,20 +178,20 @@ class CalculoImpacto:
 #        self.item_unidad_dao = ItemUnidadDAO(None)
 #        self.unidad_recurso_dao = UnidadTrabajoRecursoDAO(None)
 #        self.recurso_dao = RecursoDAO(None)
-        items_unidades = self.item_unidad_dao.get_query().filter(ItemUnidadTrabajo._item_id==item._id).all();
+        items_unidades = self.item_unidad_dao.get_query().filter(ItemUnidadTrabajo._item_id == item._id).all();
         costo = 0;
         for item_unidad in items_unidades:
-            print "---------------------"
-            print "Costo de item con id " + str(item._id)
+#            print "---------------------"
+#            print "Costo de item con id " + str(item._id)
             costo_unidad = self.costo_unidad(item_unidad._unidad_id)
             costo += costo_unidad
-            print "Costo: " + str(costo_unidad)
-            print "---------------------"
+#            print "Costo: " + str(costo_unidad)
+#            print "---------------------"
         return costo
         
 
     def costo_unidad(self, unidad_id):
-        unidad_recursos = self.unidad_recurso_dao.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id==unidad_id).all()
+        unidad_recursos = self.unidad_recurso_dao.get_query().filter(UnidadTrabajo_Recurso._unidad_trabajo_id == unidad_id).all()
         costo = 0
         for unidad_recurso in unidad_recursos:
             recurso = self.recurso_dao.get_by_id(unidad_recurso._recurso_id)
