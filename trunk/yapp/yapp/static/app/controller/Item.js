@@ -315,6 +315,11 @@ Ext.define('YAPP.controller.Item', {
 	
 	changeFase : function(object, newValue, oldValue, eOpts) {
 		var itemStore = this.getItemStore();
+		if (newValue == null)
+		{
+			itemStore.removeAll()
+			return;
+		}
 		var fase = this.getComboFase();
 		itemStore.load({
 			params : {
@@ -430,10 +435,11 @@ Ext.define('YAPP.controller.Item', {
 				if (faseAntecesora == 'undefined' || faseAntecesora == "" || faseAntecesora == null) {
 					return;
 				}
+				console.log(faseAntecesora.data.id)
 				store.load({
 					params : {
-						id : faseAntecesora.data.id,
-						linea_base : "false"
+						id_fase : faseAntecesora.data.id,
+						//linea_base : "false"
 					}
 				})
 			}
@@ -545,7 +551,7 @@ Ext.define('YAPP.controller.Item', {
 		
 			gridTipo.store.load({
 				params : {
-					id_proyecto : this.getProyectos().getValue()
+					id_fase : fase.getValue()
 				},
 			});
 			var faseStore = new YAPP.store.Fases().load({
@@ -560,8 +566,8 @@ Ext.define('YAPP.controller.Item', {
 					}
 					store.load({
 						params : {
-							id : faseAntecesora.data.id,
-							linea_base : "false"
+							id_fase : faseAntecesora.data.id,
+							//linea_base : "false"
 						}
 					})
 				}
@@ -636,15 +642,17 @@ Ext.define('YAPP.controller.Item', {
 					id : this.getProyectos().getValue()
 				},
 				callback : function(records, operation, success) {
+					segui = true;
 					faseAntecesora = records[0]
 					if (!(typeof faseAntecesora == 'undefined' || faseAntecesora == "" || faseAntecesora == null)) {				
 						if (typeof record.data._antecesor_item_id === "undefined" ||
 							 record.data._antecesor_item_id == "" ||
 							 record.data._antecesor_item_id == null){
 							Ext.Msg.alert("YAPP","El item no tiene antecesor");
-							
+							segui = false
 						}
-					}else{
+					}
+					if(segui){
 						record.data._estado = "APROBADO"
 						record.data._version = record.data._version + 1;
 						me.setearPadresTipoAntecesor(record);

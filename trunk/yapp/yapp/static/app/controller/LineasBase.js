@@ -25,7 +25,6 @@ Ext.define('YAPP.controller.LineasBase', {
 			'lineasbaselist' : {
 				// itemdblclick : this.editUser,
 				itemclick : this.lineaBaseClick,
-				render : this.onRender
 			},
 			'lineasbaselist button[action=crear]' : {
 				click : this.botonCrearApretado
@@ -77,27 +76,13 @@ Ext.define('YAPP.controller.LineasBase', {
 			}
 		});
 	},
-	onRender : function() {
-		var combo = this.getComboFase();
-		var store = this.getFasesStore();
-		var object = this.getProyectos().getValue();
-		if (object == '') {
-			return;
-		}
-		combo.store = store;
-		store.load({
-			params : {
-				id : object
-			}
-		});
-	},
 	changeFase : function(object, newValue, oldValue, eOpts) {
 		var store = this.getLineasBaseStore();
 		var fase = this.getComboFase();
 		if (fase.getValue() != null) {
 			store.load({
 				params : {
-					id : fase.getValue()
+					id_fase : fase.getValue()
 				}
 			});
 		}

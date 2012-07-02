@@ -32,12 +32,6 @@ class ItemDAO(BaseDAO):
         
         return lista_return
         
-    def get_ultima_version_item(self, item):
-        items_fase = self.get_items_fase(item._fase._id)
-        for it in items_fase:
-            if (it._item_id == item._item_id):
-                return it
-    
     def get_ultima_version_item_by_id(self, item_id):
         return self.get_query().filter(Item._item_id == item_id).order_by(Item._version.desc()).first();
     

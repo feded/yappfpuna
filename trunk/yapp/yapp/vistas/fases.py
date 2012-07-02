@@ -34,8 +34,12 @@ def obtener_crear_fases(request):
         p = Pickler(False,None)
         #Codigo de fede
         if (fase_id!= None and fase_id!= ""):
+            print "--------------aca llegue-----------"
             entidad = rd.get_query().filter(Fase._id < fase_id, Fase._proyecto_id == proyecto_id ).order_by(Fase._orden.desc()).first()
+            print "entidad"
+            print entidad
             if (entidad!=None):
+                print "--------------aca tb-----------"
                 entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id,entidad._orden, entidad._comentario, entidad._estado,entidad._color)
                 lista.append(p.flatten(entidadLinda))    
         elif (proyecto_id!= None and proyecto_id!= ""):
