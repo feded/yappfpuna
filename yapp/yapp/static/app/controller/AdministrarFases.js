@@ -24,6 +24,10 @@ Ext.define('YAPP.controller.AdministrarFases', {
     			ref: 'proyectos'
 			},
 			{
+				selector : 'viewport combobox[name=fases]',
+				ref : 'fases'
+			},
+			{
     			selector: 'editarfase textfield[name=_color]',
     			ref: 'colorTextoEditar'
 			},
@@ -122,6 +126,7 @@ Ext.define('YAPP.controller.AdministrarFases', {
 		
 		grid.fireEvent('itemclick', grid, record);
 		this.getComboTipoItem().setValue("");
+		
 	},
 	
 	crearFase: function(button){
