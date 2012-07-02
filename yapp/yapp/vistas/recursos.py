@@ -128,6 +128,12 @@ def actualizar_eliminar_recurso(request):
         dao = RecursoDAO(request)
         recurso = dao.get_by_id(entidad["id"])
         
+        dao_unidad_recurso = UnidadTrabajoRecursoDAO(request)
+        unidades = dao_unidad_recurso.get_query().filter(UnidadTrabajo_Recurso._recurso_id==entidad["id"]).first();
+        
+        if unidades != None:
+            return Response(json.dumps({'sucess': 'false' , "message": "El recurso no se puede eliminar debido a que esta asignado a una unidad de trabajo" }))
+        
         if (recurso._tipo._tipo == "Persona"):
                 dao = RecursoPersonaDAO(request)
                 recurso = dao.get_by_id(entidad["id"])
@@ -146,6 +152,13 @@ def actualizar_eliminar_recurso(request):
         dao = RecursoDAO(request)
         entidad = u.restore(request.json_body);
         vieja = dao.get_by_id(entidad["id"])
+        
+        dao_unidad_recurso = UnidadTrabajoRecursoDAO(request)
+        unidades = dao_unidad_recurso.get_query().filter(UnidadTrabajo_Recurso._recurso_id==entidad["id"]).first();
+        
+        if unidades != None:
+            return Response(json.dumps({'sucess': 'false' , "message": "El recurso no se puede modificar debido a que esta asignado a una unidad de trabajo" }))
+        
         
         if(vieja._tipo._tipo == entidad["_tipo"]):
             if (entidad["_tipo"] == "Persona"):

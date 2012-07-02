@@ -66,7 +66,7 @@ Ext.define('YAPP.controller.Recursos', {
 				win.close();
 			},
 			failure : function(recurso) {
-				alert("No se pudo crear el recurso");
+				Ext.Msg.alert("YAPP","No se pudo crear el recurso");
 			}
 		});
 		
@@ -116,8 +116,14 @@ Ext.define('YAPP.controller.Recursos', {
 				Ext.example.msg("YAPP", "Se modifico el recurso con éxito");
 				win.close();
 			},
-			failure : function(recurso) {
-				alert("No se pudo modificar el recurso");
+			failure: function(rec, op){
+				if (op.request.scope.reader.jsonData == undefined){
+					Ext.Msg.alert("YAPP","No se pudo modificar el recurso");
+				}
+				else{
+					Ext.Msg.alert("YAPP",op.request.scope.reader.jsonData["message"]);
+					win.close();
+				}
 			}
 		});
 	},
@@ -132,8 +138,12 @@ Ext.define('YAPP.controller.Recursos', {
 				me.getRecursosStore().remove(selection)
 				Ext.example.msg("YAPP", "Se elimino recurso con éxito");
 			},
-			failure : function(recurso) {
-				alert("YAPP", "No se pudo eliminar el recurso");
+			failure: function(rec, op){
+				if (op.request.scope.reader.jsonData == undefined){
+					Ext.Msg.alert("YAPP","No se pudo eliminar el recurso");
+				}
+				else{
+					Ext.Msg.alert("YAPP",op.request.scope.reader.jsonData["message"]);				}
 			}
 		});
 	},

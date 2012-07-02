@@ -111,12 +111,18 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
         
         record.save({
                 success : function(recursos) {
-                        Ext.example.msg("Yapp", "Asignacion correcta");
-                        win.close();
+                    Ext.example.msg("Yapp", "Asignacion correcta");
+                    win.close();
                 },
-                failure : function(recursos) {
-                        Ext.example.msg("Yapp", "Asignacion no correcta");
-                }
+                failure: function(rec, op){
+					if (op.request.scope.reader.jsonData == undefined){
+						Ext.Msg.alert("YAPP","No se pudo realizar la asignacion");
+					}
+					else{
+						Ext.Msg.alert("YAPP",op.request.scope.reader.jsonData["message"]);
+						win.close()
+					}
+				}
         });
     },
     
@@ -175,12 +181,12 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 		
 		record.save({
 			success: function(unidad){
-				store.insert(0, unidad);
+				store.insert(store.getCount(), unidad);
 				Ext.example.msg("Yapp", "Se creo con éxito la unidad de trabajo");
 				win.close();		
 			},
 			failure: function(unidad){
-				alert("No se pudo crear la unidad de trabajo");
+				Ext.Msg.alert("YAPP","No se pudo crear la unidad de trabajo");
 			}
 		});
 		
@@ -192,7 +198,6 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 		var form = win.down('form');
 		var record = form.getRecord();
 		var values = form.getValues();
-		//console.log(values);
 		
 		if(form.getForm().isValid()==false){
 			Ext.Msg.alert("YAPP","Faltan datos por completar");
@@ -200,14 +205,19 @@ Ext.define('YAPP.controller.UnidadTrabajo', {
 		}
 		
 		record.set(values);
-		//console.log(record);
 		record.save({
 			success: function(unidad){
 				Ext.example.msg("YAPP", "Se modifico la unidad de trabajo con éxito");
 				win.close();
 			},
-			failure: function(unidad){
-				alert("No se pudo modificar la unidad de trabajo");
+			failure: function(rec, op){
+				if (op.request.scope.reader.jsonData == undefined){
+					Ext.Msg.alert("YAPP","No se pudo modificar la unidad de trabajo");
+				}
+				else{
+					Ext.Msg.alert("YAPP",op.request.scope.reader.jsonData["message"]);
+					win.close()
+				}
 			}
 		});
 	}
