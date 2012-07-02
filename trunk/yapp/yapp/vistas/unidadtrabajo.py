@@ -35,12 +35,12 @@ def obtener_crear_unidad_trabajo(request):
             ###osea, con ese return se podra asignar a cualquier item la misma unidad de trabajo
             ###si es que ya no tiene una asignada
             #####################################
-#            itemUnidadDao = ItemUnidadDAO(request)
-#            unidadesAsignadas = itemUnidadDao.get_query().filter(ItemUnidadTrabajo._item_id == item_id).all()
-#            for unidadAsignada in unidadesAsignadas:
-#                for unidad in unidades:
-#                    if (unidad._id == unidadAsignada._unidad_id):
-#                        unidades.remove(unidad)            
+            itemUnidadDao = ItemUnidadDAO(request)
+            unidadesAsignadas = itemUnidadDao.get_query().filter(ItemUnidadTrabajo._item_id == item_id).all()
+            for unidadAsignada in unidadesAsignadas:
+                for unidad in unidades:
+                    if (unidad._id == unidadAsignada._unidad_id):
+                        unidades.remove(unidad)            
         lista = [];
         p = Pickler()
         for entidad in unidades:

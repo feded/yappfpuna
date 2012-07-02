@@ -628,33 +628,55 @@ Ext.define('YAPP.controller.Item', {
 		var grilla = win.down('gridview')
 		var record = grilla.getSelectionModel().getSelection()[0];
 		var me = this
+		
 		if (record.data._estado == "ACTIVO" || record.data._estado == "REVISION"){
-			record.data._estado = "APROBADO"
-			record.data._version = record.data._version + 1;
+			var faseStore = new YAPP.store.Fases().load({
+				params : {
+					fase_id : fase.getValue(),
+					id : this.getProyectos().getValue()
+				},
+				callback : function(records, operation, success) {
+					faseAntecesora = records[0]
+					if (!(typeof faseAntecesora == 'undefined' || faseAntecesora == "" || faseAntecesora == null)) {				
+						if (typeof record.data._antecesor_item_id === "undefined" ||
+							 record.data._antecesor_item_id == "" ||
+							 record.data._antecesor_item_id == null){
+							Ext.Msg.alert("El item no tiene antecesor");
+							
+						}
+					}else{
+						record.data._estado = "APROBADO"
+						record.data._version = record.data._version + 1;
+						me.setearPadresTipoAntecesor(record);
+						var store = me.getItemStore();
+						record.save(
+						{	
+							success : function(record) {
+								store.load({
+									params : {
+										id : fase.getValue()
+									}
+								});
+								Ext.example.msg("Item", "Aprobado con exito");
+								me.onRender(record.data.id)
+								//habilitarBotones("APROBADO");
+							},
+							failure : function(record) {
+								Ext.Msg.alert("No se pudo aprobar el Item");
+							}
+							
+						});
+						//me.habilitarBotones("");
+					}
+					
+				}
+			});
+			
 			
 		}else{
 			Ext.Msg.alert("El item se encuentra en estado: " + record.data._estado);
 		}
-		this.setearPadresTipoAntecesor(record);
-		var store = this.getItemStore();
-		record.save(
-		{	
-			success : function(record) {
-				store.load({
-					params : {
-						id : fase.getValue()
-					}
-				});
-				Ext.example.msg("Item", "Aprobado con exito");
-				me.onRender(record.data.id)
-				//habilitarBotones("APROBADO");
-			},
-			failure : function(record) {
-				Ext.Msg.alert("No se pudo aprobar el Item");
-			}
-			
-		});
-		this.habilitarBotones("");
+		
 	},
 	
 	habilitarBotones : function(estado){

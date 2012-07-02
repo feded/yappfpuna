@@ -15,7 +15,7 @@ Ext.define('YAPP.view.item_unidad.List', {
 				items : [
 				{
             		xtype : 'combobox',
-					fieldLabel : 'Unidad de Trbajo',
+					fieldLabel : 'Unidad de Trabajo',
 					name : '_unidad_id',
 					store : Ext.create('YAPP.store.UnidadTrabajo'),
 					displayField : '_nombre',
