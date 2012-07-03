@@ -87,7 +87,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 		}, {
 			xtype : 'container',
 			width : 650,
-			height : 100,
+			height : 120,
 			layout : {
 				type : 'hbox',
 				align : 'rigth',
