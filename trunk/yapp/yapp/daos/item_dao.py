@@ -47,7 +47,6 @@ class ItemDAO(BaseDAO):
             if (posible_actual._estado != "ELIMINADO"):            
                 if (entidades_item_id.count(posible_actual) == 0):
                     entidades_item_id.append(posible_actual)
-                    print posible_actual._aprobar
              
         return entidades_item_id
         
