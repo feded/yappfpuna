@@ -182,7 +182,7 @@ class CalculoImpacto:
         
 class CalculoImpactoDTO:
     def __init__(self, item, antecesores, sucesores, bases, costo_antecesores, costo_sucesores):
-        self.item = ItemDTO(item)
+        self.item = EntidadDTO(item)
         if antecesores != None:
             self.antecesores = []
             for antecesor in antecesores:
@@ -198,16 +198,19 @@ class CalculoImpactoDTO:
         self.costo_antecesores = costo_antecesores;
         self.costo_sucesores = costo_sucesores;
         
-class ItemDTOCalculo:
-    def __init__(self, item):
-        self._nombre = item._nombre
-        self._descripcion = item._descripcion
         
 class EntidadDTO:
     def __init__(self, entidad):
+        self._id = entidad._id
         self._nombre = entidad._nombre
         self._descripcion = entidad._descripcion
         self._fase = entidad._fase._nombre
         if hasattr(entidad, '_costo'):
             self._costo = entidad._costo
+        if hasattr(entidad, '_padre_item_id'):
+            self._padre_item_id = entidad._padre_item_id
+        if hasattr(entidad, '_antecesor_item_id'):
+            self._antecesor_item_id = entidad._antecesor_item_id
+        if hasattr(entidad, '_color'):
+            self._color = entidad._color
         
