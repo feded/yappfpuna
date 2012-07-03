@@ -11,6 +11,9 @@ clases_privilegios = (Item, Esquema, Proyecto, Fase, LineaBase)
 
 
 def all(s):
+    if _es_prueba(s) == True:
+        return old_all(s)
+        
     if hasattr(s, 'omitir_seguridad') == True:
 #        return _setear_lista_sin_seguridad(old_all(s))
         return old_all(s)
@@ -28,10 +31,16 @@ def all(s):
 #    print len(list(self))
     return list(s)
 
-
+def _es_prueba(query):
+    if hasattr(query, 'session_yapp') == False:
+        return True;
+    if 'user' not in query.session_yapp and 'holder' not in query.session_yapp:
+        return True;
 
 
 def first(s):
+    if _es_prueba(s) == True:
+        return old_first(s)
     aRet = old_first(s)
     if hasattr(s, 'omitir_seguridad') == True:
         return _setear_entidad_sin_seguridad(aRet)
@@ -41,6 +50,8 @@ def first(s):
         if 'user' in s.sesion_yapp:
             if s.sesion_yapp['user']._id == 1:
                 return _setear_entidad_sin_seguridad(aRet)
+        else:
+            return aRet
     entidades = s.all();
     for entidad in entidades:
         aRet = verificar_privilegio(s.sesion_yapp, s.sesion_yapp['holder'], entidad)
