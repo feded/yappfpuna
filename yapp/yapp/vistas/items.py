@@ -112,7 +112,13 @@ def ag_atributos_tipos_item(request):
             if len(padre._fecha_inicio)>1:
                 padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
                 if fecha_inicio <  padre_inicio:
-                    return Response(json.dumps({'sucess': 'false', 'lista':''}))
+                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha menor a la fecha de inicio del padre'}))
+        if antecesor != None:
+            formato_entrada = "%Y-%m-%d %H:%M:%S"
+            if len(antecesor._fecha_inicio)>1:
+                antecesor_inicio = datetime.datetime.strptime(antecesor._fecha_inicio, formato_entrada)
+                if fecha_inicio <  antecesor_inicio:
+                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha menor a la fecha de inicio del antecesor'}))
         nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, entidad["_completado"], padre_id, antecesor_id)
         itemDao = ItemDAO(request)
         itemDao.crear(nuevo_item)
@@ -152,21 +158,44 @@ def bm_atributo(request):
             antecesor = None
         else:
             if isinstance(entidad["_antecesor"], int) != True:
-                padre = entidad["_antecesor"]["_id"]
+                antecesor_id = entidad["_antecesor"]["_id"]
             else:
-                antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])._id
+                antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])
+                antecesor_id = antecesor._id
            
         dao_item_padre = ItemDAO(request)
         if(entidad["_padre"] == "" or  entidad["_padre"] == None):
             padre = None
         else:
             if isinstance(entidad["_padre"], int) != True:
-                padre = entidad["_padre"]["_id"]
+                padre_id = entidad["_padre"]["_id"]
             else:
-                padre = dao_item_padre.get_by_id(entidad["_padre"])._id
+                padre = dao_item_padre.get_by_id(entidad["_padre"])
+                padre_id = padre._id
         item_viejo = item_dao.get_by_id(entidad["id"])
         id_viejo = item_viejo._id;
-        nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_completado"], padre, antecesor)
+        
+        formato_entrada = "%Y-%m-%d"
+        if len(entidad["_fecha_inicio"])>1:
+            fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
+        else:
+            fecha_inicio = ""
+        
+        if padre != None:
+            formato_entrada = "%Y-%m-%d %H:%M:%S"
+            if len(padre._fecha_inicio)>1:
+                padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
+                if fecha_inicio <  padre_inicio:
+                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha menor a la fecha de inicio del padre'}))
+        if antecesor != None:
+            formato_entrada = "%Y-%m-%d %H:%M:%S"
+            if len(antecesor._fecha_inicio)>1:
+                antecesor_inicio = datetime.datetime.strptime(antecesor._fecha_inicio, formato_entrada)
+                if fecha_inicio <  antecesor_inicio:
+                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha menor a la fecha de inicio del antecesor'}))
+        
+        
+        nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_completado"], padre_id, antecesor_id)
 
         if request.method == "DELETE":
             nuevo_item._estado = "ELIMINADO"
