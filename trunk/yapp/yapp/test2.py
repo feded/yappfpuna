@@ -15,6 +15,10 @@ from yapp.models.recurso.recurso_persona import RecursoPersona
 from yapp.daos.recurso_dao import TipoRecursoDAO
 from yapp.daos.unidad_trabajo_dao import UnidadTrabajoDAO
 from yapp.models.unidad_trabajo.unidad_trabajo import UnidadTrabajo
+from yapp.daos.esquema_dao import EsquemaDAO
+from yapp.models.esquema.esquema import Esquema
+from yapp.daos.atributo_esquema_dao import AtributoEsquemaDAO
+from yapp.models.esquema.atributo_esquema import AtributoEsquema
 
 class GetAtributoEsquema(unittest.TestCase):
     def setUp(self):
@@ -31,7 +35,92 @@ class GetAtributoEsquema(unittest.TestCase):
         
     def test_it(self):
         res = self.testapp.get('/atributosEsquemas', params={'id': 1}, status=200)
-        print "Probando atributo esquema"
+        print "Testeando recuperar atributos de esquema"
+        self.failUnless('sucess' in res.body)
+
+class PostAtributoEstquema(unittest.TestCase):
+    """
+    @summary: Testea la creacion de atributo de esquemas.                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        dao = ProyectoDAO(None)
+        rol_dao = RolFinalDAO(None)
+        autor = rol_dao.get_by_id(1)
+        lider = rol_dao.get_by_id(1)
+        nuevo_proyecto = Proyecto("Test",autor,1,"Prueba",lider,"Prueba","hoy","hoy")
+        dao.crear(nuevo_proyecto)
+        
+        dao = FaseDAO(None)
+        nueva_fase = Fase("Testeando",nuevo_proyecto,2, "Prueba","Prueba","0")
+        dao.crear(nueva_fase)
+        
+        esquemaDao = EsquemaDAO(None);
+        nuevo_esquema = Esquema("Esquema", "_descripcion", "_etiqueta", "_color", nueva_fase.id)
+        esquemaDao.crear(nuevo_esquema);
+        
+        
+        nueva_entidad = {"_nombre":"Prueba", "_descripcion":"prueba", "_tipo":"numerico","_valor":"100", "_esquema_id": nuevo_esquema.id}
+        
+        res = self.testapp.post('/atributosEsquemas',params=json.dumps(nueva_entidad));
+        print "Testeando crear atributos de esquema"
+        self.failUnless('sucess' in res.body)
+        
+class PutAtributoEsquema(unittest.TestCase):
+    """
+    @summary: Testea la modificacion de atributos de esquema..                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        dao = ProyectoDAO(None)
+        rol_dao = RolFinalDAO(None)
+        autor = rol_dao.get_by_id(1)
+        lider = rol_dao.get_by_id(1)
+        nuevo_proyecto = Proyecto("Test",autor,1,"Prueba",lider,"Prueba","hoy","hoy")
+        dao.crear(nuevo_proyecto)
+        
+        dao = FaseDAO(None)
+        nueva_fase = Fase("Testeando",nuevo_proyecto,2, "Prueba","Prueba","0")
+        dao.crear(nueva_fase)
+        
+        esquemaDao = EsquemaDAO(None);
+        nuevo_esquema = Esquema("Esquema", "_descripcion", "_etiqueta", "_color", nueva_fase.id)
+        esquemaDao.crear(nuevo_esquema);
+        
+        
+        atributoEsquemaDao = AtributoEsquemaDAO(None);
+        nuevo_atributo = AtributoEsquema("_nombre", "_descripcion", "_tipo", "_valor", nuevo_esquema.id)
+        atributoEsquemaDao.crear(nuevo_atributo);
+        
+        
+        atributo = {"id": nuevo_atributo.id,"_nombre":"Prueba", "_descripcion":"prueba", "_tipo":"numerico","valor":10, "esquema_id": nuevo_esquema.id}
+        
+        direccion = '/atributosEsquemas/' + str(nuevo_atributo.id)
+        
+        res = self.testapp.put(direccion,params=json.dumps(atributo));
+        print "Testeando modificar atributo de esquemas"
         self.failUnless('sucess' in res.body)
 
 ##################################################################################
@@ -202,8 +291,8 @@ class GetEntidades(unittest.TestCase):
         DBSession.remove()
 
     def test_it(self):
-        res = self.testapp.get('/entidades',status=200)
-        print "Probando entidades"
+        res = self.testapp.get('/entidades_padre/0',status=200)
+        print "Testeando get entidades"
         self.failUnless('sucess' in res.body)
         
 class GetEntidadesPadres(unittest.TestCase):
@@ -257,8 +346,122 @@ class GetEsquema(unittest.TestCase):
 
     def test_it(self):
         res = self.testapp.get('/esquemas', params={'id': 1},status=200)
-        print "Probando esquema"
+        print "Testeando recuperar esquemas"
         self.failUnless('sucess' in res.body)
+
+class PostEsquema(unittest.TestCase):
+    """
+    @summary: Testea la creacion de esquemas.                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        dao = ProyectoDAO(None)
+        rol_dao = RolFinalDAO(None)
+        autor = rol_dao.get_by_id(1)
+        lider = rol_dao.get_by_id(1)
+        nuevo_proyecto = Proyecto("Test",autor,1,"Prueba",lider,"Prueba","hoy","hoy")
+        dao.crear(nuevo_proyecto)
+        
+        
+        dao = FaseDAO(None)
+        nueva_fase = Fase("Testeando",nuevo_proyecto,2, "Prueba","Prueba","0")
+        dao.crear(nueva_fase)
+        
+        
+        esquema = {"_nombre":"Esquema Prueba","_descripcion":"Prueba","_etiqueta":"Esquema","_color":"0","_fase_id": nueva_fase.id}
+        
+        res = self.testapp.post('/esquemas',params=json.dumps(esquema));
+        print "Testeando crear esquema"
+        self.failUnless('sucess' in res.body)
+        
+
+class PutEsquema(unittest.TestCase):
+    """
+    @summary: Testea la modificacion esquemas.                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        dao = ProyectoDAO(None)
+        rol_dao = RolFinalDAO(None)
+        autor = rol_dao.get_by_id(1)
+        lider = rol_dao.get_by_id(1)
+        nuevo_proyecto = Proyecto("Test",autor,1,"Prueba",lider,"Prueba","hoy","hoy")
+        dao.crear(nuevo_proyecto)
+        
+        dao = FaseDAO(None)
+        nueva_fase = Fase("Testeando",nuevo_proyecto,2, "Prueba","Prueba","0")
+        dao.crear(nueva_fase)
+        
+        esquemaDao = EsquemaDAO(None);
+        nueva_entidad = Esquema("Esquema", "_descripcion", "_etiqueta", "_color", nueva_fase.id)
+        esquemaDao.crear(nueva_entidad);
+        
+        direccion = '/esquemas/' + str(nueva_entidad.id)
+        esquema = {"id": nueva_entidad.id,"_nombre":"Esquema Prueba","_descripcion":"Prueba","_etiqueta":"Esquema","_color":"0","_fase_id": nueva_fase.id}
+        res = self.testapp.put(direccion,params=json.dumps(esquema));
+        print "Testeando modificar esquema"
+        self.failUnless('sucess' in res.body)
+        
+class DeleteEsquemas(unittest.TestCase):
+    """
+    @summary: Testea la eliminacion de esquemas.                         
+    """
+    def setUp(self):
+        from yapp import main
+        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
+        app = main({}, **settings)
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+    
+    def tearDown(self):
+        del self.testapp
+        from yapp.models import DBSession
+        DBSession.remove()
+
+    def test_it(self):
+        dao = ProyectoDAO(None)
+        rol_dao = RolFinalDAO(None)
+        autor = rol_dao.get_by_id(1)
+        lider = rol_dao.get_by_id(1)
+        nuevo_proyecto = Proyecto("Test",autor,1,"Prueba",lider,"Prueba","hoy","hoy")
+        dao.crear(nuevo_proyecto)
+        
+        dao = FaseDAO(None)
+        nueva_fase = Fase("Testeando",nuevo_proyecto,2, "Prueba","Prueba","0")
+        dao.crear(nueva_fase)
+        
+        esquemaDao = EsquemaDAO(None);
+        nueva_entidad = Esquema("Esquema", "_descripcion", "_etiqueta", "_color", nueva_fase.id)
+        esquemaDao.crear(nueva_entidad);
+        
+        direccion = '/esquemas/' + str(nueva_entidad.id)
+        esquema = {"id": nueva_entidad.id,"_nombre":"Esquema Prueba","_descripcion":"Prueba","_etiqueta":"Esquema","_color":"0","_fase_id": nueva_fase.id} 
+        res = self.testapp.delete(direccion,params=json.dumps(esquema));
+        print "Testeando eliminar esquemas"
+        self.failUnless('sucess' in res.body)
+
 
 ##################################################################################
 #                                Fases
@@ -459,7 +662,7 @@ class GetPrivilegios(unittest.TestCase):
         DBSession.remove()
 
     def test_it(self):
-        res = self.testapp.get('/privilegios/0',status=200)
+        res = self.testapp.get('/privilegios',status=200)
         print "Probando privilegios"
         self.failUnless('sucess' in res.body)
 ##################################################################################
@@ -728,24 +931,6 @@ class GetRolesEstados(unittest.TestCase):
         print "Probando roles estados"
         self.failUnless('sucess' in res.body)
 
-class GetRolPrivilegios(unittest.TestCase):
-    def setUp(self):
-        from yapp import main
-        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
-        app = main({}, **settings)
-        from webtest import TestApp
-        self.testapp = TestApp(app)
-    
-    def tearDown(self):
-        del self.testapp
-        from yapp.models import DBSession
-        DBSession.remove()
-
-    def test_it(self):
-        res = self.testapp.get('/rolPrivilegios/0', status=200)
-#        print str(res)
-        print "Probando roles privilegios"
-        self.failUnless('sucess' in res.body)
 
 #class GetSuscripciones(unittest.TestCase):
 #    def setUp(self):
@@ -784,41 +969,6 @@ class GetTipoFase(unittest.TestCase):
     def test_it(self):
         res = self.testapp.get('/tipofase', params={'id': 1},status=200)
         print "Testeando tipo de item de fase"
-        self.failUnless('sucess' in res.body)
-
-class PostTipoFase(unittest.TestCase):
-    """
-    @summary: Testea la asociacion de un tipo de item y una fase.                         
-    """
-    def setUp(self):
-        from yapp import main
-        settings = { 'sqlalchemy.url': 'postgres://yapp:yapp@127.0.0.1:5432/yapp'}
-        app = main({}, **settings)
-        from webtest import TestApp
-        self.testapp = TestApp(app)
-    
-    def tearDown(self):
-        del self.testapp
-        from yapp.models import DBSession
-        DBSession.remove()
-
-    def test_it(self):
-        dao = ProyectoDAO(None)
-        rol_dao = RolFinalDAO(None)
-        autor = rol_dao.get_by_id(1)
-        lider = rol_dao.get_by_id(1)
-        nuevo_proyecto = Proyecto("Test",autor,1,"Prueba",lider,"Prueba","hoy","hoy")
-        dao.crear(nuevo_proyecto)
-        
-        dao = FaseDAO(None)
-        nueva_fase = Fase("Testeando",nuevo_proyecto,2, "Prueba","Prueba","0")
-        dao.crear(nueva_fase)
-        
-    
-        nuevo_tipo_fase = {"id":0,"_tipo": 1,"tipo_nombre":"Tipo 1","_fase": nueva_fase.id}
-        
-        res = self.testapp.post('/tipofase',params=json.dumps(nuevo_tipo_fase));
-        print "Testeando asociar tipos de items a fases"
         self.failUnless('sucess' in res.body)
         
 class DeleteTipoFase(unittest.TestCase):
