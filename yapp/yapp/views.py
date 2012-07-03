@@ -76,9 +76,9 @@ def crear(self, entidad):
 #        lista = self.get_query().all();
 #        entidad = lista[len(lista) - 1];
     if (self._request != None):
-        self._request.session['holder'] = crearPrivilegioHolder(self._request, self._request.session['user'])
         #no va a tener user en caso de que venga del pyunit
         if ('user' in self._request.session):
+            self._request.session['holder'] = crearPrivilegioHolder(self._request, self._request.session['user'])
             historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
             DBSession.add(historia)
             self.notificar(entidad, historia)
