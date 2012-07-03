@@ -99,6 +99,10 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 				displayField : '_nombre',
 				queryMode : 'local',
 				valueField : 'id',
+			}, {
+				text : 'Ver grafo',
+				scope : this,
+				action : 'grafo'
 			} ]
 		} ];
 		

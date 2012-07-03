@@ -14,6 +14,13 @@
 	<link rel="stylesheet" type="text/css" href="/static/app/resources/css/ext-all-slate.css">
 <!-- 	<link rel="stylesheet" type="text/css" href="/static/extjs.css"> -->
 <!-- 	<link rel="stylesheet" type="text/css" href="/static/gtheme.css"> -->
+
+		<!-- ARBOR -->
+    <script type="text/javascript" src="/static/arbor/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="/static/arbor/arbor.js"></script>
+    <script type="text/javascript" src="/static/arbor/arbor-graphics.js"></script>
+    <script type="text/javascript" src="/static/arbor/arbor-tween.js"></script>
+    <script type="text/javascript" src="/static/arbor/renderer.js"></script>
 </head>
 <body>
 </body>

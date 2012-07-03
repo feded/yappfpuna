@@ -1,6 +1,6 @@
 Ext.define('YAPP.controller.CalculoImpactos', {
 	extend : 'Ext.app.Controller',
-	views : [ 'calculo_impacto.View' ],
+	views : [ 'calculo_impacto.View', 'calculo_impacto.Grafo' ],
 	models : [ 'CalculoImpacto' ],
 	stores : [ 'CalculoImpactos', 'Fases', 'Item' ],
 	refs : [ {
@@ -36,6 +36,12 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 			},
 			'calculoimpactosview' : {
 				'tabSeleccionada' : this.onFocus
+			},
+			'calculoimpactosview button[action=grafo]' : {
+				click : this.verGrafo
+			},
+			'calculoimpactografo button[action=salir]' : {
+				click : this.cerrarGrafo
 			}
 		});
 	},
@@ -73,6 +79,21 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 			this.itemStore.removeAll()
 			this.getComboItem().setValue("")
 			return
+
+			
+
+						
+
+			
+
+									
+
+			
+
+						
+
+			
+
 		}
 		this.cargarItems(newValue)
 	},
@@ -80,6 +101,21 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 		if (newValue == null || newValue == "") {
 			this.limpiarStores()
 			return
+
+			
+
+						
+
+			
+
+									
+
+			
+
+						
+
+			
+
 		}
 		var store = this.getCalculoImpactosStore()
 		store.load({
@@ -89,9 +125,11 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 			scope : this,
 			callback : function(records, operation, success) {
 				this.actualizarStores(records);
+				this.calculado = true
 			}
 		})
 	},
+	
 	actualizarStores : function(records) {
 		var antecesores = this.getAntecesores();
 		antecesores.store.loadData(records[0].data.antecesores)
@@ -102,7 +140,7 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 
 		var labelSucesores = this.getLabelSucesores()
 		var labelAntecesores = this.getLabelAntecesores()
-
+		this.item = records[0].data.item
 		labelSucesores.setText(records[0].data.costo_sucesores)
 		labelAntecesores.setText(records[0].data.costo_antecesores)
 
@@ -120,5 +158,115 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 
 		labelSucesores.setText("0")
 		labelAntecesores.setText("0")
+	},
+	cerrarGrafo : function(button) {
+		var window = button.up('window')
+		window.close()
+	},
+	verGrafo : function(button) {
+		if (this.calculado == undefined) {
+			Ext.Msg.alert("Calculo de impacto", "Seleccione primero un item para el calculo")
+			return
+
+			
+
+						
+
+			
+
+		}
+		var view = Ext.widget('calculoimpactografo');
+		console.log(arbor)
+		var sys = arbor.ParticleSystem(1000, 400, 1);
+		sys.parameters({
+			gravity : true
+		});
+		sys.renderer = Renderer("#grafico");
+		
+		var antecesores = this.getAntecesores().store;
+		var sucesores = this.getSucesores().store;
+		var items = new Array()
+		cargarItems(antecesores, items)
+		cargarItems(sucesores, items)
+		crearDibujo(this.item, items, sys)
+		// var animals = sys.addNode('Animals', {
+		// 'color' : 'red',
+		// 'shape' : 'dot',
+		// 'label' : 'Animals'
+		// });
+		// var dog = sys.addNode('dog', {
+		// 'color' : 'green',
+		// 'shape' : 'dot',
+		// 'label' : 'dog'
+		// });
+		// var cat = sys.addNode('cat', {
+		// 'color' : 'blue',
+		// 'shape' : 'dot',
+		// 'label' : 'cat'
+		// });
+		// sys.addEdge(animals, dog);
+		// sys.addEdge(dog, animals);
+		// sys.addEdge(animals, cat);
 	}
+
 });
+function cargarItems(store, calculo_items) {
+	if (calculo_items == null) {
+		calculo_items = new Array()
+	}
+	store.each(function(record) {
+		calculo_items[record.data._id] = record
+	})
+	return calculo_items
+}
+
+function crearDibujo(item_inicio, items, sys) {
+	var nodos = new Array()
+	n_nodo = get_nodo(item_inicio, sys)
+	nodos[item_inicio._id] = n_nodo
+	items.forEach(function(record) {
+		item = record.data
+		n_nodo = get_nodo(item, sys)
+		nodos[item._id] = n_nodo
+		console.log("NODO" + item._id)
+	})
+
+	add_padre(item_inicio, nodos, sys)
+	add_antecesor(item_inicio, nodos, sys)
+	items.forEach(function(record) {
+		item = record.data
+		add_padre(item, nodos, sys)
+		add_antecesor(item, nodos, sys)
+	})
+}
+
+function get_nodo(item, sys) {
+	n_nodo = sys.addNode(item._nombre, {
+		'color' : item._color,
+		'shape' : 'dot',
+		'label' : item._nombre
+	})
+	return n_nodo
+}
+
+function add_padre(item, nodos, sys) {
+	if (item._padre_item_id != undefined && item._padre_item_id != null) {
+		console.log("PADRE" + item._id + "->" + item._padre_item_id)
+		sys.addEdge(nodos[item._id], nodos[item._padre_item_id], {
+			length : 150,
+			pointSize : 3,
+			name : 'Padre'
+		})
+	}
+}
+
+function add_antecesor(item, nodos, sys) {
+	if (item._antecesor_item_id != undefined && item._antecesor_item_id != null) {
+		console.log("Antecesor" + item._id + "->" + item._antecesor_item_id)
+		sys.addEdge(nodos[item._id], nodos[item._antecesor_item_id], {
+			length : .75,
+			pointSize : 8,
+			label : 'Antecesor'
+		})
+	}
+}
