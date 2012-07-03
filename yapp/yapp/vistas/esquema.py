@@ -38,6 +38,7 @@ def AG_esquemas(request):
         
         nueva_entidad = Esquema(entidad["_nombre"], entidad["_descripcion"], entidad["_etiqueta"], entidad["_color"], entidad["_fase_id"])
 
+
         
         esquemaDao.crear(nueva_entidad);
         
@@ -94,6 +95,7 @@ def AG_atributos(request):
         atributoEsquemaDao = AtributoEsquemaDAO(request);
         
         nueva_entidad = AtributoEsquema(entidad["_nombre"], entidad["_descripcion"], entidad["_tipo"], entidad["_valor"], entidad["_esquema_id"])
+
 
         
         atributoEsquemaDao.crear(nueva_entidad);
