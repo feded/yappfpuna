@@ -77,6 +77,8 @@ def ag_atributos_tipos_item(request):
         dao_fase = FaseDAO(request)
         fase = dao_fase.get_by_id(entidad["_fase"])
         
+        if entidad['_tipo_item'] == '':
+            return Response(json.dumps({'sucess': 'false', 'message':'Debe seleccionar un Tipo de Item para guardar'}))
         dao_tipo_item = TipoItemDAO(request)
         tipo_item = dao_tipo_item.get_by_id(entidad["_tipo_item"]["_id"])
 
@@ -174,7 +176,7 @@ def bm_atributo(request):
         item_viejo = item_dao.get_by_id(entidad["id"])
         id_viejo = item_viejo._id;
         
-        formato_entrada = "%Y-%m-%d"
+        formato_entrada = "%Y-%m-%d %H:%M:%S"
         if len(entidad["_fecha_inicio"])>1:
             fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
         else:
@@ -185,22 +187,28 @@ def bm_atributo(request):
             if len(padre._fecha_inicio)>1:
                 padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
                 if fecha_inicio <  padre_inicio:
-                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha es menor a la fecha de inicio del padre'}))
+                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha de inicio asignada es menor a la fecha de inicio del padre'}))
         if antecesor != None and fecha_inicio != "":
             formato_entrada = "%Y-%m-%d %H:%M:%S"
             if len(antecesor._fecha_inicio)>1:
                 antecesor_inicio = datetime.datetime.strptime(antecesor._fecha_inicio, formato_entrada)
                 if fecha_inicio <  antecesor_inicio:
-                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha es menor a la fecha de inicio del antecesor'}))
+                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha de inicio asignada es menor a la fecha de inicio del antecesor'}))
         
         
         if entidad['_estado'] == "APROBADO":
+            item_padre = get_entidad(entidad['_padre'], item_dao)
+            if (item_padre!= None):
+                if item_padre._estado == 'ELIMINADO' or item_padre._estado == 'REVISION':
+                    return Response(json.dumps({'sucess': 'false', 'message':('El Padre del Item se encuentra en estado: ' + str(item_padre._estado))}))
             item_antecesor = get_entidad(entidad['_antecesor'], item_dao)
             fase_antecesora = get_fase_antecesora(request, fase)
             if fase_antecesora != None:
                 if item_antecesor == None:
                     return Response(json.dumps({'sucess': 'false', 'message':'Item no tiene antecesor'}))
                 else :
+                    if item_antecesor._estado == 'ELIMINADO' or item_antecesor._estado == 'REVISION':
+                        return Response(json.dumps({'sucess': 'false', 'message':('El Antecesor del Item se encuentra en estado: ' + str(item_antecesor._estado))}))
                     if item_antecesor._linea_base_id == None :
                         return Response(json.dumps({'sucess': 'false', 'message':'Antecesor no tiene linea base'}))
 
