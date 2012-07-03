@@ -22,7 +22,6 @@ def AG_esquemas(request):
         rd = EsquemaDAO(request)
         fase_id = request.GET.get('id')
         entidades = rd.get_query().filter(Esquema._fase_id == fase_id).all()
-#        print entidades
         lista = [];
         p = Pickler(True, None)
 #        val = Validador(request);
@@ -31,18 +30,14 @@ def AG_esquemas(request):
             lista.append(p.flatten(entidad))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
-#        print a_ret
         return Response(a_ret)
     elif (request.method == 'POST'):
-        print "-----CREANDO Entidad-----"
         u = Unpickler()
         entidad = u.restore(request.json_body);
         esquemaDao = EsquemaDAO(request);
         
-        print "Entidad" + str(entidad)                                       
         nueva_entidad = Esquema(entidad["_nombre"], entidad["_descripcion"], entidad["_etiqueta"], entidad["_color"], entidad["_fase_id"])
 
-        print "Esta es: " + str(nueva_entidad)
         
         esquemaDao.crear(nueva_entidad);
         
@@ -74,7 +69,6 @@ def BM_esquemas(request):
         u = Unpickler()
         entidad = u.restore(request.json_body);
        
-        print "-----ELIMINANDO ESQUEMA-----"
         esquemaDao = EsquemaDAO(request);
         esquema = esquemaDao.get_by_id(entidad["id"])
         esquemaDao.borrar(esquema)
@@ -87,25 +81,20 @@ def AG_atributos(request):
         rd = AtributoEsquemaDAO(request)
         esquema_id = request.GET.get('id')
         entidades = rd.get_query().filter(AtributoEsquema._esquema_id == esquema_id).all()
-#        print entidades
         lista = [];
         p = Pickler(True, None)
         for entidad in entidades:
             lista.append(p.flatten(entidad))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
-#        print a_ret
         return Response(a_ret)
     elif (request.method == 'POST'):
-        print "-----CREANDO Entidad-----"
         u = Unpickler()
         entidad = u.restore(request.json_body);
         atributoEsquemaDao = AtributoEsquemaDAO(request);
         
-        print "Entidad" + str(entidad)                                       
         nueva_entidad = AtributoEsquema(entidad["_nombre"], entidad["_descripcion"], entidad["_tipo"], entidad["_valor"], entidad["_esquema_id"])
 
-        print "Esta es: " + str(nueva_entidad)
         
         atributoEsquemaDao.crear(nueva_entidad);
         
@@ -137,7 +126,6 @@ def BM_atributos(request):
         u = Unpickler()
         entidad = u.restore(request.json_body);
        
-        print "-----ELIMINANDO Atributo de Esquema-----"
         atributoEsquemaDao = EsquemaDAO(request);
         atributoEsquema = atributoEsquemaDao.get_by_id(entidad["id"])
         atributoEsquemaDao.borrar(atributoEsquema)
@@ -149,25 +137,20 @@ def AG_item_esquema(request):
         rd = EsquemaItemDAO(request)
         esquema_id = request.GET.get('id')
         entidades = rd.get_query().filter(EsquemaItem._esquema_id == esquema_id).all()
-#        print entidades
         lista = [];
         p = Pickler(True, None)
         for entidad in entidades:
             lista.append(p.flatten(entidad))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
-#        print a_ret
         return Response(a_ret)
     elif (request.method == 'POST'):
-        print "-----CREANDO Entidad-----"
         u = Unpickler()
         entidad = u.restore(request.json_body);
         esquemaItemDao = EsquemaItemDAO(request);
         
-        print "Entidad" + str(entidad)                                       
         nueva_entidad = EsquemaItem(entidad["_esquema_id"], entidad["_item_id"])
 
-        print "Esta es: " + str(nueva_entidad)
         
         esquemaItemDao.crear(nueva_entidad);
         
@@ -196,7 +179,6 @@ def BM_item_esquema(request):
         u = Unpickler()
         entidad = u.restore(request.json_body);
        
-        print "-----ELIMINANDO Item de Esquema-----"
         esquemaItemDao = EsquemaDAO(request);
         esquemaItem = esquemaItemDao.get_by_id(entidad["id"])
         esquemaItemDao.borrar(esquemaItem)

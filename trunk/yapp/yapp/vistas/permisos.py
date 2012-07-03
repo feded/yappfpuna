@@ -26,7 +26,6 @@ def obtener_permisos(request):
     if request.GET.get('id') != None:
         permisos = rd.get_query().filter(PermisosRoles._rol_id == request.GET.get('id')).order_by(PermisosRoles._permiso_id.asc()).all()
     else:
-        print "ACA"
         permisos = get_permisos_rol(request, rol, [], rd, [], r)
     lista = [];
     p = Pickler()

@@ -53,7 +53,6 @@ class BaseDAO :
         """
         
 #        queryReal = DBSession.query(self.get_clase())
-#        print queryReal
         query = DBSession.query(self.get_clase())
         if self._request != None:
             query.sesion_yapp = self._request.session
@@ -95,7 +94,6 @@ class BaseDAO :
     
     def notificar(self, entidad, historia):
         if (isinstance(entidad, EntidadPadre)):
-            print "-----------------"
             dao = SuscripcionDAO(self._request)
             nDAO = NotificacionDAO(self._request)
             entidades = dao.get_query().filter(Suscripcion._entidad_padre_id == entidad._id);

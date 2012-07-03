@@ -27,9 +27,7 @@ def get_entidades_padre(request):
             con el estado de la operacion y B{entidades} un json de entidades.
     """
     if (request.method == 'GET'):
-#        print request.GET.id
         id_entidad = request.GET.get('id')
-#        print id_entidad;
         entidadDAO = PrivilegioDAO(request);
         entidad = entidadDAO.get_by_id(id_entidad);
         if (id_entidad == '0' or id_entidad == None):
@@ -73,7 +71,6 @@ def get_proyectos(request):
         lista.append(p.flatten(ProyectoDTO(entidad)));
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
-#    print a_ret;
     return Response(a_ret)
 
 def get_fases(request):
@@ -85,7 +82,6 @@ def get_fases(request):
         lista.append(p.flatten(EntidadPadreDTO(entidad)));
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
-#    print a_ret;
     return Response(a_ret)
 
 def get_items(request):
@@ -97,7 +93,6 @@ def get_items(request):
         lista.append(p.flatten(EntidadPadreDTO(entidad)));
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
-#    print a_ret;
     return Response(a_ret)
 
 def get_esquemas(request):
@@ -109,5 +104,4 @@ def get_esquemas(request):
         lista.append(p.flatten(entidad));
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'entidades':j_string})
-#    print a_ret;
     return Response(a_ret)

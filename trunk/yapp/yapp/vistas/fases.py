@@ -36,7 +36,6 @@ def obtener_crear_fases(request):
         if (fase_id != None and fase_id != ""):
             fase_actual = rd.get_by_id(fase_id)
             entidad = rd.get_query().filter(Fase._proyecto_id == proyecto_id, Fase._orden < fase_actual._orden).order_by(Fase._orden.desc()).first()
-            print entidad
             if (entidad != None):
                 entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id, entidad._orden, entidad._comentario, entidad._estado, entidad._color)
                 lista.append(p.flatten(entidadLinda))    

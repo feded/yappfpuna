@@ -50,7 +50,6 @@ def get_roles(request):
         - Modifica si se envia PUT
         - Elimina si se envia DELETE
     """
-#    print request.json_body;
     if (request.method == 'GET'):
         if (request.GET.get('disponibles')):
             return getPadresDisponibles(request)
@@ -136,20 +135,12 @@ def get_roles(request):
             rr_dao.borrar(padre);
             
         padres = []
-#        print "-------------"
-#        print entidad["_padres"]
-#        print "-------------"
         for padre_id in entidad["_padres"]:
             rolrol = RolRol(vieja._id, padre_id)
             rr_dao.crear(rolrol)
             padres.append(rolrol)
 #        vieja._padres = padres;
 #            
-#        for padre in vieja._padres:
-#            print "-------------"
-#            print padre._padre_id
-#            print padre._rol_id
-#            print "-------------"
         
         if (isinstance(vieja, RolFinal)):
             if (entidad["_esFinal"] == True):
@@ -223,7 +214,6 @@ def get_estado_roles(request):
             
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'estados':j_string})
-#    print a_ret
     return Response(a_ret)
         
 def getPadresDisponibles(request):
@@ -237,7 +227,6 @@ def getPadresDisponibles(request):
     bandera = True
     base = None
     for rol in roles :
-        print rol._id
         if str(rol._id) == str(rol_id):
             base = rol
             baneados.append(base._id)
@@ -291,7 +280,6 @@ def retornador_de_roles(request, entidades):
         
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'users':j_string})
-    print a_ret
     return Response(a_ret)   
 
 def crear_rol_dto(entidad):

@@ -140,7 +140,6 @@ def romper_linea_base(request, id_linea_base, item_dao, estado="ACTIVO"):
         item_dao.actualizarReferenciasItemNuevaVersion(n_item._id)
         sucesores = item_dao.get_query().filter(Item._antecesor_item_id == n_item._id).all()
         for sucesor in sucesores:
-            print "HAY SUCESORES"
             if sucesor._linea_base_id not in bases_afectadas:
                 bases_afectadas.append(sucesor._linea_base_id)
             

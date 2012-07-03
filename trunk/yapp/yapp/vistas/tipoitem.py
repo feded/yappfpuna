@@ -25,8 +25,6 @@ def get_tipos_item(request):
             tipo_fase_dao = TipoFaseDAO(request)
             tipos = tipo_fase_dao.get_query().filter(TipoFase._fase_id == fase_id).all()
             for tipo in tipos:
-                print "--------------------------"
-                print "A;adiendo"
                 entidades.append(tipo._tipo)
         else:
             entidades = rd.get_query().filter(TipoItem._proyecto_id == proyecto_id).all()
@@ -117,8 +115,6 @@ def AG_atributos_tipos_item(request):
                 for ent in entidades:
                     for atributo in atributosTipoItem:
                         if ent._atributo_id == atributo._id:
-                            print "removiendo"
-                            print atributo._id
                             aRet.remove(atributo);
             entidades = aRet
         else:        

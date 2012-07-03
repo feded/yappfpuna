@@ -75,7 +75,6 @@ def get_entidades(request):
         p = Pickler()
         for objeto in entidades:
             epDAO = PrivilegioDTO(objeto);
-#            print epDAO._nombre;
             lista.append(p.flatten(epDAO))
             
         j_string = p.flatten(lista)

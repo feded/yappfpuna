@@ -62,9 +62,6 @@ def get_suscripciones(request):
 def post_suscripcion(request):
     u = Unpickler()
     objeto = u.restore(request.json_body);
-    print "---------------"
-    print request.json_body
-    print "---------------"
     dao = SuscripcionDAO(request);
     if objeto['_entidad_padre'] == None:
         entidad_padre = None
@@ -82,9 +79,6 @@ def post_suscripcion(request):
 
 def put_suscripcion(request):
     u = Unpickler()
-    print "--------------"
-    print request.json_body
-    print "--------------"
     objeto = u.restore(request.json_body);
     dao = SuscripcionDAO(request);
     entidad = get_entidad_padre(request, objeto)

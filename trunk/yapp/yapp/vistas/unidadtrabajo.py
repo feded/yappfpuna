@@ -26,7 +26,7 @@ def obtener_crear_unidad_trabajo(request):
         unidades = [];
         unidades = rd.get_all()
         item_id = request.GET.get('_item_id')
-        print item_id
+#        print item_id
         if (item_id !=None):
             item_dao = ItemDAO(request)
 #            unidades = item_dao.get_unidades_disponibles(item_dao.get_by_id(item_id))
@@ -143,8 +143,6 @@ def asignar_recursos(request):
         dao_unidad_recurso.borrar(unidad_recurso)
     
     for id_recurso in entidad['_recursos']:
-#        print str(id_unidad) + '==>' + str(id_recurso)
-
         a_guardar = UnidadTrabajo_Recurso(id_unidad, id_recurso)
         dao_unidad_recurso.crear(a_guardar)
         

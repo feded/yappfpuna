@@ -58,7 +58,6 @@ def ag_atributos_tipos_item(request):
         lista = [];
         p = Pickler(True, None)
         for entidad in entidades_item_id:
-            print entidad._aprobar
             rd = ItemDAO(request)
             padre = rd.get_by_id(entidad._padre_item_id)
             antecesor = rd.get_by_id(entidad._antecesor_item_id)
@@ -74,8 +73,6 @@ def ag_atributos_tipos_item(request):
         return Response(a_ret)
     elif (request.method == 'POST'):
         u = Unpickler()
-#        print "----------------------JSON----------------"
-#        print request.json_body
         entidad = u.restore(request.json_body);
         dao_fase = FaseDAO(request)
         fase = dao_fase.get_by_id(entidad["_fase"])
@@ -144,8 +141,6 @@ def bm_atributo(request):
     if (request.method == 'PUT' or request.method == 'DELETE'):
         u = Unpickler()
         
-#        print "-------------JSONBODY-----------"
-#        print request.json_body
         
         entidad = u.restore(request.json_body);
         item_dao = ItemDAO(request);
@@ -198,7 +193,6 @@ def bm_atributo(request):
                 if fecha_inicio <  antecesor_inicio:
                     return Response(json.dumps({'sucess': 'false', 'message':'La fecha es menor a la fecha de inicio del antecesor'}))
         
-        print "sigo--------"
         
         if entidad['_estado'] == "APROBADO":
             item_antecesor = get_entidad(entidad['_antecesor'], item_dao)
@@ -277,7 +271,6 @@ def actualizar_referencias_item(item, item_dao, anterior_id, actualizar=None):
             updated.append(sucesor._item_id)
 
 def get_items_con_linea_base(request):
-#    print "Pide items de linea base"
     rd = ItemDAO(request)
     linea_base_id = request.GET.get('id_linea_base')
     entidades = rd.get_query().filter(Item._linea_base_id == linea_base_id).all()

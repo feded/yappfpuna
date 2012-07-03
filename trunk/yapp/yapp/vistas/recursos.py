@@ -35,7 +35,6 @@ def obtener_crear_recursos(request):
             lista = [];
             p = Pickler()
             for entidad in entidades:
-                print entidad._nombre
                 if(entidad._tipo._tipo == "Persona"):
                     rd = RecursoPersonaDAO(request)
                     e = rd.get_by_id(entidad._id)
@@ -78,7 +77,6 @@ def obtener_crear_recursos(request):
             recursos = []
             for entidad in entidades:
                 recursos.append(entidad._recurso);
-                print entidad._id
             return format_recursos(request, recursos)
     
     else:  
