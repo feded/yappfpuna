@@ -9,7 +9,7 @@ Ext.define('YAPP.view.gantt.View', {
 	initComponent : function() {
 		this.items = [ {
 			xtype : 'container',
-			html : "<div style=\"position: relative\" class=\"gantt\" id=\"GanttChartDIV\">HHH</div>",
+			html : "<div style=\"position: relative\" class=\"gantt\" id=\"GanttChartDIV\">Seleccione un proyecto</div>",
 		} ];
 		this.callParent(arguments);
 	}

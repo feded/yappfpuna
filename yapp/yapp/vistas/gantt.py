@@ -27,19 +27,23 @@ def view_gantt(request):
     fase_dao = FaseDAO(request)
     fases = fase_dao.get_query().filter(Fase._proyecto_id == id_proyecto).order_by(Fase._orden.asc()).all();
     item_dao = ItemDAO(request)
+    xml = "<project>"
     for fase in fases:
         task = Task()
         task.set_fase(fase)
         wml.appendChild(task.get_xml(doc))
-        
+        xml += task.to_xml()
         entidades = item_dao.get_items_fase(fase._id)
         for item in entidades:
             task = Task()
             task.set_item(item)
             wml.appendChild(task.get_xml(doc))
+            xml += task.to_xml()
     
+    xml += "</project>"
+#    print xml
     # Print our newly created XML
 #    print doc.toprettyxml(indent="  ")
-    return Response(doc.toprettyxml(indent="  "))
+    return Response(xml)
 
 

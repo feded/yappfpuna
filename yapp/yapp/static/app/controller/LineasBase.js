@@ -44,6 +44,7 @@ Ext.define('YAPP.controller.LineasBase', {
 		});
 	},
 	focuseado : function(abm) {
+		this.getGridItems().getStore().removeAll()
 	},
 	
 	lineaBaseClick : function(grid, record) {
@@ -135,8 +136,7 @@ Ext.define('YAPP.controller.LineasBase', {
 			success : function(linea_base) {
 				Ext.example.msg("Linea Base", "Eliminada con exito");
 				store.remove(selection);
-				var store2 = me.getItemStore();
-				store2.removeAll();
+				me.getGridItems().getStore().removeAll()
 			},
 			failure : function(linea_base) {
 				Ext.Msg.alert("Linea Base", "No se pudo eliminar la linea base");

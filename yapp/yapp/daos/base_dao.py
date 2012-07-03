@@ -61,23 +61,9 @@ class BaseDAO :
         return query
     
     def crear(self, entidad):
-        """B{Metodo que retorna crea una entidad, y almacena la creacion en la tabla de B{HISTORIAL}
-        - B{Parametros:} 
-            - B{entidad:} entidad a ser persistida
-        - B{Retorna:}
-            - B{entidad:} entidad persistida
-        """
-        DBSession.add(entidad)
-        DBSession.flush()
-        lista = self.get_query().all();
-        entidad = lista[len(lista) - 1];
-        if (self._request != None):
-            #no va a tener user en caso de que venga del pyunit
-            if ('user' in self._request.session):
-                historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
-                DBSession.add(historia)
-                self.notificar(entidad, historia)
-        return entidad;
+        #este metodo se implementa en views.py
+        return True
+
          
     def borrar(self, entidad):
         """B{Metodo que retorna elimina permanentemente una entidad y almacena su eliminacion en el historial}
@@ -130,3 +116,5 @@ class SuscripcionDAO(BaseDAO):
 class NotificacionDAO(BaseDAO):
     def get_clase(self):
         return Notificacion
+    
+

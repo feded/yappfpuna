@@ -13,7 +13,7 @@ Ext.onReady(function() {
 	var login = new Ext.FormPanel({
 		id : 'login',
 		name : 'login',
-		labelWidth : 80,
+		labelWidth : 200,
 		url : '/',
 		frame : true,
 		style : 'text-align:center',
@@ -21,12 +21,12 @@ Ext.onReady(function() {
 		defaultType : 'textfield',
 		monitorValid : true,
 		items : [ logo, {
-			fieldLabel : 'Usuario',
+			fieldLabel : 'Correo electrónico',
 			name : 'usuario',
 			allowBlank : false
 		}, {
 			id : 'login_password_field',
-			fieldLabel : 'Password',
+			fieldLabel : 'Contraseña',
 			name : 'password',
 			allowBlank : false,
 			inputType : 'password'
@@ -50,14 +50,14 @@ Ext.onReady(function() {
 					value : 'olvide'
 				});
 				Ext.getCmp("login").doLayout();
+				
 				login.getForm().submit({
+					waitMsg : 'Procesando su solicitud...',
 					method : 'POST',
 					
 					success : function() {
 						Ext.Msg.alert('Olvidé contraseña!', 'Su contraseña de acceso se ha enviado a su correo electrónico con el que se registro', function(btn, text) {
 							if (btn == 'ok') {
-								var redirect = '/yapp';
-								window.location = redirect;
 							}
 						});
 					},
@@ -90,7 +90,7 @@ Ext.onReady(function() {
 		var passwordTF = Ext.getCmp("login_password_field");
 		var pass_plain = passwordTF.getValue()
 		passwordTF.setValue(md5(passwordTF.getValue()))
-		console.log(passwordTF.getValue());
+//		console.log(passwordTF.getValue());
 		login.getForm().submit(submit);
 //		passwordTF.setValue(pass_plain)
 	}
@@ -145,7 +145,7 @@ Ext.onReady(function() {
 	var win = new Ext.Window({
 		layout : 'fit',
 		width : 300,
-		height : 200,
+		height : 220,
 		closable : false,
 		resizable : true,
 		plain : true,

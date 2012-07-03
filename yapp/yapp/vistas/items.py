@@ -23,6 +23,7 @@ from yapp.models.item.item_unidad_trabajo import ItemUnidadTrabajo, \
 from yapp.models.tipo_item.tipo_item import TipoItem
 import datetime
 import json
+from yapp.vistas.fases import get_fase_antecesora
 
 @view_config(route_name='crearListarItems')
 def ag_atributos_tipos_item(request): 
@@ -57,6 +58,7 @@ def ag_atributos_tipos_item(request):
         lista = [];
         p = Pickler(True, None)
         for entidad in entidades_item_id:
+            print entidad._aprobar
             rd = ItemDAO(request)
             padre = rd.get_by_id(entidad._padre_item_id)
             antecesor = rd.get_by_id(entidad._antecesor_item_id)
@@ -72,8 +74,8 @@ def ag_atributos_tipos_item(request):
         return Response(a_ret)
     elif (request.method == 'POST'):
         u = Unpickler()
-        print "----------------------JSON----------------"
-        print request.json_body
+#        print "----------------------JSON----------------"
+#        print request.json_body
         entidad = u.restore(request.json_body);
         dao_fase = FaseDAO(request)
         fase = dao_fase.get_by_id(entidad["_fase"])
@@ -100,26 +102,26 @@ def ag_atributos_tipos_item(request):
         
         
         formato_entrada = "%Y-%m-%d"
-        if len(entidad["_fecha_inicio"])>1:
-            fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
+        if len(entidad["_fecha_inicio"]) > 1:
+            fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"], formato_entrada)
             delta = datetime.timedelta(days=entidad["_duracion"] - 1)
             fecha_fin = fecha_inicio + delta
         else:
             fecha_inicio = ""
         
-        if padre != None:
+        if padre != None and fecha_inicio != "":
             formato_entrada = "%Y-%m-%d %H:%M:%S"
-            if len(padre._fecha_inicio)>1:
+            if len(padre._fecha_inicio) > 1:
                 padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
-                if fecha_inicio <  padre_inicio:
-                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha menor a la fecha de inicio del padre'}))
-        if antecesor != None:
+                if fecha_inicio < padre_inicio:
+                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha es menor a la fecha de inicio del padre'}))
+        if antecesor != None and fecha_inicio != "":
             formato_entrada = "%Y-%m-%d %H:%M:%S"
             if len(antecesor._fecha_inicio)>1:
                 antecesor_inicio = datetime.datetime.strptime(antecesor._fecha_inicio, formato_entrada)
                 if fecha_inicio <  antecesor_inicio:
-                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha menor a la fecha de inicio del antecesor'}))
-        nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, entidad["_completado"], padre_id, antecesor_id)
+                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha es menor a la fecha de inicio del antecesor'}))
+        nuevo_item = Item(item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, entidad["_completado"], padre_id, antecesor_id, entidad["_color"])
         itemDao = ItemDAO(request)
         itemDao.crear(nuevo_item)
         itemDao.actualizarEstadosFaseyProyecto(nuevo_item)
@@ -129,7 +131,7 @@ def ag_atributos_tipos_item(request):
         lista.append(p.flatten(nuevo_item))
 
         j_string = p.flatten(lista)
-        if (request.GET.get('actualizar')=="true"):
+        if (request.GET.get('actualizar') == "true"):
             if (request.GET.get('rev') == True):
                 itemDao.actualizarReferenciasItemNuevaVersion(nuevo_item._id, entidad["_id"])
             else:
@@ -142,8 +144,8 @@ def bm_atributo(request):
     if (request.method == 'PUT' or request.method == 'DELETE'):
         u = Unpickler()
         
-        print "-------------JSONBODY-----------"
-        print request.json_body
+#        print "-------------JSONBODY-----------"
+#        print request.json_body
         
         entidad = u.restore(request.json_body);
         item_dao = ItemDAO(request);
@@ -156,6 +158,7 @@ def bm_atributo(request):
         dao_item_ante = ItemDAO(request)
         if(entidad["_antecesor"] == "" or  entidad["_antecesor"] == None):
             antecesor = None
+            antecesor_id = None
         else:
             if isinstance(entidad["_antecesor"], int) != True:
                 antecesor_id = entidad["_antecesor"]["_id"]
@@ -166,6 +169,7 @@ def bm_atributo(request):
         dao_item_padre = ItemDAO(request)
         if(entidad["_padre"] == "" or  entidad["_padre"] == None):
             padre = None
+            padre_id = None
         else:
             if isinstance(entidad["_padre"], int) != True:
                 padre_id = entidad["_padre"]["_id"]
@@ -181,32 +185,44 @@ def bm_atributo(request):
         else:
             fecha_inicio = ""
         
-        if padre != None:
+        if padre != None and fecha_inicio != "":
             formato_entrada = "%Y-%m-%d %H:%M:%S"
             if len(padre._fecha_inicio)>1:
                 padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
                 if fecha_inicio <  padre_inicio:
-                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha menor a la fecha de inicio del padre'}))
-        if antecesor != None:
+                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha es menor a la fecha de inicio del padre'}))
+        if antecesor != None and fecha_inicio != "":
             formato_entrada = "%Y-%m-%d %H:%M:%S"
             if len(antecesor._fecha_inicio)>1:
                 antecesor_inicio = datetime.datetime.strptime(antecesor._fecha_inicio, formato_entrada)
                 if fecha_inicio <  antecesor_inicio:
-                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha menor a la fecha de inicio del antecesor'}))
+                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha es menor a la fecha de inicio del antecesor'}))
         
+        print "sigo--------"
         
-        nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_completado"], padre_id, antecesor_id)
+        if entidad['_estado'] == "APROBADO":
+            item_antecesor = get_entidad(entidad['_antecesor'], item_dao)
+            fase_antecesora = get_fase_antecesora(request, fase)
+            if fase_antecesora != None:
+                if item_antecesor == None:
+                    return Response(json.dumps({'sucess': 'false', 'message':'Item no tiene antecesor'}))
+                else :
+                    if item_antecesor._linea_base_id == None :
+                        return Response(json.dumps({'sucess': 'false', 'message':'Antecesor no tiene linea base'}))
+
+        nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_completado"], padre_id, antecesor_id, entidad["_color"])
 
         if request.method == "DELETE":
             nuevo_item._estado = "ELIMINADO"
             nuevo_item._version += 1
-            
-        
+
         item_dao.crear(nuevo_item);
         padre = item_dao.get_by_id(nuevo_item._padre_item_id)
         antecesor = item_dao.get_by_id(nuevo_item._antecesor_item_id)
         if (nuevo_item._estado == "APROBADO" or nuevo_item._estado == "BLOQUEADO") == False: 
             actualizar_referencias_item(nuevo_item, item_dao, id_viejo)
+        else:
+            actualizar_referencias_item(nuevo_item, item_dao, id_viejo, False)
         item_dao.actualizarEstadosFaseyProyecto(nuevo_item)
         nuevo_item = ItemDTO(nuevo_item)
         if padre != None:
@@ -215,7 +231,7 @@ def bm_atributo(request):
             nuevo_item._antecesor = ItemDTO(antecesor)
         p = Pickler(False, None)
         aRet = p.flatten(nuevo_item)
-        if (request.GET.get('actualizar')=="true"):
+        if (request.GET.get('actualizar') == "true"):
             if (request.GET.get('rev') == "true"):
                 item_dao.actualizarReferenciasItemNuevaVersion(nuevo_item._id, entidad["id"])
             else:
@@ -223,10 +239,17 @@ def bm_atributo(request):
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
 
 
+def get_entidad(valor, dao):
+    if valor == '':
+        return None
+    if isinstance(valor, dict):
+        return dao.get_by_id(valor['id'])
+    else:
+        return dao.get_by_id(valor)
 
-def actualizar_referencias_item(item, item_dao, anterior_id):    
+def actualizar_referencias_item(item, item_dao, anterior_id, actualizar=None):    
     #Este item es padre.. vamos a actualizar las refeencias de sus hijos
-    hijos = item_dao.get_query().filter(Item._padre_item_id==anterior_id)
+    hijos = item_dao.get_query().filter(Item._padre_item_id == anterior_id)
     updated = []
     for hijo in hijos:
         if (updated.count(hijo._item_id) == 0):
@@ -234,12 +257,13 @@ def actualizar_referencias_item(item, item_dao, anterior_id):
             posible_hijo._padre_item_id = item._id;
             if (posible_hijo._estado != "ELIMINADO"):
                 #VERIFICAR ESTADO DE SUS HIJOS
-                posible_hijo._estado = "REVISION"
+                if (actualizar == None):
+                    posible_hijo._estado = "REVISION"
             item_dao.update(posible_hijo)
             item_dao.actualizarEstadosFaseyProyecto(posible_hijo)
             updated.append(hijo._item_id)
     #este item es antecesor, vamos a actualizar las referencias de sus descendendientes
-    sucesores = item_dao.get_query().filter(Item._antecesor_item_id==anterior_id)
+    sucesores = item_dao.get_query().filter(Item._antecesor_item_id == anterior_id)
     updated = []
     for sucesor in sucesores:
         if (updated.count(sucesor._item_id) == 0):
@@ -253,7 +277,7 @@ def actualizar_referencias_item(item, item_dao, anterior_id):
             updated.append(sucesor._item_id)
 
 def get_items_con_linea_base(request):
-    print "Pide items de linea base"
+#    print "Pide items de linea base"
     rd = ItemDAO(request)
     linea_base_id = request.GET.get('id_linea_base')
     entidades = rd.get_query().filter(Item._linea_base_id == linea_base_id).all()
@@ -316,17 +340,17 @@ def upload(request):
     id_item = request.params['id_item'],
     
     archivo = request.params['archivo'].file.read()
-    nombre=request.params['archivo'].filename
+    nombre = request.params['archivo'].filename
     
     archivo_dao = ArchivoDAO(request)
-    nuevo_archivo = Archivo(archivo,nombre)
+    nuevo_archivo = Archivo(archivo, nombre)
     archivo_dao.crear(nuevo_archivo)
     
     item_dao = ItemDAO(request)
     item = item_dao.get_by_id(id_item)
     
     item_archivo_dao = ItemArchivoDAO(request)
-    nuevo_item_archivo = ItemArchivo(item,nuevo_archivo)
+    nuevo_item_archivo = ItemArchivo(item, nuevo_archivo)
     item_archivo_dao.crear(nuevo_item_archivo)
     
 #    response= Response(content_type='application/force-download',content_disposition='attachment; filename=' + nuevo_archivo._nombre)
@@ -341,7 +365,7 @@ def upload(request):
 @view_config(route_name='archivos')
 def get_archivos(request):    
     item_id = request.GET.get('_item_id')
-    if (item_id== None):
+    if (item_id == None):
         a_ret = json.dumps({'sucess': True, 'archivos':[]})
         return Response(a_ret)
     dao = ItemArchivoDAO(request)
@@ -368,6 +392,6 @@ def download(request):
     archivo_dao = ArchivoDAO(request)
     archivo = archivo_dao.get_by_id(id_archivo)
     
-    response= Response(content_type='application/force-download',content_disposition='attachment; filename=' + archivo._nombre)
-    response.app_iter= archivo._contenido
+    response = Response(content_type='application/force-download', content_disposition='attachment; filename=' + archivo._nombre)
+    response.app_iter = archivo._contenido
     return response

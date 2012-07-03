@@ -111,6 +111,11 @@ var columnas_item = [ {
 				sortable : true,
 				dataIndex : '_version',
 				flex : 1
+			},{
+				header : 'Color',
+				sortable : true,
+				dataIndex : '_color',
+				flex : 1
 			}, {
 				header : 'Estado',
 				sortable : true,
@@ -123,7 +128,7 @@ var columnas_item = [ {
 				 dataIndex: '_fecha_inicio', 
 				 format: 'd/m/Y', 
 				 renderer : renderizador_fecha_item,
-				 flex: 1
+				 flex: 1.2
 			}, {
 				header : 'Padre',
 				sortable : true,

@@ -35,6 +35,7 @@ def obtener_crear_recursos(request):
             lista = [];
             p = Pickler()
             for entidad in entidades:
+                print entidad._nombre
                 if(entidad._tipo._tipo == "Persona"):
                     rd = RecursoPersonaDAO(request)
                     e = rd.get_by_id(entidad._id)
@@ -45,7 +46,7 @@ def obtener_crear_recursos(request):
                     a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
                 elif(entidad._tipo._tipo == "Material"):
                     rd = RecursoMaterialDAO(request)
-                    entidad = rd.get_by_id(entidad._id)
+                    e = rd.get_by_id(entidad._id)
                     a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
                 lista.append(p.flatten(a))    
             j_string = p.flatten(lista)
@@ -224,6 +225,20 @@ class RecursosLindos:
         self._costo_cantidad = costo_cantidad;
         self._cantidad = cantidad
         
+class RecursoDTO:
+    def __init__(self, recurso):
+        self._id = recurso._id;
+        self._nombre = recurso._nombre;
+        self._tipo = recurso._tipo;
+        self._descripcion = recurso._descripcion;
+        self.tipo_nombre = recurso._tipo._tipo;
+        if hasattr(recurso, '_costo_hora'):
+            self._costo_hora = recurso._costo_hora;
+        if hasattr(recurso, '_costo_cantidad'):
+            self._costo_cantidad = recurso._costo_cantidad;
+        if hasattr(recurso, '_cantidad'):
+            self._cantidad = recurso._cantidad
+        
 def format_recursos(request, entidades):
     """
     @summary: Para dar formato a los recursos.        
@@ -231,18 +246,8 @@ def format_recursos(request, entidades):
     p = Pickler()
     rd = RecursoPersonaDAO(request)
     lista = []
-    for entidad in entidades:
-        if(entidad._tipo._tipo == "Persona"):
-            e = rd.get_by_id(entidad._id)
-            a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, e._costo_hora, 0, 0)
-        elif(entidad._tipo._tipo == "Bien"):
-            rd = RecursoBienDAO(request)
-            e = rd.get_by_id(entidad._id)
-            a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
-        elif(entidad._tipo._tipo == "Material"):
-            rd = RecursoMaterialDAO(request)
-            entidad = rd.get_by_id(entidad._id)
-            a = RecursosLindos(e._id, e._nombre, entidad._tipo,e._descripcion,entidad._tipo._tipo, 0, e._costo_cantidad, e._cantidad)
+    for e in entidades:
+        a = RecursoDTO(e)
         lista.append(p.flatten(a))    
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'recursos':j_string})

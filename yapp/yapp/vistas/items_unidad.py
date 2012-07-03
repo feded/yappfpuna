@@ -25,8 +25,8 @@ from yapp.daos.unidad_trabajo_dao import UnidadTrabajoDAO
 def asignar_unidad_intem(request):
     if (request.method == 'POST'):
         u = Unpickler()
-        print "----------------------JSON----------------"
-        print request.json_body
+#        print "----------------------JSON----------------"
+#        print request.json_body
         entidad = u.restore(request.json_body);
         itemDAO = ItemDAO(request)
         asignacion = ItemUnidadTrabajo(entidad["_item_id"], entidad["_unidad_id"], entidad["_cantidad"])
@@ -41,27 +41,26 @@ def asignar_unidad_intem(request):
         return Response(json.dumps({'sucess': 'true', 'lista':aRet}))
     elif (request.method == 'GET'):
         item_id = request.GET.get('_item_id');
-        unidad_id = request.GET.get('_unidad_id')
-        if (unidad_id == "" or unidad_id == None):
-            unidad_id = None
-            unidad = None
-        else:
-            unidadDAO = UnidadTrabajoDAO(request)
-            unidad = unidadDAO.get_by_id(unidad_id)
+#        unidad_id = request.GET.get('_unidad_id')
+#        if (unidad_id == "" or unidad_id == None):
+#            unidad_id = None
+#            unidad = None
+#        else:
+#            unidadDAO = UnidadTrabajoDAO(request)
+#            unidad = unidadDAO.get_by_id(unidad_id)
         itemDAO = ItemDAO(request)
         item = itemDAO.get_by_id(item_id);
         dao = ItemUnidadDAO(request) 
         entidades = dao.get_query().filter(ItemUnidadTrabajo._item_id == item_id).all()
         entidadesDTO = [];
+        unidadDAO = UnidadTrabajoDAO(request)
         for entidad in entidades:
             entidad._item = item
-            if (unidad == None):
-                unidadDAO = UnidadTrabajoDAO(request)
-                unidad = unidadDAO.get_by_id(entidad._unidad_id)
+            unidad = unidadDAO.get_by_id(entidad._unidad_id)
             entidad._unidad = unidad
             itemUnidadDTO = ItemUnidadTrabajoDTO(entidad);
             entidadesDTO.append(itemUnidadDTO)
-        p = Pickler()
+        p = Pickler(False, None)
         j_string = p.flatten(entidadesDTO)
         a_ret = json.dumps({'sucess': True, 'lista':j_string})
         
@@ -71,7 +70,7 @@ def editar_unidad_item(request):
     if (request.method == 'PUT'):
         u = Unpickler()
         
-        print request.json_body
+#        print request.json_body
         entidad = u.restore(request.json_body);
         dao = ItemUnidadDAO(request)
         item_unidad = dao.get_by_id(entidad["id"])

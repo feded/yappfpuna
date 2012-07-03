@@ -8,7 +8,7 @@ import datetime
 
 class Task(object):
     
-    formato_entrada = "%Y-%m-%d"
+    formato_entrada = "%Y-%m-%d %H:%M:%S"
     formato_salida = "%m/%d/%Y"
     def set_id(self, id):
         self.pID = id
@@ -45,29 +45,31 @@ class Task(object):
     def set_item (self, item):
         """Este metodo deberia hacer todo.. no se nomas como hacer"""
         self.set_id(item._id)
-        self.set_name(self.get_nombre(item))
+        if item._fecha_inicio == '':
+            self.set_name(self.get_nombre(item) + ' [F]')
+            fecha_inicio = datetime.datetime.now()
+        else:
+            self.set_name(self.get_nombre(item))
+            fecha_inicio = datetime.datetime.strptime(item._fecha_inicio, self.formato_entrada)
         self.set_res(item._estado)
         if item._fase_id != None:
             self.set_parent(item._fase_id)
-        #siempre es un grupo
-#        if item._id == 6:
-#            self.set_grupo(1)
+            
         if item._antecesor_item_id != None:
             self.set_dependencia(item._antecesor_item_id)
-#            self.set_grupo(item._antecesor_item_id)
-        self.set_completado(100)
-        
-        fecha_inicio = datetime.datetime.strptime(item._fecha_inicio, self.formato_entrada)
+            
+        self.set_completado(item._completado)
         delta = datetime.timedelta(days=item._duracion - 1)
         fecha_fin = fecha_inicio + delta
         self.set_fecha_inicio(fecha_inicio.strftime(self.formato_salida))
         self.set_fecha_fin(fecha_fin.strftime(self.formato_salida))
-        self.set_color(item._tipo_item._color)
+        self.set_color(item._color)
         
     def set_fase (self, fase):
         self.pID = fase._id
         self.pName = self.get_nombre(fase)
         self.pGroup = 1
+        self.pColor = fase._color
         
         
     def get_nombre(self, entidad):
@@ -87,11 +89,27 @@ class Task(object):
         xml = documento.createElement("task")
         i = 0
         for atributo in vars(self):
-            node = documento.createElement(atributo)
-            #deberia haber una forma mas linda de obtener esto
-            texto = documento.createTextNode(str(vars(self).values()[i]))
-            node.appendChild(texto)
-            xml.appendChild(node)
+            if atributo != 'pColor':
+                node = documento.createElement(atributo)
+                #deberia haber una forma mas linda de obtener esto
+                texto = documento.createTextNode(str(vars(self).values()[i]))
+                node.appendChild(texto)
+                xml.appendChild(node)
+                i += 1
+        node = documento.createElement('pColor')
+        texto = documento.createTextNode('0000ff')
+        node.appendChild(texto)
+        xml.appendChild(node)
+        
+        return xml
+    def to_xml(self):
+        xml = "<task>\n"
+        i = 0
+        for atributo in vars(self):
+            xml += "<" + atributo + ">"
+            xml += str(vars(self).values()[i])
+            xml += "</" + atributo + ">\n"
             i += 1
+        xml += "<\\task>"
         return xml
          
