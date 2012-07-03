@@ -9,13 +9,19 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config
+from yapp.daos.permisos_roles_dao import PermisosRolesDAO
 from yapp.daos.rol_dao import RolEstadoDAO, RolDAO
 from yapp.daos.rol_final_dao import RolFinalDAO
+from yapp.daos.rol_privilegio_dao import RolPrivilegioDAO
 from yapp.daos.rol_rol_dao import RolRolDAO
+from yapp.models.roles.permisos_roles import PermisoRolDTO, PermisosRoles
 from yapp.models.roles.rol import Rol, RolDTO, RolRol, RolDTOP
 from yapp.models.roles.rol_estado import RolEstado, RolEstadoDTO
 from yapp.models.roles.rol_final import RolFinal
+from yapp.models.roles.rol_privilegio import RolPrivilegioDTO, RolPrivilegio
 import json
+from yapp.daos.privilegio_dao import PrivilegioDAO
+from yapp.models.roles.privilegio import Privilegio
 
 
 @view_config(route_name='rolesfinales')
@@ -97,6 +103,14 @@ def get_roles(request):
         u = Unpickler()
         entidad = u.restore(request.json_body);
         rol = dao.get_by_id(entidad["id"])
+        permisos_dto = PermisosRolesDAO(request)
+        permisos = permisos_dto.get_query().filter(PermisosRoles._rol == rol).all()
+        for permiso in permisos:
+            permisos_dto.borrar(permiso)
+        privilegios_dto = RolPrivilegioDAO(request)
+        privilegios = privilegios_dto.get_query().filter(RolPrivilegio._rol == rol).all()
+        for privilegio in privilegios:
+            privilegios_dto.borrar(privilegio)
         dao.borrar(rol)
         return Response(json.dumps({'sucess': 'true'}))
     if (request.method == 'PUT'):
@@ -149,15 +163,17 @@ def get_roles(request):
                 return Response(json.dumps({'sucess': 'true', 'users':aRet}))
             else:
                 nueva = Rol(vieja._nombre, estado);
-                rolFinalDAO.borrar(vieja)
                 rolDAO.crear(nueva);
+                actualizar_referencias_roles(request, vieja, nueva)
+                rolFinalDAO.borrar(vieja)
                 aRet = p.flatten(setear_padres_rol_y_obtener_dto(nueva, padres))
                 return Response(json.dumps({'sucess': 'true', 'users':aRet}))
         else:
             if (entidad["_esFinal"] == True):
                 nueva = RolFinal(entidad["_nombre"], estado, entidad["_email"], entidad["_password"])
-                rolDAO.borrar(vieja);
                 rolFinalDAO.crear(nueva)
+                actualizar_referencias_roles(request, vieja, nueva)
+                rolDAO.borrar(vieja);
                 aRet = p.flatten(setear_padres_rol_y_obtener_dto(nueva, padres))
                 return Response(json.dumps({'sucess': 'true', 'users':aRet}))
             else:
@@ -167,6 +183,30 @@ def get_roles(request):
                 aRet = p.flatten(setear_padres_rol_y_obtener_dto(vieja, padres))
                 return Response(json.dumps({'sucess': 'true', 'users':aRet}))
         
+
+def actualizar_referencias_roles(request, viejo, nuevo):
+    rr_dao = RolRolDAO(request)
+    padres = rr_dao.get_query().filter(RolRol._rol==viejo).all();
+    for padre in padres:
+        padre._rol = nuevo
+        rr_dao.update(padre)
+    hijos = rr_dao.get_query().filter(RolRol._padre==viejo).all()
+    for hijo in hijos:
+        hijo._padre = nuevo
+        rr_dao.update(hijo)
+        
+    pri_dao = RolPrivilegioDAO(request)
+    privilegios = pri_dao.get_query().filter(RolPrivilegio._rol==viejo).all()
+    for privilegio in privilegios:
+        privilegio._rol = nuevo;
+        pri_dao.update(privilegio)
+    
+    per_dao = PermisosRolesDAO(request)
+    permisos = per_dao.get_query().filter(PermisosRoles._rol==viejo).all()
+    for permiso in permisos:
+        permiso._rol = nuevo
+        per_dao.update(permiso)
+    
 
 @view_config(route_name='estados_roles')
 def get_estado_roles(request):

@@ -31,20 +31,21 @@ def obtener_crear_fases(request):
         
         rd = FaseDAO(request)
         lista = [];
-        p = Pickler(False,None)
+        p = Pickler(False, None)
         #Codigo de fede
-        if (fase_id!= None and fase_id!= ""):
+        if (fase_id != None and fase_id != ""):
             fase_actual = rd.get_by_id(fase_id)
-            entidad = rd.get_query().filter(Fase._proyecto_id == proyecto_id, Fase._orden<fase_actual._orden  ).order_by(Fase._orden.desc()).first()
-            if (entidad!=None):
-                entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id,entidad._orden, entidad._comentario, entidad._estado,entidad._color)
+            entidad = rd.get_query().filter(Fase._proyecto_id == proyecto_id, Fase._orden < fase_actual._orden).order_by(Fase._orden.desc()).first()
+            print entidad
+            if (entidad != None):
+                entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id, entidad._orden, entidad._comentario, entidad._estado, entidad._color)
                 lista.append(p.flatten(entidadLinda))    
-        elif (proyecto_id!= None and proyecto_id!= ""):
+        elif (proyecto_id != None and proyecto_id != ""):
             #Codigo de leo
             #recuperamos todas las fases del proyecto
             entidades = rd.get_query().filter(Fase._proyecto_id == proyecto_id).all()
             for entidad in entidades:
-                entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id,entidad._orden, entidad._comentario, entidad._estado,entidad._color)
+                entidadLinda = FaseLinda(entidad._id, entidad._nombre, entidad._proyecto_id, entidad._orden, entidad._comentario, entidad._estado, entidad._color)
                 lista.append(p.flatten(entidadLinda)) 
        
         j_string = p.flatten(lista)
@@ -53,14 +54,14 @@ def obtener_crear_fases(request):
         return Response(a_ret)
     else:
         #Recibimos un POST
-        u= Unpickler()
+        u = Unpickler()
         entidad = u.restore(request.json_body);
         
         dao = ProyectoDAO(request)
         proyecto = dao.get_by_id(entidad["_proyecto_id"])
     
         dao = FaseDAO(request)
-        nueva_fase = Fase(entidad["_nombre"],proyecto,entidad["_orden"],entidad["_comentario"],entidad["_estado"],entidad["_color"])
+        nueva_fase = Fase(entidad["_nombre"], proyecto, entidad["_orden"], entidad["_comentario"], entidad["_estado"], entidad["_color"])
         dao.crear(nueva_fase)
         
         #le asociamos el tipo de item
@@ -78,6 +79,17 @@ def obtener_crear_fases(request):
     
         return Response(a_ret)
 
+
+def get_fase_antecesora(request, fase):
+    fase_id = fase._id
+    proyecto_id = fase._proyecto_id
+    rd = FaseDAO(request)
+    lista = [];
+    #Codigo de fede
+    fase_actual = rd.get_by_id(fase_id)
+    entidad = rd.get_query().filter(Fase._proyecto_id == proyecto_id, Fase._orden < fase_actual._orden).order_by(Fase._orden.desc()).first()
+    return entidad;
+
 @view_config(route_name='actualizareliminarfases')
 def actualizar_eliminar_fase(request):
     """
@@ -88,7 +100,7 @@ def actualizar_eliminar_fase(request):
         En caso de recibir un Delete retorna true en caso de exito .                   
     """
     if (request.method == 'DELETE'):
-        u= Unpickler()
+        u = Unpickler()
         entidad = u.restore(request.json_body);
         dao = FaseDAO(request)
         fase = dao.get_by_id(entidad["id"])
@@ -109,7 +121,7 @@ def actualizar_eliminar_fase(request):
         return Response(json.dumps({'sucess': 'true'}))
     else:
         #Recibimos un PUT
-        u= Unpickler()
+        u = Unpickler()
         dao = FaseDAO(request)
         entidad = u.restore(request.json_body);
         vieja = dao.get_by_id(entidad["id"])
@@ -147,14 +159,14 @@ def obtener_crear_atributofase(request):
         return Response(a_ret)
     else:    
         #recibio un Post
-        u= Unpickler()
+        u = Unpickler()
         entidad = u.restore(request.json_body);
         
         dao = FaseDAO(request)
         fase = dao.get_by_id(entidad["_fase_id"])
     
         dao = AtributoFaseDAO(request)
-        nuevo_atributo = AtributoFase(entidad["_nombre"],fase,entidad["_descripcion"],entidad["_valor"])
+        nuevo_atributo = AtributoFase(entidad["_nombre"], fase, entidad["_descripcion"], entidad["_valor"])
         dao.crear(nuevo_atributo)
         
         lista = []
@@ -174,7 +186,7 @@ def actualizar_eliminar_atributofase(request):
         En caso de recibir un Delete retorna true en caso de exito.                         
     """
     if (request.method == 'DELETE'):
-        u= Unpickler()
+        u = Unpickler()
         entidad = u.restore(request.json_body);
         dao = AtributoFaseDAO(request)
         atributo = dao.get_by_id(entidad["id"])     
@@ -183,7 +195,7 @@ def actualizar_eliminar_atributofase(request):
 
     else:
         #recibio un put
-        u= Unpickler()
+        u = Unpickler()
         dao = AtributoFaseDAO(request)
         entidad = u.restore(request.json_body);
         vieja = dao.get_by_id(entidad["id"])
@@ -214,14 +226,14 @@ def obtener_crear_tipofase(request):
         lista = [];
         p = Pickler()
         for entidad in entidades:
-            a = TipoFaseLindos(entidad._id, entidad._fase._id, entidad._tipo._id,entidad._tipo._nombre)
+            a = TipoFaseLindos(entidad._id, entidad._fase._id, entidad._tipo._id, entidad._tipo._nombre)
             lista.append(p.flatten(a))    
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'tipofase':j_string})
 
         return Response(a_ret)
     elif (request.method == 'POST'):
-        u= Unpickler()
+        u = Unpickler()
         entidad = u.restore(request.json_body);
         
         dao = FaseDAO(request)
@@ -230,12 +242,12 @@ def obtener_crear_tipofase(request):
         tipo = dao.get_by_id(entidad["_tipo"])
     
         dao = TipoFaseDAO(request)
-        nuevo_tipo_fase = TipoFase(fase,tipo)
+        nuevo_tipo_fase = TipoFase(fase, tipo)
         dao.crear(nuevo_tipo_fase)
         
         lista = []
         p = Pickler()
-        a = TipoFaseLindos(nuevo_tipo_fase._id, nuevo_tipo_fase._fase._id, nuevo_tipo_fase._tipo._id,nuevo_tipo_fase._tipo._nombre)
+        a = TipoFaseLindos(nuevo_tipo_fase._id, nuevo_tipo_fase._fase._id, nuevo_tipo_fase._tipo._id, nuevo_tipo_fase._tipo._nombre)
         lista.append(p.flatten(a))
         j_string = p.flatten(lista)
         a_ret = json.dumps({'sucess': 'true', 'tipofase' : j_string})
@@ -250,10 +262,10 @@ def eliminar_tipofase(request):
     @return: Retorna true en caso de exito.
     """
     if (request.method == 'DELETE'):
-        u= Unpickler()
+        u = Unpickler()
         entidad = u.restore(request.json_body);
         dao = TipoFaseDAO(request)
-        tipo_fase= dao.get_by_id(entidad["id"])     
+        tipo_fase = dao.get_by_id(entidad["id"])     
         dao.borrar(tipo_fase)
         return Response(json.dumps({'sucess': 'true'}))        
 
@@ -261,7 +273,7 @@ class FaseLinda:
     """
     @summary: Unidad de transporte para fases.         
     """
-    def __init__(self, _id, nombre, proyecto,orden,comentario, estado,color):
+    def __init__(self, _id, nombre, proyecto, orden, comentario, estado, color):
         self._id = _id
         self._nombre = nombre;
         self._proyecto_id = proyecto;
@@ -274,7 +286,7 @@ class TipoFaseLindos:
     """
     @summary: Unidad de transporte para tipos fases.                
     """
-    def __init__(self, _id, fase, tipo,tipo_nombre):
+    def __init__(self, _id, fase, tipo, tipo_nombre):
         self._id = _id;
         self._fase = fase;
         self._tipo = tipo;

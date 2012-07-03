@@ -12,12 +12,12 @@ from yapp.daos.item_dao import ItemDAO
 from yapp.daos.linea_base_dao import LineaBaseDAO
 from yapp.models.item.item import Item
 from yapp.models.linea_base.linea_base import LineaBaseDTO, LineaBase
+from yapp.vistas.items import actualizar_referencias_item
 import json
 
 @view_config(route_name='lineas_base')
 def getAll(request):
     if (request.GET.get('id_fase') != None):
-        print "entre-------------------------------------"
         return get_con_fase(request)
     dao = LineaBaseDAO(request)
     entidades = dao.get_all()
@@ -82,11 +82,14 @@ def rest(request):
                     item._fecha_inicio,
                     item._completado, 
                     item._padre_item_id,
-                    item._antecesor_item_id)
+                    item._antecesor_item_id,
+                    item._color)
                 dao_item.crear(n_item)
                 nItems.append(n_item)
+                actualizar_referencias_item(n_item, item_dao, item._id, False)
+                item_dao.actualizarEstadosFaseyProyecto(n_item)
+                item_dao.actualizarReferenciasItemNuevaVersion(n_item._id)
             
-
             linea_base = LineaBase(objeto['_nombre'], objeto['_descripcion'], fase, nItems)              
             dao = LineaBaseDAO(request);
             dao.crear(linea_base);
@@ -100,32 +103,52 @@ def rest(request):
     if (request.method == "DELETE"):
         try:
             id_linea_base = request.matchdict['id']
-            dao = LineaBaseDAO(request)
-            dao_item = ItemDAO(request)
-            entidad = dao.get_by_id(id_linea_base);
-            for item in entidad._items:
-                n_item = Item(
-                    item._item_id,
-                    item._nombre,
-                    item._tipo_item,
-                    item._fase,
-                    item._duracion,
-                    item._descripcion,
-                    item._condicionado,
-                    item._version + 1,
-                    "ACTIVO",
-                    item._fecha_inicio,
-                    item._completado, 
-                    item._padre_item_id,
-                    item._antecesor_item_id)
-                dao_item.crear(n_item)
-            dao.borrar(entidad)
+            item_dao = ItemDAO(request)
+            romper_linea_base(request, id_linea_base, item_dao)
             return Response(json.dumps({'sucess': 'true'}))
         except FaseNoEncontradaException , e :
             print e
             return Response(json.dumps({'sucess': 'false'}))
         return Response(json.dumps({'sucess': 'false'}))
     
+
+def romper_linea_base(request, id_linea_base, item_dao, estado="ACTIVO"):
+    dao = LineaBaseDAO(request)
+    entidad = dao.get_by_id(id_linea_base);
+    if entidad == None:
+        return
+    bases_afectadas = []
+    for item in entidad._items:
+        n_item = Item(
+            item._item_id,
+            item._nombre,
+            item._tipo_item,
+            item._fase,
+            item._duracion,
+            item._descripcion,
+            item._condicionado,
+            item._version + 1,
+            estado,
+            item._fecha_inicio,
+            item._completado, 
+            item._padre_item_id,
+            item._antecesor_item_id,
+            item._color)
+        item_dao.crear(n_item)
+        actualizar_referencias_item(n_item, item_dao, item._id, False)
+        item_dao.actualizarEstadosFaseyProyecto(n_item)
+        item_dao.actualizarReferenciasItemNuevaVersion(n_item._id)
+        sucesores = item_dao.get_query().filter(Item._antecesor_item_id == n_item._id).all()
+        for sucesor in sucesores:
+            print "HAY SUCESORES"
+            if sucesor._linea_base_id not in bases_afectadas:
+                bases_afectadas.append(sucesor._linea_base_id)
+            
+    for id_linea_base in bases_afectadas:
+        
+        romper_linea_base(request, id_linea_base, item_dao, "REVISION")
+    
+    dao.borrar(entidad)
 
 
 class FaseNoEncontradaException(Exception):

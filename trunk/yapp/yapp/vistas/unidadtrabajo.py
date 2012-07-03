@@ -29,7 +29,7 @@ def obtener_crear_unidad_trabajo(request):
         print item_id
         if (item_id !=None):
             item_dao = ItemDAO(request)
-            unidades = item_dao.get_unidades_disponibles(item_dao.get_by_id(item_id))
+#            unidades = item_dao.get_unidades_disponibles(item_dao.get_by_id(item_id))
             #####################################
             ###La parte comentada de abajo, trae las unidades como le gusta a cocho,
             ###osea, con ese return se podra asignar a cualquier item la misma unidad de trabajo

@@ -1,6 +1,6 @@
 from sqlalchemy.orm.query import Query
 from yapp.filter import P_PROYECTO, P_FASE, P_ESQUEMA, P_ITEM, P_ACTIVARITEM, \
-    P_NO, imprimir
+    P_NO
 from yapp.models.esquema.esquema import Esquema
 from yapp.models.fase.fase import Fase
 from yapp.models.item.item import Item
@@ -12,30 +12,38 @@ clases_privilegios = (Item, Esquema, Proyecto, Fase, LineaBase)
 
 def all(s):
     if hasattr(s, 'omitir_seguridad') == True:
-        imprimir("OMITIENDO SEGURIDAD All")
+#        return _setear_lista_sin_seguridad(old_all(s))
         return old_all(s)
     lista = list(s)
     if hasattr(s, 'sesion_yapp'):
         if 'user' in s.sesion_yapp:
             if s.sesion_yapp['user']._id == 1:
-                return list(s)
+                aRet = list(s)
+                return _setear_lista_sin_seguridad(aRet)
     if hasattr(s, 'clase') :
         if s.clase in clases_privilegios:
             return verificar_privilegios(s, lista)
+        
 #    print self
 #    print len(list(self))
     return list(s)
 
+
+
+
 def first(s):
     aRet = old_first(s)
     if hasattr(s, 'omitir_seguridad') == True:
-        imprimir("OMITIENDO SEGURIDAD First")
-        return aRet
-    if 'sesion_yapp' not in s :
-        return aRet
-    entidades = s.all(s);
+        return _setear_entidad_sin_seguridad(aRet)
+    if not hasattr(s, 'sesion_yapp'):
+        return _setear_entidad_sin_seguridad(aRet)
+    if hasattr(s, 'sesion_yapp'):
+        if 'user' in s.sesion_yapp:
+            if s.sesion_yapp['user']._id == 1:
+                return _setear_entidad_sin_seguridad(aRet)
+    entidades = s.all();
     for entidad in entidades:
-        aRet = verificar_privilegio(s.sesion_yapp, s.sesion_yapp['holder'], aRet)
+        aRet = verificar_privilegio(s.sesion_yapp, s.sesion_yapp['holder'], entidad)
         if aRet != None:
             return aRet
     return None
@@ -58,30 +66,45 @@ def verificar_privilegio(sesion, holder, entidad):
         return verificar_privilegio_item(holder, entidad)
     if isinstance(entidad, Proyecto):
         return verificar_privilegio_otro(holder, P_PROYECTO, entidad)
-    if isinstance(entidad, Proyecto):
-        return verificar_privilegio_otro(holder, P_FASE, entidad)
     if isinstance(entidad, Fase):
+        return verificar_privilegio_otro(holder, P_FASE, entidad)
+    if isinstance(entidad, Esquema):
         return verificar_privilegio_otro(holder, P_ESQUEMA, entidad)
     return entidad
         
         
 def verificar_privilegio_item(holder, item):
     privilegio = holder.verificar_privilegio(P_ITEM, item)
-    if privilegio != P_NO:
-        if holder.verificar_privilegio(P_ACTIVARITEM, item) != P_NO:
-            item._activar = True;
+    if privilegio.valor != P_NO:
+        if holder.verificar_privilegio(P_ACTIVARITEM, item).valor != P_NO:
+            item._aprobar = True;
         else:
-            item._activar = False;
+            item._aprobar = False;
         item._privilegio = privilegio.valor
+#        print item._aprobar
+#        print item._privilegio
         return item
     return None
 
 def verificar_privilegio_otro(holder, privilegio, entidad):
     privilegio = holder.verificar_privilegio(privilegio, entidad)
-    if privilegio != P_NO:
+    if privilegio.valor != P_NO:
         entidad._privilegio = privilegio.valor
         return entidad
     return None
+
+
+def _setear_lista_sin_seguridad(lista):
+    for entidad in lista:
+        _setear_entidad_sin_seguridad(entidad)
+        
+    return lista
+def _setear_entidad_sin_seguridad(entidad):
+    if (entidad == None):
+        return entidad
+    entidad._aprobar = True
+    return entidad
+
 
 old_all = Query.all
 old_first = Query.first

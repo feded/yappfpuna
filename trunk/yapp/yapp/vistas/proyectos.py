@@ -69,6 +69,9 @@ def create_proyectos(request):
     dao_fase = FaseDAO(request)
     dao_fase.crear(nueva_fase)
     
+    asignar_permiso_rol_proyecto(request, nuevo_proyecto._autor, nuevo_proyecto)
+    asignar_permiso_rol_proyecto(request, nuevo_proyecto._lider, nuevo_proyecto)
+    
     #Le asociamos un tipo de item por defecto a esa fase por defecto
 #    dao_tipo_item = TipoItemDAO(request)
 #    tipo_item = dao_tipo_item.get_by_id(1)
@@ -131,7 +134,7 @@ def update_proyectos(request):
 
 def asignar_permiso_rol_proyecto(request, rol, proyecto):
     dao = RolPrivilegioDAO(request)
-    dao_privilegio = PrivilegioDAO
+    dao_privilegio = PrivilegioDAO(request)
     
     entidad = dao.get_query().filter(RolPrivilegio._rol == rol, RolPrivilegio._entidad_id == proyecto._id).first();
     if entidad == None :

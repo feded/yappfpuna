@@ -42,10 +42,12 @@ class ItemDAO(BaseDAO):
         entidades = self.get_query().filter(Item._fase_id == fase_id).distinct(Item._item_id).all()
         entidades_item_id = []
         for entidad in entidades:
+            
             posible_actual = self.get_query().filter(Item._item_id == entidad._item_id).order_by(Item._version.desc()).first();
             if (posible_actual._estado != "ELIMINADO"):            
                 if (entidades_item_id.count(posible_actual) == 0):
                     entidades_item_id.append(posible_actual)
+                    print posible_actual._aprobar
              
         return entidades_item_id
         
@@ -61,11 +63,6 @@ class ItemDAO(BaseDAO):
              
         return entidades_item_id
      
-    def es_eliminable(self, item):
-        """
-        @param item: item a verificar si se puede eliminar
-        @return: boolean true si es eliminable sin comprometer otros items, false si su eliminacion compromente otros items
-        """
     def get_items_comprometidos(self, fase_id):
         
         lista_return = []
@@ -174,10 +171,18 @@ class ItemDAO(BaseDAO):
         
        
     def actualizarReferenciasItemNuevaVersion(self, item_id, id_viejo=None):
+        item_nuevo = self.get_by_id(item_id)
         if (id_viejo != None):
             item_viejo = self.get_by_id(id_viejo)
+            if item_viejo._padre_item_id!= None:
+                ultima_version_padre = self.get_ultima_version_item_by_id(self.get_by_id(item_viejo._padre_item_id)._item_id)
+                item_nuevo._padre_item_id = ultima_version_padre._id
+            if item_viejo._antecesor_item_id!= None:
+                ultima_version_antecesor = self.get_ultima_version_item_by_id(self.get_by_id(item_viejo._antecesor_item_id)._item_id)
+                item_nuevo._antecesor_item_id = ultima_version_antecesor._id
+            self.update(item_nuevo)  
         else:
-            item_nuevo = self.get_by_id(item_id)
+            
             item_viejo = self.get_query().filter(Item._item_id == item_nuevo._item_id , Item._version == (item_nuevo._version-1)).first()
         if (item_viejo!=None):
             #### Primero nos metemos con los atributos

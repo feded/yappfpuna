@@ -3,9 +3,12 @@ from pyramid.view import view_config
 from pyramid_mailer.message import Message
 from yapp.daos.rol_final_dao import RolFinalDAO
 from yapp.daos.rol_privilegio_dao import RolPrivilegioDAO
-import json
-from yapp.filter import PrivilegioHolder
 from yapp.daos.rol_rol_dao import RolRolDAO
+from yapp.filter import PrivilegioHolder
+from yapp.models import DBSession
+from yapp.models.historial import Historial
+import json
+from yapp.daos.base_dao import BaseDAO
 
 
 @view_config(route_name='login' , renderer="templates/login/login.pt")
@@ -20,6 +23,11 @@ def login_view(request):
         rol = query.first()
         if rol != None:
             session = request.session
+            session['user'] = None
+            session['holder'] = None
+            session.changed()
+            
+            
             session['user'] = rol
             session['holder'] = crearPrivilegioHolder(request, rol)
             session['holder'].imprimir()
@@ -55,6 +63,28 @@ def crearPrivilegioHolder(request, rol):
     return holder
     
 
+def crear(self, entidad):
+    """B{Metodo que retorna crea una entidad, y almacena la creacion en la tabla de B{HISTORIAL}
+    - B{Parametros:} 
+        - B{entidad:} entidad a ser persistida
+    - B{Retorna:}
+        - B{entidad:} entidad persistida
+    """
+    DBSession.add(entidad)
+    DBSession.flush()
+    
+#        lista = self.get_query().all();
+#        entidad = lista[len(lista) - 1];
+    if (self._request != None):
+        self._request.session['holder'] = crearPrivilegioHolder(self._request, self._request.session['user'])
+        #no va a tener user en caso de que venga del pyunit
+        if ('user' in self._request.session):
+            historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
+            DBSession.add(historia)
+            self.notificar(entidad, historia)
+    return entidad;
+
+BaseDAO.crear = crear
 
 @view_config(route_name='logout')
 def logout(request):

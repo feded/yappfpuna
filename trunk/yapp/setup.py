@@ -18,7 +18,7 @@ requires = [
     'SQLAlchemy',
     'transaction',
     'pyramid_tm',
-    'pyramid_debugtoolbar',
+#    'pyramid_debugtoolbar',
     'zope.sqlalchemy',
     'waitress',
     'jsonpickle',

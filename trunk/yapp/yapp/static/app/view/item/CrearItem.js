@@ -57,7 +57,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 
 			},{
 				xtype : 'colorcbo',
-				name : 'color',
+				name : '_color',
 				fieldLabel : 'Color',
 
 			},{
@@ -206,6 +206,8 @@ var colorPicker = Ext.define('Ext.ux.ColorPickerCombo', {
 	extend : 'Ext.form.field.Trigger',
 	alias : 'widget.colorcbo',
 	triggerTip : 'Seleccione un color.',
+	regex : /^[0-9a-fA-F]{6}$/,
+	regexText : 'Seleccione un color valido',
 	onTriggerClick : function() {
 		var me = this;
 		picker = Ext.create('Ext.picker.Color', {

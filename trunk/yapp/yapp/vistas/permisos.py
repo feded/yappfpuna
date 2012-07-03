@@ -24,14 +24,15 @@ def obtener_permisos(request):
     rd = PermisosRolesDAO(request)
     
     if request.GET.get('id') != None:
-        permisos = rd.get_query().filter(PermisosRoles._rol_id == request.GET.get('id')).all()
+        permisos = rd.get_query().filter(PermisosRoles._rol_id == request.GET.get('id')).order_by(PermisosRoles._permiso_id.asc()).all()
     else:
+        print "ACA"
         permisos = get_permisos_rol(request, rol, [], rd, [], r)
-        
     lista = [];
     p = Pickler()
     for permiso in permisos:
         a = PermisoRolDTO(permiso)
+        a._rol = rol
         lista.append(p.flatten(a))    
     j_string = p.flatten(lista)
     a_ret = json.dumps({'sucess': 'true', 'permisos':j_string})    

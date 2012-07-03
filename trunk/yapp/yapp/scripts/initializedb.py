@@ -98,7 +98,7 @@ def main(argv=sys.argv):
             DBSession.add(entidad)
             entidad = Privilegio("Esquema");
             DBSession.add(entidad)
-            entidad = Privilegio("Activar Item");
+            entidad = Privilegio("Aprobar Item");
             DBSession.add(entidad)
     items = RolEstadoDAO(None).get_all()
     if (len(items) == 0):
@@ -202,6 +202,10 @@ def main(argv=sys.argv):
             permiso_rol = PermisosRoles(permiso,rol);
             DBSession.add(permiso_rol);
             permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Ver costado derecho").first();
+            permiso_rol = PermisosRoles(permiso,rol);
+            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Diagrama de gantt").first();
+            permiso_rol = PermisosRoles(permiso,rol);
+            permiso = PermisosDAO(None).get_query().filter(Permisos._nombre == "Unidad de trabajo").first();
             permiso_rol = PermisosRoles(permiso,rol);
             DBSession.add(permiso_rol);
             

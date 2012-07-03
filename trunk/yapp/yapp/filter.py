@@ -39,7 +39,7 @@ P_PROYECTO = 'Proyecto'
 P_FASE = 'Fase'
 P_ESQUEMA = 'Esquema'
 P_LINEABASE = 'LineaBase'
-P_ACTIVARITEM = 'Activar Item'
+P_ACTIVARITEM = 'Aprobar Item'
 
 P_SELECCIONAR = "seleccionar"
 P_CONTROL_TOTAL = "abm"
@@ -139,7 +139,7 @@ class PrivilegioHolder:
             self._permiso_fase_agregado_verificar_items(entidad, request)
         imprimir(entidad)
         if isinstance(entidad, Proyecto):
-            print "Agregando fases de proyecto a privilegios"
+#            print "Agregando fases de proyecto a privilegios"
             """SI PUEDO VER EL PROYECTO, debo poder ver todas sus fases"""
             self._permiso_proyecto_agregado_verificar_fases(request, entidad)
     
@@ -168,12 +168,12 @@ class PrivilegioHolder:
         
     def _permiso_fase_agregado_verificar_items(self, request, fase):
         dao = self.get_dao(Item, request)
-        items = dao.get_query().filter(Item._fase == fase)
+        items = self.get_query(dao).filter(Item._fase == fase)
         self._agregar_privilegios_entidades_sin_reemplazo(items, P_ITEM, P_CONTROL_TOTAL)
     
     def _permiso_proyecto_agregado_verificar_fases(self, request, proyecto):
         dao = self.get_dao(Fase, request)
-        fases = dao.get_query().filter(Fase._proyecto == proyecto)
+        fases = self.get_query(dao).filter(Fase._proyecto == proyecto).all()
         self._agregar_privilegios_entidades_sin_reemplazo(fases, P_FASE, P_CONTROL_TOTAL)
         for fase in fases:
             self._permiso_fase_agregado_verificar_items(request, fase)
@@ -191,18 +191,20 @@ class PrivilegioHolder:
 
     def agregar_privilegios_rol(self, request, rol_id, rr_dao, rp_dao):
         self.agregar_privilegios_rol_id(request, rol_id, rp_dao)
-        query = rr_dao.get_query()
+        query = self.get_query(rr_dao)
         query.omitir_seguridad = True
         padres = query.filter(RolRol._rol_id == rol_id).all()
+#        print len(padres)
+#        print len(padres)
+#        print len(padres)
+#        print len(padres)
         for padre in padres :
             self.agregar_privilegios_rol(request, padre._padre_id, rr_dao, rp_dao)
     
     def agregar_privilegios_rol_id(self, request, rol_id, dao):
-        
-        entidades = dao.get_query().filter(RolPrivilegio._rol_id == rol_id).all();
-        imprimir("TODOS LOS PERMISOS")
-        for entidad in entidades:
-            print entidad._id
+        entidades = self.get_query(dao).filter(RolPrivilegio._rol_id == rol_id).all();
+#        for entidad in entidades:
+#            print entidad._id
         self.add_privilegios(request, entidades)
         
     daos = {}
@@ -219,6 +221,11 @@ class PrivilegioHolder:
             if clase == Esquema :
                 self.daos[Esquema] = EsquemaDAO(request)
         return self.daos[clase]
+    
+    def get_query(self, dao):
+        query = dao.get_query()
+        query.omitir_seguridad = True
+        return query
     
     
     def imprimir(self):

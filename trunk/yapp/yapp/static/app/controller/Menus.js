@@ -33,6 +33,9 @@ Ext.define('YAPP.controller.Menus', {
 	}, {
 		selector : 'viewport tabpanel[name=tabPrincipal]',
 		ref : 'tabPrincipal'
+	}, {
+		selector : 'viewport button[action=verDiagramaGantt]',
+		ref : 'botonGantt'
 	} ],
 	
 	init : function() {
@@ -122,19 +125,17 @@ Ext.define('YAPP.controller.Menus', {
 		var panel = Ext.getCmp('west');
 		var store = this.getRolPermisosStore();
 		var controller = this;
+		
+		store.sort('id', 'ASC');
 		store.each(function f(record) {
 			if (!controller.casosEspeciales(record)) {
 				var sNombre = record.data._permiso._nombre;
 				var sAccion = "";
-				// console.log(sNombre)
-				// console.log(record)
-				// console.log(typeof getAliasFuncion(sNombre))
 				if (typeof getAliasFuncion(sNombre) == "undefined") {
 					sAccion = "admin" + sNombre;
 				} else {
 					sAccion = getAliasFuncion(sNombre);
 				}
-				
 				panel.addDocked({
 					text : sNombre,
 					textAlign : 'left',
@@ -142,6 +143,13 @@ Ext.define('YAPP.controller.Menus', {
 					action : sAccion,
 					disabled : isDisabled(sNombre)
 				})
+			}
+			if (controller.setUser == undefined) {
+				var abajo = Ext.getCmp('top')
+				console.log(record)
+				var cadena = 'Yet another project processor - '
+				abajo.setTitle(cadena + "Bienvenido " + record.data._rol._nombre)
+				controller.setUser = true
 			}
 		})
 
@@ -153,7 +161,6 @@ Ext.define('YAPP.controller.Menus', {
 			textAlign : 'left',
 			action : 'logout'
 		});
-		
 		panel.add({
 			xtype : 'label',
 			text : '',
@@ -166,6 +173,7 @@ Ext.define('YAPP.controller.Menus', {
 		this.getBotonItems().setDisabled(true);
 		this.getBotonEsquemas().setDisabled(true);
 		this.getBotonLineasBase().setDisabled(true);
+		this.getBotonGantt().setDisabled(false);
 		var store = this.getStore('Fases');
 		store.load({
 			params : {
@@ -360,7 +368,7 @@ function popularHashMap() {
 }
 
 function isDisabled(nombre) {
-	if (nombre == "Items" || nombre == "Fases" || nombre == "Tipo de items" || nombre == "Esquemas" || nombre == "Linea base") {
+	if (nombre == "Items" || nombre == "Fases" || nombre == "Tipo de items" || nombre == "Esquemas" || nombre == "Linea base" || nombre == "Diagrama de gantt") {
 		return true;
 	}
 	

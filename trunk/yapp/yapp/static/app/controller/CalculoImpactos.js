@@ -13,9 +13,6 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 		selector : 'calculoimpactosview gridpanel[name=bases]',
 		ref : 'bases'
 	}, {
-		selector : 'calculoimpactosview combobox[name=cbFase]',
-		ref : 'comboFase'
-	}, {
 		selector : 'calculoimpactosview combobox[name=cbItem]',
 		ref : 'comboItem'
 	}, {
@@ -31,45 +28,59 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 	
 	init : function() {
 		this.control({
-			'calculoimpactosview' : {
-				render : this.onRender
-			},
-			'calculoimpactosview combobox[name=cbFase]' : {
+			'viewport combobox[name=fases]' : {
 				change : this.changeFase
 			},
 			'calculoimpactosview combobox[name=cbItem]' : {
 				change : this.changeItem
+			},
+			'calculoimpactosview' : {
+				'tabSeleccionada' : this.onFocus
 			}
 		});
 	},
-	
-	onRender : function() {
-		var combo = this.getComboFase();
-		var store = this.getFasesStore();
-		var object = this.getProyectos().getValue();
-		if (object == '') {
+	onFocus : function(view) {
+		var combo = this.getComboItem()
+		if (this.itemStore == undefined) {
+			this.itemStore = Ext.create('YAPP.store.Item')
+			combo.store = this.itemStore
+		}
+		valor = this.ultimoCambiado
+		if (valor != undefined && valor != "") {
+			this.cargarItems(valor)
+		}
+	},
+	cargarItems : function(value) {
+		var combo = this.getComboItem()
+		this.itemStore.load({
+			params : {
+				id : value
+			},
+			callback : function(items) {
+				if (Ext.typeOf(combo.getPicker().loadMask) !== "boolean") {
+					combo.getPicker().loadMask.hide();
+				}
+			}
+		});
+	},
+	changeFase : function(object, newValue, oldValue, eOpts) {
+		this.ultimoCambiado = newValue;
+		if (this.itemStore == undefined) {
 			return;
 		}
-		combo.store = store;
-		store.load({
-			params : {
-				id : object
-			}
-		});
-	},
-	
-	changeFase : function(object, newValue, oldValue, eOpts) {
-		var store = this.getItemStore();
-		var fase = this.getComboFase();
-		var combo = this.getComboItem();
-		combo.store = store;
-		store.load({
-			params : {
-				id : fase.getValue()
-			}
-		});
+		if (newValue == null || newValue == "") {
+			this.limpiarStores()
+			this.itemStore.removeAll()
+			this.getComboItem().setValue("")
+			return
+		}
+		this.cargarItems(newValue)
 	},
 	changeItem : function(object, newValue, oldValue, eOpts) {
+		if (newValue == null || newValue == "") {
+			this.limpiarStores()
+			return
+		}
 		var store = this.getCalculoImpactosStore()
 		store.load({
 			params : {
@@ -95,5 +106,19 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 		labelSucesores.setText(records[0].data.costo_sucesores)
 		labelAntecesores.setText(records[0].data.costo_antecesores)
 
+	},
+	limpiarStores : function() {
+		var antecesores = this.getAntecesores();
+		antecesores.store.removeAll()
+		var sucesores = this.getSucesores();
+		sucesores.store.removeAll()
+		var lineasBases = this.getBases();
+		lineasBases.store.removeAll()
+
+		var labelSucesores = this.getLabelSucesores()
+		var labelAntecesores = this.getLabelAntecesores()
+
+		labelSucesores.setText("0")
+		labelAntecesores.setText("0")
 	}
 });

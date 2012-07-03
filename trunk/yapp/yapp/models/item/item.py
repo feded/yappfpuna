@@ -18,6 +18,7 @@ class Item (EntidadPadre):
     _duracion = Column(Integer , nullable=False)
     _condicionado = Column(Boolean, nullable=False)
     _version = Column(Integer, nullable=False)
+    _color = Column(String, nullable=True)
     _estado = Column(String, nullable=False)
     _fecha_inicio = Column(String, nullable=True)
     _completado = Column(Integer, nullable=True)
@@ -25,7 +26,7 @@ class Item (EntidadPadre):
     _antecesor_item_id = Column(Integer, ForeignKey('item._id'))    
     _linea_base_id = Column(Integer, ForeignKey('linea_base._id'))
     
-    def __init__(self, item_id,  nombre, tipo_item, fase, duracion, descripcion,  condicionado, version, estado, fecha_inicio, completado, padre_item_id, antecesor_item_id):
+    def __init__(self, item_id,  nombre, tipo_item, fase, duracion, descripcion,  condicionado, version, estado, fecha_inicio, completado, padre_item_id, antecesor_item_id, color):
         self._item_id = item_id
         self._nombre = nombre
         self._tipo_item = tipo_item
@@ -39,6 +40,7 @@ class Item (EntidadPadre):
         self._completado = completado
         self._padre_item_id = padre_item_id
         self._antecesor_item_id = antecesor_item_id
+        self._color = color
 #        self._linea_base_id = linea_base_id
 
 
@@ -59,5 +61,8 @@ class ItemDTO:
         self._completado = item._completado;
         self._padre_item_id = item._padre_item_id
         self._antecesor_item_id = item._antecesor_item_id
+        self._color = item._color
+        if hasattr(item, '_aprobar'):
+            self._aprobar = item._aprobar
 #        self._linea_base_id = item._linea_base_id
 

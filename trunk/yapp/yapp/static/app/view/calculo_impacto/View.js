@@ -4,6 +4,7 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 	title : 'Calculo de impacto',
 	// layout : 'fit',
 	autoShow : true,
+	
 	// frame:true,
 	stores : [ 'CalculoImpactos' ],
 	
@@ -11,7 +12,8 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 		this.items = [ {
 			xtype : 'container',
 			width : 800,
-			height : 300,
+			height : 500,
+			
 			layout : {
 				type : 'vbox',
 				align : 'stretch',
@@ -23,7 +25,7 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 			items : [ {
 				xtype : 'gridpanel',
 				name : 'bases',
-				height : 100,
+				height : 300,
 				columns : columnas_calculo_impacto_fase,
 				// stripeRows : true,
 				title : 'Lineas bases afectadas',
@@ -43,7 +45,7 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 				items : [ {
 					xtype : 'gridpanel',
 					name : 'antecesores',
-					height : 100,
+					height : 300,
 					columns : columna_calculo_impacto_item,
 					store : Ext.create('YAPP.store.Item'),
 					// stripeRows : true,
@@ -51,11 +53,12 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 					margins : '0 2 0 0',
 					dockedItems : [ {
 						xtype : 'toolbar',
+						style : 'text-align:rigth',
 						dock : 'bottom',
 						items : [ {
 							xtype : 'label',
 							name : 'label_antecesores',
-							text : 'Costo sucesores: '
+							text : 'Costo antecesores: '
 						}, {
 							xtype : 'label',
 							name : 'label_costo_antecesores',
@@ -65,7 +68,7 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 				}, {
 					xtype : 'gridpanel',
 					name : 'sucesores',
-					height : 100,
+					height : 300,
 					columns : columna_calculo_impacto_item,
 					store : Ext.create('YAPP.store.Item'),
 					// stripeRows : true,
@@ -90,13 +93,6 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 		this.dockedItems = [ {
 			xtype : 'toolbar',
 			items : [ {
-				xtype : 'combobox',
-				name : 'cbFase',
-				fieldLabel : 'Fase',
-				displayField : '_nombre',
-				queryMode : 'local',
-				valueField : 'id',
-			}, {
 				xtype : 'combobox',
 				name : 'cbItem',
 				fieldLabel : 'Item',
