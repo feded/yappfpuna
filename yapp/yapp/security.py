@@ -32,9 +32,9 @@ def all(s):
     return list(s)
 
 def _es_prueba(query):
-    if hasattr(query, 'session_yapp') == False:
+    if hasattr(query, 'sesion_yapp') == False:
         return True;
-    if 'user' not in query.session_yapp and 'holder' not in query.session_yapp:
+    if 'user' not in query.sesion_yapp and 'holder' not in query.sesion_yapp:
         return True;
 
 
