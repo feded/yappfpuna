@@ -25,8 +25,6 @@ from yapp.daos.unidad_trabajo_dao import UnidadTrabajoDAO
 def asignar_unidad_intem(request):
     if (request.method == 'POST'):
         u = Unpickler()
-#        print "----------------------JSON----------------"
-#        print request.json_body
         entidad = u.restore(request.json_body);
         itemDAO = ItemDAO(request)
         asignacion = ItemUnidadTrabajo(entidad["_item_id"], entidad["_unidad_id"], entidad["_cantidad"])
@@ -70,7 +68,6 @@ def editar_unidad_item(request):
     if (request.method == 'PUT'):
         u = Unpickler()
         
-#        print request.json_body
         entidad = u.restore(request.json_body);
         dao = ItemUnidadDAO(request)
         item_unidad = dao.get_by_id(entidad["id"])

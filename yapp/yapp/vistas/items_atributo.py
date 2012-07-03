@@ -27,16 +27,12 @@ from yapp.models.tipo_item.atributo_tipo_item import AtributoTipoItem
 def guardar_obtener_atributo(request):
     if (request.method == 'POST'):
         u = Unpickler()
-#        print "----------------------JSON----------------"
         
-#        print request.json_body
         entidad = u.restore(request.json_body);
         dao = ItemAtributoDAO(request)
         item_dao = ItemDAO(request)
         item = item_dao.get_by_id(entidad["_item_id"])
         a_tipo_dao = AtributoTipoItemDAO(request)
-#        print "--------------------------VALOR-------------------"
-#        print entidad["_valor"]
         
         asignacion = ItemAtributo(entidad["_item_id"], entidad["_atributo_id"], entidad["_valor"] )
         dao.crear(asignacion);
@@ -51,8 +47,6 @@ def guardar_obtener_atributo(request):
     elif (request.method == 'GET'):
         item_id = request.GET.get('_item_id');
         p = Pickler(True, None)
-#        print "--------ITEM ID-----------------------------------------------------------------------------------------------------"
-#        print item_id
         if (item_id == 0 or item_id == "0" or item_id == None):
             j_string = p.flatten([])
             a_ret = json.dumps({'sucess': True, 'lista':j_string})
@@ -68,8 +62,6 @@ def guardar_obtener_atributo(request):
 #            if actual != None:
 #                lista.append(actual)
 #        aRet = []
-#        print "'-------------------llnlistas---------------"
-#        print len(lista)
 #        if (len(lista)==0):
 
             
@@ -111,7 +103,6 @@ def editar_atributo_item(request):
     if (request.method == 'PUT'):
         u = Unpickler()
         
-        print request.json_body
         entidad = u.restore(request.json_body);
         dao = ItemAtributoDAO(request)
         item_atributo = dao.get_by_id(entidad["id"])

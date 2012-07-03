@@ -113,7 +113,6 @@ class CalculoImpacto:
         #ADELANTE
         hijos = self.dao.get_query().filter(Item._padre_item_id == item._id).all()
         for hijo in hijos:
-            print "\tHijo de " + item._nombre + ": " + hijo._nombre
             hijo_ultima_version = self.dao.get_ultima_version_item_by_id(hijo._item_id)
             if hijo_ultima_version._padre_item_id == item._id:
                 if lista == AUX_NADA:
@@ -124,7 +123,6 @@ class CalculoImpacto:
 
         sucesores = self.dao.get_query().filter(Item._antecesor_item_id == item._id).all()
         for sucesor in sucesores:
-            print "\tSucesor de " + item._nombre + ": " + sucesor._nombre
             sucesor_ultima_version = self.dao.get_ultima_version_item_by_id(sucesor._item_id)
             if sucesor_ultima_version._antecesor_item_id == item._id:
                 if lista == AUX_NADA:
@@ -155,28 +153,17 @@ class CalculoImpacto:
     def calcular_costo_items(self, items):
         costo = 0;
         for item in items:
-#            print "---------------------"
-#            print "Costo de item con id " + str(item._id)
             costo_item = self.costo_item(item)
             item._costo = costo_item;
-#            print "Costo: " + str(costo_item)
-#            print "---------------------"
             costo += costo_item;
         return costo;
     
     def costo_item(self, item):
-#        self.item_unidad_dao = ItemUnidadDAO(None)
-#        self.unidad_recurso_dao = UnidadTrabajoRecursoDAO(None)
-#        self.recurso_dao = RecursoDAO(None)
         items_unidades = self.item_unidad_dao.get_query().filter(ItemUnidadTrabajo._item_id == item._id).all();
         costo = 0;
-#        print "---------------------"
-#        print "Costo de item con id " + str(item._id)
         for item_unidad in items_unidades:
             costo_unidad = self.costo_unidad(item_unidad._unidad_id)
             costo += costo_unidad
-#            print "Costo: " + str(costo_unidad)
-#            print "---------------------"
         return costo
         
 
