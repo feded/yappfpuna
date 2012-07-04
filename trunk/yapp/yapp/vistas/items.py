@@ -159,6 +159,7 @@ def bm_atributo(request):
         else:
             if isinstance(entidad["_antecesor"], int) != True:
                 antecesor_id = entidad["_antecesor"]["_id"]
+                antecesor = dao_item_ante.get_by_id(antecesor_id)
             else:
                 antecesor = dao_item_ante.get_by_id(entidad["_antecesor"])
                 antecesor_id = antecesor._id
