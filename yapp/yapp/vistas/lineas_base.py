@@ -112,7 +112,7 @@ def rest(request):
         return Response(json.dumps({'sucess': 'false'}))
     
 
-def romper_linea_base(request, id_linea_base, item_dao, estado="ACTIVO"):
+def romper_linea_base(request, id_linea_base, item_dao, estado="APROBADO"):
     dao = LineaBaseDAO(request)
     entidad = dao.get_by_id(id_linea_base);
     if entidad == None:
