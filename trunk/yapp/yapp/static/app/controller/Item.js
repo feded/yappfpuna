@@ -3,7 +3,7 @@ Ext.define('YAPP.controller.Item', {
 	
 	views : [ 'item.List', 'item.CrearItem', 'item.RevertirItem', 'item_atributo.Edit', 'item_unidad.List', 'item_unidad.Edit', 'item.RevivirItem', 'item_atributo.List', 'item_atributo.Agregar',
 			'item_atributo.Archivo', 'item_atributo.ListarArchivo' ],
-	stores : [ 'Item', 'Fases', 'TipoItems', 'ItemUnidad', 'ItemAtributo', 'AtributoTipoItem', 'Archivos' ],
+	stores : [ 'Item', 'Fases', 'TipoItems', 'ItemUnidad', 'ItemAtributo', 'AtributoTipoItem', 'Archivos', 'Proyectos' ],
 	models : [ 'Item', 'ItemUnidad', 'ItemAtributo' ],
 	
 	refs : [ {
@@ -408,9 +408,22 @@ Ext.define('YAPP.controller.Item', {
 	
 	crearItem : function(button) {
 		
+		var proyectoId = this.getProyectos().getValue();
+		var proyecto = this.getProyectosStore().getById(proyectoId);
+		
+		if (proyecto.data._estado == "ELABORACION"){
+			Ext.Msg.alert("Item", "El proyecto se encuentra en estado de Elaboración, debe Iniciar el mismo para crear Items");
+			return
+		}
+		
+		var fase = this.getComboFase();
+		if (fase.getValue() == "" || typeof fase.getValue() === 'undefined' || fase.getValue()==null){
+			Ext.Msg.alert("Item", "Seleccione una Fase para Crear Items");
+			return
+		}
+		
 		var view = Ext.widget('crearitem');
 		var item = new YAPP.model.Item();
-		var fase = this.getComboFase();
 		
 		var gridLB = this.getGridLB();
 		var griditemLB = this.getGriditemLB();
@@ -918,6 +931,10 @@ Ext.define('YAPP.controller.Item', {
 	revivirItemView : function(button) {
 		
 		var fase = this.getComboFase();
+		if (fase.getValue() == "" || typeof fase.getValue() === 'undefined' || fase.getValue()==null){
+			Ext.Msg.alert("Item", "Seleccione una Fase para Revivir Items");
+			return
+		}
 		var view = Ext.widget('revivirItems');
 		view.setTitle('Revivir Items');
 		var store = this.getGridEliminados().getStore();

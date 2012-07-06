@@ -100,7 +100,7 @@ def ag_atributos_tipos_item(request):
         item_id = DBSession.execute(seq)
         
         
-        formato_entrada = "%Y-%m-%d"
+        formato_entrada = "%Y-%m-%d %H:%M:%S"
         if len(entidad["_fecha_inicio"]) > 1:
             fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"], formato_entrada)
             delta = datetime.timedelta(days=entidad["_duracion"] - 1)
@@ -262,9 +262,11 @@ def actualizar_referencias_item(item, item_dao, anterior_id, actualizar=None):
                 #VERIFICAR ESTADO DE SUS HIJOS
                 if (actualizar == None):
                     posible_hijo._estado = "REVISION"
+                    actualizar_referencias_item(posible_hijo, posible_hijo._id, actualizar)
             item_dao.update(posible_hijo)
             item_dao.actualizarEstadosFaseyProyecto(posible_hijo)
             updated.append(hijo._item_id)
+            
     #este item es antecesor, vamos a actualizar las referencias de sus descendendientes
     sucesores = item_dao.get_query().filter(Item._antecesor_item_id == anterior_id)
     updated = []
@@ -275,6 +277,7 @@ def actualizar_referencias_item(item, item_dao, anterior_id, actualizar=None):
             if (posible_sucesor._estado != "ELIMINADO"):    
                 #VERIFICAR ESTADO DE SUS HIJOS
                 posible_sucesor._estado = "REVISION"
+                actualizar_referencias_item(posible_sucesor, posible_sucesor._id, actualizar)
             item_dao.update(posible_sucesor)
             item_dao.actualizarEstadosFaseyProyecto(posible_sucesor)
             updated.append(sucesor._item_id)
