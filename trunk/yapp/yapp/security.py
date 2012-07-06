@@ -1,6 +1,6 @@
 from sqlalchemy.orm.query import Query
 from yapp.filter import P_PROYECTO, P_FASE, P_ESQUEMA, P_ITEM, P_ACTIVARITEM, \
-    P_NO
+    P_NO, P_INICIARPROYECTO, P_CONTROL_TOTAL, PT_PERMISO
 from yapp.models.esquema.esquema import Esquema
 from yapp.models.fase.fase import Fase
 from yapp.models.item.item import Item
@@ -60,9 +60,6 @@ def first(s):
     return None
 
 def verificar_privilegios(query, lista):
-#    if 'holder' not in query.session:
-        #TODO PROVISORIO
-#        return True
     holder = query.sesion_yapp['holder']
     sesion = query.sesion_yapp
     lista_nueva = []
@@ -76,7 +73,7 @@ def verificar_privilegio(sesion, holder, entidad):
     if isinstance(entidad, Item):
         return verificar_privilegio_item(holder, entidad)
     if isinstance(entidad, Proyecto):
-        return verificar_privilegio_otro(holder, P_PROYECTO, entidad)
+        return verificar_privilegio_proyecto(holder, entidad)
     if isinstance(entidad, Fase):
         return verificar_privilegio_otro(holder, P_FASE, entidad)
     if isinstance(entidad, Esquema):
@@ -92,11 +89,21 @@ def verificar_privilegio_item(holder, item):
         else:
             item._aprobar = False;
         item._privilegio = privilegio.valor
-#        print item._aprobar
-#        print item._privilegio
         return item
     return None
 
+def verificar_privilegio_proyecto(holder, proyecto):
+    privilegio = holder.verificar_privilegio(P_PROYECTO, proyecto)
+    if privilegio.valor != P_NO:
+        privilegio_iniciar = holder.verificar_privilegio(P_INICIARPROYECTO, proyecto)
+        proyecto._iniciar = False
+        if privilegio.valor == P_CONTROL_TOTAL and privilegio.origen == PT_PERMISO:
+            proyecto._iniciar = True
+        if privilegio_iniciar.valor == P_INICIARPROYECTO:
+            proyecto._iniciar = True
+        proyecto._privilegio = privilegio.valor
+        return proyecto
+    return None
 def verificar_privilegio_otro(holder, privilegio, entidad):
     privilegio = holder.verificar_privilegio(privilegio, entidad)
     if privilegio.valor != P_NO:
@@ -114,6 +121,7 @@ def _setear_entidad_sin_seguridad(entidad):
     if (entidad == None):
         return entidad
     entidad._aprobar = True
+    entidad._iniciar = True
     return entidad
 
 

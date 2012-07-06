@@ -81,19 +81,6 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 			return
 
 			
-
-						
-
-			
-
-									
-
-			
-
-						
-
-			
-
 		}
 		this.cargarItems(newValue)
 	},
@@ -101,20 +88,6 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 		if (newValue == null || newValue == "") {
 			this.limpiarStores()
 			return
-
-			
-
-						
-
-			
-
-									
-
-			
-
-						
-
-			
 
 		}
 		var store = this.getCalculoImpactosStore()
@@ -167,12 +140,6 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 		if (this.calculado == undefined) {
 			Ext.Msg.alert("Calculo de impacto", "Seleccione primero un item para el calculo")
 			return
-
-			
-
-						
-
-			
 
 		}
 		var view = Ext.widget('calculoimpactografo');

@@ -12,7 +12,8 @@ from yapp.daos.fase_dao import FaseDAO
 from yapp.daos.item_dao import ItemDAO
 from yapp.daos.privilegio_dao import PrivilegioDAO
 from yapp.daos.proyecto_dao import ProyectoDAO
-from yapp.filter import P_ITEM, P_ESQUEMA, P_FASE, P_PROYECTO, P_ACTIVARITEM
+from yapp.filter import P_ITEM, P_ESQUEMA, P_FASE, P_PROYECTO, P_ACTIVARITEM, \
+    P_INICIARPROYECTO
 from yapp.models.entidad_padre import EntidadPadreDTO
 from yapp.models.proyecto.proyecto import ProyectoDTO
 from yapp.vistas.privilegios import get_entidades
@@ -32,7 +33,7 @@ def get_entidades_padre(request):
         entidad = entidadDAO.get_by_id(id_entidad);
         if (id_entidad == '0' or id_entidad == None):
             return get_entidades(request);
-        if (entidad._nombre == P_PROYECTO):
+        if (entidad._nombre == P_PROYECTO or entidad._nombre == P_INICIARPROYECTO):
             return get_proyectos(request);
         if (entidad._nombre == P_FASE):
             return get_fases(request)
