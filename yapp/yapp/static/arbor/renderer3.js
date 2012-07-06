@@ -1,7 +1,10 @@
+//http://thought-bytes.blogspot.com/2011/02/graph-visualization-with-neo4j-and.html
+
 var Renderer = function(canvas) {
 	var canvas = $(canvas).get(0)
 	var ctx = canvas.getContext("2d");
 	var particleSystem
+	var gfx = arbor.Graphics(canvas)
 
 	var that = {
 		init : function(system) {
@@ -59,27 +62,61 @@ var Renderer = function(canvas) {
 			ctx.fillRect(0, 0, canvas.width, canvas.height)
 
 			particleSystem.eachEdge(function(edge, pt1, pt2) {
-				// edge: {source:Node, target:Node, length:#, data:{}}
-				// pt1: {x:#, y:#} source position in screen coords
-				// pt2: {x:#, y:#} target position in screen coords
-				
-				// draw a line from pt1 to pt2
-				ctx.strokeStyle = "rgba(0,0,0, .333)"
-				ctx.lineWidth = 1
-				ctx.beginPath()
-				ctx.moveTo(pt1.x, pt1.y)
-				ctx.lineTo(pt2.x, pt2.y)
-				ctx.stroke()
+				if (edge.source.data.alpha * edge.target.data.alpha == 0)
+					return
+
+				gfx.line(pt1, pt2, {
+					stroke : "#151B8D",
+					width : (edge.data.weight / 2),
+					alpha : edge.target.data.alpha
+				})
+
 			})
 
 			particleSystem.eachNode(function(node, pt) {
-				// node: {mass:#, p:{x,y}, name:"", data:{}}
-				// pt: {x:#, y:#} node position in screen coords
 				
-				// draw a rectangle centered at pt
-				var w = 10
-				ctx.fillStyle = (node.data.alone) ? "orange" : "black"
-				ctx.fillRect(pt.x - w / 2, pt.y - w / 2, w, w)
+				var w = Math.max(20, 20 + gfx.textWidth(node.name))
+				if (node.data.alpha === 0)
+					return
+
+				
+
+				if (node.data.shape == 'dot') {
+					gfx.oval(pt.x - w / 2, pt.y - w / 2, w, w, {
+						fill : node.data.color,
+						alpha : node.data.alpha
+					})
+					gfx.text(node.name, pt.x, pt.y + 7, {
+						color : "white",
+						align : "center",
+						font : "Arial",
+						size : 12
+					})
+					gfx.text(node.name, pt.x, pt.y + 7, {
+						color : "white",
+						align : "center",
+						font : "Arial",
+						size : 12
+					})
+				} else {
+					gfx.rect(pt.x - w / 2, pt.y - 8, w, 20, 4, {
+						fill : node.data.color,
+						alpha : node.data.alpha
+					})
+					gfx.text(node.name, pt.x, pt.y + 9, {
+						color : "white",
+						align : "center",
+						font : "Arial",
+						size : 12
+					})
+					gfx.text(node.name, pt.x, pt.y + 9, {
+						color : "white",
+						align : "center",
+						font : "Arial",
+						size : 12
+					})
+				}
+				
 			})
 		},
 		
@@ -123,6 +160,18 @@ var Renderer = function(canvas) {
 				dropped : function(e) {
 					if (dragged === null || dragged.node === undefined)
 						return
+
+					
+
+										
+
+					
+
+															
+
+					
+
+										
 
 					
 

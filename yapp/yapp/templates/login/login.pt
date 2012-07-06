@@ -20,7 +20,7 @@
     <script type="text/javascript" src="/static/arbor/arbor.js"></script>
     <script type="text/javascript" src="/static/arbor/arbor-graphics.js"></script>
     <script type="text/javascript" src="/static/arbor/arbor-tween.js"></script>
-    <script type="text/javascript" src="/static/arbor/renderer.js"></script>
+    <script type="text/javascript" src="/static/arbor/renderer_with_label.js"></script>
 </head>
 <body>
 </body>

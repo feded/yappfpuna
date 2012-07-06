@@ -9,7 +9,7 @@ Ext.define('YAPP.view.calculo_impacto.Grafo', {
 	initComponent : function() {
 		this.items = [ {
 			xtype : 'container',
-			html : "<canvas id=\"grafico\" width=\"800\" height=\"600\"></canvas>",
+			html : "<canvas id=\"grafico\" width=\"800\" height=\"600\" style=\"background-color:#FFFFFF\"></canvas>",
 		} ];
 		this.dockedItems = [ {
 			xtype : 'toolbar',
