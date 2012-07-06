@@ -42,8 +42,29 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 			},
 			'calculoimpactografo button[action=salir]' : {
 				click : this.cerrarGrafo
+			},
+			'calculoimpactografo checkbox[name=extras]' : {
+				change : this.changeCheckBox
 			}
 		});
+	},
+	changeCheckBox : function(cb, newValue, oldValue) {
+		var eDemas = this.eDemas
+		var sys = this.sys
+		var todos = this.nTodos
+		if (newValue == false) {
+			eDemas.forEach(function(arista) {
+				console.log(arista)
+				if (arista != undefined && arista.edge != undefined) {
+					sys.pruneEdge(arista.edge)
+				}
+			})
+		} else {
+			eDemas.forEach(function(arista) {
+				var edge = add_edge(sys, todos, arista.inicio, arista.fin, arista.label, arista.color)
+				arista.edge = edge
+			})
+		}
 	},
 	onFocus : function(view) {
 		var combo = this.getComboItem()
@@ -142,34 +163,42 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 			
 		}
 		var view = Ext.widget('calculoimpactografo');
-		console.log(arbor)
 		var sys = arbor.ParticleSystem(100, 600, 0.5, true, 30, 0.02, 0.6)
 		sys.renderer = Renderer("#grafico");
 		
 		var antecesores = this.getAntecesores().store;
 		var sucesores = this.getSucesores().store;
-		var items = new Array()
-		cargarItems(antecesores, items)
-		cargarItems(sucesores, items)
-		crearDibujo(this.item, items, sys)
-		// var animals = sys.addNode('Animals', {
-		// 'color' : 'red',
-		// 'shape' : 'dot',
-		// 'label' : 'Animals'
-		// });
-		// var dog = sys.addNode('dog', {
-		// 'color' : 'green',
-		// 'shape' : 'dot',
-		// 'label' : 'dog'
-		// });
-		// var cat = sys.addNode('cat', {
-		// 'color' : 'blue',
-		// 'shape' : 'dot',
-		// 'label' : 'cat'
-		// });
-		// sys.addEdge(animals, dog);
-		// sys.addEdge(dog, animals);
-		// sys.addEdge(animals, cat);
+		
+		var aAntecesores = cargarItems(antecesores)
+		var aSucesores = cargarItems(sucesores)
+
+		//
+		var todos = new Array()
+		todos[this.item._id] = this.item
+		aAntecesores.forEach(function(record) {
+			var item = record.data
+			todos[item._id] = item
+		})
+		aSucesores.forEach(function(record) {
+			var item = record.data
+			todos[item._id] = item
+		})
+		var nTodos = new Array()
+		var eDemas = new Array()
+		//
+		
+		var nAntecesores = addNodos(aAntecesores, sys, nTodos)
+		var nSucesores = addNodos(aSucesores, sys, nTodos)
+		nNodo = get_nodo(this.item, sys, 'dot', '#000000')
+		nAntecesores[this.item._id] = nNodo
+		nSucesores[this.item._id] = nNodo
+		nTodos[this.item._id] = nNodo
+		addEdges(this.item, aAntecesores, nAntecesores, sys, nTodos, eDemas)
+		addEdges(this.item, aSucesores, nSucesores, sys, nTodos, eDemas)
+		this.eDemas = eDemas
+		this.sys = sys
+		this.nTodos = nTodos
+		// crearDibujo(this.item, items, sys)
 	}
 
 });
@@ -183,67 +212,103 @@ function cargarItems(store, calculo_items) {
 	return calculo_items
 }
 
-function crearDibujo(item_inicio, items, sys) {
-	var nodos = new Array()
-	n_nodo = get_nodo(item_inicio, sys, 'rectangle', '#000000')
-	nodos[item_inicio._id] = n_nodo
+function addNodos(items, sys, todos, nodos) {
+	nodos = new Array()
 	items.forEach(function(record) {
 		item = record.data
 		n_nodo = get_nodo(item, sys)
 		nodos[item._id] = n_nodo
-		console.log("NODO" + item._id)
-	})
 
-	add_padre(item_inicio, nodos, sys)
-	add_antecesor(item_inicio, nodos, sys)
+		if (todos != null) {
+			todos[item._id] = n_nodo
+		}
+	})
+	return nodos
+}
+
+function addEdges(item_inicio, items, nodos, sys, todos, eDemas) {
+	add_padre(item_inicio, nodos, sys, todos, eDemas)
+	add_antecesor(item_inicio, nodos, sys, todos, eDemas)
 	items.forEach(function(record) {
 		item = record.data
-		add_padre(item, nodos, sys)
-		add_antecesor(item, nodos, sys)
+		add_padre(item, nodos, sys, todos, eDemas)
+		add_antecesor(item, nodos, sys, todos, eDemas)
 	})
 }
 
 function get_nodo(item, sys, forma, fontColor) {
 	if (forma == undefined || forma == null) {
-		forma = 'dot'
+		forma = 'rectangle'
 	}
 	if (fontColor == undefined || fontColor == null) {
 		fontColor = 'none'
 	}
-	n_nodo = sys.addNode(item._nombre, {
+	var n_nodo = sys.addNode(item._nombre, {
 		'color' : item._color,
 		'shape' : forma,
 		'label' : item._nombre,
 		'fontColor' : fontColor
 	})
+	console.log("Nuevo nodo: " + item._nombre + "[" + item._id + "]")
 	return n_nodo
 }
 
-function add_padre(item, nodos, sys) {
+function add_padre(item, nodos, sys, todos, eDemas) {
+	var i = eDemas.length
 	if (item._padre_item_id != undefined && item._padre_item_id != null) {
-		console.log("PADRE" + item._id + "->" + item._padre_item_id)
 		if (nodos[item._padre_item_id] != undefined) {
-			sys.addEdge(nodos[item._id], nodos[item._padre_item_id], {
-				length : .75,
-				pointSize : 3,
-				label : 'Padre',
-				directed : true
-			})
+			add_edge(sys, nodos, item._id, item._padre_item_id, "Hijo")
+		} else {
+			if (nodos[item._padre_item_id] != undefined) {
+				edge = add_edge(sys, nodos, item._id, item._padre_item_id, "Hijo")
+				var arista = {
+					edge : edge,
+					inicio : item._id,
+					fin : item._antecesor_item_id,
+					label : "Hijo",
+				}
+				console.log(arista)
+				eDemas[i] = arista
+				i = i + 1
+			}
 		}
 	}
 }
 
-function add_antecesor(item, nodos, sys) {
+function add_antecesor(item, nodos, sys, todos, eDemas) {
+	var i = eDemas.length
 	if (item._antecesor_item_id != undefined && item._antecesor_item_id != null) {
-		console.log("Antecesor" + item._id + "->" + item._antecesor_item_id)
 		if (nodos[item._antecesor_item_id] != undefined) {
-			sys.addEdge(nodos[item._id], nodos[item._antecesor_item_id], {
-				length : .75,
-				pointSize : 8,
-				label : 'Antecesor',
-				directed : true,
-				color : '#000000'
-			})
+			add_edge(sys, nodos, item._id, item._antecesor_item_id, "Sucesor", '#000000')
+		} else {
+			if (todos[item._antecesor_item_id] != undefined) {
+				edge = add_edge(sys, todos, item._id, item._antecesor_item_id, "Sucesor", '#000000')
+				var arista = {
+					edge : edge,
+					inicio : item._id,
+					fin : item._antecesor_item_id,
+					label : "Sucesor",
+					color : '#000000'
+				}
+				console.log(arista)
+				eDemas[i] = arista
+				i = i + 1
+			}
 		}
 	}
+}
+
+function add_edge(sys, nodos, inicio_id, destino_id, label, color_fuente) {
+	var aRet = sys.addEdge(nodos[inicio_id], nodos[destino_id], {
+		length : .75,
+		pointSize : 8,
+		label : label,
+		directed : true,
+		color : color_fuente
+	})
+	console.log("AGREGANDO NODO " + inicio_id + " -> " + destino_id)
+	if (aRet == undefined) {
+		console.log("\tERROR " + inicio_id + " -> " + destino_id)
+	}
+	return aRet
 }

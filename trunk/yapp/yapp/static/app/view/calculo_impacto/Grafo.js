@@ -15,12 +15,20 @@ Ext.define('YAPP.view.calculo_impacto.Grafo', {
 			xtype : 'toolbar',
 			dock : 'bottom',
 			items : [ {
+				xtype : 'checkbox',
+				name : 'extras',
+				fieldLabel : 'Todas las relaciones',
+				typeAhead : true,
+				checked : true
+			}, {
+				xtype : 'component',
+				flex : 1
+			}, {
 				text : 'Salir',
 				scope : this,
 				action : 'salir'
 			} ]
 		} ];
 		this.callParent(arguments);
-	}
-
+	},
 });
