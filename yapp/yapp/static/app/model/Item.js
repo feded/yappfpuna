@@ -14,9 +14,12 @@ Ext.define('YAPP.model.Item', {
 	}, {
 		name : '_duracion',
 		type : 'int'
-	}, '_condicionado', "_descripcion", '_version', '_estado', '_fecha_inicio', '_aprobar', {
+	}, '_condicionado', "_descripcion", '_version', '_estado', , '_aprobar', {
 		name : '_completado',
 		type : 'int'
+	},{
+		name : '_fecha_inicio',
+		type : 'date'
 	}, {
 		name : '_antecesor',
 		type : 'YAPP.model.Item'
