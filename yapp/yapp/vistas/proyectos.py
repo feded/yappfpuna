@@ -135,7 +135,8 @@ def update_proyectos(request):
 def asignar_permiso_rol_proyecto(request, rol, proyecto):
     dao = RolPrivilegioDAO(request)
     dao_privilegio = PrivilegioDAO(request)
-    
+    if rol._id == 0: 
+        return
     entidad = dao.get_query().filter(RolPrivilegio._rol == rol, RolPrivilegio._entidad_id == proyecto._id).first();
     if entidad == None :
         privilegio = dao_privilegio.get_query().filter(Privilegio._nombre == P_PROYECTO).first()

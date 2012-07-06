@@ -40,6 +40,7 @@ P_FASE = 'Fase'
 P_ESQUEMA = 'Esquema'
 P_LINEABASE = 'LineaBase'
 P_ACTIVARITEM = 'Aprobar Item'
+P_INICIARPROYECTO = "Iniciar proyecto"
 
 P_SELECCIONAR = "seleccionar"
 P_CONTROL_TOTAL = "abm"
@@ -74,7 +75,10 @@ class PrivilegioHolder:
         return True
         
     def add_privilegio(self, request, rol_privilegio):
+        
         rp = rol_privilegio
+        if rp._entidad_id == None:
+            return
         if rp._privilegio._nombre not in self.permisos:
             self.permisos[rp._privilegio._nombre] = {}
         if rp._entidad_id in self.permisos[rp._privilegio._nombre]:
@@ -137,7 +141,6 @@ class PrivilegioHolder:
             self._permiso_fase_agregado_verificar_seleccionar(entidad)
             """SI PUEDO VER LA FASE, DEBO PODER VER TODOS SUS ITEMS"""
             self._permiso_fase_agregado_verificar_items(entidad, request)
-        imprimir(entidad)
         if isinstance(entidad, Proyecto):
 #            print "Agregando fases de proyecto a privilegios"
             """SI PUEDO VER EL PROYECTO, debo poder ver todas sus fases"""

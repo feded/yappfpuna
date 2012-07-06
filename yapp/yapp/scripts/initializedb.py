@@ -100,6 +100,8 @@ def main(argv=sys.argv):
             DBSession.add(entidad)
             entidad = Privilegio("Aprobar Item");
             DBSession.add(entidad)
+            entidad = Privilegio("Iniciar proyecto");
+            DBSession.add(entidad)
     items = RolEstadoDAO(None).get_all()
     if (len(items) == 0):
         with transaction.manager:

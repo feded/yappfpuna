@@ -61,3 +61,5 @@ class ProyectoDTO():
         self._fecha_modificacion = proyecto._fecha_modificacion;
         self.autor_nombre = proyecto._autor._nombre
         self.lider_nombre = proyecto._lider._nombre
+        if hasattr(proyecto, '_iniciar') == True:
+            self._iniciar = True
