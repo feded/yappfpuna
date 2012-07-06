@@ -102,6 +102,7 @@ Ext.define('YAPP.controller.Roles', {
 		var store = this.getRolPermisosStore();
 		
 		Ext.Msg.confirm('Roles', 'Seguro de que desa eliminar el privilegio?', function(button) {
+			console.log("ELIMINANDO")
 			if (button === 'yes') {
 				permiso.destroy({
 					success : function(permiso_eliminado) {
@@ -174,8 +175,8 @@ Ext.define('YAPP.controller.Roles', {
 	},
 	
 	botonBorrarPrivilegioClick : function(button) {
-		Ext.Msg.confirm('Rol', 'Seguro que desea eliminar privilegio', function(button) {
-			if (button === 'yes') {
+		Ext.Msg.confirm('Rol', 'Seguro que desea eliminar privilegio', function(button2) {
+			if (button2 === 'yes') {
 				var win = button.up('grid');
 				var grilla = win.down('gridview')
 				var selection = grilla.getSelectionModel().getSelection()[0];
