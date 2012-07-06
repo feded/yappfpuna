@@ -101,13 +101,13 @@ class CalculoImpacto:
         if antecesor != None:
             if lista == "":
                 self._calculo_impacto(antecesor, AUX_ATRAS)
-            else:
+            if lista == AUX_ATRAS:
                 self._calculo_impacto(antecesor, lista)
         padre = self.get_item(item._padre_item_id)
         if padre != None:
             if lista == AUX_NADA:
                 self._calculo_impacto(padre, AUX_ATRAS)
-            else:
+            if lista == AUX_ATRAS:
                 self._calculo_impacto(padre, lista)
 
         #ADELANTE
@@ -117,7 +117,7 @@ class CalculoImpacto:
             if hijo_ultima_version._padre_item_id == item._id:
                 if lista == AUX_NADA:
                     self._calculo_impacto(hijo_ultima_version, AUX_SUCESOR)
-                else :
+                if lista == AUX_SUCESOR :
                     self._calculo_impacto(hijo_ultima_version, lista)
                     
 
@@ -127,7 +127,7 @@ class CalculoImpacto:
             if sucesor_ultima_version._antecesor_item_id == item._id:
                 if lista == AUX_NADA:
                     self._calculo_impacto(sucesor_ultima_version, AUX_SUCESOR)
-                else:
+                if lista == AUX_SUCESOR:
                     self._calculo_impacto(sucesor_ultima_version, lista)
                     
 

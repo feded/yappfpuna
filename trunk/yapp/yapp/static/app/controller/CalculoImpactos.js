@@ -78,8 +78,7 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 			this.limpiarStores()
 			this.itemStore.removeAll()
 			this.getComboItem().setValue("")
-			return
-
+			return;
 			
 		}
 		this.cargarItems(newValue)
@@ -87,8 +86,8 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 	changeItem : function(object, newValue, oldValue, eOpts) {
 		if (newValue == null || newValue == "") {
 			this.limpiarStores()
-			return
-
+			return;
+			
 		}
 		var store = this.getCalculoImpactosStore()
 		store.load({
@@ -139,15 +138,12 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 	verGrafo : function(button) {
 		if (this.calculado == undefined) {
 			Ext.Msg.alert("Calculo de impacto", "Seleccione primero un item para el calculo")
-			return
-
+			return;
+			
 		}
 		var view = Ext.widget('calculoimpactografo');
 		console.log(arbor)
-		var sys = arbor.ParticleSystem(1000, 400, 1);
-		sys.parameters({
-			gravity : true
-		});
+		var sys = arbor.ParticleSystem(100, 600, 0.5, true, 30, 0.02, 0.6)
 		sys.renderer = Renderer("#grafico");
 		
 		var antecesores = this.getAntecesores().store;
@@ -189,7 +185,7 @@ function cargarItems(store, calculo_items) {
 
 function crearDibujo(item_inicio, items, sys) {
 	var nodos = new Array()
-	n_nodo = get_nodo(item_inicio, sys)
+	n_nodo = get_nodo(item_inicio, sys, 'rectangle', '#000000')
 	nodos[item_inicio._id] = n_nodo
 	items.forEach(function(record) {
 		item = record.data
@@ -207,11 +203,18 @@ function crearDibujo(item_inicio, items, sys) {
 	})
 }
 
-function get_nodo(item, sys) {
+function get_nodo(item, sys, forma, fontColor) {
+	if (forma == undefined || forma == null) {
+		forma = 'dot'
+	}
+	if (fontColor == undefined || fontColor == null) {
+		fontColor = 'none'
+	}
 	n_nodo = sys.addNode(item._nombre, {
 		'color' : item._color,
-		'shape' : 'dot',
-		'label' : item._nombre
+		'shape' : forma,
+		'label' : item._nombre,
+		'fontColor' : fontColor
 	})
 	return n_nodo
 }
@@ -219,21 +222,28 @@ function get_nodo(item, sys) {
 function add_padre(item, nodos, sys) {
 	if (item._padre_item_id != undefined && item._padre_item_id != null) {
 		console.log("PADRE" + item._id + "->" + item._padre_item_id)
-		sys.addEdge(nodos[item._id], nodos[item._padre_item_id], {
-			length : 150,
-			pointSize : 3,
-			name : 'Padre'
-		})
+		if (nodos[item._padre_item_id] != undefined) {
+			sys.addEdge(nodos[item._id], nodos[item._padre_item_id], {
+				length : .75,
+				pointSize : 3,
+				label : 'Padre',
+				directed : true
+			})
+		}
 	}
 }
 
 function add_antecesor(item, nodos, sys) {
 	if (item._antecesor_item_id != undefined && item._antecesor_item_id != null) {
 		console.log("Antecesor" + item._id + "->" + item._antecesor_item_id)
-		sys.addEdge(nodos[item._id], nodos[item._antecesor_item_id], {
-			length : .75,
-			pointSize : 8,
-			label : 'Antecesor'
-		})
+		if (nodos[item._antecesor_item_id] != undefined) {
+			sys.addEdge(nodos[item._id], nodos[item._antecesor_item_id], {
+				length : .75,
+				pointSize : 8,
+				label : 'Antecesor',
+				directed : true,
+				color : '#000000'
+			})
+		}
 	}
 }
