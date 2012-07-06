@@ -72,7 +72,6 @@ function renderizador_lista_item(val) {
 }
 
 function renderizador_fecha_item(val){
-	console.log(val)
 }
 
 var columnas_item = [ {
