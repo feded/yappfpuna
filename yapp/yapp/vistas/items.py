@@ -262,7 +262,7 @@ def actualizar_referencias_item(item, item_dao, anterior_id, actualizar=None):
                 #VERIFICAR ESTADO DE SUS HIJOS
                 if (actualizar == None):
                     posible_hijo._estado = "REVISION"
-                    actualizar_referencias_item(posible_hijo, posible_hijo._id, actualizar)
+                    actualizar_referencias_item(posible_hijo, item_dao, posible_hijo._id, actualizar)
             item_dao.update(posible_hijo)
             item_dao.actualizarEstadosFaseyProyecto(posible_hijo)
             updated.append(hijo._item_id)
@@ -277,7 +277,7 @@ def actualizar_referencias_item(item, item_dao, anterior_id, actualizar=None):
             if (posible_sucesor._estado != "ELIMINADO"):    
                 #VERIFICAR ESTADO DE SUS HIJOS
                 posible_sucesor._estado = "REVISION"
-                actualizar_referencias_item(posible_sucesor, posible_sucesor._id, actualizar)
+                actualizar_referencias_item(posible_sucesor,item_dao, posible_sucesor._id, actualizar)
             item_dao.update(posible_sucesor)
             item_dao.actualizarEstadosFaseyProyecto(posible_sucesor)
             updated.append(sucesor._item_id)
