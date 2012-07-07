@@ -46,7 +46,7 @@ Ext.define('YAPP.view.item.CrearItem', {
 				xtype : 'datefield',
 				fieldLabel : 'Fecha de Inicio',
 				format : 'd/m/Y',
-				submitFormat : 'Y-m-d s:s:s',
+				submitFormat : 'Y-m-d h:i:s',
 
 			}, {
 				xtype : 'numberfield',
