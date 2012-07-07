@@ -24,6 +24,9 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 	}, {
 		selector : 'calculoimpactosview label[name=label_costo_sucesores]',
 		ref : 'labelSucesores'
+	}, {
+		selector : 'calculoimpactosview button[action=grafo]',
+		ref : 'buttonGrafos'
 	} ],
 	
 	init : function() {
@@ -54,7 +57,7 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 		var todos = this.nTodos
 		if (newValue == false) {
 			eDemas.forEach(function(arista) {
-				console.log(arista)
+//				console.log(arista)
 				if (arista != undefined && arista.edge != undefined) {
 					sys.pruneEdge(arista.edge)
 				}
@@ -95,14 +98,15 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 		if (this.itemStore == undefined) {
 			return;
 		}
+		this.limpiarStores()
+		this.itemStore.removeAll()
+		this.getComboItem().setValue("")
+		this.getButtonGrafos().setDisabled(true);
 		if (newValue == null || newValue == "") {
-			this.limpiarStores()
-			this.itemStore.removeAll()
-			this.getComboItem().setValue("")
 			return;
-			
+		} else {
+			this.cargarItems(newValue)
 		}
-		this.cargarItems(newValue)
 	},
 	changeItem : function(object, newValue, oldValue, eOpts) {
 		if (newValue == null || newValue == "") {
@@ -118,7 +122,8 @@ Ext.define('YAPP.controller.CalculoImpactos', {
 			scope : this,
 			callback : function(records, operation, success) {
 				this.actualizarStores(records);
-				this.calculado = true
+				this.calculado = true;
+				this.getButtonGrafos().setDisabled(false);
 			}
 		})
 	},
@@ -247,9 +252,10 @@ function get_nodo(item, sys, forma, fontColor) {
 		'color' : item._color,
 		'shape' : forma,
 		'label' : item._nombre,
-		'fontColor' : fontColor
+		'fontColor' : fontColor,
+		'item' : item
 	})
-	console.log("Nuevo nodo: " + item._nombre + "[" + item._id + "]")
+//	console.log("Nuevo nodo: " + item._nombre + "[" + item._id + "]")
 	return n_nodo
 }
 
@@ -267,7 +273,7 @@ function add_padre(item, nodos, sys, todos, eDemas) {
 					fin : item._antecesor_item_id,
 					label : "Hijo",
 				}
-				console.log(arista)
+//				console.log(arista)
 				eDemas[i] = arista
 				i = i + 1
 			}
@@ -290,7 +296,7 @@ function add_antecesor(item, nodos, sys, todos, eDemas) {
 					label : "Sucesor",
 					color : '#000000'
 				}
-				console.log(arista)
+//				console.log(arista)
 				eDemas[i] = arista
 				i = i + 1
 			}
@@ -306,9 +312,9 @@ function add_edge(sys, nodos, inicio_id, destino_id, label, color_fuente) {
 		directed : true,
 		color : color_fuente
 	})
-	console.log("AGREGANDO NODO " + inicio_id + " -> " + destino_id)
-	if (aRet == undefined) {
-		console.log("\tERROR " + inicio_id + " -> " + destino_id)
-	}
+//	console.log("AGREGANDO NODO " + inicio_id + " -> " + destino_id)
+//	if (aRet == undefined) {
+//		console.log("\tERROR " + inicio_id + " -> " + destino_id)
+//	}
 	return aRet
 }

@@ -99,7 +99,9 @@ Ext.define('YAPP.view.calculo_impacto.View', {
 				displayField : '_nombre',
 				queryMode : 'local',
 				valueField : 'id',
+				emptyText : 'Seleccione un item...',
 			}, {
+				disabled : true,
 				text : 'Ver grafo',
 				scope : this,
 				action : 'grafo'
