@@ -136,6 +136,9 @@ Ext.define('YAPP.controller.AdministrarFases', {
 				
 				grid.fireEvent('itemclick', grid, record);
 				me.getComboTipoItem().setValue("");
+				if (Ext.typeOf(me.getFases().getPicker().loadMask) !== "boolean") {
+					me.getFases().getPicker().loadMask.hide();
+				}
 			}
 		});
 		
