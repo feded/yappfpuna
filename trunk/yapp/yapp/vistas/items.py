@@ -100,7 +100,7 @@ def ag_atributos_tipos_item(request):
         item_id = DBSession.execute(seq)
         
         
-        formato_entrada = "%Y-%m-%d %H:%M:%S"
+        formato_entrada = "%Y-%m-%dT%H:%M:%S"
         if len(entidad["_fecha_inicio"]) > 1:
             fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"], formato_entrada)
             delta = datetime.timedelta(days=entidad["_duracion"] - 1)
@@ -109,7 +109,6 @@ def ag_atributos_tipos_item(request):
             fecha_inicio = ""
         
         if padre != None and fecha_inicio != "":
-            formato_entrada = "%Y-%m-%d %H:%M:%S"
             if len(padre._fecha_inicio) > 1:
                 padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
                 if fecha_inicio < padre_inicio:
@@ -177,20 +176,20 @@ def bm_atributo(request):
         item_viejo = item_dao.get_by_id(entidad["id"])
         id_viejo = item_viejo._id;
         
-        formato_entrada = "%Y-%m-%d %H:%M:%S"
+        formato_entrada = "%Y-%m-%dT%H:%M:%S"
         if len(entidad["_fecha_inicio"])>1:
             fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
         else:
             fecha_inicio = ""
         
         if padre != None and fecha_inicio != "":
-            formato_entrada = "%Y-%m-%d %H:%M:%S"
+            
             if len(padre._fecha_inicio)>1:
                 padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
                 if fecha_inicio <  padre_inicio:
                     return Response(json.dumps({'sucess': 'false', 'message':'La fecha de inicio asignada es menor a la fecha de inicio del padre'}))
         if antecesor != None and fecha_inicio != "":
-            formato_entrada = "%Y-%m-%d %H:%M:%S"
+            
             if len(antecesor._fecha_inicio)>1:
                 antecesor_inicio = datetime.datetime.strptime(antecesor._fecha_inicio, formato_entrada)
                 if fecha_inicio <  antecesor_inicio:
