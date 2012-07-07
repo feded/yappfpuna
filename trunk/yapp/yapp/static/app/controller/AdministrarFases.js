@@ -120,12 +120,25 @@ Ext.define('YAPP.controller.AdministrarFases', {
 	},
 	
 	focuseada : function(view) {
-		this.getGrilla().getSelectionModel().select(0, false, true)
-		var grid = this.getGrilla();
-		var record = grid.getSelectionModel().getSelection()[0];
+		var me = this;
+		proyecto = this.getProyectos().getValue();
+		if (proyecto == '' || typeof proyecto === 'undefined'){
+			return
+		}
+		this.getFasesStore().load({
+			params : {
+				id : proyecto
+			},
+			callback: function(records, operation, success) {
+				me.getGrilla().getSelectionModel().select(0, false, true)
+				var grid = me.getGrilla();
+				var record = grid.getSelectionModel().getSelection()[0];
+				
+				grid.fireEvent('itemclick', grid, record);
+				me.getComboTipoItem().setValue("");
+			}
+		});
 		
-		grid.fireEvent('itemclick', grid, record);
-		this.getComboTipoItem().setValue("");
 		
 	},
 	
