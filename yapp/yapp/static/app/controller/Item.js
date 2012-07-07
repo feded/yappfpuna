@@ -653,46 +653,46 @@ Ext.define('YAPP.controller.Item', {
 				callback : function(records, operation, success) {
 					segui = true;
 					faseAntecesora = records[0]
-					if (!(typeof faseAntecesora == 'undefined' || faseAntecesora == "" || faseAntecesora == null)) {
-						if (typeof record.data._antecesor_item_id === "undefined" || record.data._antecesor_item_id == "" || record.data._antecesor_item_id == null) {
-							Ext.Msg.alert("YAPP", "El item no tiene antecesor");
-							segui = false
-						}
-					}
-					if (segui) {
-						estado_anterior = record.data._estado
-						version_anterior = record.data._version
-						record.data._estado = "APROBADO"
-						record.data._version = record.data._version + 1;
-						me.setearPadresTipoAntecesor(record);
-						var store = me.getItemStore();
-						record.save({
-							params : {
-								actualizar : 'true'
-							},
-							success : function(record) {
-								store.load({
-									params : {
-										id : fase.getValue()
-									}
-								});
-								Ext.example.msg("Item", "Aprobado con exito");
-								me.onRender(record.data.id)
-								// habilitarBotones("APROBADO");
-							},
-							failure : function(rec, op) {
-								record.data._estado = estado_anterior
-								record.data._version = version_anterior;
-								if (op.request.scope.reader.jsonData == undefined) {
-									Ext.Msg.alert("YAPP", "No se pudo aprobar el Item");
-								} else {
-									Ext.Msg.alert("YAPP", op.request.scope.reader.jsonData["message"]);
+//					if (!(typeof faseAntecesora == 'undefined' || faseAntecesora == "" || faseAntecesora == null)) {
+//						if (typeof record.data._antecesor_item_id === "undefined" || record.data._antecesor_item_id == "" || record.data._antecesor_item_id == null) {
+//							Ext.Msg.alert("YAPP", "El item no tiene antecesor");
+//							segui = false
+//						}
+//					}
+//					if (segui) {
+					estado_anterior = record.data._estado
+					version_anterior = record.data._version
+					record.data._estado = "APROBADO"
+					record.data._version = record.data._version + 1;
+					me.setearPadresTipoAntecesor(record);
+					var store = me.getItemStore();
+					record.save({
+						params : {
+							actualizar : 'true'
+						},
+						success : function(record) {
+							store.load({
+								params : {
+									id : fase.getValue()
 								}
+							});
+							Ext.example.msg("Item", "Aprobado con exito");
+							me.onRender(record.data.id)
+							// habilitarBotones("APROBADO");
+						},
+						failure : function(rec, op) {
+							record.data._estado = estado_anterior
+							record.data._version = version_anterior;
+							if (op.request.scope.reader.jsonData == undefined) {
+								Ext.Msg.alert("YAPP", "No se pudo aprobar el Item");
+							} else {
+								Ext.Msg.alert("YAPP", op.request.scope.reader.jsonData["message"]);
 							}
-						
-						});
+						}
+					
+					});
 						// me.habilitarBotones("");
-					}
+					//}
 					
 				}
 			});
