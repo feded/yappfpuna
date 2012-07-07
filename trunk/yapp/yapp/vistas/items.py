@@ -218,20 +218,23 @@ def bm_atributo(request):
         
         
         if entidad['_estado'] == "APROBADO":
+            print "HOLAAAAAAAAAAAAAAAAAAAAAA"
+            print entidad['_padre']
             item_padre = get_entidad(entidad['_padre'], item_dao)
             if (item_padre!= None):
                 if item_padre._estado == 'ELIMINADO' or item_padre._estado == 'REVISION':
-                    return Response(json.dumps({'sucess': 'false', 'message':('El Padre del Item se encuentra en estado: ' + str(item_padre._estado))}))
-            item_antecesor = get_entidad(entidad['_antecesor'], item_dao)
-            fase_antecesora = get_fase_antecesora(request, fase)
-            if fase_antecesora != None:
-                if item_antecesor == None:
-                    return Response(json.dumps({'sucess': 'false', 'message':'Item no tiene antecesor'}))
-                else :
-                    if item_antecesor._estado == 'ELIMINADO' or item_antecesor._estado == 'REVISION':
-                        return Response(json.dumps({'sucess': 'false', 'message':('El Antecesor del Item se encuentra en estado: ' + str(item_antecesor._estado))}))
-                    if item_antecesor._linea_base_id == None :
-                        return Response(json.dumps({'sucess': 'false', 'message':'Antecesor no tiene linea base'}))
+                    return Response(json.dumps({'sucess': 'false', 'message':('No se puede Aprobar. El Padre del Item se encuentra en estado: ' + str(item_padre._estado))}))
+            else:
+                item_antecesor = get_entidad(entidad['_antecesor'], item_dao)
+                fase_antecesora = get_fase_antecesora(request, fase)
+                if fase_antecesora != None:
+                    if item_antecesor == None:
+                        return Response(json.dumps({'sucess': 'false', 'message':'No se puede Aprobar. El Item no tiene antecesor ni padre'}))
+                    else :
+                        if item_antecesor._estado == 'ELIMINADO' or item_antecesor._estado == 'REVISION':
+                            return Response(json.dumps({'sucess': 'false', 'message':('No se puede Aprobar. El Antecesor del Item se encuentra en estado: ' + str(item_antecesor._estado))}))
+                        if item_antecesor._linea_base_id == None :
+                            return Response(json.dumps({'sucess': 'false', 'message':'No se puede Aprobar. Antecesor no tiene linea base'}))
 
         nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, entidad["_completado"], padre_id, antecesor_id, entidad["_color"])
 
