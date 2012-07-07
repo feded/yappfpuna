@@ -18,6 +18,7 @@ from yapp.models.recurso.recurso_persona import RecursoPersona
 from yapp.models.unidad_trabajo.unidad_trabajo_recurso import \
     UnidadTrabajo_Recurso
 import json
+import pydot
 
 
 AUX_ATRAS = "antecesores"
@@ -179,6 +180,10 @@ class CalculoImpacto:
         if isinstance(recurso, RecursoPersona) :
             return recurso._costo_hora
         return recurso._costo_cantidad
+    
+    def generar_grafico(self):
+        graph = pydot.Dot('graphname', graph_type='digraph') 
+        
         
 class CalculoImpactoDTO:
     def __init__(self, item, antecesores, sucesores, bases, costo_antecesores, costo_sucesores):

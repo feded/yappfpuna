@@ -292,52 +292,16 @@ Renderer = function(canvas) {
 			// loop
 			particleSystem = system
 
-			// inform the system of the screen dimensions so it can map coords
-			// for us.
-			// if the canvas is ever resized, screenSize should be called again
-			// with
-			// the new dimensions
 			particleSystem.screenSize(canvas.width, canvas.height)
 			particleSystem.screenPadding(40) // leave an extra 20px of
-			// whitespace per side
 			
 			that.initMouseHandling()
 		},
 		
-		// 
-		// redraw will be called repeatedly during the run whenever the node
-		// positions
-		// change. the new positions for the nodes can be accessed by looking at
-		// the
-		// .p attribute of a given node. however the p.x & p.y values are in the
-		// coordinates
-		// of the particle system rather than the screen. you can either map
-		// them to
-		// the screen yourself, or use the convenience iterators .eachNode (and
-		// .eachEdge)
-		// which allow you to step through the actual node objects but also pass
-		// an
-		// x,y point in the screen's coordinate system
-		// 
-		
 		redraw : function() {
 			if (!particleSystem)
-				return
-
+				return;
 			
-
-						
-
-			
-
-                									
-
-			
-
-						
-
-			
-
 			ctx.clearRect(0, 0, canvas.width, canvas.height)
 
 			var nodeBoxes = {}
@@ -393,6 +357,24 @@ Renderer = function(canvas) {
 					ctx.fillText(label || "", pt.x, pt.y + 4)
 					ctx.fillText(label || "", pt.x, pt.y + 4)
 				}
+				var texto = node.data.costo
+				if (!texto || texto == false) {
+					return;
+				}
+				if (texto == false || !node.data.item._costo) {
+					texto = "Costo: 0"
+				} else {
+					texto = "Costo: " + node.data.item._costo
+				}
+				w = ctx.measureText("" + texto).width + 15
+				gfx.rect(pt.x - w / 2, pt.y + 13, w, 23, 4, {
+					fill : '#35d4ec'
+				})
+				ctx.font = "14px Helvetica"
+				ctx.textAlign = "center"
+				ctx.fillStyle = "white"
+				ctx.fillText(texto || "", pt.x, pt.y + 30)
+				ctx.fillText(texto || "", pt.x, pt.y + 30)
 			})
 
 			ctx.strokeStyle = "#cccccc"
@@ -472,19 +454,29 @@ Renderer = function(canvas) {
 			selected = null;
 			nearest = null;
 			var dragged = null;
-			var oldmass = 1
-
+			var oldmass = 1;
+			var ultimo = null;
+			
 			var handler = {
 				clicked : function(e) {
 					var pos = $(canvas).offset();
 					_mouseP = arbor.Point(e.pageX - pos.left, e.pageY - pos.top)
 					selected = nearest = dragged = particleSystem.nearest(_mouseP);
 					
-					if (dragged.node !== null)
+					if (dragged.node !== null) {
 						dragged.node.fixed = true
 						// if (selected.node !== null) dragged.node.tempMass =
 						// 10000
-						
+						if (ultimo != null) {
+							ultimo.node.data.costo = false
+							ultimo = null
+						}
+						if (dragged != null) {
+							ultimo = dragged;
+							ultimo.node.data.costo = true
+						}
+					}
+					
 					$(canvas).bind('mousemove', handler.dragged)
 					$(window).bind('mouseup', handler.dropped)
 
@@ -496,14 +488,8 @@ Renderer = function(canvas) {
 					var s = arbor.Point(e.pageX - pos.left, e.pageY - pos.top)
 
 					if (!nearest)
-						return
-
+						return;
 					
-
-										
-
-					
-
 					if (dragged !== null && dragged.node !== null) {
 						var p = particleSystem.fromScreen(s)
 						dragged.node.p = p// {x:p.x, y:p.y}
@@ -515,14 +501,8 @@ Renderer = function(canvas) {
 				
 				dropped : function(e) {
 					if (dragged === null || dragged.node === undefined)
-						return
-
+						return;
 					
-
-										
-
-					
-
 					if (dragged.node !== null)
 						dragged.node.fixed = false
 					dragged.node.tempMass = 1000
