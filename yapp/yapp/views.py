@@ -58,7 +58,7 @@ def crearPrivilegioHolder(request, rol):
     rr_dao= RolRolDAO(request)
 #    entities = dao.get_query().filter(RolPrivilegio._rol_id==rol._id).all();
     holder = PrivilegioHolder(rol)
-    
+    holder.permisos = {}
     holder.agregar_privilegios_rol(request, rol._id, rr_dao, dao)
     return holder
     
@@ -82,6 +82,7 @@ def crear(self, entidad):
             historia = Historial(entidad.__tablename__, entidad._id, "CREACION", self._request.session['user']._id);
             DBSession.add(historia)
             self.notificar(entidad, historia)
+            print self._request.session['holder'].imprimir()
     return entidad;
 
 BaseDAO.crear = crear

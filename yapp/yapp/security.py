@@ -41,23 +41,24 @@ def _es_prueba(query):
 def first(s):
     if _es_prueba(s) == True:
         return old_first(s)
-    aRet = old_first(s)
     if hasattr(s, 'omitir_seguridad') == True:
+        aRet = old_first(s)
         return _setear_entidad_sin_seguridad(aRet)
     if not hasattr(s, 'sesion_yapp'):
+        aRet = old_first(s)
         return _setear_entidad_sin_seguridad(aRet)
     if hasattr(s, 'sesion_yapp'):
         if 'user' in s.sesion_yapp:
             if s.sesion_yapp['user']._id == 1:
                 return _setear_entidad_sin_seguridad(aRet)
         else:
+            aRet = old_first(s)
             return aRet
     entidades = s.all();
-    for entidad in entidades:
-        aRet = verificar_privilegio(s.sesion_yapp, s.sesion_yapp['holder'], entidad)
-        if aRet != None:
-            return aRet
-    return None
+    if len(entidades) > 0:
+        return entidades[0]
+    else:
+        return None
 
 def verificar_privilegios(query, lista):
     holder = query.sesion_yapp['holder']
