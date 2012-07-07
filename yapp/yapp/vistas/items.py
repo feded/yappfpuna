@@ -99,7 +99,7 @@ def ag_atributos_tipos_item(request):
         seq = Sequence('item_id_seq')
         item_id = DBSession.execute(seq)
         
-        if len(entidad["_fecha_inicio"])>1:
+        if entidad["_fecha_inicio"]!= None and len(entidad["_fecha_inicio"])>1:
             if entidad["_fecha_inicio"].find("T")>=0:
                 formato_entrada = "%Y-%m-%dT%H:%M:%S"
                 fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
