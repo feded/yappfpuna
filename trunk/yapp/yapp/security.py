@@ -50,6 +50,7 @@ def first(s):
     if hasattr(s, 'sesion_yapp'):
         if 'user' in s.sesion_yapp:
             if s.sesion_yapp['user']._id == 1:
+                aRet = old_first(s)
                 return _setear_entidad_sin_seguridad(aRet)
         else:
             aRet = old_first(s)
