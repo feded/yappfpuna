@@ -99,23 +99,31 @@ def ag_atributos_tipos_item(request):
         seq = Sequence('item_id_seq')
         item_id = DBSession.execute(seq)
         
-        
-        formato_entrada = "%Y-%m-%dT%H:%M:%S"
-        if len(entidad["_fecha_inicio"]) > 1:
-            fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"], formato_entrada)
-            delta = datetime.timedelta(days=entidad["_duracion"] - 1)
-            fecha_fin = fecha_inicio + delta
+        if len(entidad["_fecha_inicio"])>1:
+            if entidad["_fecha_inicio"].find("T")>=0:
+                formato_entrada = "%Y-%m-%dT%H:%M:%S"
+                fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
+            else:
+                formato_entrada = "%Y-%m-%d %H:%M:%S"
+                fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
         else:
             fecha_inicio = ""
         
         if padre != None and fecha_inicio != "":
             if len(padre._fecha_inicio) > 1:
+                if padre._fecha_inicio.find("T")>=0:
+                    formato_entrada = "%Y-%m-%dT%H:%M:%S"
+                else:
+                    formato_entrada = "%Y-%m-%d %H:%M:%S"
                 padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
                 if fecha_inicio < padre_inicio:
                     return Response(json.dumps({'sucess': 'false', 'message':'La fecha es menor a la fecha de inicio del padre'}))
         if antecesor != None and fecha_inicio != "":
-            formato_entrada = "%Y-%m-%d %H:%M:%S"
             if len(antecesor._fecha_inicio)>1:
+                if antecesor._fecha_inicio.find("T")>=0:
+                    formato_entrada = "%Y-%m-%dT%H:%M:%S"
+                else:
+                    formato_entrada = "%Y-%m-%d %H:%M:%S"
                 antecesor_inicio = datetime.datetime.strptime(antecesor._fecha_inicio, formato_entrada)
                 if fecha_inicio <  antecesor_inicio:
                     return Response(json.dumps({'sucess': 'false', 'message':'La fecha es menor a la fecha de inicio del antecesor'}))
@@ -178,22 +186,34 @@ def bm_atributo(request):
         
         formato_entrada = "%Y-%m-%dT%H:%M:%S"
         if len(entidad["_fecha_inicio"])>1:
-            fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
+            if entidad["_fecha_inicio"].find("T")>=0:
+                formato_entrada = "%Y-%m-%dT%H:%M:%S"
+                fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
+            else:
+                formato_entrada = "%Y-%m-%d %H:%M:%S"
+                fecha_inicio = datetime.datetime.strptime(entidad["_fecha_inicio"],formato_entrada)
         else:
             fecha_inicio = ""
         
         if padre != None and fecha_inicio != "":
-            
             if len(padre._fecha_inicio)>1:
+                if padre._fecha_inicio.find("T")>=0:
+                    formato_entrada = "%Y-%m-%dT%H:%M:%S"
+                else:
+                    formato_entrada = "%Y-%m-%d %H:%M:%S"
                 padre_inicio = datetime.datetime.strptime(padre._fecha_inicio, formato_entrada)
                 if fecha_inicio <  padre_inicio:
                     return Response(json.dumps({'sucess': 'false', 'message':'La fecha de inicio asignada es menor a la fecha de inicio del padre'}))
         if antecesor != None and fecha_inicio != "":
-            
             if len(antecesor._fecha_inicio)>1:
-                antecesor_inicio = datetime.datetime.strptime(antecesor._fecha_inicio, formato_entrada)
-                if fecha_inicio <  antecesor_inicio:
-                    return Response(json.dumps({'sucess': 'false', 'message':'La fecha de inicio asignada es menor a la fecha de inicio del antecesor'}))
+                if antecesor._fecha_inicio.find("T")>=0:
+                        formato_entrada = "%Y-%m-%dT%H:%M:%S"
+                else:
+                    formato_entrada = "%Y-%m-%d %H:%M:%S"
+                if len(antecesor._fecha_inicio)>1:
+                    antecesor_inicio = datetime.datetime.strptime(antecesor._fecha_inicio, formato_entrada)
+                    if fecha_inicio <  antecesor_inicio:
+                        return Response(json.dumps({'sucess': 'false', 'message':'La fecha de inicio asignada es menor a la fecha de inicio del antecesor'}))
         
         
         if entidad['_estado'] == "APROBADO":
@@ -212,7 +232,7 @@ def bm_atributo(request):
                     if item_antecesor._linea_base_id == None :
                         return Response(json.dumps({'sucess': 'false', 'message':'Antecesor no tiene linea base'}))
 
-        nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], entidad["_fecha_inicio"], entidad["_completado"], padre_id, antecesor_id, entidad["_color"])
+        nuevo_item = Item(item_viejo._item_id, entidad["_nombre"], tipo_item, fase, entidad["_duracion"], entidad["_descripcion"], entidad["_condicionado"], entidad["_version"], entidad["_estado"], fecha_inicio, entidad["_completado"], padre_id, antecesor_id, entidad["_color"])
 
         if request.method == "DELETE":
             nuevo_item._estado = "ELIMINADO"
