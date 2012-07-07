@@ -178,6 +178,7 @@ def bm_atributo(request):
         else:
             if isinstance(entidad["_padre"], int) != True:
                 padre_id = entidad["_padre"]["_id"]
+                padre = dao_item_padre.get_by_id(padre_id)
             else:
                 padre = dao_item_padre.get_by_id(entidad["_padre"])
                 padre_id = padre._id
