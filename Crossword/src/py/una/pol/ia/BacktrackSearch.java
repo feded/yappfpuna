@@ -176,9 +176,21 @@ public class BacktrackSearch {
 			}
 		}
 
-		// Restricciones para la tercera variable
+		// Restricciones para la cuarta variable
 		if (v[5].compareTo("") != 0) {
-			if (v[2].charAt(0) != v[5].charAt(0)) {
+			if (v[3].charAt(0) != v[5].charAt(1)) {
+				return false;
+			}
+		}
+		
+		if (v[6].compareTo("") != 0) {
+			if (v[3].charAt(1) != v[6].charAt(2)) {
+				return false;
+			}
+		}
+		
+		if (v[7].compareTo("") != 0) {
+			if (v[3].charAt(2) != v[7].charAt(3)) {
 				return false;
 			}
 		}
