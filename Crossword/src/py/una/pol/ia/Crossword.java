@@ -7,14 +7,14 @@ public class Crossword {
 	 */
 	public static void main(String[] args) {
 		
-		BacktrackSearch b = new BacktrackSearch();
-		b.doIt();
-		
+//		BacktrackSearch b = new BacktrackSearch();
+//		b.doIt();
+//		
 //		DynamicVariableOrdering b = new DynamicVariableOrdering();
 //		b.doIt();
 		
-//		ForwardChecking b = new ForwardChecking();
-//		b.doIt();
+		ForwardChecking b = new ForwardChecking();
+		b.doIt();
 //	
 	}
 	
