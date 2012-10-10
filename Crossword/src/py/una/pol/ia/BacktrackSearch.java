@@ -3,15 +3,18 @@ package py.una.pol.ia;
 public class BacktrackSearch {
 
 	// Numero de variables actualmente en el problema
-	final int n = 10;
+	 int n;
 
 	// Cada word es una variable. V[i] es el valor asignado a la variable i
-	String v[] = new String[n];
+	String v[];
 
+	Puzzle p = PuzzleLoader.cargar(Puzzle.puzzleC);
+	Consistencia consistencia = new Consistencia(p);
 	Dominio dominioActual[];
 
 	public void doIt() {
-
+		n = p.getNroPalabras();
+		v = new String[n];
 		// Inicializamos las variables
 		for (int i = 0; i < v.length; i++) {
 			v[i] = "";
@@ -19,10 +22,13 @@ public class BacktrackSearch {
 
 		// El dominio[i] son los posibles valores que puede tomar la variable
 		// v[i]
-		dominioActual = Util.inicializarDominio();
+		dominioActual = Util.inicializarDominio(p);
 		int i = 0;
 
-		while (i >= 0 && i < 10) {
+		while (i >= 0 && i < n) {
+			if (v[0] == "ave" && v[1] == "dyad") {
+				v[0] = "ave";
+			}
 			// Instanciamos la variable
 			v[i] = seleccionarValor(i);
 			while (!consistent() && v[i].compareTo("Se acabo dominio") != 0) {
@@ -32,16 +38,17 @@ public class BacktrackSearch {
 			if (v[i].compareTo("Se acabo dominio") == 0) {
 				habilitar(i);
 				v[i] = "";
-				System.out.println("Backtracking");
+//				System.out.println(p.toString(v));
+//				System.out.println("Backtracking");
 				i--;
 			} else {
-				System.out.println("v[" + i + "] = " + v[i]);
+//				System.out.println("v[" + i + "] = " + v[i]);
 				i++;
 			}
 		}
 
 		System.out.println("Resultado");
-		for (int p = 0; p < 10; p++) {
+		for (int p = 0; p < n; p++) {
 			System.out.println("v[" + p + "] = " + v[p]);
 		}
 
@@ -82,132 +89,133 @@ public class BacktrackSearch {
 	 * Nos permite saber si estamos en un estado consistente
 	 */
 	private boolean consistent() {
+		return consistencia.probarConsitencia(v);
 		// Restriciones para la primera variable
-		if (v[7].compareTo("") != 0) {
-			if (v[0].charAt(0) != v[7].charAt(0)) {
-				System.out.println("La variable 1(" + v[0]
-						+ ") es inconsistente con la variable 8(" + v[7] + ")");
-				return false;
-			}
-		}
-
-		if (v[8].compareTo("") != 0) {
-			if (v[0].charAt(1) != v[8].charAt(0)) {
-				System.out.println("La variable 1(" + v[0]
-						+ ") es inconsistente con la variable 9(" + v[8] + ")");
-				return false;
-			}
-		}
-
-		if (v[9].compareTo("") != 0) {
-			if (v[0].charAt(2) != v[9].charAt(0)) {
-				System.out
-						.println("La variable 1(" + v[0]
-								+ ") es inconsistente con la variable 10("
-								+ v[9] + ")");
-				return false;
-			}
-		}
-
-		// Restriciones para la segunda variable
-		if (v[6].compareTo("") != 0) {
-			if (v[1].charAt(0) != v[6].charAt(0)) {
-				System.out.println("La variable 2(" + v[1]
-						+ ") es inconsistente con la variable 7(" + v[6] + ")");
-				return false;
-			}
-		}
-
-		if (v[7].compareTo("") != 0) {
-			if (v[1].charAt(1) != v[7].charAt(1)) {
-				System.out.println("La variable 2(" + v[1]
-						+ ") es inconsistente con la variable 8(" + v[7] + ")");
-				return false;
-			}
-		}
-
-		if (v[8].compareTo("") != 0) {
-			if (v[1].charAt(2) != v[8].charAt(1)) {
-				return false;
-			}
-		}
-
-		if (v[9].compareTo("") != 0) {
-			if (v[1].charAt(3) != v[9].charAt(1)) {
-				return false;
-			}
-		}
-
-		// Restricciones para la tercera variable
-		if (v[5].compareTo("") != 0) {
-			if (v[2].charAt(0) != v[5].charAt(0)) {
-				return false;
-			}
-		}
-
-		if (v[6].compareTo("") != 0) {
-			if (v[2].charAt(1) != v[6].charAt(1)) {
-				return false;
-			}
-		}
-
-		if (v[7].compareTo("") != 0) {
-			if (v[2].charAt(2) != v[7].charAt(2)) {
-				return false;
-			}
-		}
-
-		// Restricciones para la tercera variable
-		if (v[5].compareTo("") != 0) {
-			if (v[2].charAt(0) != v[5].charAt(0)) {
-				return false;
-			}
-		}
-
-		if (v[6].compareTo("") != 0) {
-			if (v[2].charAt(1) != v[6].charAt(1)) {
-				return false;
-			}
-		}
-
-		if (v[7].compareTo("") != 0) {
-			if (v[2].charAt(2) != v[7].charAt(2)) {
-				return false;
-			}
-		}
-
-		// Restricciones para la cuarta variable
-		if (v[5].compareTo("") != 0) {
-			if (v[3].charAt(0) != v[5].charAt(1)) {
-				return false;
-			}
-		}
-		
-		if (v[6].compareTo("") != 0) {
-			if (v[3].charAt(1) != v[6].charAt(2)) {
-				return false;
-			}
-		}
-		
-		if (v[7].compareTo("") != 0) {
-			if (v[3].charAt(2) != v[7].charAt(3)) {
-				return false;
-			}
-		}
-
-		if (v[6].compareTo("") != 0) {
-			if (v[2].charAt(1) != v[6].charAt(1)) {
-				return false;
-			}
-		}
-
-		if (v[7].compareTo("") != 0) {
-			if (v[2].charAt(2) != v[7].charAt(2)) {
-				return false;
-			}
-		}
-
-		return true;
+//		if (v[7].compareTo("") != 0) {
+//			if (v[0].charAt(0) != v[7].charAt(0)) {
+//				System.out.println("La variable 1(" + v[0]
+//						+ ") es inconsistente con la variable 8(" + v[7] + ")");
+//				return false;
+//			}
+//		}
+//
+//		if (v[8].compareTo("") != 0) {
+//			if (v[0].charAt(1) != v[8].charAt(0)) {
+//				System.out.println("La variable 1(" + v[0]
+//						+ ") es inconsistente con la variable 9(" + v[8] + ")");
+//				return false;
+//			}
+//		}
+//
+//		if (v[9].compareTo("") != 0) {
+//			if (v[0].charAt(2) != v[9].charAt(0)) {
+//				System.out
+//						.println("La variable 1(" + v[0]
+//								+ ") es inconsistente con la variable 10("
+//								+ v[9] + ")");
+//				return false;
+//			}
+//		}
+//
+//		// Restriciones para la segunda variable
+//		if (v[6].compareTo("") != 0) {
+//			if (v[1].charAt(0) != v[6].charAt(0)) {
+//				System.out.println("La variable 2(" + v[1]
+//						+ ") es inconsistente con la variable 7(" + v[6] + ")");
+//				return false;
+//			}
+//		}
+//
+//		if (v[7].compareTo("") != 0) {
+//			if (v[1].charAt(1) != v[7].charAt(1)) {
+//				System.out.println("La variable 2(" + v[1]
+//						+ ") es inconsistente con la variable 8(" + v[7] + ")");
+//				return false;
+//			}
+//		}
+//
+//		if (v[8].compareTo("") != 0) {
+//			if (v[1].charAt(2) != v[8].charAt(1)) {
+//				return false;
+//			}
+//		}
+//
+//		if (v[9].compareTo("") != 0) {
+//			if (v[1].charAt(3) != v[9].charAt(1)) {
+//				return false;
+//			}
+//		}
+//
+//		// Restricciones para la tercera variable
+//		if (v[5].compareTo("") != 0) {
+//			if (v[2].charAt(0) != v[5].charAt(0)) {
+//				return false;
+//			}
+//		}
+//
+//		if (v[6].compareTo("") != 0) {
+//			if (v[2].charAt(1) != v[6].charAt(1)) {
+//				return false;
+//			}
+//		}
+//
+//		if (v[7].compareTo("") != 0) {
+//			if (v[2].charAt(2) != v[7].charAt(2)) {
+//				return false;
+//			}
+//		}
+//
+//		// Restricciones para la tercera variable
+//		if (v[5].compareTo("") != 0) {
+//			if (v[2].charAt(0) != v[5].charAt(0)) {
+//				return false;
+//			}
+//		}
+//
+//		if (v[6].compareTo("") != 0) {
+//			if (v[2].charAt(1) != v[6].charAt(1)) {
+//				return false;
+//			}
+//		}
+//
+//		if (v[7].compareTo("") != 0) {
+//			if (v[2].charAt(2) != v[7].charAt(2)) {
+//				return false;
+//			}
+//		}
+//
+//		// Restricciones para la cuarta variable
+//		if (v[5].compareTo("") != 0) {
+//			if (v[3].charAt(0) != v[5].charAt(1)) {
+//				return false;
+//			}
+//		}
+//		
+//		if (v[6].compareTo("") != 0) {
+//			if (v[3].charAt(1) != v[6].charAt(2)) {
+//				return false;
+//			}
+//		}
+//		
+//		if (v[7].compareTo("") != 0) {
+//			if (v[3].charAt(2) != v[7].charAt(3)) {
+//				return false;
+//			}
+//		}
+//
+//		if (v[6].compareTo("") != 0) {
+//			if (v[2].charAt(1) != v[6].charAt(1)) {
+//				return false;
+//			}
+//		}
+//
+//		if (v[7].compareTo("") != 0) {
+//			if (v[2].charAt(2) != v[7].charAt(2)) {
+//				return false;
+//			}
+//		}
+//
+//		return true;
 
 	}
 
