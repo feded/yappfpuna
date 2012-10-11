@@ -13,8 +13,11 @@ public class Crossword {
 //		DynamicVariableOrdering b = new DynamicVariableOrdering();
 //		b.doIt();
 		
-		ForwardChecking b = new ForwardChecking();
-		b.doIt();
+//		ForwardChecking b = new ForwardChecking();
+//		b.doIt();
+		Puzzle p = PuzzleLoader.cargar(Puzzle.puzzleB);
+		ConflictDirectedBackjumping cdb = new ConflictDirectedBackjumping(p);
+		cdb.doIt();
 //	
 	}
 	

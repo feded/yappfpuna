@@ -36,12 +36,4 @@ public class Consistencia {
 		return false;
 	}
 
-	public boolean probarConsistencia(String[] palabras, Llamada llamanda) {
-		return llamanda.probar();
-	}
-
-	public static interface Llamada {
-		boolean probar();
-	}
-
 }

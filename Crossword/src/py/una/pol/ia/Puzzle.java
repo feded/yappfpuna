@@ -7,8 +7,10 @@ public class Puzzle {
 	public static final char NULO = '/';
 	public static final char ESPACIO = ' ';
 
-	static String puzzleC = "C:/Users/Arturo/Desktop/puzzleC.txt";
 	static String puzzleA = "C:/Users/Arturo/Desktop/puzzleA.txt";
+	static String puzzleB = "C:/Users/Arturo/Desktop/puzzleB.txt";
+	static String puzzleC = "C:/Users/Arturo/Desktop/puzzleC.txt";
+	static String puzzleD = "C:/Users/Arturo/Desktop/puzzleD.txt";
 
 	int nroPalabras = 0;
 	int filas;
@@ -33,6 +35,7 @@ public class Puzzle {
 		palabraYindice = new int[filas][columnas];
 		palabras = new ArrayList<String>();
 		dominios = new ArrayList<Dominio>();
+
 	}
 
 	public char[][] getMatriz() {
@@ -73,7 +76,7 @@ public class Puzzle {
 			}
 			sb.append("\n");
 		}
-		sb.append("\nEN Y\n");
+		sb.append("EN Y\n");
 		for (int i = 0; i < filas; i++) {
 			for (int j = 0; j < columnas; j++) {
 				if (get(i, j) == NULO) {
