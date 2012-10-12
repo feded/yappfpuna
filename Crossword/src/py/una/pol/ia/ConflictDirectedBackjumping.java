@@ -20,7 +20,14 @@ public class ConflictDirectedBackjumping {
 			Util.volcar(d.valores);
 
 	}
-
+        
+        public  ConflictDirectedBackjumping(Puzzle puzzle, Dominio[] d) {
+            this.p = puzzle;
+		this.c = new Consistencia(p);
+		dominio = d;
+		nroPalabras = p.getNroPalabras();
+		
+        }
 	public void doIt() {
 		palabras = new String[nroPalabras];
 		Arrays.fill(palabras, "");
@@ -28,12 +35,7 @@ public class ConflictDirectedBackjumping {
 		int i = 0;
 		while (i >= 0 && i < nroPalabras) {
 			palabras[i] = "";
-			if (palabras[0].equals("aaa") && palabras[1] != null
-					&& palabras[1].equals("ababa") && palabras[2] != null
-					&& palabras[2].equals("debauch") && palabras[3] != null
-					&& palabras[3].equals("bare")) {
-				System.out.println(palabras[i]);
-			}
+			
 			if (i == nroPalabras - 1) {
 				i = nroPalabras - 1;
 			}
@@ -51,7 +53,7 @@ public class ConflictDirectedBackjumping {
 				}
 			} while (!valor && palabras[i] != null);
 			if (palabras[i] == null) {
-				System.out.println("BAAACK - " + i);
+				//System.out.println("BAAACK - " + i);
 				if (aSaltar == 0)
 					i--;
 				else

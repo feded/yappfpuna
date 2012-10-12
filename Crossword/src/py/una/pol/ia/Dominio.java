@@ -7,6 +7,7 @@ public class Dominio {
 	boolean inconsistentes[];
 	int ultimo = 0;
 	int longitud;
+	boolean visitado = false;
 	ArrayList<String> valoresDinamicos;
 	ArrayList<Boolean> inconsistenciaDinamica;
 

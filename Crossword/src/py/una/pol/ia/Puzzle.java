@@ -147,8 +147,8 @@ public class Puzzle {
 	int contador = 0;
 
 	public void addDominio(Dominio dominio) {
-		System.out.println("Agregando dominio con longitud " + contador++
-				+ ": " + dominio.longitud);
+		//System.out.println("Agregando dominio con longitud " + contador++
+		//		+ ": " + dominio.longitud);
 		dominios.add(dominio);
 		for (String palabra : palabras) {
 			if (palabra.length() == dominio.longitud)
@@ -160,7 +160,7 @@ public class Puzzle {
 		if (palabra.equals(""))
 			return;
 		nroPalabras++;
-		System.out.println("Agregando palabra " + palabra);
+		//System.out.println("Agregando palabra " + palabra);
 		palabras.add(palabra);
 		for (Dominio dominio : dominios) {
 			if (palabra.length() == dominio.longitud)

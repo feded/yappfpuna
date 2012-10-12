@@ -4,7 +4,7 @@ public class BacktrackSearch {
 
 	Dominio dominioActual[];
 	Consistencia c;
-	Puzzle p = PuzzleLoader.cargar(Puzzle.puzzleC);
+	Puzzle p = PuzzleLoader.cargar(Puzzle.puzzleB);
 	
 	//Numero de variables actualmente en el problema
 	final int n = p.getNroPalabras();
